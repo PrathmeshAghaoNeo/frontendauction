@@ -35,3 +35,8 @@
     text-decoration: underline;
   }
   
+  .app-content {
+    padding: 24px;
+    background-color: #fff;
+  }
+  

@@ -1,0 +1,88 @@
+.start-page-container {
+  min-height: 100vh;
+  background: #fff;
+  animation: fadeIn 0.8s ease-in;
+  padding: 2rem;
+}
+
+.welcome-text {
+  color: #6a1b9a;
+  font-weight: 700;
+  font-size: 2.8rem;
+}
+
+.lead-text {
+  color: #555;
+  font-size: 1.25rem;
+  margin-top: 1rem;
+}
+
+.button-group .btn {
+  padding: 0.8rem 2.2rem;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(106, 27, 154, 0.1);
+}
+
+.browse-btn {
+  background-color: #6a1b9a;
+  color: #fff;
+  border: none;
+}
+
+.browse-btn:hover {
+  background-color: #5a148a;
+  transform: translateY(-3px);
+}
+
+.account-btn {
+  background-color: transparent;
+  color: #6a1b9a;
+  border: 2px solid #6a1b9a;
+}
+
+.account-btn:hover {
+  background-color: #6a1b9a;
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+.help-resources-section {
+  background-color: #f8f2fc;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+.tabs-container .tab h3 {
+  color: #6a1b9a;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.tabs-container .tab ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tabs-container .tab ul li {
+  margin-bottom: 0.5rem;
+}
+
+.tabs-container .tab ul li a {
+  text-decoration: none;
+  color: #444;
+  transition: color 0.2s ease;
+}
+
+.tabs-container .tab ul li a:hover {
+  color: #6a1b9a;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

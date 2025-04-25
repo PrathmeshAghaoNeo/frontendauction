@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+import { Router, NavigationEnd, RouterOutlet, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { NgIf } from '@angular/common';
 import { HeaderComponent } from "./component/header/header.component";
@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     RouterOutlet,
     HeaderComponent,
     FooterComponent,
@@ -19,17 +20,32 @@ import { CommonModule } from '@angular/common';
     NgIf
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  showSidebar = true;
+  currentRoute: string = '';
 
   constructor(private router: Router) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      // Adjust the path as needed
-      this.showSidebar = !event.urlAfterRedirects.includes('/landing');
+      this.currentRoute = event.urlAfterRedirects;
     });
+  }
+
+  get isStartPage(): boolean {
+    return this.currentRoute === '/';
+  }
+
+  get isLandingPage(): boolean {
+    return this.currentRoute === '/landing-page';
+  }
+
+  get showSidebar(): boolean {
+    return !this.isStartPage && !this.isLandingPage;
+  }
+
+  get showHeaderAndFooter(): boolean {
+    return !this.isStartPage;
   }
 }

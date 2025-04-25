@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
 })
 export class DirectSaleComponent {
   cards = [
-    { title: 'Real Estate', icon: 'fas fa-home', description: 'Buy or sell properties quickly and easily.', notification: this.randomBadge() },
+    { title: 'Real Estate', icon: 'fas fa-home', description: 'Buy or sell properties quickly and easily.' },
     // { title: 'Vehicles', icon: 'fas fa-motorcycle', description: 'Explore listings for cars, bikes, and more.', notification: this.randomBadge() },
     // { title: 'Electronics', icon: 'fas fa-tv', description: 'TVs, phones, gadgets.', notification: this.randomBadge() },
     // { title: 'Fashion', icon: 'fas fa-tshirt', description: 'Clothing & accessories.', notification: this.randomBadge() },
@@ -19,7 +19,7 @@ export class DirectSaleComponent {
     // { title: 'Furniture', icon: 'fas fa-couch', description: 'Home & office furniture.', notification: this.randomBadge() },
   ];
 
-  randomBadge(): number {
-    return Math.floor(Math.random() * 100) + 1;
-  }
+  // randomBadge(): number {
+  //   return Math.floor(Math.random() * 100) + 1;
+  // }
 }

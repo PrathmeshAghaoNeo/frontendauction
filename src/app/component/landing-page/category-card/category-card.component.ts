@@ -14,7 +14,6 @@ export class CategoryCardComponent {
   @Input() title!: string;
   @Input() description!: string;
 
-  randomNumber: number = Math.floor(Math.random() * 100) + 1;
   
   categories = [
     { name: 'Real Estate', icon: 'fas fa-home', description: 'Buy or sell property' },
