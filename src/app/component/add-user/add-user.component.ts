@@ -23,7 +23,7 @@ import { Country, Role, Status, User } from '../../modals/user';
       email: '',
       companyName: '',
       companyNumber: '',
-      statusId: 1,
+      statusId: 2,
       chatEnabled: true,
       roleId: 1,
       personalIdNumber: '',

@@ -59,13 +59,13 @@
     <div *ngIf="selectedAsset" class="asset-details">
       <h2>Asset Details</h2>
       <div class="asset-info">
-        <div><strong>Title:</strong> {{ selectedAsset?.title || 'Not Available' }}</div>
-        <div><strong>Category:</strong> {{ selectedAsset?.categoryName || 'Not Available' }}</div>
-        <div><strong>Starting Price:</strong> BHD {{ selectedAsset?.startingPrice | number }}</div>
-        <div><strong>Status:</strong> {{ selectedAsset?.statusName || 'Not Available' }}</div>
-        <div><strong>Auction Status:</strong> {{ getAuctionStatus(selectedAsset?.assetId!) }}</div>
-        <div><strong>Registration Deadline:</strong> {{ selectedAsset?.registrationDeadline || 0 }}d</div>
-        <div><strong>Description:</strong> {{ selectedAsset?.description || 'No description provided.' }}</div>
+        <div><strong>Title:</strong> {{ selectedAsset.title || 'Not Available' }}</div>
+        <div><strong>Category:</strong> {{ selectedAsset.categoryName || 'Not Available' }}</div>
+        <div><strong>Starting Price:</strong> BHD {{ selectedAsset.startingPrice | number }}</div>
+        <div><strong>Status:</strong> {{ selectedAsset.statusName || 'Not Available' }}</div>
+        <div><strong>Auction Status:</strong> {{ getAuctionStatus(selectedAsset.assetId!) }}</div>
+        <div><strong>Registration Deadline:</strong> {{ selectedAsset.registrationDeadline || 0 }}d</div>
+        <div><strong>Description:</strong> {{ selectedAsset.description || 'No description provided.' }}</div>
       </div>
   
       <div *ngIf="selectedAsset?.galleries?.length">

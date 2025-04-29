@@ -2,17 +2,19 @@
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Name</label>
-        <input type="text" class="form-control form-control-lg" [(ngModel)]="user.name" name="name" required #name="ngModel">
+        <label class="form-label fw-bold">Name<span class="text-danger">*</span></label>
+        <input type="text"  minlength="3" maxlength="25"  class="form-control form-control-lg" [(ngModel)]="user.name" name="name" required #name="ngModel">
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
-          Name is required.
+          <div *ngIf="name.errors?.['required']">Name is required.</div>
+          <div *ngIf="name.errors?.['minlength']">Minimum 3 characters required.</div>
+          <div *ngIf="name.errors?.['maxlength']">Maximum 20 characters allowed.</div>
         </div>
       </div>
     </div>
 
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Email</label>
+        <label class="form-label fw-bold">Email<span class="text-danger">*</span></label>
         <input type="email" class="form-control form-control-lg" [(ngModel)]="user.email" name="email" required email #email="ngModel">
         <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">
           <div *ngIf="email.errors?.['required']">Email is required.</div>
@@ -58,14 +60,22 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Company Name</label>
-        <input type="text" class="form-control form-control-lg" [(ngModel)]="user.companyName" name="companyName">
+        <input type="text" minlength="3" maxlength="20"  class="form-control form-control-lg" [(ngModel)]="user.companyName" #companyName="ngModel" name="companyName">
+        <div *ngIf="companyName.invalid && (companyName.dirty || companyName.touched)" class="text-danger">
+          <div *ngIf="companyName.errors?.['minlength']">Minimum 3 characters required.</div>
+          <div *ngIf="companyName.errors?.['maxlength']">Maximum 20 characters allowed.</div>
+        </div>
       </div>
     </div>
 
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Company Number</label>
-        <input type="text" class="form-control form-control-lg" [(ngModel)]="user.companyNumber" name="companyNumber">
+        <input type="text"  minlength="3" maxlength="15" #companyNumber="ngModel" class="form-control form-control-lg" [(ngModel)]="user.companyNumber" name="companyNumber">
+        <div *ngIf="companyNumber.invalid && (companyNumber.dirty || companyNumber.touched)" class="text-danger">
+          <div *ngIf="companyNumber.errors?.['minlength']">Minimum 3 characters required.</div>
+          <div *ngIf="companyNumber.errors?.['maxlength']">Maximum 20 characters allowed.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -73,7 +83,7 @@
   <div class="row">
     <div class="col-md-4 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Status</label>
+        <label class="form-label fw-bold">Status<span class="text-danger">*</span></label>
         <select class="form-select form-select-lg" [(ngModel)]="user.statusId" name="statusId" required #statusId="ngModel">
           <option *ngFor="let status of statuses" [value]="status.statusId">{{ status.statusName }}</option>
         </select>
@@ -85,7 +95,7 @@
 
     <div class="col-md-4 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Role</label>
+        <label class="form-label fw-bold">Role<span class="text-danger">*</span></label>
         <select class="form-select form-select-lg" [(ngModel)]="user.roleId" name="roleId" required #roleId="ngModel">
           <option *ngFor="let role of roles" [value]="role.roleId">{{ role.roleName }}</option>
         </select>
@@ -97,7 +107,7 @@
 
     <div class="col-md-4 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Gender</label>
+        <label class="form-label fw-bold">Gender<span class="text-danger">*</span></label>
         <select class="form-select form-select-lg" [(ngModel)]="user.gender" name="gender" required #gender="ngModel">
           <option value="Male">Male</option>
           <option value="Female">Female</option>
@@ -112,17 +122,19 @@
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Personal ID Number</label>
-        <input type="text" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel">
+        <label class="form-label fw-bold">Personal ID Number<span class="text-danger">*</span></label>
+        <input type="text" minlength="3" maxlength="15" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel">
         <div *ngIf="personalIdNumber.invalid && (personalIdNumber.dirty || personalIdNumber.touched)" class="text-danger">
-          Personal ID Number is required.
+          <div *ngIf="personalIdNumber.errors?.['required']">Name is required.</div>
+          <div *ngIf="personalIdNumber.errors?.['minlength']">Minimum 3 characters required.</div>
+          <div *ngIf="personalIdNumber.errors?.['maxlength']">Maximum 20 characters allowed.</div>
         </div>
       </div>
     </div>
 
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold" for="personalIdExpiryDate">Personal ID Expiry Date<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold" for="personalIdExpiryDate">Personal ID Expiry Date<span class="text-danger">*</span><span class="text-danger">*</span></label>
         <input
           type="date"
           id="personalIdExpiryDate"
@@ -156,19 +168,16 @@
     </div>
   </div>
 
-  <!-- Images not prefilled, but upload option kept -->
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Profile Image</label>
+        <label class="form-label fw-bold">Profile Image<span class="text-danger">*</span></label>
         
-        <!-- Display current profile image if available -->
         <div *ngIf="user.profileImageUrl">
           <img [src]="user.profileImageUrl" alt="Profile Image" class="img-thumbnail" width="100">
           <p><a [href]="user.profileImageUrl" target="_blank">View current image</a></p>
         </div>
         
-        <!-- File input to select new image -->
         <input type="file" class="form-control form-control-lg" (change)="onProfileImageSelected($event)">
         
         <div *ngIf="submitted && !user.profileImageUrl && !profileImageFile" class="text-danger">
@@ -177,18 +186,15 @@
       </div>
     </div>
 
-    <!-- Personal ID Image -->
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Personal ID Image</label>
+        <label class="form-label fw-bold">Personal ID Image<span class="text-danger">*</span></label>
         
-        <!-- Display current personal ID image if available -->
         <div *ngIf="user.personalIdImageUrl">
           <img [src]="user.personalIdImageUrl" alt="Personal ID Image" class="img-thumbnail" width="100">
           <p><a [href]="user.personalIdImageUrl" target="_blank">View current image</a></p>
         </div>
 
-        <!-- File input to select new personal ID image -->
         <input type="file" class="form-control form-control-lg" (change)="onPersonalIdImageSelected($event)">
         
         <div *ngIf="submitted && !user.personalIdImageUrl && !personalIdImageFile" class="text-danger">

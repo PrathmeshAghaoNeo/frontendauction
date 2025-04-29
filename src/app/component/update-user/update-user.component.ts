@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { FutureDateValidatorDirective } from '../manage-user/future-date-validator.directive';
 import { UserView } from '../../modals/user';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-update-user',
@@ -131,8 +132,14 @@ export class UpdateUserComponent implements OnInit {
     // Call service to update the user data
     this.userService.updateUser(this.userId, formData).subscribe({
       next: (res) => {
-        console.log('User updated successfully', res);
-        this.router.navigate(['/users']);
+        Swal.fire({
+          icon: 'success',
+          title: 'User Updated',
+          text: 'User details have been updated successfully!',
+          confirmButtonColor: '#3085d6'
+        }).then(() => {
+          this.router.navigate(['/users']);
+        });
       },
       error: (err) => {
         console.error('Update failed', err);

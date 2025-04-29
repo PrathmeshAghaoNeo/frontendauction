@@ -3,9 +3,11 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Name<span class="text-danger">*</span></label>
-        <input type="text" class="form-control form-control-lg" [(ngModel)]="user.name" name="name" required #name="ngModel">
+        <input type="text"  minlength="3" maxlength="25" class="form-control form-control-lg" [(ngModel)]="user.name" name="name" required #name="ngModel">
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
-          Name is required.
+          <div *ngIf="name.errors?.['required']">Name is required.</div>
+          <div *ngIf="name.errors?.['minlength']">Minimum 3 characters required.</div>
+          <div *ngIf="name.errors?.['maxlength']">Maximum 20 characters allowed.</div>
         </div>
       </div>
     </div>
@@ -37,10 +39,11 @@
             Select a valid Phone Code.
           </div>
           
-          <input type="text" class="form-control form-control-lg" [(ngModel)]="user.mobileNumber" name="mobileNumber" required #mobileNumber="ngModel">
+          <input type="tel" pattern="^[0-9]{10}$" class="form-control form-control-lg" [(ngModel)]="user.mobileNumber" name="mobileNumber" required #mobileNumber="ngModel">
         </div>
         <div *ngIf="mobileNumber.invalid && (mobileNumber.dirty || mobileNumber.touched)" class="text-danger">
-          Mobile number is required.
+          <div *ngIf="mobileNumber.errors?.['required']">Mobile number is required.</div>
+          <div *ngIf="mobileNumber.errors?.['pattern']">Mobile number must be 10 digits.</div>
         </div>
       </div>
     </div>
@@ -57,14 +60,22 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Company Name</label>
-        <input type="text" class="form-control form-control-lg" [(ngModel)]="user.companyName" name="companyName">
+        <input type="text" minlength="3" maxlength="20" class="form-control form-control-lg" [(ngModel)]="user.companyName" #companyName="ngModel" name="companyName">
+        <div *ngIf="companyName.invalid && (companyName.dirty || companyName.touched)" class="text-danger">
+          <div *ngIf="companyName.errors?.['minlength']">Minimum 3 characters required.</div>
+          <div *ngIf="companyName.errors?.['maxlength']">Maximum 20 characters allowed.</div>
+        </div>
       </div>
     </div>
 
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Company Number</label>
-        <input type="text" class="form-control form-control-lg" [(ngModel)]="user.companyNumber" name="companyNumber">
+        <input type="text" minlength="3" maxlength="15" class="form-control form-control-lg" #companyNumber="ngModel" [(ngModel)]="user.companyNumber" name="companyNumber">
+        <div *ngIf="companyNumber.invalid && (companyNumber.dirty || companyNumber.touched)" class="text-danger">
+          <div *ngIf="companyNumber.errors?.['minlength']">Minimum 3 characters required.</div>
+          <div *ngIf="companyNumber.errors?.['maxlength']">Maximum 20 characters allowed.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -112,9 +123,11 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Personal ID Number<span class="text-danger">*</span></label>
-        <input type="text" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel">
+        <input type="text" minlength="3" maxlength="15" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel">
         <div *ngIf="personalIdNumber.invalid && (personalIdNumber.dirty || personalIdNumber.touched)" class="text-danger">
-          Personal ID Number is required.
+          <div *ngIf="personalIdNumber.errors?.['required']">Name is required.</div>
+          <div *ngIf="personalIdNumber.errors?.['minlength']">Minimum 3 characters required.</div>
+          <div *ngIf="personalIdNumber.errors?.['maxlength']">Maximum 20 characters allowed.</div>
         </div>
       </div>
     </div>

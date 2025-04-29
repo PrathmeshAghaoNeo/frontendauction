@@ -9,7 +9,7 @@
     </div>
   </div>
 
-  <!-- Search and Filters Row -->
+  <!-- For Filters -->
   <div class="row mb-3">
     <div class="col-md-4">
       <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="Search users…">
@@ -47,7 +47,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of filteredUsers">
+        <tr *ngFor="let user of filteredUsers  | paginate: { id: 'users', itemsPerPage: itemsPerPage, currentPage: page }">
           <td>#{{ user.uid }}</td>
           <td>{{ user.name }}</td>
           <td>{{ getRoleName(user.roleId) }}</td>
@@ -78,8 +78,8 @@
         </tr>
       </tbody>
     </table>
+    <pagination-controls id="users" (pageChange)="page = $event"></pagination-controls>
   </div>
-
   <!-- Empty State -->
   <div *ngIf="filteredUsers.length === 0" class="text-center py-5 bg-light rounded mt-4">
     <p class="text-muted mb-0">No users found. Click "Add New User" to create one.</p>

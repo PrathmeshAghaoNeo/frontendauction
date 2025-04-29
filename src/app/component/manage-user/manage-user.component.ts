@@ -4,11 +4,13 @@ import { Role, Status, UserView } from '../../modals/user';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-manage-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,NgxPaginationModule ],
   templateUrl: './manage-user.component.html',
   styleUrls: ['./manage-user.component.css']
 })
@@ -17,8 +19,10 @@ export class ManageUserComponent implements OnInit {
   users: UserView[] = [];
   roles: Role[] = [];
   statuses: Status[] = [];
+  page: number = 1;
+  itemsPerPage: number = 5;
 
-  // Filter properties
+  // for filters
   searchTerm: string = '';
   filterRole: number = 0;
   filterStatus: number = 0;
@@ -74,17 +78,32 @@ export class ManageUserComponent implements OnInit {
   }
 
   deleteUser(userId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
-  
-    if (confirmDelete) {
-      this.userService.deleteUser(userId).subscribe({
-        next: () => {
-          console.log('User deleted successfully!');
-          this.loadUsers();
-        },
-        error: (error) => console.error('Error deleting user:', error)
-      });
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won’t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userService.deleteUser(userId).subscribe({
+          next: () => {
+            Swal.fire(
+              'Deleted!',
+              'User has been deleted.',
+              'success'
+            );
+            this.loadUsers();
+          },
+          error: (error) => {
+            console.error('Error deleting user:', error);
+            Swal.fire('Error', 'Failed to delete user.', 'error');
+          }
+        });
+      }
+    });
   }
   
   
