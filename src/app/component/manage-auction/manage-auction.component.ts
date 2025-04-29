@@ -82,15 +82,5 @@ export class ManageAuctionComponent implements OnInit {
       backdrops.forEach(el => el.remove());
     }
   }
-  
 
-  getStatusName(statusId: number | undefined): string {
-    switch (statusId) {
-      case 1: return 'Pending';
-      case 2: return 'Active';
-      case 3: return 'Completed';
-      case 4: return 'Cancelled';
-      default: return 'Unknown';
-    }
-  }
 }

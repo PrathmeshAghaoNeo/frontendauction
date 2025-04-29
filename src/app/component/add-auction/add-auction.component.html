@@ -29,18 +29,26 @@
           Type is required.
         </div>
       </div>
-      
-
       <div class="col-md-4 mb-3">
-        <label for="statusId" class="form-label">Status ID</label>
-        <input type="text" formControlName="statusId" id="statusId" class="form-control">
-        <div *ngIf="auctionForm.get('statusId')?.touched && auctionForm.get('statusId')?.invalid" class="text-danger">
-          Status ID is required
+        <label for="statusId" class="form-label">Status</label>
+        <select formControlName="statusId" id="statusId" class="form-select" 
+                [class.is-invalid]="auctionForm.get('statusId')?.invalid && auctionForm.get('statusId')?.touched">
+          <option value="" disabled selected>Select Status</option>
+          <option *ngFor="let status of statuses" [value]="status.statusId">
+            {{ status.statusName }}
+          </option>
+        </select>
+        <div *ngIf="auctionForm.get('statusId')?.invalid && auctionForm.get('statusId')?.touched" class="text-danger">
+          Status is required.
+        </div>
+        <div class="invalid-feedback" *ngIf="auctionForm.get('type')?.hasError('required') && auctionForm.get('type')?.touched">
+          Type is required.
         </div>
       </div>
 
+
       <div class="col-md-4 mb-3">
-        <label for="categoryId" class="form-label">Category ID</label>
+        <label for="categoryId" class="form-label">Category </label>
         <input type="text" formControlName="categoryId" id="categoryId" class="form-control">
         <div *ngIf="auctionForm.get('categoryId')?.touched && auctionForm.get('categoryId')?.invalid" class="text-danger">
           Category ID is required

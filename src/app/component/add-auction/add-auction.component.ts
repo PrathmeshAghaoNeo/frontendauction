@@ -14,6 +14,12 @@ import { ApiEndpoints } from '../../constants/api-endpoints';
 })
 export class AddAuctionComponent implements OnInit {
   auctionForm: FormGroup;
+  statuses: any[] = [
+    { statusId: 1, statusName: 'Pending' },
+    { statusId: 2, statusName: 'Active' },
+    { statusId: 3, statusName: 'Completed' },
+    { statusId: 4, statusName: 'Cancelled' }
+  ];
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.auctionForm = this.fb.group({

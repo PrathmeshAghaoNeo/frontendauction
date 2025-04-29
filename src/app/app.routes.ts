@@ -14,8 +14,8 @@ import { RegUserLandingPageComponent } from './component/pages/reg-user-landing-
 import { ManageRequestsComponent } from './component/manage-requests/manage-requests.component';
 import { UpdateUserComponent } from './component/update-user/update-user.component';
 import { DetailsUserComponent } from './component/details-user/details-user.component';
-import { AddRequestsComponent } from './component/add-requests/add-requests.component';
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
+import { AddRequestComponent } from './component/add-requests/add-requests.component';
 
 
 export const routes: Routes = [
@@ -34,7 +34,7 @@ export const routes: Routes = [
     { path: 'requests', component: ManageRequestsComponent },
     {path:'updateUser', component:UpdateUserComponent},
     {path:'detailsUser', component:DetailsUserComponent},
-    { path: 'requests/new', component: AddRequestsComponent },
+    { path: 'requests/new', component: AddRequestComponent },
     { path: 'request-detail/:id', component: EditRequestsComponent },
 
 

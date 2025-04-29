@@ -19,7 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl:'./add-requests.component.html' ,
   styleUrls: ['./add-requests.component.css'],
 })
-export class NewRequestComponent implements OnInit {
+export class AddRequestComponent implements OnInit {
  
   newRequest: AddRequest = {} as AddRequest;
   currentDateTime: string = '';

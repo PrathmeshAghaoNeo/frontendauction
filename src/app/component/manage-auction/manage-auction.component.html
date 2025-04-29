@@ -31,9 +31,9 @@
         <td>{{ auction.type }}</td>
         <td>{{ auction.startDateTime | date: 'short' }}</td>
         <td>{{ auction.endDateTime | date: 'short' }}</td>
-        <td>{{ getStatusName(auction.statusId) }}</td>
+        <td>{{ auction.statusName }}</td>
         <td>{{ auction.incrementalTime }} mins</td>
-        <td>{{ auction.categoryId }}</td>
+        <td>{{ auction.categoryName }}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-outline-primary me-1" (click)="openViewModal(auction)">
             <i class="bi bi-eye"></i>
@@ -59,11 +59,11 @@
   <div class="modal-body">
     <p><strong>Title:</strong> {{ selectedAuction?.title }}</p>
     <p><strong>Type:</strong> {{ selectedAuction?.type }}</p>
-    <p><strong>Status:</strong> {{ getStatusName(selectedAuction?.statusId) }}</p>
+    <p><strong>Status:</strong> {{ selectedAuction?.statusName }}</p>
     <p><strong>Start Date & Time:</strong> {{ selectedAuction?.startDateTime | date: 'short' }}</p>
     <p><strong>End Date & Time:</strong> {{ selectedAuction?.endDateTime | date: 'short' }}</p>
     <p><strong>Incremental Time:</strong> {{ selectedAuction?.incrementalTime }} mins</p>
-    <p><strong>Category ID:</strong> {{ selectedAuction?.categoryId }}</p>
+    <p><strong>Category ID:</strong> {{ selectedAuction?.categoryName }}</p>
   </div>
 </ng-template>
 

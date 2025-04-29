@@ -8,4 +8,6 @@ export interface Auction {
     statusId: number;
     incrementalTime: number;
     categoryId: number;
+    statusName:string;
+    categoryName:string;
   }

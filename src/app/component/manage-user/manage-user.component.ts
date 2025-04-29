@@ -74,14 +74,20 @@ export class ManageUserComponent implements OnInit {
   }
 
   deleteUser(userId: number): void {
-    this.userService.deleteUser(userId).subscribe({
-      next: () => {
-        console.log('User deleted successfully!');
-        this.loadUsers();
-      },
-      error: (error) => console.error('Error deleting user:', error)
-    });
+    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
+  
+    if (confirmDelete) {
+      this.userService.deleteUser(userId).subscribe({
+        next: () => {
+          console.log('User deleted successfully!');
+          this.loadUsers();
+        },
+        error: (error) => console.error('Error deleting user:', error)
+      });
+    }
   }
+  
+  
 
   get roleOptions() {
     return this.roles;
