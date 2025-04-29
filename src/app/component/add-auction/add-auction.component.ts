@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { ApiEndpoints } from '../../constants/api-endpoints';
 
 @Component({
   selector: 'app-add-auction',
@@ -12,7 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './add-auction.component.html',
   styleUrls: ['./add-auction.component.css']
 })
-export class AddAuctionComponent {
+export class AddAuctionComponent implements OnInit {
   auctionForm: FormGroup;
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
@@ -26,6 +26,24 @@ export class AddAuctionComponent {
       incrementalTime: ['', Validators.required],
       categoryId: ['', Validators.required]
     });
+  }
+
+  ngOnInit() {
+    const currentDate = new Date();
+    const formattedDate = this.formatDate(currentDate);
+    this.auctionForm.patchValue({
+      startDateTime: formattedDate,
+      endDateTime: formattedDate
+    });
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
   onSubmit() {
@@ -43,7 +61,7 @@ export class AddAuctionComponent {
         categoryId: +formValue.categoryId
       };
 
-      this.http.post('https://localhost:50264/api/Auction', payload)
+      this.http.post(`${ApiEndpoints.AUCTION}`, payload)
         .subscribe({
           next: res => {
             alert('Auction created successfully');
@@ -54,6 +72,9 @@ export class AddAuctionComponent {
             alert('Something went wrong');
           }
         });
+    } else {
+      this.auctionForm.markAllAsTouched();
+      alert('Please fill out all required fields.');
     }
   }
 }

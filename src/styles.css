@@ -1,1 +1,200 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==================== VARIABLES ==================== */
+
+:root {
+    /* Colors */
+    --primary-color: #6a1b9a;
+    --primary-dark: #5a148a;
+    --secondary-color: #f4e8fc;
+    --accent-color: #4a148c;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --light-bg: #f4f3fa;
+    
+    /* Font */
+    --font-family: 'Poppins', 'Segoe UI', sans-serif;
+  
+    /* Spacing */
+    --form-padding: 30px;
+    --card-radius: 12px;
+    --input-radius: 8px;
+    --shadow-light: 0 8px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* ==================== GLOBAL STYLES ==================== */
+  
+  body {
+    font-family: var(--font-family);
+    background-color: var(--light-bg);
+  }
+  
+  /* ==================== TEXT & HEADINGS ==================== */
+  
+  .text-primary {
+    color: var(--primary-color) !important;
+  }
+  
+  h2, h3, h4, h5, h6, label, th {
+    color: var(--primary-color);
+  }
+  
+  /* ==================== BUTTONS ==================== */
+  
+  .btn, .btn i {
+    font-size: 16px;
+    vertical-align: middle;
+  }
+  
+  .btn-primary, .btn-success, .btn-warning {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .btn-primary:hover, .btn-success:hover, .btn-warning:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+  
+  /* Outline Buttons */
+  .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .btn-outline-success {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  .btn-outline-success:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .btn-outline-danger {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+  }
+  
+  .btn-outline-danger:hover {
+    background-color: var(--danger-color);
+    color: white;
+  }
+  
+  /* Custom Purple Button */
+  .custom-purple-btn {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .custom-purple-btn:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+  
+  /* Action Buttons */
+  .action-buttons .btn {
+    margin-right: 0.25rem;
+  }
+  
+  /* ==================== TABLES ==================== */
+  
+  table {
+    font-size: 0.95rem;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+  }
+  
+  .table-hover tbody tr {
+    transition: transform 0.2s ease, background-color 0.3s ease;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: var(--secondary-color);
+    /* transform: scale(1.01); */
+    box-shadow: 0 2px 10px rgba(106, 27, 154, 0.1);
+  }
+  
+  .table-responsive {
+    margin-top: 20px;
+  }
+  
+  thead.table-dark, thead.table-purple {
+    background-color: var(--primary-color) !important;
+    color: white;
+  }
+  
+  /* ==================== FORMS ==================== */
+  
+  form {
+    background-color: white;
+    padding: var(--form-padding);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-light);
+    max-width: 800px;
+    margin: 20px auto;
+  }
+  
+  .form-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: var(--light-bg);
+    min-height: calc(100vh - 120px); /* Adjust based on header/footer */
+    box-sizing: border-box;
+  }
+  
+  .form-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    font-weight: 600;
+    font-size: 26px;
+    font-family: var(--font-family);
+  }
+  
+  .form-label {
+    font-weight: 500;
+    color: var(--accent-color);
+  }
+  
+  .form-control {
+    border: 1px solid #ccc;
+    border-radius: var(--input-radius);
+    padding: 10px 12px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  .form-control:focus {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 0.2rem rgba(106, 27, 154, 0.2);
+    outline: none;
+  }
+  
+  button.btn-primary {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    font-weight: 500;
+    font-size: 16px;
+    border-radius: var(--input-radius);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  button.btn-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  /* ==================== END GLOBAL ==================== */
+  

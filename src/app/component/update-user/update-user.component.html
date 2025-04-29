@@ -1,8 +1,8 @@
-<form (ngSubmit)="onSubmit()" #userForm="ngForm" class="container mt-4 p-4 bg-light rounded shadow">
+<form (ngSubmit)="onUpdateUser(userForm)"  #userForm="ngForm" class="container mt-4 p-4 bg-light rounded shadow">
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Name<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold">Name</label>
         <input type="text" class="form-control form-control-lg" [(ngModel)]="user.name" name="name" required #name="ngModel">
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
           Name is required.
@@ -12,7 +12,7 @@
 
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Email<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold">Email</label>
         <input type="email" class="form-control form-control-lg" [(ngModel)]="user.email" name="email" required email #email="ngModel">
         <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">
           <div *ngIf="email.errors?.['required']">Email is required.</div>
@@ -43,6 +43,7 @@
           Mobile number is required.
         </div>
       </div>
+      
     </div>
 
     <div class="col-md-6 mb-3">
@@ -72,7 +73,7 @@
   <div class="row">
     <div class="col-md-4 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Status<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold">Status</label>
         <select class="form-select form-select-lg" [(ngModel)]="user.statusId" name="statusId" required #statusId="ngModel">
           <option *ngFor="let status of statuses" [value]="status.statusId">{{ status.statusName }}</option>
         </select>
@@ -84,7 +85,7 @@
 
     <div class="col-md-4 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Role<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold">Role</label>
         <select class="form-select form-select-lg" [(ngModel)]="user.roleId" name="roleId" required #roleId="ngModel">
           <option *ngFor="let role of roles" [value]="role.roleId">{{ role.roleName }}</option>
         </select>
@@ -96,7 +97,7 @@
 
     <div class="col-md-4 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Gender<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold">Gender</label>
         <select class="form-select form-select-lg" [(ngModel)]="user.gender" name="gender" required #gender="ngModel">
           <option value="Male">Male</option>
           <option value="Female">Female</option>
@@ -111,7 +112,7 @@
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Personal ID Number<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold">Personal ID Number</label>
         <input type="text" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel">
         <div *ngIf="personalIdNumber.invalid && (personalIdNumber.dirty || personalIdNumber.touched)" class="text-danger">
           Personal ID Number is required.
@@ -130,7 +131,6 @@
           #personalIdExpiryDate="ngModel"
           required
           futureDate
-        
           [ngClass]="{'is-invalid': personalIdExpiryDate.invalid && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)}"
           class="form-control form-control-lg"
         />
@@ -138,7 +138,6 @@
           Personal ID Expiry Date must be a future date.
         </div>
       </div>
-      
     </div>
   </div>
 
@@ -157,37 +156,50 @@
     </div>
   </div>
 
+  <!-- Images not prefilled, but upload option kept -->
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Profile Image<span class="text-danger">*</span></label>
-        <input type="file" class="form-control form-control-lg" (change)="onFileChange($event, 'profileImage')" required>
-        <div *ngIf="submitted && !user.profileImage" class="text-danger">
+        <label class="form-label fw-bold">Profile Image</label>
+        
+        <!-- Display current profile image if available -->
+        <div *ngIf="user.profileImageUrl">
+          <img [src]="user.profileImageUrl" alt="Profile Image" class="img-thumbnail" width="100">
+          <p><a [href]="user.profileImageUrl" target="_blank">View current image</a></p>
+        </div>
+        
+        <!-- File input to select new image -->
+        <input type="file" class="form-control form-control-lg" (change)="onProfileImageSelected($event)">
+        
+        <div *ngIf="submitted && !user.profileImageUrl && !profileImageFile" class="text-danger">
           Profile Image is required.
         </div>
       </div>
     </div>
-    
+
+    <!-- Personal ID Image -->
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Personal ID Image<span class="text-danger">*</span></label>
-        <input type="file" class="form-control form-control-lg" (change)="onFileChange($event, 'personalIdImage')" required>
-        <div *ngIf="submitted && !user.personalIdImage" class="text-danger">
+        <label class="form-label fw-bold">Personal ID Image</label>
+        
+        <!-- Display current personal ID image if available -->
+        <div *ngIf="user.personalIdImageUrl">
+          <img [src]="user.personalIdImageUrl" alt="Personal ID Image" class="img-thumbnail" width="100">
+          <p><a [href]="user.personalIdImageUrl" target="_blank">View current image</a></p>
+        </div>
+
+        <!-- File input to select new personal ID image -->
+        <input type="file" class="form-control form-control-lg" (change)="onPersonalIdImageSelected($event)">
+        
+        <div *ngIf="submitted && !user.personalIdImageUrl && !personalIdImageFile" class="text-danger">
           Personal ID Image is required.
         </div>
       </div>
     </div>
-    
+  </div>
 
-    <!-- <div class="col-md-6 mb-3">
-      <div class="form-group">
-        <label class="form-label fw-bold">Personal ID Image<span class="text-danger">*</span></label>
-        <input type="file" class="form-control form-control-lg" (change)="onFileChange($event, 'personalIdImage')" required >
-      </div>
-    </div> -->
-  </div> 
 
   <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-    <button type="submit" class="btn btn-primary btn-lg px-4" >Submit</button>
+    <button type="submit" class="btn btn-success btn-lg px-4" >Update</button>
   </div>
 </form>

@@ -1,0 +1,107 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+  <h3>Create New Request</h3>
+  <div>
+  <button class="btn btn-secondary" (click)="goBack()">Back</button>
+  <button class="btn btn-secondary me-2" (click)="cancel()">Cancel</button>
+  <button class="btn btn-primary" (click)="createNew()">Save</button>
+  </div>
+  </div>
+   
+    <form #formRef="ngForm">
+  <div class="row">
+  <div class="mb-3">
+  <label>Request Number</label>
+  <input type="text" class="form-control" [value]="newRequest.requestNumber" readonly>
+  </div>
+   
+        <div class="col-md-6 mb-3">
+  <label>User <span class="required-star">*</span></label>
+  <select class="form-select" [(ngModel)]="newRequest.userId" name="userId" required (change)="onUserSelect(newRequest.userId)">
+  <option value="">Select User</option>
+  <option *ngFor="let user of users" [value]="user.userId">{{ user.name }}</option>
+  </select>
+  </div>
+  </div>
+   
+      <div class="row">
+  <div class="col-md-6 mb-3">
+  <label>Username</label>
+  <input type="text" class="form-control" [(ngModel)]="newRequest.username" name="username" readonly>
+  </div>
+   
+        <div class="col-md-6 mb-3">
+  <label>Mobile Number</label>
+  <input type="text" class="form-control" [(ngModel)]="newRequest.mobileNumber" name="mobileNumber" readonly>
+  </div>
+  </div>
+   
+      <div class="row">
+  <div class="col-md-6 mb-3">
+  <label>Email</label>
+  <input type="email" class="form-control" [(ngModel)]="newRequest.email" name="email" readonly>
+  </div>
+   
+        <div class="col-md-6 mb-3">
+  <label>Type <span class="required-star">*</span></label>
+  <select class="form-select" [(ngModel)]="newRequest.requestTypeId" name="requestTypeId" required>
+  <option [value]="1">Transfer of Ownership</option>
+  <option [value]="2">Inquiry</option>
+  <option [value]="3">Request for Viewing</option>
+  <option [value]="4">Offer</option>
+  </select>
+  </div>
+  </div>
+   
+      <div class="row">
+  <div class="col-md-6 mb-3">
+  <label>Asset <span class="required-star">*</span></label>
+  <select class="form-select" [(ngModel)]="newRequest.assetId" name="assetId" required>
+  <option value="">Select Asset</option>
+  <option *ngFor="let asset of assets" [value]="asset.assetId">{{ asset.title }}</option>
+  </select>
+  </div>
+   
+        <div class="col-md-6 mb-3">
+  <label>Transaction ID <span class="required-star">*</span></label>
+  <input type="number" class="form-control" [(ngModel)]="newRequest.transactionId" name="transactionId" required>
+  </div>
+  </div>
+   
+      <div class="row">
+  <div class="col-md-6 mb-3">
+  <label for="startDateTime" class="form-label">Start Date & Time</label>
+  <input type="datetime-local" class="form-control" id="startDateTime" name="startDateTime"
+                 [(ngModel)]="newRequest.startDateTime"
+                 [min]="currentDateTimeStart" [max]="currentDateTimeEnd" required />
+  </div>
+   
+        <div class="col-md-6 mb-3">
+  <label>Status <span class="required-star">*</span></label>
+  <select class="form-select" [(ngModel)]="newRequest.requestStatusId" name="requestStatusId" required>
+  <option [value]="1">Pending</option>
+  <option [value]="2">Done</option>
+  <option [value]="3">Approved</option>
+  <option [value]="4">Rejected</option>
+  </select>
+  </div>
+  </div>
+   
+      <div class="mb-3">
+  <label>Customer Notes</label>
+  <textarea class="form-control" rows="2" [(ngModel)]="newRequest.customerNote" name="customerNote"></textarea>
+  </div>
+   
+      <div class="mb-3">
+  <label>Admin Notes</label>
+  <textarea class="form-control" rows="2" [(ngModel)]="newRequest.adminNote" name="adminNote"></textarea>
+  </div>
+   
+      <div class="form-check mb-3">
+  <input class="form-check-input" type="checkbox" [(ngModel)]="newRequest.createdByAdmin" name="createdByAdmin" id="createdByAdmin">
+  <label class="form-check-label" for="createdByAdmin">
+          Created by Admin
+  </label>
+  </div>
+  </form>
+  </div>

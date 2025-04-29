@@ -9,34 +9,34 @@ import {
   FooterLinksSettings,
   AllSettings
 } from '../modals/settings';
+import { ApiEndpoints } from '../constants/api-endpoints';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SettingsService {
-  private baseUrl = 'https://10.0.102.118:44384/api';
 
   constructor(private http: HttpClient) {}
 
   // Individual GET methods
   getAuctionSettings(): Observable<AuctionSettings> {
-    return this.http.get<AuctionSettings>(`${this.baseUrl}/AuctionSettings`);
+    return this.http.get<AuctionSettings>(`${ApiEndpoints.AUCTIONSETTINGS}/AuctionSettings`);
   }
 
   getFinanceSettings(): Observable<FinanceSettings> {
-    return this.http.get<FinanceSettings>(`${this.baseUrl}/FinanceSettings/GetAll`);
+    return this.http.get<FinanceSettings>(`${ApiEndpoints.FINANCESETTINGS}/FinanceSettings/GetAll`);
   }
 
   getDirectSaleSettings(): Observable<DirectSaleSettings> {
-    return this.http.get<DirectSaleSettings>(`${this.baseUrl}/DirectSaleSettings`);
+    return this.http.get<DirectSaleSettings>(`${ApiEndpoints.DIRECTSALESETTINGS}/DirectSaleSettings`);
   }
 
   getStaticPagesSettings(): Observable<StaticPagesSettings> {
-    return this.http.get<StaticPagesSettings>(`${this.baseUrl}/StaticPagesSettings`);
+    return this.http.get<StaticPagesSettings>(`${ApiEndpoints.STATICPAGESETTINGS}/StaticPagesSettings`);
   }
 
   getFooterLinksSettings(): Observable<FooterLinksSettings> {
-    return this.http.get<FooterLinksSettings>(`${this.baseUrl}/FooterLinksSettings/Get`);
+    return this.http.get<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}/FooterLinksSettings/Get`);
   }
 
   // Combined GET method
@@ -52,22 +52,22 @@ export class SettingsService {
 
   // Individual UPDATE methods
   updateAuctionSettings(settings: AuctionSettings): Observable<any> {
-    return this.http.put(`${this.baseUrl}/AuctionSettings`, settings);
+    return this.http.put(`${ApiEndpoints.AUCTIONSETTINGS}/AuctionSettings`, settings);
   }
 
   updateFinanceSettings(settings: FinanceSettings): Observable<any> {
-    return this.http.put(`${this.baseUrl}/FinanceSettings`, settings);
+    return this.http.put(`${ApiEndpoints.FINANCESETTINGS}/FinanceSettings`, settings);
   }
 
   updateDirectSaleSettings(settings: DirectSaleSettings): Observable<any> {
-    return this.http.put(`${this.baseUrl}/DirectSaleSettings`, settings);
+    return this.http.put(`${ApiEndpoints.DIRECTSALESETTINGS}/DirectSaleSettings`, settings);
   }
 
   updateStaticPagesSettings(settings: StaticPagesSettings): Observable<any> {
-    return this.http.put(`${this.baseUrl}/StaticPagesSettings`, settings);
+    return this.http.put(`${ApiEndpoints.STATICPAGESETTINGS}/StaticPagesSettings`, settings);
   }
 
   updateFooterLinksSettings(settings: FooterLinksSettings): Observable<any> {
-    return this.http.put(`${this.baseUrl}/FooterLinksSettings`, settings);
+    return this.http.put(`${ApiEndpoints.FOOTERLINKSETTINGS}/FooterLinksSettings`, settings);
   }
 }

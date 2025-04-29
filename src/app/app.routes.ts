@@ -11,6 +11,11 @@ import { AddAssetComponent } from './component/add-asset/add-asset.component';
 import { LandingPageComponent } from './component/landing-page/landing-page.component';
 import { StartPageComponent } from './component/start-page/start-page.component';
 import { RegUserLandingPageComponent } from './component/pages/reg-user-landing-page.component';
+import { ManageRequestsComponent } from './component/manage-requests/manage-requests.component';
+import { UpdateUserComponent } from './component/update-user/update-user.component';
+import { DetailsUserComponent } from './component/details-user/details-user.component';
+import { AddRequestsComponent } from './component/add-requests/add-requests.component';
+import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
 
 
 export const routes: Routes = [
@@ -19,12 +24,18 @@ export const routes: Routes = [
     {path:'assets', component:ManageAssetComponent},
     { path: 'landing-page', component: LandingPageComponent },
     {path:'auctions', component:ManageAuctionComponent},
-    { path: 'users', component: AddUserComponent },
+    { path: 'users', component: ManageUserComponent },
     {path:'login', component:LoginComponent},
     {path:'settings', component:SettingsComponent},
     {path:'newUser', component:AddUserComponent},
     {path:'newAuction', component:AddAuctionComponent},
     {path:'newAsset', component:AddAssetComponent},
     { path: 'reguserlandingpage', component: RegUserLandingPageComponent },
+    { path: 'requests', component: ManageRequestsComponent },
+    {path:'updateUser', component:UpdateUserComponent},
+    {path:'detailsUser', component:DetailsUserComponent},
+    { path: 'requests/new', component: AddRequestsComponent },
+    { path: 'request-detail/:id', component: EditRequestsComponent },
+
 
 ];

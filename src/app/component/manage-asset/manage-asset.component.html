@@ -1,6 +1,90 @@
-<div class="container-fluid">
-
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-    </main>
-    <p>manage-asset works!</p>
-</div>
+<div class="container">
+    <div class="header">
+      <div class="breadcrumb">Home &gt; Assets</div>
+      <div class="actions">
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          (ngModelChange)="onSearchChange()"
+          placeholder="Search by title or ID..."
+          class="search-input"
+        />
+        <button class="btn filter">Filters</button>
+        <button class="btn export">Export</button>
+        <button class="btn import">Import</button>
+        <button class="btn new-asset">+ New Asset</button>
+      </div>
+    </div>
+  
+    <table class="asset-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>#Asset Number</th>
+          <th>Starting Price</th>
+          <th>Category</th>
+          <th>Auction Status</th>
+          <th>Asset Status</th>
+          <th>End Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let asset of assets">
+          <td class="image-title">
+            <img
+              [src]="asset.galleries?.[0]?.fileUrl || 'https://via.placeholder.com/150'"
+              alt="Asset Image"
+              class="thumbnail"
+            />
+          </td>
+          <td>{{ asset.title }}</td>
+          <td>#{{ asset.assetId }}</td>
+          <td>BHD {{ asset.startingPrice | number }}</td>
+          <td>{{ asset.categoryName }}</td>
+          <td>{{ getAuctionStatus(asset.assetId) }}</td>
+          <td>{{ asset.statusName }}</td>
+          <td>{{ asset.registrationDeadline }}d</td>
+          <td class="action-icons">
+            <button title="View" (click)="viewAsset(asset.assetId)">👁️</button>
+            <button title="Edit" (click)="editAsset(asset)">✏️</button>
+            <button title="Delete" (click)="deleteAsset(asset)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!-- Asset Details Section -->
+    <div *ngIf="selectedAsset" class="asset-details">
+      <h2>Asset Details</h2>
+      <div class="asset-info">
+        <div><strong>Title:</strong> {{ selectedAsset?.title || 'Not Available' }}</div>
+        <div><strong>Category:</strong> {{ selectedAsset?.categoryName || 'Not Available' }}</div>
+        <div><strong>Starting Price:</strong> BHD {{ selectedAsset?.startingPrice | number }}</div>
+        <div><strong>Status:</strong> {{ selectedAsset?.statusName || 'Not Available' }}</div>
+        <div><strong>Auction Status:</strong> {{ getAuctionStatus(selectedAsset?.assetId!) }}</div>
+        <div><strong>Registration Deadline:</strong> {{ selectedAsset?.registrationDeadline || 0 }}d</div>
+        <div><strong>Description:</strong> {{ selectedAsset?.description || 'No description provided.' }}</div>
+      </div>
+  
+      <div *ngIf="selectedAsset?.galleries?.length">
+        <h3>Asset Galleries</h3>
+        <div class="gallery">
+          <div *ngFor="let gallery of selectedAsset.galleries" class="gallery-item">
+            <img [src]="gallery?.fileUrl || 'https://via.placeholder.com/100'" alt="Gallery Image" class="gallery-image" />
+          </div>
+        </div>
+      </div>
+  
+      <div *ngIf="selectedAsset?.documents?.length">
+        <h3>Asset Documents</h3>
+        <ul>
+          <li *ngFor="let document of selectedAsset.documents">
+            <a [href]="document?.filePath" target="_blank">{{ document?.documentType || 'Document' }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  

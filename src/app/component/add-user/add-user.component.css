@@ -1,0 +1,105 @@
+/* ===================== Form Grid Layout ===================== */
+.form-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Default 3 columns */
+  gap: 1rem 2rem; /* Gap between rows and columns */
+  margin-top: 20px;
+}
+
+/* ===================== Responsive Breakpoints ===================== */
+@media (max-width: 1200px) {
+  .form-grid-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens (laptops) */
+  }
+}
+
+@media (max-width: 768px) {
+  .form-grid-container {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
+}
+
+/* ===================== Form Group Styles ===================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem; /* Space between form groups */
+}
+
+/* ===================== Full Width Form Group ===================== */
+.full-width {
+  grid-column: 1 / -1; /* Spans across all columns */
+}
+
+/* ===================== Button Styles ===================== */
+.btn-primary {
+  background-color: #6a1b9a; /* Purple */
+  border-color: #6a1b9a; /* Purple */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #5a148a; /* Dark purple */
+  border-color: #5a148a; /* Dark purple */
+  transform: translateY(-2px); /* Slight hover effect */
+}
+
+/* ===================== Button Group for Radio Buttons ===================== */
+.btn-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 1rem; /* Space between radio buttons */
+}
+
+/* ===================== Radio Button Styles ===================== */
+.btn-outline-primary {
+  background-color: transparent;
+  color: #6a1b9a; /* Purple */
+  border: 2px solid #6a1b9a; /* Purple */
+  font-weight: 500;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:active {
+  background-color: #6a1b9a; /* Purple */
+  color: white;
+  border-color: #6a1b9a; /* Purple */
+}
+
+/* Checked radio button style */
+.btn-check:checked + .btn-outline-primary {
+  background-color: #6a1b9a; /* Purple */
+  color: white;
+  border-color: #6a1b9a; /* Purple */
+}
+
+/* ===================== Form Control Styles ===================== */
+.form-control {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #7b1fa2; /* Purple */
+  box-shadow: 0 0 0 0.2rem rgba(123, 31, 162, 0.2);
+  outline: none;
+}
+
+/* ===================== Optional Adjustments ===================== */
+.mobile-group .mobile-inputs {
+  display: flex;
+  gap: 0.5rem;
+}
+  

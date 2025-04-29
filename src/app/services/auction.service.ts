@@ -1,32 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface Auction {
-  auctionId: number;
-  auctionNumber: string;
-  title: string;
-  type: string;
-  startDateTime: string;
-  endDateTime: string;
-  statusId: number;
-  incrementalTime: number;
-  categoryId: number;
-}
+import { Auction } from '../modals/auctions';
+import { ApiEndpoints } from '../constants/api-endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuctionService {
-  private apiUrl = 'https://localhost:7159/api/Auction'; 
+  private apiUrl = 'http://10.0.103.6:8081/api/Auction'; 
 
   constructor(private http: HttpClient) {}
 
   getAllAuctions(): Observable<Auction[]> {
-    return this.http.get<Auction[]>(this.apiUrl);
+    return this.http.get<Auction[]>(`${ApiEndpoints.AUCTION}`);
   }
   deleteAuction(id: number) {
-    return this.http.delete(`this.apiUrl/${id}`);
+    return this.http.delete(`${ApiEndpoints.AUCTION}/${id}`);
   }
   
 }

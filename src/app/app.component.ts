@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
     HeaderComponent,
     FooterComponent,
     SidebarComponent,
+    
     NgIf
   ],
   templateUrl: './app.component.html',

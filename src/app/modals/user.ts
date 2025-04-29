@@ -1,5 +1,3 @@
-// user.model.ts
- 
 export interface Role {
     roleId: number;
     roleName: string;
@@ -35,3 +33,21 @@ export interface Role {
     personalIdImage: File | null;
   }
  
+  export interface UserView {
+    userId: number
+    uid: number
+    name: string
+    email: string
+    mobileNumber: string
+    companyName: string
+    companyNumber: string
+    statusId: number
+    chatEnabled: boolean
+    roleId: number
+    personalIdNumber: string
+    gender: string
+    personalIdExpiryDate: string
+    countryId: number
+    profileImageUrl: any
+    personalIdImageUrl: any
+  }
