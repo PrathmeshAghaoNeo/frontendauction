@@ -80,7 +80,6 @@ export class AddAuctionComponent implements OnInit {
         });
     } else {
       this.auctionForm.markAllAsTouched();
-      alert('Please fill out all required fields.');
     }
   }
 }
