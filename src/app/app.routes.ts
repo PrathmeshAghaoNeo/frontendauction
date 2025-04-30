@@ -34,8 +34,8 @@ export const routes: Routes = [
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
-    { path: 'requests/new', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    { path: 'requests/new', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
-    // { path: '**', redirectTo: '/login' }
+    { path: '**', redirectTo: '/login' }
 
 ];
