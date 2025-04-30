@@ -141,10 +141,16 @@ export class UpdateUserComponent implements OnInit {
           this.router.navigate(['/users']);
         });
       },
-      error: (err) => {
-        console.error('Update failed', err);
-        alert('There was an error updating the user. Please try again.');
-      }
-    });
-  }
+     error: (error) => {
+               console.error('Error adding user:', error);
+               const fullMessage = error.error || 'Unknown error occurred.';
+               const extractedMessage = fullMessage.split('\r\n')[0];
+               Swal.fire({
+                 icon: 'error',
+                 title: 'Add Failed',
+                 text: `Something went wrong while adding the user.${extractedMessage}`
+               });
+           } 
+         });
+        }
 }

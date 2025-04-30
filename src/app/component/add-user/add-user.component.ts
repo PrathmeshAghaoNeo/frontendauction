@@ -5,6 +5,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { FutureDateValidatorDirective } from '../manage-user/future-date-validator.directive';
 import { Router,  } from '@angular/router';
 import { Country, Role, Status, User } from '../../modals/user';
+import Swal from 'sweetalert2';
 
 
 
@@ -106,14 +107,27 @@ import { Country, Role, Status, User } from '../../modals/user';
         console.log(key + ': ' + (value instanceof File ? value.name : value));
       });
       this.userService.addUser(formData).subscribe({
-        next: (response) =>{
-          console.log('User added successfully!', response);
-          this.router.navigate(['/users']);
-          
+        next:  (response) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'User Added',
+            text: 'User has been added successfully!'
+          }).then(() => {
+            this.router.navigate(['/users']);
+          });
         },
-        error: (error) => console.error('Error adding user:', error)
-      });
-    }
+        error: (error) => {
+          console.error('Error adding user:', error);
+          const fullMessage = error.error || 'Unknown error occurred.';
+          const extractedMessage = fullMessage.split('\r\n')[0];
+          Swal.fire({
+            icon: 'error',
+            title: 'Add Failed',
+            text: `Something went wrong while adding the user.${extractedMessage}`
+          });
+      } 
+    });
+  }
     getCountryName(countryId: number): string {
       const country = this.countries.find(c => c.countryId === countryId);
       return country ? country.countryName : '';

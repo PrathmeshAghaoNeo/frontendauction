@@ -85,10 +85,10 @@
       <div class="form-group">
         <label class="form-label fw-bold">Status<span class="text-danger">*</span></label>
         <select class="form-select form-select-lg" [(ngModel)]="user.statusId" name="statusId" required #statusId="ngModel">
-          <option value=0 disabled selected>Select a Status</option>
+          <option value=0 disabled >Select a Status</option>
           <option *ngFor="let status of statuses" [value]="status.statusId">{{ status.statusName }}</option>
         </select>
-        <div *ngIf="statusId.invalid && (statusId.dirty || statusId.touched)" class="text-danger">
+        <div *ngIf="(statusId.dirty || statusId.touched) && statusId.value==0" class="text-danger">
           Status is required.
         </div>
       </div>
@@ -98,10 +98,10 @@
       <div class="form-group">
         <label class="form-label fw-bold">Role<span class="text-danger">*</span></label>
         <select class="form-select form-select-lg" [(ngModel)]="user.roleId" name="roleId" required #roleId="ngModel">
-          <option value=0 disabled selected>Select a Role</option>
+          <option value=0 disabled >Select a Role</option>
           <option *ngFor="let role of roles" [value]="role.roleId">{{ role.roleName }}</option>
         </select>
-        <div *ngIf="roleId.invalid && (roleId.dirty || roleId.touched)" class="text-danger">
+        <div *ngIf="(roleId.dirty || roleId.touched) && user.roleId == 0" class="text-danger">
           Role is required.
         </div>
       </div>
@@ -150,6 +150,10 @@
           [ngClass]="{'is-invalid': personalIdExpiryDate.invalid && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)}"
           class="form-control form-control-lg"
         />
+        <div *ngIf=" personalIdExpiryDate.invalid && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)" class="text-danger"></div>
+        <div *ngIf="personalIdExpiryDate.errors?.['required']" class="invalid-feedback">
+          Personal ID Expiry Date is required.
+        </div>
         <div *ngIf="personalIdExpiryDate.errors?.['dateInvalid']" class="invalid-feedback">
           Personal ID Expiry Date must be a future date.
         </div>
