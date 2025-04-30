@@ -51,7 +51,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let r of filteredRequests">
+        <tr *ngFor="let r of filteredRequests | paginate: { id: 'r', itemsPerPage: itemsPerPage, currentPage: page }">
           <td>#{{ r.requestNumber }}</td>
           <td>#{{ r.userId }}</td>
           <td>{{ r.username }}</td>
@@ -76,5 +76,6 @@
         </tr>
       </tbody>
     </table>
+    <pagination-controls id="r" (pageChange)="page = $event"></pagination-controls>
   </div> 
   

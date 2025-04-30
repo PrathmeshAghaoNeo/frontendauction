@@ -6,12 +6,7 @@
 
     <div class="d-flex align-items-center" *ngIf="!onLoginPage()">
       <div class="dropdown me-2" ngbDropdown *ngIf="isLoggedIn">
-        <button class="btn btn-outline-dark rounded-pill" type="button" routerLink="/reguserlandingpage" routerLinkActive="active">
-          Reg User Landing-Page
-        </button>
-        <button class="btn btn-outline-dark rounded-pill" type="button" routerLink="/landing-page" routerLinkActive="active">
-          Landing-Page
-        </button>
+        
 
         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="addDropdown" ngbDropdownMenu>
           <button class="dropdown-item btn-outline-secondary" type="button" routerLink="/newUser" routerLinkActive="active">New User</button>

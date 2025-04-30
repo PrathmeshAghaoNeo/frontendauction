@@ -10,11 +10,11 @@ import { RequestServices } from '../../services/requests.service';
 @Component({
   selector: 'app-add-request',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
-  templateUrl:'./add-requests.component.html',
+  templateUrl: './add-requests.component.html',
   styleUrls: ['./add-requests.component.css'],
+  imports: [CommonModule, RouterModule, FormsModule]
 })
-export class NewRequestComponent implements OnInit {
+export class AddRequestComponent implements OnInit {
  
   newRequest: AddRequest = {} as AddRequest;
  
@@ -69,7 +69,7 @@ export class NewRequestComponent implements OnInit {
     // Email Format Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = this.newRequest.email != null && emailRegex.test(this.newRequest.email.trim());
-    if (!isEmailValid) {
+    if (this.newRequest.email && this.newRequest.email.length > 20)  {
       alert('Email is invalid. Please enter a valid email address.');
       return;
     }
@@ -144,4 +144,3 @@ isMobileNumberValid(): boolean {
  
  
 }
- 

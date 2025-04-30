@@ -53,63 +53,32 @@
 
 <!-- View Auction Modal -->
 <ng-template #viewAuctionModal let-modal>
-  <div class="modal-header bg-primary text-white">
-    <h4 class="modal-title  ">Auction Details</h4>
+  <div class="modal-header bg-info text-white">
+    <h5 class="modal-title">Auction Details</h5>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
-
-  <div class="modal-body fs-5">
-    <div class="container">
-      <div class="row mb-3">
-        <div class="col-md-6 mb-2">
-          <strong>Title:</strong>
-          <div class="text-muted">{{ selectedAuction?.title }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Type:</strong>
-          <div class="text-muted">{{ selectedAuction?.type }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Status:</strong>
-          <div>
-            <span class="badge bg-success">{{ selectedAuction?.statusName }}</span>
-          </div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Category:</strong>
-          <div class="text-muted">{{ selectedAuction?.categoryName }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Start:</strong>
-          <div class="text-muted">{{ selectedAuction?.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>End:</strong>
-          <div class="text-muted">{{ selectedAuction?.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Incremental Time:</strong>
-          <div class="text-muted">{{ selectedAuction?.incrementalTime }} mins</div>
-        </div>
-      </div>
+  <div class="modal-body">
+    <div class="row mb-2">
+      <div class="col-md-6"><strong>Title:</strong> {{ selectedAuction?.title }}</div>
+      <div class="col-md-6"><strong>Type:</strong> {{ selectedAuction?.type }}</div>
+      <div class="col-md-6"><strong>Status:</strong> {{ selectedAuction?.statusName }}</div>
+      <div class="col-md-6"><strong>Category:</strong> {{ selectedAuction?.categoryName }}</div>
+      <div class="col-md-6"><strong>Start:</strong> {{ selectedAuction?.startDateTime | date:'dd/MM/yyyy HH:mm' }}</div>
+      <div class="col-md-6"><strong>End:</strong> {{ selectedAuction?.endDateTime | date:'dd/MM/yyyy HH:mm' }}</div>
+      <div class="col-md-6"><strong>Incremental Time:</strong> {{ selectedAuction?.incrementalTime }} mins</div>
     </div>
-  </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Close</button>
   </div>
 </ng-template>
 
 
-
-<!-- Edit Auction Modal -->
 <ng-template #editAuctionModal let-modal>
   <div class="modal-header bg-warning text-dark">
     <h5 class="modal-title">Edit Auction</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
-  <form [formGroup]="editForm" (ngSubmit)="submitEdit()">
-
+  
+  <!-- Add formGroup binding here -->
+  <form [formGroup]="auctionForm" (ngSubmit)="submitEdit()">
     <div class="modal-body">
       <div class="row g-3">
         <div class="col-md-6">
@@ -122,11 +91,11 @@
         </div>
         <div class="col-md-6">
           <label class="form-label">Status</label>
-          <input formControlName="statusName" type="text" class="form-control" />
+          <input formControlName="statusId" type="text" class="form-control" />
         </div>
         <div class="col-md-6">
           <label class="form-label">Category</label>
-          <input formControlName="categoryName" type="text" class="form-control" />
+          <input formControlName="categoryId" type="text" class="form-control" />
         </div>
         <div class="col-md-6">
           <label class="form-label">Start Date/Time</label>
@@ -142,8 +111,10 @@
         </div>
       </div>
     </div>
+    
     <div class="modal-footer">
-      <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Update</button>
+      <!-- Disable button if form is invalid -->
+      <button type="submit" class="btn btn-primary" [disabled]="auctionForm.invalid">Update</button>
       <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
     </div>
   </form>

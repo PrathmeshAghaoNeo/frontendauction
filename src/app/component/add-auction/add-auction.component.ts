@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-auction',
@@ -41,7 +42,7 @@ export class AddAuctionComponent implements OnInit {
     this.currentDateTime = this.formatDate(new Date());
     this.auctionForm = this.fb.group({
       auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]], 
-      title: ['', [Validators.required, Validators.maxLength(10)]], 
+      title: ['', [Validators.required, Validators.maxLength(20)]], 
       type: ['', Validators.required],
       startDateTime: ['', [Validators.required, this.futureDateValidator]],
       endDateTime: ['', [Validators.required, this.futureDateValidator]],
@@ -88,7 +89,7 @@ export class AddAuctionComponent implements OnInit {
   onSubmit() {
     if (this.auctionForm.valid) {
       const formValue = this.auctionForm.value;
-
+  
       const payload = {
         auctionNumber: formValue.auctionNumber,
         title: formValue.title,
@@ -99,20 +100,38 @@ export class AddAuctionComponent implements OnInit {
         incrementalTime: +formValue.incrementalTime,
         categoryId: +formValue.categoryId
       };
-
+  
       this.http.post(`${ApiEndpoints.AUCTION}`, payload).subscribe({
         next: () => {
-          alert('Auction created successfully');
-          this.auctionForm.reset();
-          this.router.navigate(['/auctions']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Auction created successfully',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            this.auctionForm.reset();
+            this.router.navigate(['/auctions']);
+          });
         },
         error: (err) => {
           console.error(err);
-          alert('Something went wrong');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Something went wrong. Please try again.',
+            confirmButtonText: 'OK'
+          });
         }
       });
     } else {
-      this.auctionForm.markAllAsTouched();
+      this.auctionForm.markAllAsTouched(); 
+      Swal.fire({
+        icon: 'warning',
+        title: 'Incomplete Form',
+        text: 'Please fill all required fields correctly before submitting.',
+        confirmButtonText: 'OK'
+      });
     }
   }
+  
 }

@@ -4,11 +4,12 @@ import { Route, Router, RouterModule } from '@angular/router';
 import { ManageRequest } from '../../modals/manage-requests';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-manage-requests',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterModule ],
+  imports: [CommonModule, FormsModule,RouterModule ,NgxPaginationModule],
   templateUrl: './manage-requests.component.html',
   styleUrl: './manage-requests.component.css'
 })
@@ -17,6 +18,8 @@ export class ManageRequestsComponent implements OnInit {
   searchTerm = '';
   filterType = 0;
   filterStatus = 0;
+  page: number = 1;
+  itemsPerPage: number = 5;
 
   constructor(
     private requestService: RequestServices,

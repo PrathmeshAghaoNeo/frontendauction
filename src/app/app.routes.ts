@@ -16,6 +16,7 @@ import { DetailsUserComponent } from './component/details-user/details-user.comp
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
 import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
+import { AddRequestComponent } from './component/add-requests/add-requests.component';
 
 
 export const routes: Routes = [
@@ -34,8 +35,12 @@ export const routes: Routes = [
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
-    { path: 'requests/new', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
-    // { path: '**', redirectTo: '/login' }
+    {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+    { path: '**', redirectTo: '/login' }
 
 ];

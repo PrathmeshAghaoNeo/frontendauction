@@ -21,7 +21,10 @@ export class ManageAuctionComponent implements OnInit {
   selectedAuction: Auction | null = null;
   page: number = 1;
   itemsPerPage: number = 5;
-  editForm!: FormGroup;
+  auctionForm!: FormGroup;
+  statuses = []; // Example list of statuses, replace with actual data
+  categories = []; // Example list of categories, replace with actual data
+  currentDateTime: string = new Date().toISOString().slice(0, 16); // Current date-time for "datetime-local"
 
   @ViewChild('viewAuctionModal') viewAuctionModal!: TemplateRef<any>;
   @ViewChild('editAuctionModal') editAuctionModal!: TemplateRef<any>;
@@ -34,22 +37,25 @@ export class ManageAuctionComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchAuctions();
-    this.initializeEditForm(); // Initialize form
+    this.initializeAuctionForm(); // Initialize auction form
   }
 
-  // Initialize the edit form with validators
-  initializeEditForm(): void {
-    this.editForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      type: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      statusName: ['', [Validators.required]],
-      categoryName: ['', [Validators.required]],
+  // Initialize the auction form with validators
+  initializeAuctionForm(): void {
+    this.auctionForm = this.fb.group({
+      auctionNumber: ['', [Validators.required, Validators.pattern('^AUC\\d{5}$')]],
+      title: ['', [Validators.required, Validators.maxLength(10)]],
+      type: ['', [Validators.required]],
+      statusId: ['', [Validators.required]], // statusId instead of statusName
+      categoryId: ['', [Validators.required]], // categoryId instead of categoryName
       startDateTime: ['', [Validators.required]],
       endDateTime: ['', [Validators.required]],
       incrementalTime: ['', [Validators.required, Validators.min(1)]],
     });
   }
+  
 
+  // Fetch auctions (replace with actual implementation)
   fetchAuctions(): void {
     this.auctionService.getAllAuctions().subscribe({
       next: (data) => {
@@ -62,35 +68,38 @@ export class ManageAuctionComponent implements OnInit {
     });
   }
 
+  // Open View Auction Modal
   openViewModal(auction: Auction): void {
     this.selectedAuction = auction;
     this.modalService.open(this.viewAuctionModal, { centered: true, size: 'xl', backdrop: 'static' });
   }
 
+  // Open Edit Auction Modal
   openEditModal(auction: Auction): void {
     this.selectedAuction = auction;
-    // Patch form values with auction data
-    this.editForm.patchValue({
+    this.auctionForm.patchValue({
+      auctionNumber: auction.auctionNumber,
       title: auction.title,
       type: auction.type,
-      statusName: auction.statusName,
-      categoryName: auction.categoryName,
+      statusId: auction.statusId,
+      categoryId: auction.categoryId,
       startDateTime: auction.startDateTime,
       endDateTime: auction.endDateTime,
       incrementalTime: auction.incrementalTime,
     });
-    
+
     this.modalService.open(this.editAuctionModal, { centered: true, size: 'lg' });
   }
 
+  // Submit the edited auction data
   submitEdit(): void {
-    if (this.editForm.invalid || !this.selectedAuction) return;
-
+    if (this.auctionForm.invalid || !this.selectedAuction) return;
+  
     const updatedAuction: Auction = {
       ...this.selectedAuction,
-      ...this.editForm.value,
+      ...this.auctionForm.value,
     };
-
+  
     this.auctionService.updateAuction(updatedAuction.auctionId, updatedAuction).subscribe({
       next: () => {
         Swal.fire('Success', 'Auction updated successfully!', 'success');
@@ -102,7 +111,9 @@ export class ManageAuctionComponent implements OnInit {
       }
     });
   }
+  
 
+  // Open Delete Auction Modal
   openDeleteModal(auction: Auction): void {
     this.selectedAuction = auction;
 
@@ -121,6 +132,7 @@ export class ManageAuctionComponent implements OnInit {
     });
   }
 
+  // Confirm deletion of auction
   deleteAuctionConfirmed(): void {
     if (!this.selectedAuction) return;
 

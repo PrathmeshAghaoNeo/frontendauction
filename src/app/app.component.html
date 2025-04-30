@@ -5,6 +5,7 @@
     <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
 
     <main class="app-content">
+      <app-back-button *ngIf="showBackButton"></app-back-button>
       <router-outlet></router-outlet>
     </main>
   </div>

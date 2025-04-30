@@ -1,24 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { EditRequests } from '../../modals/edit.requests';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RequestServices } from '../../services/requests.service';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-
+import { EditRequests } from '../../modals/edit.requests';
+import { RequestServices } from '../../services/requests.service';
+ 
 @Component({
-  selector: 'app-edit-requests',
+  selector: 'app-request-detail',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './edit-requests.component.html',
-  styleUrl: './edit-requests.component.css'
 })
 export class EditRequestsComponent implements OnInit {
-    requestId!: number;
-    requestData: EditRequests = {} as EditRequests;
-    isViewMode: boolean = false; // Flag to toggle between view and edit mode
-    mode: string = 'view';
-   
+  requestId!: number;
+  requestData: EditRequests = {} as EditRequests;
+  isViewMode: boolean = false; 
+  mode: string = 'view';
+ 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -69,7 +68,7 @@ export class EditRequestsComponent implements OnInit {
   }
  
   goBack(): void {
-    this.location.back(); // This takes the user back to the previous page
+    this.location.back(); 
   }
  
   // 🔥 Paste here below 👇
@@ -100,5 +99,6 @@ allowOnlyNumbers(event: KeyboardEvent) {
     event.preventDefault();
   }
 }
+ 
 }
  

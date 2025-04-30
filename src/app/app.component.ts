@@ -7,6 +7,7 @@ import { FooterComponent } from "./component/footer/footer.component";
 import { SidebarComponent } from "./component/sidebar/sidebar.component";
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
+import { BackButtonComponent } from './component/back-button/back-button.component';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,8 @@ import { AuthService } from './services/auth.service';
     HeaderComponent,
     FooterComponent,
     SidebarComponent,
-    NgIf
+    NgIf,
+    BackButtonComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -57,5 +59,8 @@ export class AppComponent {
 
   get showHeaderAndFooter(): boolean {
     return !this.isStartPage;
+  }
+  get showBackButton(): boolean {
+    return !this.isCurrentRoute(['/login', '/start-page','/landing-page', '/reguserlandingpage','/']);
   }
 }
