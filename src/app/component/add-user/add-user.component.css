@@ -105,3 +105,8 @@
 .default-placeholder {
   color: #6c757d; /* Light text color */
 }
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  left: 100rem;
+  z-index: 2;
+}
