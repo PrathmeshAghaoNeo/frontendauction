@@ -28,11 +28,7 @@ export class AppComponent {
   
   
   ngOnInit(): void {
-    this.authService.role$.subscribe(role => {
-      if (!role) {
-        this.router.navigate(['/login']);
-      }
-    });
+   
   }
 
   constructor(private router: Router,private authService: AuthService) {

@@ -20,7 +20,6 @@ export class HeaderComponent {
     this.authService.role$.subscribe(role => {
       this.isLoggedIn = !!role;
     });
-
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {

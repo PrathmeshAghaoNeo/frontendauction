@@ -1,5 +1,5 @@
 input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute;
-    left: 100rem;
+    right: 5rem;
     z-index: 2;
   }

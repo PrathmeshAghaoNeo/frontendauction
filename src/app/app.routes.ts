@@ -19,7 +19,7 @@ import { ManageAssetComponent } from './component/manage-asset/manage-asset.comp
 
 
 export const routes: Routes = [
-    { path: '', component: StartPageComponent },
+    { path: '', component: StartPageComponent,pathMatch: 'full', canActivate: [RoleGuard]},
     {path:'login', component:LoginComponent},
     { path: 'landing-page', component: LandingPageComponent, },
     { path: 'reguserlandingpage', component: RegUserLandingPageComponent, canActivate: [RoleGuard], data: { role: 'user' }},

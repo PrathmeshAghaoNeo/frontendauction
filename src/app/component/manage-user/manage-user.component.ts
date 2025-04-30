@@ -113,15 +113,19 @@ export class ManageUserComponent implements OnInit {
   }
 
   get filteredUsers(): UserView[] {
+    // Convert filterRole and filterStatus to numbers to ensure accurate comparison
+    const roleFilter = this.filterRole ? Number(this.filterRole) : 0;
+    const statusFilter = this.filterStatus ? Number(this.filterStatus) : 0;
+  
     return this.users.filter(user => {
       const matchesSearch = this.searchTerm.trim().length === 0 ||
         user.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         user.mobileNumber.toLowerCase().includes(this.searchTerm.toLowerCase());
-
-      const matchesRole = this.filterRole === 0 || user.roleId === this.filterRole;
-      const matchesStatus = this.filterStatus === 0 || user.statusId === this.filterStatus;
-
+  
+      const matchesRole = roleFilter === 0 || user.roleId === roleFilter;
+      const matchesStatus = statusFilter === 0 || user.statusId === statusFilter;
+  
       return matchesSearch && matchesRole && matchesStatus;
     });
   }
