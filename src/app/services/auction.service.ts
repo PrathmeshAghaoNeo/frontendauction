@@ -15,6 +15,10 @@ export class AuctionService {
   getAllAuctions(): Observable<Auction[]> {
     return this.http.get<Auction[]>(`${ApiEndpoints.AUCTION}`);
   }
+  updateAuction(id: number, auctionData: any): Observable<any> {
+    return this.http.put((`${ApiEndpoints.AUCTION}/${id}`), auctionData);
+  }
+  
   deleteAuction(id: number) {
     return this.http.delete(`${ApiEndpoints.AUCTION}/${id}`);
   }

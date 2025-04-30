@@ -1,0 +1,21 @@
+.swal2-popup.custom-purple-popup {
+    border: 2px solid #ce93d8;
+    border-radius: 18px;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+    max-height: 95vh;
+    overflow-y: auto;
+    animation: slideIn 0.4s ease-out;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

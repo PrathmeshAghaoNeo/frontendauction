@@ -1,95 +1,91 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ManageassetService } from '../../services/asset.service';
+import { ManageAssetService } from '../../services/asset.service';
 import { Asset } from '../../modals/manage-asset';
-
+ 
 @Component({
   selector: 'app-manage-asset',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './manage-asset.component.html',
   styleUrls: ['./manage-asset.component.css']
 })
 export class ManageAssetComponent implements OnInit {
-
+ 
+ 
   assets: Asset[] = [];
   originalAssets: Asset[] = [];
   searchText: string = '';
   selectedAsset: Asset | null = null;
-
-  constructor(private assetService: ManageassetService) {}
-
+ 
+  constructor(private assetService: ManageAssetService) {}
+ 
   ngOnInit(): void {
     this.loadAssets();
   }
-
-  // Load all assets
+ 
   loadAssets(): void {
-    this.assetService.getAssets().subscribe({
-      next: (data: Asset[]) => {
-        this.assets = data || [];
-        this.originalAssets = [...this.assets];
-      },
-      error: (err) => {
-        console.error('Error loading assets:', err);
-      }
+    this.assetService.getAssets().subscribe((data) => {
+      this.assets = data;
+      this.originalAssets = [...data];  // Keep a copy of the original assets
     });
   }
-
-  // Filter assets by search input
+ 
+  // Handle search input changes
   onSearchChange(): void {
-    const keyword = this.searchText.trim().toLowerCase();
-
-    if (!keyword) {
+    console.log('Searching for:', this.searchText);
+   
+    // If search text is empty, reset assets to original list
+    if (!this.searchText.trim()) {
       this.assets = [...this.originalAssets];
       return;
     }
-
+   
+    // Otherwise, filter assets locally based on title
     this.assets = this.originalAssets.filter(asset =>
-      asset.title.toLowerCase().includes(keyword) ||
-      asset.assetId.toString().includes(keyword)
+      asset.title.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
-
-  // Return auction status string from statusId
+ 
+  // Get auction status name based on status ID
   getAuctionStatus(statusId: number): string {
-    const statusMap: Record<number, string> = {
-      1: 'Drafted',
-      2: 'Published',
-      3: 'Ongoing',
-      4: 'Closed',
-      5: 'Archived'
-    };
-    return statusMap[statusId] || 'Unknown';
+    switch (statusId) {
+      case 1: return 'Drafted';
+      case 2: return 'Published';
+      case 3: return 'Ongoing';
+      case 4: return 'Closed';
+      case 5: return 'Archived';
+      default: return 'Unknown';
+    }
   }
-
-  // Fetch and display asset details
-  viewAsset(assetId: number): void {
-    this.assetService.getAssetById(assetId).subscribe({
-      next: (data: Asset) => {
+ 
+  // View asset details
+    viewAsset(assetId: number): void {
+    this.assetService.getAssetById(assetId).subscribe(
+      (data) => {
         this.selectedAsset = data;
-        console.log('Selected Asset:', this.selectedAsset);
+        console.log('Selected Asset:', this.selectedAsset);  // Debugging log to see fetched data
       },
-      error: (err) => {
-        console.error('Error fetching asset details:', err);
+      (error) => {
+        console.error('Error fetching asset details:', error);
       }
-    });
+    );
   }
-
-  // Delete asset and refresh list
+ 
+ 
+ 
   deleteAsset(asset: Asset): void {
-    if (!asset.assetId) return;
-
-    this.assetService.deleteAsset(asset.assetId).subscribe({
-      next: () => this.loadAssets(),
-      error: (err) => console.error('Error deleting asset:', err)
+    console.log('Deleting asset', asset);
+    this.assetService.deleteAsset(asset.assetId).subscribe(() => {
+      // Reload assets after delete
+      this.loadAssets();
     });
   }
-
-  // Stub for editing asset
+ 
+  // Edit asset (this is just logging for now)
   editAsset(asset: Asset): void {
     console.log('Editing asset', asset);
-    // Implement edit logic here (e.g., navigate to edit page or open modal)
   }
-}
+  }
+ 

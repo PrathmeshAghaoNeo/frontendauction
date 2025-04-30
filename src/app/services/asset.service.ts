@@ -7,7 +7,7 @@ import { ApiEndpoints } from '../constants/api-endpoints';
 @Injectable({
   providedIn: 'root'
 })
-export class ManageassetService {
+export class ManageAssetService {
   
   constructor(private http: HttpClient) { }
  

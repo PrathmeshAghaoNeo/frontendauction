@@ -2,21 +2,26 @@
   <h3 class="auction-form-title">Add Auction</h3>
   <form [formGroup]="auctionForm" (ngSubmit)="onSubmit()">
     <div class="row">
+
       <div class="col-md-6 mb-3">
         <label for="auctionNumber" class="form-label required-label">Auction Number</label>
-        <input type="text" formControlName="auctionNumber" id="auctionNumber" class="form-control">
+        <input type="text" formControlName="auctionNumber" id="auctionNumber" class="form-control" maxlength="8">
         <div *ngIf="auctionForm.get('auctionNumber')?.touched && auctionForm.get('auctionNumber')?.invalid" class="text-danger">
-          Auction Number is required
+          <div *ngIf="auctionForm.get('auctionNumber')?.errors?.['required']">Auction Number is required</div>
+          <div *ngIf="auctionForm.get('auctionNumber')?.errors?.['pattern']">Auction Number must start with "AUC" followed by 5 digits</div>
         </div>
       </div>
 
+      
       <div class="col-md-6 mb-3">
         <label for="title" class="form-label required-label">Title</label>
-        <input type="text" formControlName="title" id="title" class="form-control">
+        <input type="text" formControlName="title" id="title" class="form-control" maxlength="10">
         <div *ngIf="auctionForm.get('title')?.touched && auctionForm.get('title')?.invalid" class="text-danger">
-          Title is required
+          <div *ngIf="auctionForm.get('title')?.errors?.['required']">Title is required</div>
+          <div *ngIf="auctionForm.get('title')?.errors?.['maxlength']">Title cannot exceed 10 characters</div>
         </div>
       </div>
+      
 
       <div class="col-md-4 mb-3">
         <label for="type" class="form-label required-label">Type</label>
@@ -48,16 +53,9 @@
         <label for="categoryId" class="form-label required-label">Category</label>
         <select formControlName="categoryId" id="categoryId" class="form-select">
           <option value="" disabled selected>Select Category</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Vehicles">Vehicles</option>
-          <option value="Furniture">Furniture</option>
-          <option value="Collectibles">Collectibles</option>
-          <option value="Real Estate">Real Estate</option>
-          <option value="Fashion">Fashion</option>
-          <option value="Industrial Equipment">Industrial Equipment</option>
-          <option value="Books & Media">Books & Media</option>
-          <option value="Sports & Outdoors">Sports & Outdoors</option>
-          <option value="Toys & Games">Toys & Games</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">
+            {{ cat.name }}
+          </option>
         </select>
         <div *ngIf="auctionForm.get('categoryId')?.touched && auctionForm.get('categoryId')?.invalid" class="text-danger">
           Category ID is required
@@ -67,20 +65,21 @@
 
       <div class="col-md-6 mb-3">
         <label for="startDateTime" class="form-label required-label">Start Date & Time</label>
-        <input type="datetime-local" formControlName="startDateTime" id="startDateTime" class="form-control" [min]="formatDate">
-        <div *ngIf="auctionForm.get('startDateTime')?.touched && auctionForm.get('startDateTime')?.invalid" class="text-danger">
-          Start Date & Time is required
+        <input type="datetime-local" formControlName="startDateTime" id="startDateTime" class="form-control" [min]="currentDateTime">
+        <div class="text-muted mt-1" *ngIf="auctionForm.get('startDateTime')?.value">
+          Selected: {{ formatDisplayDate(auctionForm.get('startDateTime')?.value) }}
         </div>
       </div>
-
+      
       <div class="col-md-6 mb-3">
         <label for="endDateTime" class="form-label required-label">End Date & Time</label>
-        <input type="datetime-local" formControlName="endDateTime" id="endDateTime" class="form-control" [min]="formatDate">
-        <div *ngIf="auctionForm.get('endDateTime')?.touched && auctionForm.get('endDateTime')?.invalid" class="text-danger">
-          End Date & Time is required
+        <input type="datetime-local" formControlName="endDateTime" id="endDateTime" class="form-control" [min]="currentDateTime">
+        <div class="text-muted mt-1" *ngIf="auctionForm.get('endDateTime')?.value">
+          Selected: {{ formatDisplayDate(auctionForm.get('endDateTime')?.value) }}
         </div>
       </div>
-
+      
+    
       <div class="col-md-6 mb-3">
         <label for="incrementalTime" class="form-label required-label">Incremental Time</label>
         <select formControlName="incrementalTime" id="incrementalTime" class="form-select">

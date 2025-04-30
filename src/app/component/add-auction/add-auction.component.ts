@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApiEndpoints } from '../../constants/api-endpoints';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-auction',
@@ -14,20 +15,36 @@ import { ApiEndpoints } from '../../constants/api-endpoints';
 })
 export class AddAuctionComponent implements OnInit {
   auctionForm: FormGroup;
-  statuses: any[] = [
+  currentDateTime!: string;
+
+  statuses = [
     { statusId: 1, statusName: 'Pending' },
     { statusId: 2, statusName: 'Active' },
     { statusId: 3, statusName: 'Completed' },
     { statusId: 4, statusName: 'Cancelled' }
   ];
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  categories = [
+    { id: 1, name: 'Electronics' },
+    { id: 2, name: 'Vehicles' },
+    { id: 3, name: 'Furniture' },
+    { id: 4, name: 'Collectibles' },
+    { id: 5, name: 'Real Estate' },
+    { id: 6, name: 'Fashion' },
+    { id: 7, name: 'Industrial Equipment' },
+    { id: 8, name: 'Books & Media' },
+    { id: 9, name: 'Sports & Outdoors' },
+    { id: 10, name: 'Toys & Games' }
+  ];
+
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
+    this.currentDateTime = this.formatDate(new Date());
     this.auctionForm = this.fb.group({
-      auctionNumber: ['', Validators.required],
-      title: ['', Validators.required],
+      auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]], 
+      title: ['', [Validators.required, Validators.maxLength(10)]], 
       type: ['', Validators.required],
-      startDateTime: ['', Validators.required],
-      endDateTime: ['', Validators.required],
+      startDateTime: ['', [Validators.required, this.futureDateValidator]],
+      endDateTime: ['', [Validators.required, this.futureDateValidator]],
       statusId: ['', Validators.required],
       incrementalTime: ['', Validators.required],
       categoryId: ['', Validators.required]
@@ -35,11 +52,9 @@ export class AddAuctionComponent implements OnInit {
   }
 
   ngOnInit() {
-    const currentDate = new Date();
-    const formattedDate = this.formatDate(currentDate);
     this.auctionForm.patchValue({
-      startDateTime: formattedDate,
-      endDateTime: formattedDate
+      startDateTime: this.currentDateTime,
+      endDateTime: this.currentDateTime
     });
   }
 
@@ -50,6 +65,24 @@ export class AddAuctionComponent implements OnInit {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  formatDisplayDate(value: string): string {
+    if (!value) return '';
+    const date = new Date(value);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}-${month}-${year} ${hours}:${minutes}`;
+  }
+
+  futureDateValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+    const selectedDate = new Date(control.value);
+    const now = new Date();
+    return selectedDate <= now ? { pastDate: true } : null;
   }
 
   onSubmit() {
@@ -67,17 +100,17 @@ export class AddAuctionComponent implements OnInit {
         categoryId: +formValue.categoryId
       };
 
-      this.http.post(`${ApiEndpoints.AUCTION}`, payload)
-        .subscribe({
-          next: res => {
-            alert('Auction created successfully');
-            this.auctionForm.reset();
-          },
-          error: err => {
-            console.error(err);
-            alert('Something went wrong');
-          }
-        });
+      this.http.post(`${ApiEndpoints.AUCTION}`, payload).subscribe({
+        next: () => {
+          alert('Auction created successfully');
+          this.auctionForm.reset();
+          this.router.navigate(['/auctions']);
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Something went wrong');
+        }
+      });
     } else {
       this.auctionForm.markAllAsTouched();
     }

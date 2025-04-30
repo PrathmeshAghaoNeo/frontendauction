@@ -1,16 +1,39 @@
+ 
 .container {
-    max-width: 900px;
-  }
-  
-  h3 {
-    font-weight: 500;
-  }
-  
-  .mb-3 label {
-    font-weight: 500;
-  }
-  
-  button {
-    min-width: 100px;
-  }
-  
+  max-width: 900px;
+}
+
+h3 {
+  font-weight: 500;
+}
+
+.mb-3 label {
+  font-weight: 500;
+}
+
+button {
+  min-width: 100px;
+}
+
+
+ .required-star {
+  color: red;
+}
+
+
+.text-danger {
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+
+/* Hide the default calendar/clock icon in Chrome */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+display: none;
+-webkit-appearance: none;
+}
+
+
+.dateColor{
+color: black;
+}

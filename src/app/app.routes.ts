@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './component/dashboard/dashboard.component';
-import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { ManageAuctionComponent } from './component/manage-auction/manage-auction.component';
 import { ManageUserComponent } from './component/manage-user/manage-user.component';
 import { LoginComponent } from './component/login/login.component';
@@ -15,8 +14,8 @@ import { ManageRequestsComponent } from './component/manage-requests/manage-requ
 import { UpdateUserComponent } from './component/update-user/update-user.component';
 import { DetailsUserComponent } from './component/details-user/details-user.component';
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
-import { AddRequestComponent } from './component/add-requests/add-requests.component';
 import { RoleGuard } from './services/auth.guard';
+import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 
 
 export const routes: Routes = [
@@ -35,8 +34,8 @@ export const routes: Routes = [
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
-    { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    { path: 'requests/new', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
-    { path: '**', redirectTo: '/login' }
+    // { path: '**', redirectTo: '/login' }
 
 ];

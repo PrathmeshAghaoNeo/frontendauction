@@ -5,6 +5,7 @@ export interface Asset {
     categoryName: string;  
     deposit: number;
     sellerId: number;
+    assetNumber:string;
     commission: number;
     startingPrice: number;
     reserveAmount: number;

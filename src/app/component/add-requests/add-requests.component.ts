@@ -1,46 +1,40 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule, Location } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import moment from 'moment';
+import { Location } from '@angular/common';
 import { AddRequest } from '../../modals/add-requests';
-import { UserView } from '../../modals/user';
-import { Asset } from '../../modals/manage-asset';
 import { RequestServices } from '../../services/requests.service';
-import { ManageUserComponent } from '../manage-user/manage-user.component';
-import { ManageAssetComponent } from '../manage-asset/manage-asset.component';
-import { UserService } from '../../services/user.service';
-import { ManageassetService } from '../../services/asset.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
  
 @Component({
   selector: 'app-add-request',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule, FormsModule],
-  templateUrl:'./add-requests.component.html' ,
+  imports: [CommonModule, RouterModule, FormsModule],
+  templateUrl:'./add-requests.component.html',
   styleUrls: ['./add-requests.component.css'],
 })
-export class AddRequestComponent implements OnInit {
+export class NewRequestComponent implements OnInit {
  
   newRequest: AddRequest = {} as AddRequest;
+ 
   currentDateTime: string = '';
   currentDateTimeStart: string = '';
   currentDateTimeEnd: string = '';
  
-  users: UserView[] = [];
-  assets: Asset[] = [];
- 
   constructor(
     private requestService: RequestServices,
     private router: Router,
-    private location: Location,
-    private userservice: UserService,
-    private assetservice: ManageassetService
+    private location: Location
+   
   ) {}
+ 
+  goBack(): void {
+    this.location.back();
+  }
  
   ngOnInit(): void {
     this.generateRequestNumber();
-    this.loadUsers();
-    this.loadAssets();
  
     const now = moment();
     this.currentDateTime = now.format('YYYY-MM-DDTHH:mm');
@@ -49,25 +43,12 @@ export class AddRequestComponent implements OnInit {
     this.newRequest.startDateTime = this.currentDateTime;
   }
  
-  loadUsers(): void {
-    this.userservice.getAllUser().subscribe({
-      next: (data) => this.users = data,
-      error: (err) => console.error('Failed to load users', err)
-    });
-  }
- 
-  loadAssets(): void {
-    this.assetservice.getAssets().subscribe({
-      next: (data) => this.assets = data,
-      error: (err) => console.error('Failed to load assets', err)
-    });
-  }
- 
   generateRequestNumber() {
     const today = new Date();
     const yyyyMMdd = today.getFullYear().toString() +
       (today.getMonth() + 1).toString().padStart(2, '0') +
       today.getDate().toString().padStart(2, '0');
+ 
     const randomThreeDigit = Math.floor(1 + Math.random() * 999).toString().padStart(3, '0');
     this.newRequest.requestNumber = `REQ-${yyyyMMdd}-${randomThreeDigit}`;
   }
@@ -75,13 +56,36 @@ export class AddRequestComponent implements OnInit {
   createNew(): void {
     const selectedDateTime = moment(this.newRequest.startDateTime);
     const now = moment();
+ 
+    // ✅ Validate: Only today's date allowed
     if (!selectedDateTime.isSame(now, 'day')) {
       alert('Start date/time must be from today only.');
       return;
     }
  
+    //  Copy startDateTime into requestDateTime before saving
     this.newRequest.requestDateTime = this.newRequest.startDateTime;
  
+    // Email Format Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmailValid = this.newRequest.email != null && emailRegex.test(this.newRequest.email.trim());
+    if (!isEmailValid) {
+      alert('Email is invalid. Please enter a valid email address.');
+      return;
+    }
+ 
+    //  Mobile Number Length Validation
+    const isMobileValid =
+      typeof this.newRequest.mobileNumber === 'string' &&
+      this.newRequest.mobileNumber.trim().length === 10 &&
+      /^[0-9]+$/.test(this.newRequest.mobileNumber); // Optional: check for numeric only
+ 
+    if (!isMobileValid) {
+      alert('Mobile number must be exactly 10 digits and numeric only.');
+      return;
+    }
+ 
+    //  Check All Other Fields
     if (this.isFormValid()) {
       this.requestService.createRequest(this.newRequest).subscribe({
         next: () => {
@@ -98,12 +102,18 @@ export class AddRequestComponent implements OnInit {
     }
   }
  
+ 
+ 
+// Validate the mobile number length
+isMobileNumberValid(): boolean {
+  // Ensure mobileNumber is treated as a string and check if its length is exactly 10
+  return typeof this.newRequest.mobileNumber === 'string' && this.newRequest.mobileNumber.length === 10;
+}
+ 
+ 
+ 
   cancel(): void {
     this.router.navigate(['/requests']);
-  }
- 
-  goBack(): void {
-    this.location.back();
   }
  
   allowOnlyNumbers(event: KeyboardEvent) {
@@ -113,7 +123,11 @@ export class AddRequestComponent implements OnInit {
     }
   }
  
+ 
+ 
   isFormValid(): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ 
     return (
       this.newRequest.userId != null &&
       this.newRequest.username != null && this.newRequest.username.trim() !== '' &&
@@ -121,16 +135,13 @@ export class AddRequestComponent implements OnInit {
       this.newRequest.assetId != null &&
       this.newRequest.transactionId != null &&
       this.newRequest.startDateTime != null && this.newRequest.startDateTime.trim() !== '' &&
-      this.newRequest.requestStatusId != null
+      this.newRequest.requestStatusId != null &&
+      typeof this.newRequest.mobileNumber === 'string' && this.newRequest.mobileNumber.length === 10 &&
+      this.newRequest.email != null &&
+      emailRegex.test(this.newRequest.email.trim())
     );
   }
  
-  onUserSelect(userId: number): void {
-    const selectedUser = this.users.find(u => u.userId === userId);
-    if (selectedUser) {
-      this.newRequest.username = selectedUser.name;
-      this.newRequest.mobileNumber = selectedUser.mobileNumber;
-      this.newRequest.email = selectedUser.email;
-    }
-  }
+ 
 }
+ 
