@@ -16,26 +16,27 @@ import { UpdateUserComponent } from './component/update-user/update-user.compone
 import { DetailsUserComponent } from './component/details-user/details-user.component';
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
 import { AddRequestComponent } from './component/add-requests/add-requests.component';
+import { RoleGuard } from './services/auth.guard';
 
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent },
-    {path:'dashboard', component:DashboardComponent},
-    {path:'assets', component:ManageAssetComponent},
-    { path: 'landing-page', component: LandingPageComponent },
-    {path:'auctions', component:ManageAuctionComponent},
-    { path: 'users', component: ManageUserComponent },
     {path:'login', component:LoginComponent},
-    {path:'settings', component:SettingsComponent},
-    {path:'newUser', component:AddUserComponent},
-    {path:'newAuction', component:AddAuctionComponent},
-    {path:'newAsset', component:AddAssetComponent},
-    { path: 'reguserlandingpage', component: RegUserLandingPageComponent },
-    { path: 'requests', component: ManageRequestsComponent },
-    {path:'updateUser', component:UpdateUserComponent},
-    {path:'detailsUser', component:DetailsUserComponent},
-    { path: 'requests/new', component: AddRequestComponent },
-    { path: 'request-detail/:id', component: EditRequestsComponent },
-
+    { path: 'landing-page', component: LandingPageComponent, },
+    { path: 'reguserlandingpage', component: RegUserLandingPageComponent, canActivate: [RoleGuard], data: { role: 'user' }},
+    {path:'dashboard', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'assets', component:ManageAssetComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'auctions', component:ManageAuctionComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    { path: 'users', component: ManageUserComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
+    {path:'settings', component:SettingsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'newUser', component:AddUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'newAuction', component:AddAuctionComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'newAsset', component:AddAssetComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
+    {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
+    { path: '**', redirectTo: '/login' }
 
 ];

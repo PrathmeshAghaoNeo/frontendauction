@@ -15,4 +15,8 @@ export class StartPageComponent {
 navigateToGuest() {
   this.router.navigate(['/landing-page']);
 }
+navigateToLogin(){
+  this.router.navigate(['/login']);
+
+}
 }

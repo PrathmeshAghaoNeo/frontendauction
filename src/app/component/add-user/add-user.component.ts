@@ -23,13 +23,13 @@ import { Country, Role, Status, User } from '../../modals/user';
       email: '',
       companyName: '',
       companyNumber: '',
-      statusId: 2,
+      statusId: 0,
       chatEnabled: true,
-      roleId: 1,
+      roleId: 0,
       personalIdNumber: '',
-      gender: 'Male',
+      gender: '',
       personalIdExpiryDate: '',
-      countryId: 1,
+      countryId: 0,
       profileImage: null,
       personalIdImage: null
     };

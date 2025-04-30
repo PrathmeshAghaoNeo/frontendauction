@@ -22,11 +22,11 @@ export interface Role {
     email: string;
     companyName: string;
     companyNumber: string;
-    statusId: number;
+    statusId: number |null;
     chatEnabled: boolean;
-    roleId: number;
+    roleId: number |null;
     personalIdNumber: string;
-    gender: string;
+    gender: string |null;
     personalIdExpiryDate: string;
     countryId: number;
     profileImage: File | null;

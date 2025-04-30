@@ -195,6 +195,9 @@
     background-color: var(--primary-color);
     border-color: var(--primary-color);
   }
+  .default-placeholder {
+    color: #6c757d; /* Light text color */
+  }
   
   /* ==================== END GLOBAL ==================== */
   

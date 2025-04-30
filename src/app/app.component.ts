@@ -6,6 +6,7 @@ import { HeaderComponent } from "./component/header/header.component";
 import { FooterComponent } from "./component/footer/footer.component";
 import { SidebarComponent } from "./component/sidebar/sidebar.component";
 import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,6 @@ import { CommonModule } from '@angular/common';
     HeaderComponent,
     FooterComponent,
     SidebarComponent,
-    
     NgIf
   ],
   templateUrl: './app.component.html',
@@ -25,8 +25,17 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   currentRoute: string = '';
+  
+  
+  ngOnInit(): void {
+    this.authService.role$.subscribe(role => {
+      if (!role) {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 
-  constructor(private router: Router) {
+  constructor(private router: Router,private authService: AuthService) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
@@ -38,12 +47,16 @@ export class AppComponent {
     return this.currentRoute === '/';
   }
 
-  get isLandingPage(): boolean {
-    return this.currentRoute === '/landing-page';
+  isCurrentRoute(routes: string[]): boolean {
+    return routes.includes(this.currentRoute);
+  }
+
+  get needSideBar(): boolean {
+    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login']);
   }
 
   get showSidebar(): boolean {
-    return !this.isStartPage && !this.isLandingPage;
+    return !this.isStartPage && !this.needSideBar;
   }
 
   get showHeaderAndFooter(): boolean {

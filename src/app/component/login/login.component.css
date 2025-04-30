@@ -1,0 +1,85 @@
+.form-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--light-bg);
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .login-form {
+    background-color: white;
+    padding: var(--form-padding);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-light);
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .form-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    font-weight: 600;
+    font-size: 26px;
+    font-family: var(--font-family);
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-control {
+    border: 1px solid #ccc;
+    border-radius: var(--input-radius);
+    padding: 10px 12px;
+    font-size: 16px;
+    width: 100%;
+    transition: border-color 0.3s;
+  }
+  
+  .form-control:focus {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 0.2rem rgba(106, 27, 154, 0.2);
+    outline: none;
+  }
+  
+  button.btn-primary {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    font-weight: 500;
+    font-size: 16px;
+    border-radius: var(--input-radius);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    width: 100%;
+  }
+  
+  button.btn-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  @media (max-width: 768px) {
+    .login-form {
+      padding: 20px;
+    }
+  
+    .form-title {
+      font-size: 24px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .login-form {
+      max-width: 100%;
+      padding: 10px;
+    }
+  
+    .form-title {
+      font-size: 20px;
+    }
+  }
+  

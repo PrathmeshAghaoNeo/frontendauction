@@ -30,7 +30,7 @@
         <label class="form-label fw-bold">Mobile Number<span class="text-danger">*</span></label>
         <div class="input-group">
           <select class="form-select form-select-lg" [(ngModel)]="user.countryId" name="countryId" required #countryId="ngModel">
-            <option [ngValue]="null" disabled>Select Phone Code</option>
+            <option [ngValue]=0 disabled>Select Phone Code</option>
             <option *ngFor="let country of countries" [ngValue]="country.countryId">
               {{ country.phoneCode }} ({{ country.countryName }})
             </option>
@@ -85,6 +85,7 @@
       <div class="form-group">
         <label class="form-label fw-bold">Status<span class="text-danger">*</span></label>
         <select class="form-select form-select-lg" [(ngModel)]="user.statusId" name="statusId" required #statusId="ngModel">
+          <option value=0 disabled selected>Select a Status</option>
           <option *ngFor="let status of statuses" [value]="status.statusId">{{ status.statusName }}</option>
         </select>
         <div *ngIf="statusId.invalid && (statusId.dirty || statusId.touched)" class="text-danger">
@@ -97,6 +98,7 @@
       <div class="form-group">
         <label class="form-label fw-bold">Role<span class="text-danger">*</span></label>
         <select class="form-select form-select-lg" [(ngModel)]="user.roleId" name="roleId" required #roleId="ngModel">
+          <option value=0 disabled selected>Select a Role</option>
           <option *ngFor="let role of roles" [value]="role.roleId">{{ role.roleName }}</option>
         </select>
         <div *ngIf="roleId.invalid && (roleId.dirty || roleId.touched)" class="text-danger">
@@ -109,6 +111,7 @@
       <div class="form-group">
         <label class="form-label fw-bold">Gender<span class="text-danger">*</span></label>
         <select class="form-select form-select-lg" [(ngModel)]="user.gender" name="gender" required #gender="ngModel">
+          <option value="" class="default-placeholder" disabled>Select Gender</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
         </select>
