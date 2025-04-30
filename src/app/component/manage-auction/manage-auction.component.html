@@ -15,8 +15,8 @@
         <th>Auction Number</th>
         <th>Title</th>
         <th>Type</th>
-        <th>Start Date & Time</th>
-        <th>End Date & Time</th>
+        <th>Auction Start</th>
+        <th>Auction End</th>
         <th>Status</th>
         <th>Incremental Time</th>
         <th>Category ID</th>
@@ -60,8 +60,8 @@
     <p><strong>Title:</strong> {{ selectedAuction?.title }}</p>
     <p><strong>Type:</strong> {{ selectedAuction?.type }}</p>
     <p><strong>Status:</strong> {{ selectedAuction?.statusName }}</p>
-    <p><strong>Start Date & Time:</strong> {{ selectedAuction?.startDateTime | date: 'short' }}</p>
-    <p><strong>End Date & Time:</strong> {{ selectedAuction?.endDateTime | date: 'short' }}</p>
+    <p><strong>Auction Start:</strong> {{ selectedAuction?.startDateTime | date: 'short' }}</p>
+    <p><strong>Auction End:</strong> {{ selectedAuction?.endDateTime | date: 'short' }}</p>
     <p><strong>Incremental Time:</strong> {{ selectedAuction?.incrementalTime }} mins</p>
     <p><strong>Category ID:</strong> {{ selectedAuction?.categoryName }}</p>
   </div>
