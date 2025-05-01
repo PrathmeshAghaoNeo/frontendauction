@@ -8,6 +8,7 @@
   box-sizing: border-box;
 }
 
+
 .auction-form-container {
   max-width: 800px;
   width: 100%;
@@ -23,7 +24,7 @@
   color: #6a1b9a;
   margin-bottom: 25px;
   font-weight: 600;
-  font-size: 26px;
+  font-size: 29px;
   font-family: 'Poppins', 'Segoe UI', sans-serif; /* Custom font */
 }
 
@@ -64,3 +65,7 @@
   color: red;
   font-weight: bold;
 }
+.text-muted.mb-3 {
+  text-align: center;
+}
+

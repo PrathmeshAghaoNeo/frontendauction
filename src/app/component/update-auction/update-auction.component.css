@@ -1,0 +1,14 @@
+.required-label::after {
+    content: "* ";
+    color: red;
+    font-weight: bold;
+  }
+
+  .text-muted.mb-3 {
+    text-align: center;
+  }
+  
+  .auction-form-title{
+    text-align: center;
+    font-size: 29px;
+  }

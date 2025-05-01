@@ -1,10 +1,34 @@
 <!-- Page Header -->
+<div *ngIf="loading" class="text-center my-4">
+  <div class="spinner-border text-primary" role="status"></div>
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="text-purple">Manage Auctions</h2>
   <button class="btn custom-purple-btn" [routerLink]="'/newAuction'" routerLinkActive="active">
     Add Auction
   </button>
 </div>
+
+<div class="row mb-3">
+  <div class="col-md-4">
+    <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Search auctions…" (input)="applyFilters()" />
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" [(ngModel)]="filterCategory" (change)="applyFilters()">
+      <option [value]="0">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat.categoryId">{{ cat.categoryName }}</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
+      <option [value]="0">All Statuses</option>
+      <option *ngFor="let status of statuses" [value]="status.statusId">{{ status.statusName }}</option>
+    </select>
+  </div>
+</div>
+
+
 
 <!-- Table -->
 <div class="table-responsive">
@@ -37,9 +61,10 @@
           <button class="btn btn-sm btn-outline-primary me-1" (click)="openViewModal(auction)">
             <i class="bi bi-eye"></i>
           </button>
-          <button class="btn btn-sm btn-outline-primary me-1" (click)="openEditModal(auction)">
+          <button class="btn btn-sm btn-outline-primary me-1" [routerLink]="['/update-auction', auction.auctionId]">
             <i class="bi bi-pencil"></i>
           </button>
+          
           <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(auction)">
             <i class="bi bi-trash"></i>
           </button>
@@ -68,56 +93,6 @@
       <div class="col-md-6"><strong>Incremental Time:</strong> {{ selectedAuction?.incrementalTime }} mins</div>
     </div>
   </div>
-</ng-template>
-
-
-<ng-template #editAuctionModal let-modal>
-  <div class="modal-header bg-warning text-dark">
-    <h5 class="modal-title">Edit Auction</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
-  </div>
-  
-  <!-- Add formGroup binding here -->
-  <form [formGroup]="auctionForm" (ngSubmit)="submitEdit()">
-    <div class="modal-body">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label">Title</label>
-          <input formControlName="title" type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Type</label>
-          <input formControlName="type" type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Status</label>
-          <input formControlName="statusId" type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Category</label>
-          <input formControlName="categoryId" type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Start Date/Time</label>
-          <input formControlName="startDateTime" type="datetime-local" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">End Date/Time</label>
-          <input formControlName="endDateTime" type="datetime-local" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Incremental Time (mins)</label>
-          <input formControlName="incrementalTime" type="number" class="form-control" />
-        </div>
-      </div>
-    </div>
-    
-    <div class="modal-footer">
-      <!-- Disable button if form is invalid -->
-      <button type="submit" class="btn btn-primary" [disabled]="auctionForm.invalid">Update</button>
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
-    </div>
-  </form>
 </ng-template>
 
 

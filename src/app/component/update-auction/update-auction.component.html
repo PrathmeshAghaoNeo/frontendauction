@@ -1,0 +1,103 @@
+
+<div class="container-fluid auction-form-container" style="max-width: 1100px; margin: auto;">
+    <h3 class="auction-form-title">Update Auction</h3>
+
+
+    <p class="text-muted mb-3"><span class="text-danger">*</span> indicates a required field</p>
+    <form [formGroup]="auctionForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+  
+        <div class="col-md-6 mb-3">
+          <label for="auctionNumber" id="auctionNumber" class="form-label required-label">Auction Number</label>
+          <input type="text" formControlName="auctionNumber"  class="form-control" maxlength="8" placeholder="Start with 'AUC'">
+          <div *ngIf="auctionForm.get('auctionNumber')?.touched && auctionForm.get('auctionNumber')?.invalid" class="text-danger">
+            <div *ngIf="auctionForm.get('auctionNumber')?.errors?.['required']">Auction Number is required</div>
+            <div *ngIf="auctionForm.get('auctionNumber')?.errors?.['pattern']">Auction Number must start with "AUC" followed by 5 digits</div>
+          </div>
+        </div>
+  
+        
+        <div class="col-md-6 mb-3">
+          <label for="title" id="title" class="form-label required-label">Title</label>
+          <input type="text" formControlName="title"  class="form-control" maxlength="10">
+          <div *ngIf="auctionForm.get('title')?.touched && auctionForm.get('title')?.invalid" class="text-danger">
+            <div *ngIf="auctionForm.get('title')?.errors?.['required']">Title is required</div>
+            <div *ngIf="auctionForm.get('title')?.errors?.['maxlength']">Title cannot exceed 10 characters</div>
+          </div>
+        </div>
+        
+  
+        <div class="col-md-4 mb-3">
+          <label for="type" id="type" class="form-label required-label">Type</label>
+          <select formControlName="type"  class="form-select" [class.is-invalid]="auctionForm.get('type')?.invalid && auctionForm.get('type')?.touched">
+            <option value="" disabled>Select Type</option>
+            <option value="Direct Sale">Direct Sale</option>
+            <option value="Auction">Auction</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="auctionForm.get('type')?.hasError('required') && auctionForm.get('type')?.touched">
+            Type is required.
+          </div>
+        </div>
+  
+        <div class="col-md-4 mb-3">
+          <label for="statusId" id="statusId"  class="form-label required-label">Status</label>
+          <select formControlName="statusId" class="form-select" 
+                  [class.is-invalid]="auctionForm.get('statusId')?.invalid && auctionForm.get('statusId')?.touched">
+            <option value="" disabled>Select Status</option>
+            <option *ngFor="let status of statuses" [value]="status.statusId">
+              {{ status.statusName }}
+            </option>
+          </select>
+          <div *ngIf="auctionForm.get('statusId')?.invalid && auctionForm.get('statusId')?.touched" class="text-danger">
+            Status is required.
+          </div>
+        </div>
+  
+        <div class="col-md-4 mb-3">
+          <label for="categoryId" id="categoryId" class="form-label required-label">Category</label>
+          <select formControlName="categoryId"  class="form-select">
+            <option value="" disabled>Select Category</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">
+              {{ cat.name }}
+            </option>
+          </select>
+          <div *ngIf="auctionForm.get('categoryId')?.touched && auctionForm.get('categoryId')?.invalid" class="text-danger">
+            Category ID is required
+          </div>
+        </div>
+        
+  
+        <div class="col-md-6 mb-3">
+          <label for="startDateTime" id="startDateTime" class="form-label required-label">Start Date & Time</label>
+          <input type="datetime-local" formControlName="startDateTime"  class="form-control" [min]="currentDateTime">
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <label for="endDateTime" id="endDateTime" class="form-label required-label">End Date & Time</label>
+          <input type="datetime-local" formControlName="endDateTime"  class="form-control" [min]="currentDateTime">
+          <div class="text-danger" *ngIf="auctionForm.errors?.['endBeforeStart'] && auctionForm.get('endDateTime')?.touched">
+            End Date & Time must be after Start Date & Time
+          </div>
+          
+        </div>
+        
+      
+        <div class="col-md-6 mb-3">
+          <label for="incrementalTime" id="incrementalTime" class="form-label required-label">Incremental Time</label>
+          <select formControlName="incrementalTime"  class="form-select">
+            <option value="" disabled>Select Time</option>
+            <option value="5">5 min</option>
+            <option value="10">10 min</option>
+            <option value="15">15 min</option>
+          </select>
+          <div *ngIf="auctionForm.get('incrementalTime')?.touched && auctionForm.get('incrementalTime')?.invalid" class="text-danger">
+            Incremental Time is required
+          </div>
+        </div>
+        
+      </div>
+  
+      <button class="btn btn-primary w-100 mt-3" type="submit">Update Auction</button>
+    </form>
+  </div>
+  

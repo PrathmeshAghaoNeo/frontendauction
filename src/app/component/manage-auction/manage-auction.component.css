@@ -7,6 +7,13 @@
     overflow-y: auto;
     animation: slideIn 0.4s ease-out;
   }
+
+  .search-input {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
   
   @keyframes slideIn {
     from {

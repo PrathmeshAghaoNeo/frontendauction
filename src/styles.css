@@ -140,8 +140,11 @@
     padding: var(--form-padding);
     border-radius: var(--card-radius);
     box-shadow: var(--shadow-light);
-    max-width: 800px;
-    margin: 20px auto;
+    width: 100%; /* Ensure it takes up full container width */
+    max-width: 800px; /* Optional, controls the max width */
+    margin: 0 auto; /* Centers the form horizontally */
+    display: flex;
+    flex-direction: column; /* Keeps form elements stacked */
   }
   
   .form-page-container {
@@ -150,7 +153,8 @@
     align-items: flex-start;
     padding: 20px;
     background-color: var(--light-bg);
-    min-height: calc(100vh - 120px); /* Adjust based on header/footer */
+    min-height: auto; /* Adjust to content height */
+    height: auto; /* Remove fixed height */
     box-sizing: border-box;
   }
   

@@ -17,6 +17,7 @@ import { EditRequestsComponent } from './component/edit-requests/edit-requests.c
 import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { AddRequestComponent } from './component/add-requests/add-requests.component';
+import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
 
 
 export const routes: Routes = [
@@ -31,21 +32,16 @@ export const routes: Routes = [
     {path:'settings', component:SettingsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'newUser', component:AddUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'newAuction', component:AddAuctionComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'update-auction/:id', component:UpdateAuctionComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'newAsset', component:AddAssetComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
-<<<<<<< HEAD
     { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
     {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
-=======
-    { path: 'requests/new', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
-    { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
->>>>>>> fcb171d10907db3dfd10c879ab2446f5cfb3bea2
     { path: '**', redirectTo: '/login' }
-
 ];

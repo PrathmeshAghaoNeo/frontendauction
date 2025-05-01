@@ -9,19 +9,20 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 
 @Component({
-  selector: 'app-add-auction',
+  selector: 'app-update-auction',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './add-auction.component.html',
-  styleUrls: ['./add-auction.component.css']
+  templateUrl: './update-auction.component.html',
+  styleUrls: ['./update-auction.component.css']
 })
-export class AddAuctionComponent implements OnInit {
-  auctionForm: FormGroup;
+export class UpdateAuctionComponent implements OnInit {
+  auctionForm!: FormGroup;
+  auctionId!: number;
   currentDateTime!: string;
 
   statuses = [
@@ -47,72 +48,88 @@ export class AddAuctionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
+    private route: ActivatedRoute,
     private router: Router
-  ) {
-    this.currentDateTime = this.formatDate(new Date());
+  ) {}
 
+  ngOnInit(): void {
+    this.auctionId = Number(this.route.snapshot.paramMap.get('id'));
+    this.initForm();
+    this.loadAuction();
+  }
+
+  initForm() {
     this.auctionForm = this.fb.group(
       {
         auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
         title: ['', [Validators.required, Validators.maxLength(20)]],
         type: ['', Validators.required],
-        startDateTime: ['', this.futureDateValidator],
+        startDateTime: ['', [this.futureDateValidator]],
         endDateTime: ['', [Validators.required, this.futureDateValidator]],
         statusId: ['', Validators.required],
         incrementalTime: ['', Validators.required],
         categoryId: ['', Validators.required]
       },
-      { validators: this.endDateAfterStartDateValidator }
+      {
+        validators: [this.endDateAfterStartDateValidator]
+      }
     );
   }
 
-  ngOnInit() {
-    const now = new Date();
-    this.auctionForm.patchValue({
-      startDateTime: this.formatToDateTimeLocalFormat(now),
-      endDateTime: this.formatToDateTimeLocalFormat(now)
+  loadAuction() {
+    this.http.get<any>(`${ApiEndpoints.AUCTION}/${this.auctionId}`).subscribe({
+      next: (data) => {
+        this.auctionForm.patchValue({
+          auctionNumber: data.auctionNumber,
+          title: data.title,
+          type: data.type,
+          startDateTime: this.formatToDateTimeLocalFormat(data.startDateTime),
+          endDateTime: this.formatToDateTimeLocalFormat(data.endDateTime),
+          statusId: data.statusId,
+          incrementalTime: data.incrementalTime,
+          categoryId: data.categoryId
+        });
+      },
+      error: (err) => {
+        console.error(err);
+        Swal.fire('Error', 'Failed to load auction details.', 'error');
+      }
     });
   }
 
-  formatDate(date: Date): string {
-    const y = String(date.getFullYear()).slice(-2);
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    const h = String(date.getHours()).padStart(2, '0');
-    const min = String(date.getMinutes()).padStart(2, '0');
-    return `${y}-${m}-${d}T${h}:${min}`;
-  }
-
-  formatToDateTimeLocalFormat(date: Date): string {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    const h = String(date.getHours()).padStart(2, '0');
-    const min = String(date.getMinutes()).padStart(2, '0');
-    return `${y}-${m}-${d}T${h}:${min}`;
+  formatToDateTimeLocalFormat(dateStr: string): string {
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
   futureDateValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;
-    return new Date(control.value) <= new Date() ? { pastDate: true } : null;
+    const selectedDate = new Date(control.value);
+    const now = new Date();
+    return selectedDate <= now ? { pastDate: true } : null;
   }
 
   endDateAfterStartDateValidator(group: AbstractControl): ValidationErrors | null {
     const start = group.get('startDateTime')?.value;
     const end = group.get('endDateTime')?.value;
+
     if (!start || !end) return null;
-    return new Date(end) > new Date(start) ? null : { endBeforeStart: true };
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    return endDate > startDate ? null : { endBeforeStart: true };
   }
 
   onSubmit() {
-    if (!this.auctionForm.valid) {
+    if (this.auctionForm.invalid) {
       this.auctionForm.markAllAsTouched();
-      Swal.fire({
-        icon: 'warning',
-        title: 'Incomplete Form',
-        text: 'Please fill all required fields correctly before submitting.',
-        confirmButtonText: 'OK'
-      });
+      Swal.fire('Incomplete Form', 'Please fill all required fields.', 'warning');
       return;
     }
 
@@ -122,6 +139,7 @@ export class AddAuctionComponent implements OnInit {
       val.length === 16 ? `${val}:00` : val;
 
     const payload = {
+      auctionId: this.auctionId, // ✅ required by backend
       auctionNumber: formValue.auctionNumber,
       title: formValue.title,
       type: formValue.type,
@@ -131,43 +149,17 @@ export class AddAuctionComponent implements OnInit {
       incrementalTime: +formValue.incrementalTime,
       categoryId: +formValue.categoryId
     };
-    console.log('Payload:', payload);
 
-    this.http.post(ApiEndpoints.AUCTION, payload).subscribe({
+    this.http.put(`${ApiEndpoints.AUCTION}/${this.auctionId}`, payload).subscribe({
       next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Auction created successfully',
-          confirmButtonText: 'OK'
-        }).then(() => {
-          this.auctionForm.reset();
+        Swal.fire('Success', 'Auction updated successfully.', 'success').then(() => {
           this.router.navigate(['/auctions']);
         });
       },
       error: (err) => {
-        console.error('Full error:', err);
-        let errorMessage = 'Something went wrong. Please try again.';
-      
-        if (err.status === 409) {
-          errorMessage = 'Auction number already exists. Please choose a different one.';
-        } else if (err.error?.message) {
-          errorMessage = err.error.message;
-        } else if (err.error && typeof err.error === 'string') {
-          errorMessage = err.error;
-        } else if (err.error?.errors && Array.isArray(err.error.errors)) {
-          errorMessage = err.error.errors.join('\n');
-        }
-      
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: errorMessage,
-          confirmButtonText: 'OK'
-        });
+        console.error(err);
+        Swal.fire('Error', 'Update failed. Please try again.', 'error');
       }
-      
-      
     });
   }
 }
