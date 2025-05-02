@@ -6,6 +6,8 @@ import { FutureDateValidatorDirective } from '../manage-user/future-date-validat
 import { Router,  } from '@angular/router';
 import { Country, Role, Status, User } from '../../modals/user';
 import Swal from 'sweetalert2';
+import { NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { Location } from '@angular/common';
 
 
 
@@ -13,7 +15,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-add-user',
   standalone: true,
-  imports: [CommonModule,FutureDateValidatorDirective,FormsModule],
+  imports: [CommonModule,FutureDateValidatorDirective,FormsModule,  NgbModule,NgbDatepickerModule,],
   templateUrl: './add-user.component.html',
   styleUrl: './add-user.component.css'
 })
@@ -41,14 +43,25 @@ import Swal from 'sweetalert2';
     selectedPhoneCode: string = '';
     @ViewChild('userForm') userForm!: NgForm;
     submitted = false;
+    minDate: NgbDateStruct;
+
     // bsConfig: Partial<BsDatepickerConfig>;
     // this.bsConfig = {dateInputFormat: 'DD-MM-YYYY',  // Set the date format
 
-    constructor(private userService: UserService, private router: Router) {
+    constructor(private userService: UserService, private router: Router,private location: Location) {
+      const today = new Date();
+    this.minDate = { 
+    year: today.getFullYear(), 
+    month: today.getMonth() + 1, 
+    day: today.getDate() 
+  };
     };
 
     ngOnInit(): void {
       this.loadDropdowns();
+    }
+    goBack(): void {
+      this.location.back();
     }
 
     onFileChange(event: Event, field: 'profileImage' | 'personalIdImage'): void {
@@ -94,7 +107,13 @@ import Swal from 'sweetalert2';
         }
         return;
       }
+      if (this.user.personalIdExpiryDate && typeof this.user.personalIdExpiryDate === 'object') {
+        const d = this.user.personalIdExpiryDate as NgbDateStruct;
+        this.user.personalIdExpiryDate = `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
+      }
+
       const formData = new FormData();
+      console.log("sub")
       for (const key in this.user) {
         const value = (this.user as any)[key];
         if (value instanceof File) {

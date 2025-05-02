@@ -33,15 +33,15 @@
     <table class="table table-hover shadow-sm border-0 rounded">
       <thead class="table-purple text-white">
         <tr>
-          <th>#UID</th>
-          <th>Name</th>
-          <th>Role</th>
-          <th>Mobile</th>
-          <th>Email</th>
-          <th>Company</th>
-          <th>Status</th>
-          <th>Gender</th>
+          <th (click)="sortData('uid')">#UID <span *ngIf="sortKey === 'uid'">{{ sortAsc ? '▲' : '▼' }}</span></th>
+          <th (click)="sortData('name')">Name <span *ngIf="sortKey === 'name'">{{ sortAsc ? '▲' : '▼' }}</span></th>
+          <th (click)="sortData('roleId')">Role <span *ngIf="sortKey === 'roleId'">{{ sortAsc ? '▲' : '▼' }}</span></th>
+          <th (click)="sortData('mobileNumber')">Mobile <span *ngIf="sortKey === 'mobileNumber'">{{ sortAsc ? '▲' : '▼' }}</span></th>
+          <th (click)="sortData('email')">Email <span *ngIf="sortKey === 'email'">{{ sortAsc ? '▲' : '▼' }}</span></th>
+          <th (click)="sortData('statusId')">Status <span *ngIf="sortKey === 'statusId'">{{ sortAsc ? '▲' : '▼' }}</span></th>
+          <th (click)="sortData('gender')">Gender <span *ngIf="sortKey === 'gender'">{{ sortAsc ? '▲' : '▼' }}</span></th>
           <th class="text-end">Actions</th>
+          
         </tr>
       </thead>
       <tbody>
@@ -51,7 +51,6 @@
           <td>{{ getRoleName(user.roleId) }}</td>
           <td>{{ user.mobileNumber }}</td>
           <td>{{ user.email }}</td>
-          <td>{{ user.companyName }}</td>
           <td>
             <span [ngClass]="{
               'badge bg-success': user.statusId === 1,

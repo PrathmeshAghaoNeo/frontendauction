@@ -6,11 +6,15 @@ import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { FutureDateValidatorDirective } from '../manage-user/future-date-validator.directive';
 import { UserView } from '../../modals/user';
 import Swal from 'sweetalert2';
+import { NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { Location } from '@angular/common';
+
+
 
 @Component({
   selector: 'app-update-user',
   standalone: true,
-  imports: [CommonModule, FutureDateValidatorDirective, FormsModule],
+  imports: [CommonModule, FutureDateValidatorDirective, FormsModule, NgbDatepickerModule, NgbModule],
   templateUrl: './update-user.component.html',
   styleUrls: ['./update-user.component.css']
 })
@@ -24,14 +28,23 @@ export class UpdateUserComponent implements OnInit {
   personalIdImageFile: File | null = null;
   userId!: number;
   @ViewChild('userForm') userForm!: NgForm;
-
+  minDate: NgbDateStruct;
+  personalIdExpiryDateStruct: NgbDateStruct | null = null;
   submitted = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-  ) { }
+    private location: Location
+  ) {
+    const today = new Date();
+    this.minDate = {
+      year: today.getFullYear(),
+      month: today.getMonth() + 1,
+      day: today.getDate()
+    };
+  }
 
   ngOnInit(): void {
     const userId = this.route.snapshot.queryParams['id'] ? +atob(this.route.snapshot.queryParams['id']) : null;
@@ -45,10 +58,21 @@ export class UpdateUserComponent implements OnInit {
     this.loadCountries();
     this.loadDropdownData();
   }
+  goBack(): void {
+    this.location.back();
+  }
 
   loadUser() {
     this.userService.getUserById(this.userId).subscribe((data: UserView) => {
       this.user = data;
+      if (this.user.personalIdExpiryDate) {
+        const parts = this.user.personalIdExpiryDate.split('-');
+        this.personalIdExpiryDateStruct = {
+          year: +parts[0],
+          month: +parts[1],
+          day: +parts[2]
+        };
+      }
       const selectedCountry = this.countries.find(country => country.countryId === this.user.countryId);
       if (selectedCountry) {
         this.selectedPhoneCode = selectedCountry.phoneCode;
@@ -56,6 +80,7 @@ export class UpdateUserComponent implements OnInit {
 
     });
   }
+  
 
 
   loadCountries() {
@@ -96,22 +121,34 @@ export class UpdateUserComponent implements OnInit {
       Object.values(this.userForm.controls).forEach(control => {
         control.markAsTouched();
       });
-      return; // Stop the form submission if there are invalid fields
+      return; 
     }
 
-    // Ensure required images are selected before proceeding
     if (!this.profileImageFile && !this.user.profileImageUrl) {
-      alert('Please upload a profile image.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Please upload a Personal ID image.',
+        showConfirmButton: false,
+        timer: 2000 
+      });
       return;
     }
     if (!this.personalIdImageFile && !this.user.personalIdImageUrl) {
-      alert('Please upload a personal ID image.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Please upload a Goverment ID image.',
+        showConfirmButton: false,
+        timer: 2000 
+      });
       return;
     }
-
+    if (this.personalIdExpiryDateStruct) {
+      const d = this.personalIdExpiryDateStruct;
+      this.user.personalIdExpiryDate = `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
+    }
+    
     const formData = new FormData();
 
-    // Append user form fields to FormData
     for (let key in this.user) {
       const value = (this.user as any)[key];
       if (value !== null && value !== undefined) {
@@ -129,8 +166,11 @@ export class UpdateUserComponent implements OnInit {
       formData.append('personalIdImage', this.personalIdImageFile);
     }
 
-    // Call service to update the user data
+    formData.forEach((value, key) => {
+      console.log(key + ': ' + (value instanceof File ? value.name : value));
+    });
     this.userService.updateUser(this.userId, formData).subscribe({
+      
       next: (res) => {
         Swal.fire({
           icon: 'success',
@@ -141,16 +181,16 @@ export class UpdateUserComponent implements OnInit {
           this.router.navigate(['/users']);
         });
       },
-     error: (error) => {
-               console.error('Error adding user:', error);
-               const fullMessage = error.error || 'Unknown error occurred.';
-               const extractedMessage = fullMessage.split('\r\n')[0];
-               Swal.fire({
-                 icon: 'error',
-                 title: 'Add Failed',
-                 text: `Something went wrong while adding the user.${extractedMessage}`
-               });
-           } 
-         });
-        }
+      error: (error) => {
+        console.error('Error adding user:', error);
+        const fullMessage = error.error || 'Unknown error occurred.';
+        const extractedMessage = fullMessage.split('\r\n')[0];
+        Swal.fire({
+          icon: 'error',
+          title: 'Add Failed',
+          text: `Something went wrong while adding the user.${extractedMessage}`
+        });
+      }
+    });
+  }
 }

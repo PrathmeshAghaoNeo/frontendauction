@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Country, Role, Status, UserView } from '../../modals/user';
+import { Location } from '@angular/common';
+
 
 
 @Component({
@@ -19,8 +21,13 @@ export class DetailsUserComponent {
   statuses: Status[] = [];
   userId!: number;
 
-  constructor(private userService: UserService,private route: ActivatedRoute,private router: Router, ) {}
+  constructor(private userService: UserService,private route: ActivatedRoute,private router: Router,private location: Location
+  ) {}
   
+ 
+  goBack(): void {
+    this.location.back();
+  }
   ngAfterViewInit(): void {
     // this.userId = +this.route.snapshot.paramMap.get('userId')!;
     // Retrieve the userId from the state passed through the router

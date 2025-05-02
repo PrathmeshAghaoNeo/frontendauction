@@ -1,13 +1,34 @@
-<form (ngSubmit)="onUpdateUser(userForm)"  #userForm="ngForm" class="container mt-4 p-4 bg-light rounded shadow">
+<button  class="back-btn" (click)="goBack()">
+  <i class="bi bi-arrow-left-circle"></i>
+</button>
+
+
+<h3 class="auction-form-title">Update User</h3>
+<p class="text-muted mb-3"><span class="text-danger">*</span> indicates a required field</p>
+
+<form (ngSubmit)="onUpdateUser(userForm)"    #userForm="ngForm" class="container mt-4 p-4 bg-light rounded shadow">
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Name<span class="text-danger">*</span></label>
-        <input type="text"  minlength="3" maxlength="25"  class="form-control form-control-lg" [(ngModel)]="user.name" name="name" required #name="ngModel">
+        <input type="text"
+        minlength="3"
+        maxlength="25"
+        pattern="^[A-Za-z ]+$"
+        class="form-control form-control-lg"
+        [(ngModel)]="user.name"
+        name="name"
+        required
+        #name="ngModel">          
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
           <div *ngIf="name.errors?.['required']">Name is required.</div>
-          <div *ngIf="name.errors?.['minlength']">Minimum 3 characters required.</div>
-          <div *ngIf="name.errors?.['maxlength']">Maximum 20 characters allowed.</div>
+          
+          <div *ngIf="(name.errors?.['minlength'] || name.errors?.['pattern'])">
+            <span *ngIf="name.errors?.['minlength']">Name must be at least 3 characters. </span>
+            <span *ngIf="name.errors?.['pattern']">Only alphabetic characters and spaces are allowed.</span>
+          </div>
+          
+          <div *ngIf="name.errors?.['maxlength']">Maximum 25 characters allowed.</div>
         </div>
       </div>
     </div>
@@ -15,10 +36,10 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Email<span class="text-danger">*</span></label>
-        <input type="email" class="form-control form-control-lg" [(ngModel)]="user.email" name="email" required email #email="ngModel">
+        <input type="email" class="form-control form-control-lg" [(ngModel)]="user.email" maxlength="50" minlength="3" name="email"  pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required email #email="ngModel">
         <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">
           <div *ngIf="email.errors?.['required']">Email is required.</div>
-          <div *ngIf="email.errors?.['email']">Please enter a valid email.</div>
+          <div *ngIf="email.errors?.['email'] ||email.errors?.['pattern']">Please enter a valid email.</div>
         </div>
       </div>
     </div>
@@ -39,10 +60,19 @@
             Select a valid Phone Code.
           </div>
           
-          <input type="text" class="form-control form-control-lg" [(ngModel)]="user.mobileNumber" name="mobileNumber" required #mobileNumber="ngModel">
+          <input type="tel" 
+          inputmode="numeric" 
+          pattern="^[0-9]{10}$" 
+          class="form-control form-control-lg" 
+          [(ngModel)]="user.mobileNumber" 
+          name="mobileNumber" 
+          required 
+          maxlength="10"
+          #mobileNumber="ngModel">
         </div>
         <div *ngIf="mobileNumber.invalid && (mobileNumber.dirty || mobileNumber.touched)" class="text-danger">
-          Mobile number is required.
+          <div *ngIf="mobileNumber.errors?.['required']">Mobile number is required.</div>
+          <div *ngIf="mobileNumber.errors?.['pattern']">Mobile number must be a Valid 10 digits.</div>
         </div>
       </div>
       
@@ -122,10 +152,10 @@
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Personal ID Number<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold">Goverment ID Number<span class="text-danger">*</span></label>
         <input type="text" minlength="3" maxlength="15" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel">
         <div *ngIf="personalIdNumber.invalid && (personalIdNumber.dirty || personalIdNumber.touched)" class="text-danger">
-          <div *ngIf="personalIdNumber.errors?.['required']">Name is required.</div>
+          <div *ngIf="personalIdNumber.errors?.['required']">Goverment ID Number is required.</div>
           <div *ngIf="personalIdNumber.errors?.['minlength']">Minimum 3 characters required.</div>
           <div *ngIf="personalIdNumber.errors?.['maxlength']">Maximum 20 characters allowed.</div>
         </div>
@@ -134,20 +164,36 @@
 
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold" for="personalIdExpiryDate">Personal ID Expiry Date<span class="text-danger">*</span><span class="text-danger">*</span></label>
-        <input
-          type="date"
-          id="personalIdExpiryDate"
-          name="personalIdExpiryDate"
-          [(ngModel)]="user.personalIdExpiryDate"
-          #personalIdExpiryDate="ngModel"
-          required
-          futureDate
-          [ngClass]="{'is-invalid': personalIdExpiryDate.invalid && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)}"
-          class="form-control form-control-lg"
-        />
-        <div *ngIf="personalIdExpiryDate.errors?.['dateInvalid']" class="invalid-feedback">
-          Personal ID Expiry Date must be a future date.
+        <label class="form-label fw-bold" for="personalIdExpiryDate">
+          Government ID Expiry Date<span class="text-danger">*</span>
+        </label>
+      
+        <div class="input-group">
+          <input
+            class="form-control form-control-lg"
+            placeholder="dd-mm-yyyy"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            [(ngModel)]="user.personalIdExpiryDate"
+            name="personalIdExpiryDate"
+            id="personalIdExpiryDate"
+            required
+            futureDate
+            [minDate]="minDate"
+            [ngClass]="{'is-invalid': personalIdExpiryDate.invalid && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)}"
+            #personalIdExpiryDate="ngModel"
+          />
+          <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+            <i class="bi bi-calendar"></i>
+          </button>
+        </div>
+      
+        <!-- Move validation OUTSIDE input-group, and use d-block -->
+        <div *ngIf="personalIdExpiryDate.errors?.['required'] && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)" class="invalid-feedback d-block">
+          Government ID Expiry Date is required.
+        </div>
+        <div *ngIf="personalIdExpiryDate.errors?.['dateInvalid'] && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)" class="invalid-feedback d-block">
+          Government ID Expiry Date must be a future date.
         </div>
       </div>
     </div>
@@ -188,17 +234,17 @@
 
     <div class="col-md-6 mb-3">
       <div class="form-group">
-        <label class="form-label fw-bold">Personal ID Image<span class="text-danger">*</span></label>
+        <label class="form-label fw-bold">Goverment ID Image<span class="text-danger">*</span></label>
         
         <div *ngIf="user.personalIdImageUrl">
-          <img [src]="user.personalIdImageUrl" alt="Personal ID Image" class="img-thumbnail" width="100">
+          <img [src]="user.personalIdImageUrl" alt="Goverment ID Image" class="img-thumbnail" width="100">
           <p><a [href]="user.personalIdImageUrl" target="_blank">View current image</a></p>
         </div>
 
         <input type="file" class="form-control form-control-lg" (change)="onPersonalIdImageSelected($event)">
         
         <div *ngIf="submitted && !user.personalIdImageUrl && !personalIdImageFile" class="text-danger">
-          Personal ID Image is required.
+          Goverment ID Image is required.
         </div>
       </div>
     </div>

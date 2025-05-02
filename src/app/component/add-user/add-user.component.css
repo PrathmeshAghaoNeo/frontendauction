@@ -5,7 +5,39 @@
   gap: 1rem 2rem; /* Gap between rows and columns */
   margin-top: 20px;
 }
+.auction-form-title {
+  text-align: center;
+  color: #6a1b9a;
+  margin-bottom: 25px;
+  font-weight: 600;
+  font-size: 29px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif; /* Custom font */
+}
+.text-muted.mb-2 {
+  text-align: center;
+}
+.back-btn {
+  background: none; /* Removes background */
+  border: none;     /* Removes border */
+  font-size: 1.5rem;
+  color: #333;      /* Dark gray color (adjust as needed) */
+  cursor: pointer;
+  margin: 10px 0 0 10px;
+  padding: 5px;     /* Reduced padding since no background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
 
+.back-btn:hover {
+  color: purple; /* Changes color on hover (optional) */
+  transform: scale(1.1); /* Slightly enlarges on hover */
+}
+
+.back-btn i {
+  font-size: 2rem; /* Makes the arrow icon larger */
+}
 /* ===================== Responsive Breakpoints ===================== */
 @media (max-width: 1200px) {
   .form-grid-container {
