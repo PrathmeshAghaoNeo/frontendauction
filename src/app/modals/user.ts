@@ -13,6 +13,7 @@ export interface Role {
     phoneCode: string;
     minLength: number;
     maxLength: number;
+    seriesStart: string
     tblUsers?: (null)[] | null;
   }
  
@@ -51,3 +52,8 @@ export interface Role {
     profileImageUrl: any
     personalIdImageUrl: any
   }
+  export interface PaginatedUserResult {
+    users: UserView[];   
+    totalCount: number;   
+  }
+  

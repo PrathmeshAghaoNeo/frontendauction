@@ -3,38 +3,54 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     right: 5rem;
     z-index: 2;
   }
-  .auction-form-title {
-    text-align: center;
-    color: #6a1b9a;
-    margin-bottom: 25px;
-    font-weight: 600;
-    font-size: 29px;
-    font-family: 'Poppins', 'Segoe UI', sans-serif; /* Custom font */
-  }
+
   .text-muted.mb-3 {
     text-align: center;
   }
 
-
+  .auction-form-header {
+    position: relative;
+    min-height: 60px; /* Ensures space for button and title */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .auction-form-title {
+    color: #6a1b9a;
+    font-weight: 600;
+    font-size: 29px;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .auction-form-subtitle {
+    font-size: 14px;
+    color: #6c757d;
+    text-align: center;
+  }
+  
   .back-btn {
-    background: none; /* Removes background */
-    border: none;     /* Removes border */
-    font-size: 1.5rem;
-    color: #333;      /* Dark gray color (adjust as needed) */
+    position: absolute;
+    left: 0;
+    background: none;
+    border: none;
+    color: #333;
     cursor: pointer;
-    margin: 10px 0 0 10px;
-    padding: 5px;     /* Reduced padding since no background */
+    padding: 5px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
   }
- 
+  
   .back-btn:hover {
-    color: purple; /* Changes color on hover (optional) */
-    transform: scale(1.1); /* Slightly enlarges on hover */
+    color: #6a1b9a;
+    transform: scale(1.1);
   }
- 
+  
   .back-btn i {
-    font-size: 2rem; /* Makes the arrow icon larger */
+    font-size: 2rem;
   }
+  

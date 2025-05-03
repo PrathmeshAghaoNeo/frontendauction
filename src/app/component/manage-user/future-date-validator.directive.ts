@@ -16,7 +16,7 @@ export class FutureDateValidatorDirective implements Validator {
     const value: NgbDateStruct = control.value;
 
     if (!value || !value.year || !value.month || !value.day) {
-      return null; // Don't validate empty or incomplete value
+      return null; 
     }
 
     const selectedDate = new Date(value.year, value.month - 1, value.day);

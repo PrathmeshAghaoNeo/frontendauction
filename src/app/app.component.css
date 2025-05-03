@@ -44,6 +44,7 @@ body {
 .app-content {
   flex: 1;
   padding: 24px;
+  padding-top: 10px;
   overflow-y: auto;
   background-color: #ffffff;
   z-index: 0;

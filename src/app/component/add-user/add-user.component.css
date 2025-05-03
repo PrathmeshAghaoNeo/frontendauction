@@ -1,29 +1,35 @@
 /* ===================== Form Grid Layout ===================== */
-.form-grid-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Default 3 columns */
-  gap: 1rem 2rem; /* Gap between rows and columns */
-  margin-top: 20px;
+.auction-form-header {
+  position: relative;
+  min-height: 40px; /* Ensures space for button and title */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .auction-form-title {
-  text-align: center;
   color: #6a1b9a;
-  margin-bottom: 25px;
   font-weight: 600;
   font-size: 29px;
-  font-family: 'Poppins', 'Segoe UI', sans-serif; /* Custom font */
-}
-.text-muted.mb-2 {
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  margin-top: 15px;
   text-align: center;
 }
+
+.auction-form-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
 .back-btn {
-  background: none; /* Removes background */
-  border: none;     /* Removes border */
-  font-size: 1.5rem;
-  color: #333;      /* Dark gray color (adjust as needed) */
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  color: #333;
   cursor: pointer;
-  margin: 10px 0 0 10px;
-  padding: 5px;     /* Reduced padding since no background */
+  padding: 5px 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,12 +37,26 @@
 }
 
 .back-btn:hover {
-  color: purple; /* Changes color on hover (optional) */
-  transform: scale(1.1); /* Slightly enlarges on hover */
+  color: #6a1b9a;
+  transform: scale(1.1);
 }
 
 .back-btn i {
-  font-size: 2rem; /* Makes the arrow icon larger */
+  font-size: 2rem;
+}
+
+
+
+
+.form-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Default 3 columns */
+  gap: 1rem 2rem; /* Gap between rows and columns */
+  margin-top: 20px;
+}
+
+.text-muted.mb-2 {
+  text-align: center;
 }
 /* ===================== Responsive Breakpoints ===================== */
 @media (max-width: 1200px) {

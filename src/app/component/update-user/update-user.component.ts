@@ -6,17 +6,22 @@ import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { FutureDateValidatorDirective } from '../manage-user/future-date-validator.directive';
 import { UserView } from '../../modals/user';
 import Swal from 'sweetalert2';
-import { NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
+import { CustomDateFormatter } from '../../services/custom-date-formatter.service';
+import { MobileNumberValidatorDirective } from '../add-user/mobile-number-validator.directive';
 
 
 
 @Component({
   selector: 'app-update-user',
   standalone: true,
-  imports: [CommonModule, FutureDateValidatorDirective, FormsModule, NgbDatepickerModule, NgbModule],
+  imports: [CommonModule, FutureDateValidatorDirective, FormsModule, NgbDatepickerModule, NgbModule,MobileNumberValidatorDirective],
   templateUrl: './update-user.component.html',
-  styleUrls: ['./update-user.component.css']
+  styleUrls: ['./update-user.component.css'],
+  providers: [
+    { provide: NgbDateParserFormatter, useClass: CustomDateFormatter }
+  ]
 })
 export class UpdateUserComponent implements OnInit {
   user: UserView = {} as UserView;

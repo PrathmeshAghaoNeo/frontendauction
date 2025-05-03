@@ -1,12 +1,14 @@
-<button  class="back-btn" (click)="goBack()">
-  <i class="bi bi-arrow-left-circle"></i>
-</button>
+<div class="auction-form-header">
+  <button class="back-btn btn btn-link p-0" (click)="goBack()">
+    <i class="bi bi-arrow-left-circle"></i>
+  </button>
+  <div>
+    <h3 class="auction-form-title">Update User</h3>
+    <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+  </div>
+</div>
 
-
-<h3 class="auction-form-title">Update User</h3>
-<p class="text-muted mb-3"><span class="text-danger">*</span> indicates a required field</p>
-
-<form (ngSubmit)="onUpdateUser(userForm)"    #userForm="ngForm" class="container mt-4 p-4 bg-light rounded shadow">
+<form (ngSubmit)="onUpdateUser(userForm)"    #userForm="ngForm" class="container  p-4 bg-light rounded shadow">
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
@@ -67,12 +69,21 @@
           [(ngModel)]="user.mobileNumber" 
           name="mobileNumber" 
           required 
-          maxlength="10"
+          maxlength="15"
+          [mobilenumber]="countries"
           #mobileNumber="ngModel">
         </div>
         <div *ngIf="mobileNumber.invalid && (mobileNumber.dirty || mobileNumber.touched)" class="text-danger">
           <div *ngIf="mobileNumber.errors?.['required']">Mobile number is required.</div>
-          <div *ngIf="mobileNumber.errors?.['pattern']">Mobile number must be a Valid 10 digits.</div>
+          <div *ngIf="mobileNumber.errors?.['pattern']  && mobileNumber.errors?.['invalidPrefix']">
+            Enter a Valid Number
+            <div *ngIf="mobileNumber.errors?.['invalidPrefix']">
+              Mobile number must start with a valid series (e.g., 9, 8, or 7 for India).
+            </div>
+          </div>
+          <div *ngIf="mobileNumber.errors?.['invalidPhoneLength']">
+            Mobile number is invalid for the selected country.
+          </div>
         </div>
       </div>
       
@@ -174,7 +185,7 @@
             placeholder="dd-mm-yyyy"
             ngbDatepicker
             #d="ngbDatepicker"
-            [(ngModel)]="user.personalIdExpiryDate"
+            [(ngModel)]="personalIdExpiryDateStruct"
             name="personalIdExpiryDate"
             id="personalIdExpiryDate"
             required
