@@ -108,13 +108,43 @@ export class UpdateUserComponent implements OnInit {
     });
   }
 
-  onProfileImageSelected(event: any) {
-    this.profileImageFile = event.target.files[0];
+  onImageSelected(event: any, field: 'profileImageFile' | 'personalIdImageFile') {
+    const file: File = event.target.files[0];
+  
+    if (file) {
+      // Validate if the file is an image
+      if (!file.type.startsWith('image/')) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File',
+          text: 'Please upload a valid image file.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        event.target.value = ''; // Clear the input field
+        this[field] = file; // Clear the selected file for the specific field
+        return;
+      }
+  
+      // Validate file size (less than 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        Swal.fire({
+          icon: 'error',
+          title: 'File Too Large',
+          text: 'File size should be less than 2MB.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        event.target.value = ''; // Clear the input field
+        this[field] = file; // Clear the selected file for the specific field
+        return;
+      }
+  
+      // Set the selected file if all validations pass
+      this[field] = file;
+    }
   }
-
-  onPersonalIdImageSelected(event: any) {
-    this.personalIdImageFile = event.target.files[0];
-  }
+  
   getCountryName(countryId: number): string {
     const country = this.countries.find(c => c.countryId === countryId);
     return country ? country.countryName : '';
@@ -129,24 +159,7 @@ export class UpdateUserComponent implements OnInit {
       return; 
     }
 
-    if (!this.profileImageFile && !this.user.profileImageUrl) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Please upload a Personal ID image.',
-        showConfirmButton: false,
-        timer: 2000 
-      });
-      return;
-    }
-    if (!this.personalIdImageFile && !this.user.personalIdImageUrl) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Please upload a Goverment ID image.',
-        showConfirmButton: false,
-        timer: 2000 
-      });
-      return;
-    }
+    
     if (this.personalIdExpiryDateStruct) {
       const d = this.personalIdExpiryDateStruct;
       this.user.personalIdExpiryDate = `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
@@ -181,7 +194,7 @@ export class UpdateUserComponent implements OnInit {
           icon: 'success',
           title: 'User Updated',
           text: 'User details have been updated successfully!',
-          confirmButtonColor: '#3085d6'
+          showConfirmButton:false
         }).then(() => {
           this.router.navigate(['/users']);
         });

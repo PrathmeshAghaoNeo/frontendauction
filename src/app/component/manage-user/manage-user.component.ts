@@ -44,7 +44,8 @@ export class ManageUserComponent implements OnInit {
 
   loadUsers(): void {
     this.userService.getAllUser().subscribe(data => {
-      this.users = data.sort((a, b) => b.userId - a.userId);
+      this.users = data
+      
     });
   }
 
@@ -131,6 +132,8 @@ export class ManageUserComponent implements OnInit {
         user.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         user.mobileNumber.toLowerCase().includes(this.searchTerm.toLowerCase());
+        user.uid.toString().includes(this.searchTerm);
+
   
       const matchesRole = roleFilter === 0 || user.roleId === roleFilter;
       const matchesStatus = statusFilter === 0 || user.statusId === statusFilter;

@@ -71,32 +71,64 @@ export class AddUserComponent implements OnInit {
     this.location.back();
   }
 
+
   onFileChange(event: Event, field: 'profileImage' | 'personalIdImage'): void {
     const input = event.target as HTMLInputElement;
-   
+    
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-
+  
+      // Check if the file is an image
+      if (!file.type.startsWith('image/')) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File',
+          text: 'Please upload a valid image file.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        input.value = ''; // Clear the input
+        // Clear the preview URL for the field
+        if (field === 'profileImage') {
+          this.profileImagePreviewUrl = '';
+        } else if (field === 'personalIdImage') {
+          this.personalIdImagePreviewUrl = '';
+        }
+        return;
+      }
+      
+      // Check if the file size is less than 2MB
+      if (file.size > 2 * 1024 * 1024) {
+        Swal.fire({
+          icon: 'error',
+          title: 'File Too Large',
+          text: 'File size should be less than 2MB.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        input.value = ''; // Clear the input
+        // Clear the preview URL for the field
+        if (field === 'profileImage') {
+          this.profileImagePreviewUrl = '';
+        } else if (field === 'personalIdImage') {
+          this.personalIdImagePreviewUrl = '';
+        }
+        return;
+      }
+  
+      // Set the preview URL
       if (field === 'personalIdImage') {
         this.personalIdImagePreviewUrl = URL.createObjectURL(file);
+        this.user.personalIdImage = file; // Update the user object
       } else if (field === 'profileImage') {
         this.profileImagePreviewUrl = URL.createObjectURL(file);
+        this.user.profileImage = file; // Update the user object
       }
-      if (!file.type.startsWith('image/')) {
-        alert('Please upload a valid image file.');
-        input.value = '';
-        return;
-      }
-
-      if (file.size > 2 * 1024 * 1024) {
-        alert('File size should be less than 2MB.');
-        input.value = '';
-        return;
-      }
-
-      this.user[field] = file;
     }
   }
+
+  
+  
 
   loadDropdowns(): void {
     this.userService.getRoles().subscribe(data => {
@@ -149,21 +181,36 @@ export class AddUserComponent implements OnInit {
         Swal.fire({
           icon: 'success',
           title: 'User Added',
-          text: 'User has been added successfully!'
+          text: 'User has been added successfully!',
+          showConfirmButton:false
         }).then(() => {
           this.router.navigate(['/users']);
         });
       },
       error: (error) => {
         console.error('Error adding user:', error);
-        const fullMessage = error.error || 'Unknown error occurred.';
-        const extractedMessage = fullMessage.split('\r\n')[0];
-        Swal.fire({
-          icon: 'error',
-          title: 'Add Failed',
-          text: `Something went wrong while adding the user.${extractedMessage}`
-        });
+        
+        // Log the full error response to inspect its structure
+        console.log('Full error response:', error);
+      
+        // Check for a specific backend exception (BadRequestException)
+        if (error?.error?.includes('A user with the same email or mobile number already exists')) {
+          // Custom error message for duplicate email/phone number
+          Swal.fire({
+            icon: 'error',
+            title: 'Add Failed',
+            text: 'A user with the same email or mobile number already exists.'
+          });
+        } else {
+          // General fallback error message
+          Swal.fire({
+            icon: 'error',
+            title: 'Add Failed',
+            text: 'An unknown error occurred while adding the user.'
+          });
+        }
       }
+      
     });
   }
   getCountryName(countryId: number): string {

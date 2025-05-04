@@ -6,7 +6,7 @@
   <form [formGroup]="auctionForm" (ngSubmit)="onSubmit()">
     <div class="row">
 
-      <div class="col-md-6 mb-3">
+      <div class="col-md-6 mb-2">
         <label for="auctionNumber" class="form-label required-label">Auction Number</label>
         <input type="text" formControlName="auctionNumber" id="auctionNumber" class="form-control" maxlength="8" placeholder="Start with 'AUC'">
         <div *ngIf="auctionForm.get('auctionNumber')?.touched && auctionForm.get('auctionNumber')?.invalid" class="text-danger"   >
@@ -16,7 +16,7 @@
       </div>
  
       
-      <div class="col-md-6 mb-3">
+      <div class="col-md-6 mb-2">
         <label for="title" class="form-label required-label">Title</label>
         <input type="text" formControlName="title" id="title" class="form-control" maxlength="10">
         <div *ngIf="auctionForm.get('title')?.touched && auctionForm.get('title')?.invalid" class="text-danger">
@@ -66,12 +66,12 @@
       </div>
       
 
-      <div class="col-md-6 mb-3">
+      <div class="col-md-6 mb-2">
         <label for="startDateTime" class="form-label required-label">Start Date & Time</label>
         <input type="datetime-local" formControlName="startDateTime" id="startDateTime" class="form-control" [min]="currentDateTime">
       </div>
       
-      <div class="col-md-6 mb-3">
+      <div class="col-md-6 mb-2">
         <label for="endDateTime" class="form-label required-label">End Date & Time</label>
         <input type="datetime-local" formControlName="endDateTime" id="endDateTime" class="form-control" [min]="currentDateTime">
         <div class="text-danger" *ngIf="auctionForm.errors?.['endBeforeStart'] && auctionForm.get('endDateTime')?.touched">
@@ -81,7 +81,7 @@
       </div>
       
     
-      <div class="col-md-6 mb-3">
+      <div class="col-md-6 mb-2">
         <label for="incrementalTime" class="form-label required-label">Incremental Time</label>
         <select formControlName="incrementalTime" id="incrementalTime" class="form-select">
           <option value="" disabled selected>Select Time</option>

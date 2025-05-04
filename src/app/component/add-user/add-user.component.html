@@ -67,9 +67,7 @@
               {{ country.phoneCode }} ({{ country.countryName }})
             </option>
           </select>
-          <div *ngIf="countryId.invalid && (countryId.dirty || countryId.touched)" class="text-danger">
-            Select a valid Phone Code.
-          </div>
+         
           
           <input type="tel" 
           inputmode="numeric" 
@@ -83,14 +81,19 @@
           [mobilenumber]="countries"
           #mobileNumber="ngModel">
         </div>
+        <div *ngIf=" (countryId.dirty || countryId.touched)" class="text-danger">
+          <div *ngIf="user.countryId == 0">Select a valid Phone Code.</div>
+        </div>
         <div *ngIf="mobileNumber.invalid && (mobileNumber.dirty || mobileNumber.touched)" class="text-danger">
           <div *ngIf="mobileNumber.errors?.['required']">Mobile number is required.</div>
-          <div *ngIf="mobileNumber.errors?.['pattern']">Enter a Valid Number</div>
-          <div *ngIf="mobileNumber.errors?.['invalidPhoneLength'] && mobileNumber.errors?.['invalidPrefix']">
-            Mobile number is invalid for the selected country.
+          <div *ngIf="mobileNumber.errors?.['pattern']">
+            Enter a Valid Number
           </div>
-          <div *ngIf="mobileNumber.errors?.['invalidPrefix']">
-            Mobile number must start with a valid series (e.g., 9, 8, or 7 for India).
+          <div *ngIf="!mobileNumber.errors?.['pattern'] && mobileNumber.errors?.['invalidPrefix']">
+              Mobile number must start with a valid series (e.g., 9, 8, or 7 for India).
+          </div>
+          <div *ngIf="mobileNumber.errors?.['invalidPhoneLength']">
+            Mobile number Length is invalid for the selected country.
           </div>
         </div>
       </div>
@@ -119,7 +122,7 @@
     <div class="col-md-6 mb-1">
       <div class="form-group">
         <label class="form-label fw-bold">Company Number</label>
-        <input type="text" minlength="3" placeholder="e.g. A53DH" maxlength="15" class="form-control form-control-lg" #companyNumber="ngModel" [(ngModel)]="user.companyNumber" name="companyNumber">
+        <input type="text" minlength="3" placeholder="e.g. A53DH" maxlength="15" class="form-control form-control-lg" #companyNumber="ngModel" [(ngModel)]="user.companyNumber" name="companyNumber"  (input)="user.companyNumber = user.companyNumber.toUpperCase()">
         <div *ngIf="companyNumber.invalid && (companyNumber.dirty || companyNumber.touched)" class="text-danger">
           <div *ngIf="companyNumber.errors?.['minlength']">Minimum 3 characters required.</div>
           <div *ngIf="companyNumber.errors?.['maxlength']">Maximum 20 characters allowed.</div>
@@ -174,7 +177,7 @@
     <div class="col-md-6 mb-1">
       <div class="form-group">
         <label class="form-label fw-bold">Goverment ID Number<span class="text-danger">*</span></label>
-        <input type="text" placeholder=" e.g. GRKDP6754D" minlength="3" maxlength="15" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel">
+        <input type="text" placeholder=" e.g. GRKDP6754D" minlength="3" maxlength="15" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel" (input)="user.personalIdNumber = user.personalIdNumber.toUpperCase()">
         <div *ngIf="personalIdNumber.invalid && (personalIdNumber.dirty || personalIdNumber.touched)" class="text-danger">
           <div *ngIf="personalIdNumber.errors?.['required']">Goverment ID Number is required.</div>
           <div *ngIf="personalIdNumber.errors?.['minlength']">Minimum 3 characters required.</div>
@@ -242,9 +245,9 @@
     <div class="col-md-6 mb-1">
       <div class="form-group">
         <label class="form-label fw-bold">Profile Image<span class="text-danger">*</span></label>
-        <div *ngIf="profileImagePreviewUrl">
+        <div class="img-new" *ngIf="profileImagePreviewUrl">
           <img [src]="profileImagePreviewUrl" alt="Profile Image" class="img-thumbnail" width="100">
-          <p><a [href]="profileImagePreviewUrl" target="_blank">View current image</a></p>
+          <p><a [href]="profileImagePreviewUrl" target="_blank">View image</a></p>
         </div>
         <input type="file" class="form-control form-control-lg" (change)="onFileChange($event, 'profileImage')" required>
         <div *ngIf="submitted && !user.profileImage" class="text-danger">
@@ -256,9 +259,9 @@
     <div class="col-md-6 mb-1">
       <div class="form-group">
         <label class="form-label fw-bold">Goverment ID Image<span class="text-danger">*</span></label>
-        <div *ngIf="personalIdImagePreviewUrl">
+        <div class="img-new" *ngIf="personalIdImagePreviewUrl">
           <img [src]="personalIdImagePreviewUrl" alt="Goverment ID Image" class="img-thumbnail" width="100">
-          <p><a [href]="personalIdImagePreviewUrl" target="_blank">View current image</a></p>
+          <p><a [href]="personalIdImagePreviewUrl" target="_blank">View image</a></p>
         </div>
         <input type="file" class="form-control form-control-lg" (change)="onFileChange($event, 'personalIdImage')" required>
         <div *ngIf="submitted && !user.personalIdImage" class="text-danger">

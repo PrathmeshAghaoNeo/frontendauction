@@ -16,6 +16,7 @@
         <input type="text"
         minlength="3"
         maxlength="25"
+        placeholder="e.g. Jamie Oliver"
         pattern="^[A-Za-z ]+$"
         class="form-control form-control-lg"
         [(ngModel)]="user.name"
@@ -38,7 +39,7 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Email<span class="text-danger">*</span></label>
-        <input type="email" class="form-control form-control-lg" [(ngModel)]="user.email" maxlength="50" minlength="3" name="email"  pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required email #email="ngModel">
+        <input type="email" placeholder="e.g.jamie@gmail.com" class="form-control form-control-lg" [(ngModel)]="user.email" maxlength="50" minlength="3" name="email"  pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required email #email="ngModel">
         <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">
           <div *ngIf="email.errors?.['required']">Email is required.</div>
           <div *ngIf="email.errors?.['email'] ||email.errors?.['pattern']">Please enter a valid email.</div>
@@ -64,26 +65,31 @@
           
           <input type="tel" 
           inputmode="numeric" 
-          pattern="^[0-9]{10}$" 
+          pattern="^[0-9]*$"
           class="form-control form-control-lg" 
-          [(ngModel)]="user.mobileNumber" 
+          [(ngModel)]="user.mobileNumber" s
           name="mobileNumber" 
-          required 
+          required
+          placeholder="e.g. 9876534526"
           maxlength="15"
           [mobilenumber]="countries"
           #mobileNumber="ngModel">
         </div>
+        <div *ngIf=" (countryId.dirty || countryId.touched)" class="text-danger">
+          <div *ngIf="user.countryId == 0">Select a valid Phone Code.</div>
+        </div>
         <div *ngIf="mobileNumber.invalid && (mobileNumber.dirty || mobileNumber.touched)" class="text-danger">
           <div *ngIf="mobileNumber.errors?.['required']">Mobile number is required.</div>
-          <div *ngIf="mobileNumber.errors?.['pattern']  && mobileNumber.errors?.['invalidPrefix']">
+          <div *ngIf="mobileNumber.errors?.['pattern']">
             Enter a Valid Number
-            <div *ngIf="mobileNumber.errors?.['invalidPrefix']">
+          </div>
+          <div *ngIf="!mobileNumber.errors?.['pattern'] && mobileNumber.errors?.['invalidPrefix']">
               Mobile number must start with a valid series (e.g., 9, 8, or 7 for India).
-            </div>
           </div>
           <div *ngIf="mobileNumber.errors?.['invalidPhoneLength']">
-            Mobile number is invalid for the selected country.
+            Mobile number Length is invalid for the selected country.
           </div>
+
         </div>
       </div>
       
@@ -101,7 +107,7 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Company Name</label>
-        <input type="text" minlength="3" maxlength="20"  class="form-control form-control-lg" [(ngModel)]="user.companyName" #companyName="ngModel" name="companyName">
+        <input type="text"  placeholder="Apple" minlength="3" maxlength="20"  class="form-control form-control-lg" [(ngModel)]="user.companyName" #companyName="ngModel" name="companyName">
         <div *ngIf="companyName.invalid && (companyName.dirty || companyName.touched)" class="text-danger">
           <div *ngIf="companyName.errors?.['minlength']">Minimum 3 characters required.</div>
           <div *ngIf="companyName.errors?.['maxlength']">Maximum 20 characters allowed.</div>
@@ -112,7 +118,7 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Company Number</label>
-        <input type="text"  minlength="3" maxlength="15" #companyNumber="ngModel" class="form-control form-control-lg" [(ngModel)]="user.companyNumber" name="companyNumber">
+        <input type="text" placeholder="e.g. A53DH"  minlength="3" maxlength="15" #companyNumber="ngModel" class="form-control form-control-lg" [(ngModel)]="user.companyNumber" name="companyNumber" (input)="user.companyNumber = user.companyNumber.toUpperCase()">
         <div *ngIf="companyNumber.invalid && (companyNumber.dirty || companyNumber.touched)" class="text-danger">
           <div *ngIf="companyNumber.errors?.['minlength']">Minimum 3 characters required.</div>
           <div *ngIf="companyNumber.errors?.['maxlength']">Maximum 20 characters allowed.</div>
@@ -164,7 +170,7 @@
     <div class="col-md-6 mb-3">
       <div class="form-group">
         <label class="form-label fw-bold">Goverment ID Number<span class="text-danger">*</span></label>
-        <input type="text" minlength="3" maxlength="15" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel">
+        <input type="text" placeholder=" e.g. GRKDP6754D"  minlength="3" maxlength="15" class="form-control form-control-lg" [(ngModel)]="user.personalIdNumber" name="personalIdNumber" required #personalIdNumber="ngModel" (input)="user.personalIdNumber = user.personalIdNumber.toUpperCase()">
         <div *ngIf="personalIdNumber.invalid && (personalIdNumber.dirty || personalIdNumber.touched)" class="text-danger">
           <div *ngIf="personalIdNumber.errors?.['required']">Goverment ID Number is required.</div>
           <div *ngIf="personalIdNumber.errors?.['minlength']">Minimum 3 characters required.</div>
@@ -182,7 +188,7 @@
         <div class="input-group">
           <input
             class="form-control form-control-lg"
-            placeholder="dd-mm-yyyy"
+            placeholder="dd-MM-yyyy"
             ngbDatepicker
             #d="ngbDatepicker"
             [(ngModel)]="personalIdExpiryDateStruct"
@@ -230,12 +236,12 @@
       <div class="form-group">
         <label class="form-label fw-bold">Profile Image<span class="text-danger">*</span></label>
         
-        <div *ngIf="user.profileImageUrl">
+        <div class="img-new" *ngIf="user.profileImageUrl">
           <img [src]="user.profileImageUrl" alt="Profile Image" class="img-thumbnail" width="100">
-          <p><a [href]="user.profileImageUrl" target="_blank">View current image</a></p>
+          <p><a [href]="user.profileImageUrl" target="_blank">View  image</a></p>
         </div>
         
-        <input type="file" class="form-control form-control-lg" (change)="onProfileImageSelected($event)">
+        <input type="file" class="form-control form-control-lg" (change)="onImageSelected($event, 'profileImageFile')">
         
         <div *ngIf="submitted && !user.profileImageUrl && !profileImageFile" class="text-danger">
           Profile Image is required.
@@ -247,12 +253,12 @@
       <div class="form-group">
         <label class="form-label fw-bold">Goverment ID Image<span class="text-danger">*</span></label>
         
-        <div *ngIf="user.personalIdImageUrl">
+        <div class="img-new" *ngIf="user.personalIdImageUrl">
           <img [src]="user.personalIdImageUrl" alt="Goverment ID Image" class="img-thumbnail" width="100">
-          <p><a [href]="user.personalIdImageUrl" target="_blank">View current image</a></p>
+          <p><a [href]="user.personalIdImageUrl" target="_blank">View image</a></p>
         </div>
 
-        <input type="file" class="form-control form-control-lg" (change)="onPersonalIdImageSelected($event)">
+        <input type="file" class="form-control form-control-lg" (change)="onImageSelected($event, 'personalIdImageFile')">
         
         <div *ngIf="submitted && !user.personalIdImageUrl && !personalIdImageFile" class="text-danger">
           Goverment ID Image is required.

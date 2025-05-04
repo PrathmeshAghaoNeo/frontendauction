@@ -1,84 +1,87 @@
 <!-- <div class="container-fluid p-4"> -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-purple">Manage Users</h2>
-    <div>
-      <button class="btn custom-purple-btn" (click)="openAddUserModal()">
-        <i class="bi bi-person-plus me-2"></i> Add New User
-      </button>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="text-purple">Manage Users</h2>
+  <div>
+    <button class="btn custom-purple-btn" (click)="openAddUserModal()">
+      <i class="bi bi-person-plus me-2"></i> Add New User
+    </button>
   </div>
+</div>
 
-  <div class="row mb-3">
-    <div class="col-md-4">
-      <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="Search users…">
-    </div>
-    <div class="col-md-3">
-      <select class="form-select" [(ngModel)]="filterRole">
-        <option [value]="0">All Roles</option>
-        <option *ngFor="let role of roleOptions" [value]="role.roleId">{{ role.roleName }}</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <select class="form-select" [(ngModel)]="filterStatus">
-        <option [value]="0">All Statuses</option>
-        <option [value]="1">Active</option>
-        <option [value]="2">Pending</option>
-        <option [value]="3">Inactive</option>
-      </select>
-    </div>
+<div class="row mb-3">
+  <div class="col-md-4">
+    <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="Search users…">
   </div>
+  <div class="col-md-3">
+    <select class="form-select" [(ngModel)]="filterRole">
+      <option [value]="0">All Roles</option>
+      <option *ngFor="let role of roleOptions" [value]="role.roleId">{{ role.roleName }}</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" [(ngModel)]="filterStatus">
+      <option [value]="0">All Statuses</option>
+      <option [value]="1">Verified</option>
+      <option [value]="3">UnVerified</option>
+      <option [value]="2">Banned</option>
+    </select>
+  </div>
+</div>
 
-  <!-- Table -->
-  <div class="table-responsive">
-    <table class="table table-hover shadow-sm border-0 rounded">
-      <thead class="table-purple text-white">
-        <tr>
-          <th (click)="sortData('uid')">User ID <span *ngIf="sortKey === 'uid'">{{ sortAsc ? '▲' : '▼' }}</span></th>
-          <th (click)="sortData('name')">Name <span *ngIf="sortKey === 'name'">{{ sortAsc ? '▲' : '▼' }}</span></th>
-          <th (click)="sortData('roleId')">Role <span *ngIf="sortKey === 'roleId'">{{ sortAsc ? '▲' : '▼' }}</span></th>
-          <th ><span>Mobile Number</span></th>
-          <th (click)="sortData('email')">Email <span *ngIf="sortKey === 'email'">{{ sortAsc ? '▲' : '▼' }}</span></th>
-          <th (click)="sortData('statusId')">Status <span *ngIf="sortKey === 'statusId'">{{ sortAsc ? '▲' : '▼' }}</span></th>
-          <th (click)="sortData('gender')">Gender <span *ngIf="sortKey === 'gender'">{{ sortAsc ? '▲' : '▼' }}</span></th>
-          <th class="text-end">Actions</th>
-          
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of filteredUsers  | paginate: { id: 'users', itemsPerPage: itemsPerPage, currentPage: page }">
-          <td>#{{ user.uid }}</td>
-          <td>{{ user.name }}</td>
-          <td>{{ getRoleName(user.roleId) }}</td>
-          <td>{{ user.mobileNumber }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-            <span [ngClass]="{
-              'badge bg-success': user.statusId === 1,
-              'badge bg-warning text-dark': user.statusId === 2,
-              'badge bg-danger': user.statusId === 3
-            }" class="badge px-3 py-2 rounded-pill">
-              {{ getStatusName(user.statusId) }}
-            </span>
-          </td>
-          <td class="text-capitalize">{{ user.gender }}</td>
-          <td class="text-end action-buttons">
-            <button class="btn btn-sm btn-outline-primary me-1" (click)="viewUser(user)">
-              <i class="bi bi-eye"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-success me-1" (click)="editUser(user)">
-              <i class="bi bi-pencil-square"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(user.userId)">
-              <i class="bi bi-trash"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <pagination-controls id="users" (pageChange)="page = $event"></pagination-controls>
-  </div>
-  <!-- No User Prsent -->
-  <div *ngIf="filteredUsers.length === 0" class="text-center py-5 bg-light rounded mt-4">
-    <p class="text-muted mb-0">No users found. Click "Add New User" to create one.</p>
-  </div>
+<!-- Table -->
+<div class="table-responsive">
+  <table class="table table-hover shadow-sm border-0 rounded">
+    <thead class="table-purple text-white">
+      <tr>
+        <th (click)="sortData('uid')">User ID <span *ngIf="sortKey === 'uid'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'uid'" class="sort-icon">⇅</i></th>
+        <th (click)="sortData('name')">Name <span *ngIf="sortKey === 'name'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'name'" class="sort-icon">⇅</i></th>
+        <th (click)="sortData('roleId')">Role <span *ngIf="sortKey === 'roleId'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'uid'" class="sort-icon">⇅</i></th>
+        <th><span>Mobile Number</span></th>
+        <th (click)="sortData('email')">Email <span *ngIf="sortKey === 'email'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'email'" class="sort-icon">⇅</i></th>
+        <th (click)="sortData('statusId')">Status <span *ngIf="sortKey === 'statusId'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'statusId'" class="sort-icon">⇅</i>
+        </th>
+        <th (click)="sortData('gender')">Gender <span *ngIf="sortKey === 'gender'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'gender'" class="sort-icon">⇅</i></th>
+        <th class="text-end">Actions</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let user of filteredUsers  | paginate: { id: 'users', itemsPerPage: itemsPerPage, currentPage: page }">
+        <td>{{ user.uid }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ getRoleName(user.roleId) }}</td>
+        <td>{{ user.mobileNumber }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <span [ngClass]="{
+            'bg-success': user.statusId === 1,
+            'bg-danger ': user.statusId === 2,
+            'bg-warning ': user.statusId === 3
+             }" class="badge badge-fixed-width text-dark">
+            {{ getStatusName(user.statusId) }}
+          </span>
+
+        </td>
+        <td class="text-capitalize">{{ user.gender }}</td>
+        <td class="text-end action-buttons">
+          <button class="btn btn-sm btn-outline-primary me-1" (click)="viewUser(user)">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-success me-1" (click)="editUser(user)">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(user.userId)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls id="users" (pageChange)="page = $event"></pagination-controls>
+</div>
+<!-- No User Prsent -->
+<div *ngIf="filteredUsers.length === 0" class="text-center py-5 bg-light rounded mt-4">
+  <p class="text-muted mb-0">No users found. Click "Add New User" to create one.</p>
+</div>
 <!-- </div> -->
