@@ -13,6 +13,9 @@ import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 
+// Import date utility functions
+import { formatToDateTimeLocalFormat, normalizeDateTime, futureDateValidator, endDateAfterStartDateValidator } from '../../utils/date-time.utils';  // Adjust the path if necessary
+
 @Component({
   selector: 'app-add-auction',
   standalone: true,
@@ -49,59 +52,29 @@ export class AddAuctionComponent implements OnInit {
     private http: HttpClient,
     private router: Router
   ) {
-    this.currentDateTime = this.formatDate(new Date());
+    this.currentDateTime = formatToDateTimeLocalFormat(new Date()); // Use updated format function
 
     this.auctionForm = this.fb.group(
       {
         auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
         title: ['', [Validators.required, Validators.maxLength(20)]],
         type: ['', Validators.required],
-        startDateTime: ['', this.futureDateValidator],
-        endDateTime: ['', [Validators.required, this.futureDateValidator]],
+        startDateTime: ['', futureDateValidator], // Updated to use external validator
+        endDateTime: ['', [Validators.required, futureDateValidator]], // Updated to use external validator
         statusId: ['', Validators.required],
         incrementalTime: ['', Validators.required],
         categoryId: ['', Validators.required]
       },
-      { validators: this.endDateAfterStartDateValidator }
+      { validators: endDateAfterStartDateValidator } // Use updated endDate validator
     );
   }
 
   ngOnInit() {
     const now = new Date();
     this.auctionForm.patchValue({
-      startDateTime: this.formatToDateTimeLocalFormat(now),
-      endDateTime: this.formatToDateTimeLocalFormat(now)
+      startDateTime: formatToDateTimeLocalFormat(now),
+      endDateTime: formatToDateTimeLocalFormat(now)
     });
-  }
-
-  formatDate(date: Date): string {
-    const y = String(date.getFullYear()).slice(-2);
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    const h = String(date.getHours()).padStart(2, '0');
-    const min = String(date.getMinutes()).padStart(2, '0');
-    return `${y}-${m}-${d}T${h}:${min}`;
-  }
-
-  formatToDateTimeLocalFormat(date: Date): string {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    const h = String(date.getHours()).padStart(2, '0');
-    const min = String(date.getMinutes()).padStart(2, '0');
-    return `${y}-${m}-${d}T${h}:${min}`;
-  }
-
-  futureDateValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) return null;
-    return new Date(control.value) <= new Date() ? { pastDate: true } : null;
-  }
-
-  endDateAfterStartDateValidator(group: AbstractControl): ValidationErrors | null {
-    const start = group.get('startDateTime')?.value;
-    const end = group.get('endDateTime')?.value;
-    if (!start || !end) return null;
-    return new Date(end) > new Date(start) ? null : { endBeforeStart: true };
   }
 
   onSubmit() {
@@ -118,15 +91,16 @@ export class AddAuctionComponent implements OnInit {
 
     const formValue = this.auctionForm.value;
 
-    const normalizeDateTime = (val: string): string =>
-      val.length === 16 ? `${val}:00` : val;
+    // Normalize the date-time values before sending the payload
+    const normalizedStartDateTime = normalizeDateTime(formValue.startDateTime);
+    const normalizedEndDateTime = normalizeDateTime(formValue.endDateTime);
 
     const payload = {
       auctionNumber: formValue.auctionNumber,
       title: formValue.title,
       type: formValue.type,
-      startDateTime: new Date(normalizeDateTime(formValue.startDateTime)).toISOString(),
-      endDateTime: new Date(normalizeDateTime(formValue.endDateTime)).toISOString(),
+      startDateTime: new Date(normalizedStartDateTime).toISOString(),
+      endDateTime: new Date(normalizedEndDateTime).toISOString(),
       statusId: +formValue.statusId,
       incrementalTime: +formValue.incrementalTime,
       categoryId: +formValue.categoryId
@@ -166,8 +140,6 @@ export class AddAuctionComponent implements OnInit {
           confirmButtonText: 'OK'
         });
       }
-      
-      
     });
   }
 }

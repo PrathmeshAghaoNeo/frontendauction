@@ -32,6 +32,7 @@ export const routes: Routes = [
     {path:'settings', component:SettingsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'newUser', component:AddUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'newAuction', component:AddAuctionComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'update-auction/:id', component:UpdateAuctionComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'newAsset', component:AddAssetComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
