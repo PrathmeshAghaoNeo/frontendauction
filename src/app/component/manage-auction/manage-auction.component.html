@@ -12,7 +12,7 @@
 
 <div class="row mb-3">
   <div class="col-md-4">
-    <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Search auctions…" (input)="applyFilters()" />
+    <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Search Auctions…(Title)" (input)="applyFilters()" />
   </div>
   <div class="col-md-3">
     <select class="form-select" [(ngModel)]="filterCategory" (change)="applyFilters()">
@@ -27,6 +27,7 @@
     </select>
   </div>
 </div>
+
 
 
 
@@ -54,7 +55,21 @@
         <td>{{ auction.type }}</td>
         <td>{{ auction.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ auction.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
-        <td>{{ auction.statusName }}</td>
+      
+          <!-- 👇 Status Badge -->
+          <td>
+            <span 
+              [ngClass]="{
+                'badge bg-success': auction.statusId === 1,     
+                'badge bg-warning text-dark': auction.statusId === 2, 
+                'badge bg-danger': auction.statusId === 3,       
+                'badge bg-primary': auction.statusId === 4        
+              }" 
+              class="px-3 py-2 rounded-pill">
+              {{ getStatusName(auction.statusId) }}
+            </span>
+          </td>
+          
         <td>{{ auction.incrementalTime }} mins</td>
         <td>{{ auction.categoryName }}</td>
         <td class="text-end">
@@ -78,22 +93,44 @@
 
 <!-- View Auction Modal -->
 <ng-template #viewAuctionModal let-modal>
-  <div class="modal-header bg-info text-white">
-    <h5 class="modal-title">Auction Details</h5>
+    <div class="modal-header modal-header-purple">
+    <h5 class="modal-title text-white">Auction Details</h5>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
     <div class="row mb-2">
-      <div class="col-md-6"><strong>Title:</strong> {{ selectedAuction?.title }}</div>
-      <div class="col-md-6"><strong>Type:</strong> {{ selectedAuction?.type }}</div>
-      <div class="col-md-6"><strong>Status:</strong> {{ selectedAuction?.statusName }}</div>
-      <div class="col-md-6"><strong>Category:</strong> {{ selectedAuction?.categoryName }}</div>
-      <div class="col-md-6"><strong>Start:</strong> {{ selectedAuction?.startDateTime | date:'dd/MM/yyyy HH:mm' }}</div>
-      <div class="col-md-6"><strong>End:</strong> {{ selectedAuction?.endDateTime | date:'dd/MM/yyyy HH:mm' }}</div>
-      <div class="col-md-6"><strong>Incremental Time:</strong> {{ selectedAuction?.incrementalTime }} mins</div>
+      <div class="col-md-6">
+        <label for="title" class="form-label required-label">Title:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.title }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="type" class="form-label required-label">Type:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.type }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="status" class="form-label required-label">Status:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.statusName }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="category" class="form-label required-label">Category:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.categoryName }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="startDate" class="form-label required-label">Start:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="endDate" class="form-label required-label">End:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="incrementalTime" class="form-label required-label">Incremental Time:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.incrementalTime }} mins</p>
+      </div>
     </div>
   </div>
 </ng-template>
+
 
 
 <!-- Delete Confirmation Modal -->

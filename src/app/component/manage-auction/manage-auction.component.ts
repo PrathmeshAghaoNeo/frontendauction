@@ -104,6 +104,7 @@ fetchAuctions(): void {
 }
 
 
+
   // -------------------------------
   // Filters & Search
   // -------------------------------
@@ -120,6 +121,12 @@ fetchAuctions(): void {
       return matchesSearch && matchesCategory && matchesStatus;
     });
   }
+
+  getStatusName(statusId: number): string {
+    const status = this.statuses.find(s => s.statusId === statusId);
+    return status ? status.statusName : 'Unknown';
+  }
+  
 
   // -------------------------------
   // Modal Actions
