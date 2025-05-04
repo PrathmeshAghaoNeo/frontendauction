@@ -1,8 +1,60 @@
 /* ==================== USER DETAIL SECTION ==================== */
 
 /* Container for the user details page */
+
+.auction-form-header {
+  position: relative;
+  min-height: 20px; /* Ensures space for button and title */
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.auction-form-title {
+  color: #6a1b9a;
+  font-weight: 600;
+  font-size: 29px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.auction-form-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
+.back-btn {
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #6a1b9a;
+  transform: scale(1.1);
+}
+
+.back-btn i {
+  font-size: 2rem;
+}
+
+
+
+
+
 .container {
-  margin-top: 50px;
+ 
   margin-bottom: 50px;
 }
 
@@ -13,35 +65,13 @@
 
 .card-body {
   padding: 30px;
+  padding-bottom: 10px;
 }
 
 /* ==================== USER DETAIL COLUMNS ==================== */
 
 /* Columns layout for details */
 .row {
-  margin-top: 20px;
-}
-.back-btn {
-  background: none; /* Removes background */
-  border: none;     /* Removes border */
-  font-size: 1.5rem;
-  color: #333;      /* Dark gray color (adjust as needed) */
-  cursor: pointer;
-  margin: 10px 0 0 10px;
-  padding: 5px;     /* Reduced padding since no background */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.back-btn:hover {
-  color: purple; /* Changes color on hover (optional) */
-  transform: scale(1.1); /* Slightly enlarges on hover */
-}
-
-.back-btn i {
-  font-size: 2rem; /* Makes the arrow icon larger */
 }
 
 .col-md-8 {
@@ -100,8 +130,8 @@
 
 /* Profile Image */
 .profile-img {
-  width: 120px;
-  height: 120px;
+  width: 180px;
+  height: 180px;
   object-fit: cover;
   border-radius: 50%;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
@@ -110,11 +140,13 @@
 .profile-img-container {
   text-align: center;
   margin-bottom: 20px;
+  
 }
 
 /* ID Document Image */
 .id-image {
   width: 100%;
+  max-height: 150px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -162,7 +194,7 @@
   }
 
   .card-body {
-    padding: 20px;
+    padding-top: 10px !important;
   }
 
   .card-title {

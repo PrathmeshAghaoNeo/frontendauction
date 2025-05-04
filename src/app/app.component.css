@@ -44,13 +44,16 @@ body {
 .app-content {
   flex: 1;
   padding: 24px;
-  padding-top: 10px;
+  padding-top: 15px;
   overflow-y: auto;
   background-color: #ffffff;
   z-index: 0;
   height: 100%;
 }
-
+.auth-bg{
+  background-color: var(--light-bg);
+  padding: 0%;
+}
 /* Footer styling */
 .app-footer {
   position: relative;

@@ -2,9 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
     background-color: var(--light-bg);
-    min-height: 100vh;
+    height: calc(100vh - 84px - 84px);
     width: 100%;
     box-sizing: border-box;
   }
