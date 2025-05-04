@@ -85,6 +85,13 @@ export class UpdateUserComponent implements OnInit {
 
     });
   }
+  updateTotalLimit(): void {
+    if (this.user.deposit !== null && !isNaN(this.user.deposit)) {
+      this.user.totalLimit = this.user.deposit * 10;
+    } else {
+      this.user.totalLimit = null;
+    }
+  }
   
 
 
@@ -194,20 +201,33 @@ export class UpdateUserComponent implements OnInit {
           icon: 'success',
           title: 'User Updated',
           text: 'User details have been updated successfully!',
+          timer: 2000,
           showConfirmButton:false
         }).then(() => {
           this.router.navigate(['/users']);
         });
       },
       error: (error) => {
-        console.error('Error adding user:', error);
-        const fullMessage = error.error || 'Unknown error occurred.';
-        const extractedMessage = fullMessage.split('\r\n')[0];
-        Swal.fire({
-          icon: 'error',
-          title: 'Add Failed',
-          text: `Something went wrong while adding the user.${extractedMessage}`
-        });
+       
+         if (error?.error?.includes('A user with the same email, mobile number, or Goverment ID number already exists')) {
+                  
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Add Failed',
+                    text: 'A user with the same email, mobile number, or personal ID number already exists.',
+                    timer: 4000,
+                    showConfirmButton:false
+                  });
+                } else {
+                  // General fallback error message
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Add Failed',
+                    text: 'An unknown error occurred while adding the user.',
+                    timer: 4000,
+                    showConfirmButton:false
+                  });
+                }
       }
     });
   }

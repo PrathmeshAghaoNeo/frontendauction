@@ -39,7 +39,9 @@ export class AddUserComponent implements OnInit {
     personalIdExpiryDate: '',
     countryId: 0,
     profileImage: null,
-    personalIdImage: null
+    personalIdImage: null,
+    totalLimit: null,
+    deposit: null
   };
 
   roles: Role[] = [];
@@ -51,6 +53,7 @@ export class AddUserComponent implements OnInit {
   minDate: NgbDateStruct;
   personalIdImagePreviewUrl: string | null = null;
   profileImagePreviewUrl: string | null = null;
+  // depositHasError = false;
 
   // bsConfig: Partial<BsDatepickerConfig>;
   // this.bsConfig = {dateInputFormat: 'DD-MM-YYYY',  // Set the date format
@@ -70,7 +73,13 @@ export class AddUserComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
-
+  updateTotalLimit(): void {
+    if (this.user.deposit !== null && !isNaN(this.user.deposit)) {
+      this.user.totalLimit = this.user.deposit * 10;
+    } else {
+      this.user.totalLimit = null;
+    }
+  }
 
   onFileChange(event: Event, field: 'profileImage' | 'personalIdImage'): void {
     const input = event.target as HTMLInputElement;
@@ -148,6 +157,7 @@ export class AddUserComponent implements OnInit {
   }
   onSubmit(): void {
     this.submitted = true;
+    
     if (this.userForm.invalid) {
 
       Object.values(this.userForm.controls).forEach(control => {
@@ -182,31 +192,36 @@ export class AddUserComponent implements OnInit {
           icon: 'success',
           title: 'User Added',
           text: 'User has been added successfully!',
+          timer: 2000,
           showConfirmButton:false
         }).then(() => {
           this.router.navigate(['/users']);
         });
       },
       error: (error) => {
-        console.error('Error adding user:', error);
         
-        // Log the full error response to inspect its structure
+        
+       
         console.log('Full error response:', error);
       
-        // Check for a specific backend exception (BadRequestException)
-        if (error?.error?.includes('A user with the same email or mobile number already exists')) {
-          // Custom error message for duplicate email/phone number
+        
+        if (error?.error?.includes('A user with the same email, mobile number, or Goverment ID number already exists')) {
+          
           Swal.fire({
             icon: 'error',
             title: 'Add Failed',
-            text: 'A user with the same email or mobile number already exists.'
+            text: 'A user with the same email, mobile number, or personal ID number already exists.',
+            timer: 4000,
+            showConfirmButton:false
           });
         } else {
           // General fallback error message
           Swal.fire({
             icon: 'error',
             title: 'Add Failed',
-            text: 'An unknown error occurred while adding the user.'
+            text: 'An unknown error occurred while adding the user.',
+            timer: 4000,
+            showConfirmButton:false
           });
         }
       }

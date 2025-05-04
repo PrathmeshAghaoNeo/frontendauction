@@ -4,10 +4,10 @@
   
       <div class="form-group">
         <label class="form-label" for="email">Email</label>
-        <input type="email" class="form-control" formControlName="email" placeholder="Email" />
+        <input type="email" class="form-control"  placeholder="e.g.jamie@gmail.com" formControlName="email" pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" />
         <div *ngIf="loginForm.controls['email'].invalid && (loginForm.controls['email'].dirty || loginForm.controls['email'].touched)" class="text-danger">
           <div *ngIf="loginForm.controls['email'].errors?.['required']">Email is required.</div>
-          <div *ngIf="loginForm.controls['email'].errors?.['email']">Please enter a valid email.</div>
+          <div *ngIf="loginForm.controls['email'].errors?.['email'] || loginForm.controls['email'].errors?.['pattern']">Please enter a valid email.</div>
         </div>
       </div>
   

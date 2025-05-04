@@ -69,3 +69,35 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     object-fit: cover;   
     border-radius: 8px;
   }
+
+  .btn-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 1rem; 
+  }
+
+  
+  .btn-outline-primary {
+    background-color: transparent;
+    color: #6a1b9a; 
+    border: 2px solid #6a1b9a;
+    font-weight: 500;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-outline-primary:hover, .btn-outline-primary:active {
+    background-color: #6a1b9a;
+    color: white;
+    border-color: #6a1b9a;
+  }
+  
+ 
+  .btn-check:checked + .btn-outline-primary {
+    background-color: #6a1b9a; 
+    color: white;
+    border-color: #6a1b9a; 
+  }
