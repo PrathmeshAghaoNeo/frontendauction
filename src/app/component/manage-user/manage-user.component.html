@@ -1,4 +1,4 @@
-<!-- <div class="container-fluid p-4"> -->
+
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="text-purple">Manage Users</h2>
   <div>
@@ -28,7 +28,7 @@
   </div>
 </div>
 
-<!-- Table -->
+
 <div class="table-responsive">
   <table class="table table-hover shadow-sm border-0 rounded">
     <thead class="table-purple text-white">
@@ -80,8 +80,7 @@
   </table>
   <pagination-controls id="users" (pageChange)="page = $event"></pagination-controls>
 </div>
-<!-- No User Prsent -->
+
 <div *ngIf="filteredUsers.length === 0" class="text-center py-5 bg-light rounded mt-4">
   <p class="text-muted mb-0">No users found. Click "Add New User" to create one.</p>
 </div>
-<!-- </div> -->

@@ -243,7 +243,6 @@
     </button>
   </div>
 
-  <!-- Move validation OUTSIDE input-group, and use d-block -->
   <div *ngIf="personalIdExpiryDate.errors?.['required'] && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)" class="invalid-feedback d-block">
     Government ID Expiry Date is required.
   </div>

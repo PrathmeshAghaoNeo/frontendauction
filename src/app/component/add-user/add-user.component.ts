@@ -91,7 +91,6 @@ export class AddUserComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
   
-      // Check if the file is an image
       if (!file.type.startsWith('image/')) {
         Swal.fire({
           icon: 'error',
@@ -100,8 +99,7 @@ export class AddUserComponent implements OnInit {
           timer: 2000,
           showConfirmButton: false
         });
-        input.value = ''; // Clear the input
-        // Clear the preview URL for the field
+        input.value = ''; 
         if (field === 'profileImage') {
           this.profileImagePreviewUrl = '';
         } else if (field === 'personalIdImage') {
@@ -110,7 +108,6 @@ export class AddUserComponent implements OnInit {
         return;
       }
       
-      // Check if the file size is less than 2MB
       if (file.size > 2 * 1024 * 1024) {
         Swal.fire({
           icon: 'error',
@@ -119,8 +116,7 @@ export class AddUserComponent implements OnInit {
           timer: 2000,
           showConfirmButton: false
         });
-        input.value = ''; // Clear the input
-        // Clear the preview URL for the field
+        input.value = ''; 
         if (field === 'profileImage') {
           this.profileImagePreviewUrl = '';
         } else if (field === 'personalIdImage') {
@@ -129,13 +125,12 @@ export class AddUserComponent implements OnInit {
         return;
       }
   
-      // Set the preview URL
       if (field === 'personalIdImage') {
         this.personalIdImagePreviewUrl = URL.createObjectURL(file);
-        this.user.personalIdImage = file; // Update the user object
+        this.user.personalIdImage = file; 
       } else if (field === 'profileImage') {
         this.profileImagePreviewUrl = URL.createObjectURL(file);
-        this.user.profileImage = file; // Update the user object
+        this.user.profileImage = file; 
       }
     }
   }
@@ -220,7 +215,6 @@ export class AddUserComponent implements OnInit {
             showConfirmButton:false
           });
         } else {
-          // General fallback error message
           Swal.fire({
             icon: 'error',
             title: 'Add Failed',

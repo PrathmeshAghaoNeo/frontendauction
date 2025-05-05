@@ -22,13 +22,13 @@ export class ManageUserComponent implements OnInit {
   page: number = 1;
   itemsPerPage: number = 5;
 
-  // for filters
+  
   searchTerm: string = '';
   filterRole: number = 0;
   filterStatus: number = 0;
 
 
-  //sorting
+  
   sortColumn: string = 'uid';
   sortDirection: string = 'asc';
   sortKey: keyof UserView | null = null;
@@ -123,7 +123,6 @@ export class ManageUserComponent implements OnInit {
   }
 
   get filteredUsers(): UserView[] {
-    // Convert filterRole and filterStatus to numbers to ensure accurate comparison
     const roleFilter = this.filterRole ? Number(this.filterRole) : 0;
     const statusFilter = this.filterStatus ? Number(this.filterStatus) : 0;
   
