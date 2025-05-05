@@ -27,9 +27,9 @@
   }
   
   .back-btn i {
-    font-size: 1.8rem; /* Increased icon size */
+    font-size: 1.8rem;
   }
   
   .back-btn:hover {
-    color: #333; /* Slightly darker on hover */
+    color: #333; 
   }

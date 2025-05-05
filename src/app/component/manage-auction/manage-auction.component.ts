@@ -17,24 +17,21 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
   encapsulation: ViewEncapsulation.None
 })
 export class ManageAuctionComponent implements OnInit {
-  // Pagination & Data
+
   auctions: Auction[] = [];
   allAuctions: Auction[] = [];
   selectedAuction: Auction | null = null;
-
-  // Filters & Search
   searchText: string = '';
   filterCategory: number = 0;
   filterStatus: number = 0;
-
-  // Form & Modal
   auctionForm!: FormGroup;
   currentDateTime: string = new Date().toISOString().slice(0, 16);
-
-  // Paging
   page: number = 1;
   itemsPerPage: number = 5;
-
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' | '' = '';
+  defaultAuctions: Auction[] = [];
+  
   categories = [
     { categoryId: 1, categoryName: 'Electronics' },
     { categoryId: 2, categoryName: 'Vehicles' },
@@ -103,6 +100,38 @@ fetchAuctions(): void {
   });
 }
 
+sortAuctions(column: string): void {
+  if (this.sortColumn === column) {
+    if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else if (this.sortDirection === 'desc') {
+      this.sortDirection = '';
+    } else {
+      this.sortDirection = 'asc';
+    }
+  } else {
+    this.sortColumn = column;
+    this.sortDirection = 'asc';
+  }
+
+  if (this.sortDirection === '') {
+    this.auctions = [...this.defaultAuctions];
+    this.applyFilters(); // reapply filters if needed
+    return;
+  }
+
+  const dir = this.sortDirection === 'asc' ? 1 : -1;
+  this.auctions.sort((a, b) => {
+    const valA = (a as any)[column]?.toString().toLowerCase();
+    const valB = (b as any)[column]?.toString().toLowerCase();
+
+    if (valA < valB) return -1 * dir;
+    if (valA > valB) return 1 * dir;
+    return 0;
+  });
+}
+
+
 
 
   // -------------------------------
@@ -122,9 +151,9 @@ fetchAuctions(): void {
     });
   }
 
+ 
   getStatusName(statusId: number): string {
-    const status = this.statuses.find(s => s.statusId === statusId);
-    return status ? status.statusName : 'Unknown';
+    return this.statuses.find(s => s.statusId === statusId)?.statusName || 'Unknown';
   }
   
 
