@@ -12,9 +12,8 @@ import {
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
-
-// Import date utility functions
 import { formatToDateTimeLocalFormat, normalizeDateTime, futureDateValidator, endDateAfterStartDateValidator } from '../../utils/date-time.utils';  // Adjust the path if necessary
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-add-auction',
@@ -50,8 +49,8 @@ export class AddAuctionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private router: Router
-  ) {
+    private router: Router,
+    private location: Location  ) {
     this.currentDateTime = formatToDateTimeLocalFormat(new Date()); // Use updated format function
 
     this.auctionForm = this.fb.group(
@@ -75,6 +74,9 @@ export class AddAuctionComponent implements OnInit {
       startDateTime: formatToDateTimeLocalFormat(now),
       endDateTime: formatToDateTimeLocalFormat(now)
     });
+  }
+  goBack(): void {
+    this.location.back();
   }
 
   onSubmit() {

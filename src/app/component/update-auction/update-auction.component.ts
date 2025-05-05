@@ -12,12 +12,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
-import {
-  formatToDateTimeLocalFormat,
-  futureDateValidator,
-  endDateAfterStartDateValidator,
-  normalizeDateTime
-} from '../../utils/date-time.utils';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-update-auction',
@@ -55,7 +50,8 @@ export class UpdateAuctionComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -81,7 +77,9 @@ export class UpdateAuctionComponent implements OnInit {
       }
     );
   }
-
+  goBack(): void {
+    this.location.back();
+  }
   loadAuction() {
     this.http.get<any>(`${ApiEndpoints.AUCTION}/${this.auctionId}`).subscribe({
       next: (data) => {

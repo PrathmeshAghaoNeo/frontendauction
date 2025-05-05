@@ -220,7 +220,6 @@ export class AddUserComponent implements OnInit {
             showConfirmButton:false
           });
         } else {
-          // General fallback error message
           Swal.fire({
             icon: 'error',
             title: 'Add Failed',
