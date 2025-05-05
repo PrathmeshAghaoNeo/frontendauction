@@ -35,7 +35,7 @@
     <tbody>
       <tr *ngFor="let asset of assets | paginate: { id: 'asset', itemsPerPage: itemsPerPage, currentPage: page }">
         <td>
-          <img [src]="asset.galleries?.[0]?.fileUrl || 'https://via.placeholder.com/100'" class="img-thumbnail" width="60" />
+          <img [src]="asset.galleries[0].fileUrl || 'https://via.placeholder.com/100'" class="img-thumbnail" width="60" />
         </td>
         <td>{{ asset.title }}</td>
         <td>#{{ asset.assetNumber }}</td>

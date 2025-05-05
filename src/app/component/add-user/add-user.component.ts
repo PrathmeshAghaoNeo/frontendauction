@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { FutureDateValidatorDirective } from '../manage-user/future-date-validator.directive';
 import { Router, } from '@angular/router';
 import { Country, Role, Status, User } from '../../modals/user';
@@ -53,6 +53,7 @@ export class AddUserComponent implements OnInit {
   minDate: NgbDateStruct;
   personalIdImagePreviewUrl: string | null = null;
   profileImagePreviewUrl: string | null = null;
+  @ViewChild('mobileNumber') mobileNumber!: NgModel;
   // depositHasError = false;
 
   // bsConfig: Partial<BsDatepickerConfig>;
@@ -79,6 +80,9 @@ export class AddUserComponent implements OnInit {
     } else {
       this.user.totalLimit = null;
     }
+  }
+  onCountryChange() {
+    this.mobileNumber.control.updateValueAndValidity();
   }
 
   onFileChange(event: Event, field: 'profileImage' | 'personalIdImage'): void {
@@ -203,9 +207,10 @@ export class AddUserComponent implements OnInit {
         
        
         console.log('Full error response:', error);
+        const errorMessage = typeof error?.error === 'string'? error.error: error?.error?.message || 'An unknown error occurred';
       
         
-        if (error?.error?.includes('A user with the same email, mobile number, or Goverment ID number already exists')) {
+        if (errorMessage.includes('A user with the same email, mobile number, or Goverment ID number already exists')) {
           
           Swal.fire({
             icon: 'error',

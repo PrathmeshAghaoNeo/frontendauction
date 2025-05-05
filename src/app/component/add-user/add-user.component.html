@@ -79,6 +79,7 @@
           placeholder="e.g. 9876534526"
           maxlength="15"
           [mobilenumber]="countries"
+          (ngModelChange)="onCountryChange()"
           #mobileNumber="ngModel">
         </div>
         <div *ngIf="(countryId.dirty || countryId.touched || mobileNumber.dirty || mobileNumber.touched)" class="text-danger">

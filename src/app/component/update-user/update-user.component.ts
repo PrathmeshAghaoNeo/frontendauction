@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, viewChild, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
@@ -36,6 +36,7 @@ export class UpdateUserComponent implements OnInit {
   minDate: NgbDateStruct;
   personalIdExpiryDateStruct: NgbDateStruct | null = null;
   submitted = false;
+  @ViewChild('mobileNumber') mobileNumber!: NgModel;
 
   constructor(
     private route: ActivatedRoute,
@@ -92,7 +93,9 @@ export class UpdateUserComponent implements OnInit {
       this.user.totalLimit = null;
     }
   }
-  
+  onCountryChange() {
+    this.mobileNumber.control.updateValueAndValidity();
+  }
 
 
   loadCountries() {
@@ -208,8 +211,11 @@ export class UpdateUserComponent implements OnInit {
         });
       },
       error: (error) => {
+
+        const errorMessage = typeof error?.error === 'string'? error.error: error?.error?.message || 'An unknown error occurred';
+      
        
-         if (error?.error?.includes('A user with the same email, mobile number, or Goverment ID number already exists')) {
+         if (errorMessage.includes('A user with the same email, mobile number, or Goverment ID number already exists')) {
                   
                   Swal.fire({
                     icon: 'error',
