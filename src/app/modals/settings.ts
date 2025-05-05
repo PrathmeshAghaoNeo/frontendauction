@@ -8,7 +8,7 @@ export interface FinanceSettings {
   debitCardFee: number;
   adminFees: number;
   auctionFees: number;
-  buyerCommission: number;
+  buyerCommissionPercent: number;
 }
  
 export interface DirectSaleSettings {

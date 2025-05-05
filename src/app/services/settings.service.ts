@@ -20,23 +20,23 @@ export class SettingsService {
 
   // Individual GET methods
   getAuctionSettings(): Observable<AuctionSettings> {
-    return this.http.get<AuctionSettings>(`${ApiEndpoints.AUCTIONSETTINGS}/AuctionSettings`);
+    return this.http.get<AuctionSettings>(`${ApiEndpoints.AUCTIONSETTINGS}`);
   }
 
   getFinanceSettings(): Observable<FinanceSettings> {
-    return this.http.get<FinanceSettings>(`${ApiEndpoints.FINANCESETTINGS}/FinanceSettings/GetAll`);
+    return this.http.get<FinanceSettings>(`${ApiEndpoints.FINANCESETTINGS}/GetAll`);
   }
 
   getDirectSaleSettings(): Observable<DirectSaleSettings> {
-    return this.http.get<DirectSaleSettings>(`${ApiEndpoints.DIRECTSALESETTINGS}/DirectSaleSettings`);
+    return this.http.get<DirectSaleSettings>(`${ApiEndpoints.DIRECTSALESETTINGS}`);
   }
 
   getStaticPagesSettings(): Observable<StaticPagesSettings> {
-    return this.http.get<StaticPagesSettings>(`${ApiEndpoints.STATICPAGESETTINGS}/StaticPagesSettings`);
+    return this.http.get<StaticPagesSettings>(`${ApiEndpoints.STATICPAGESETTINGS}`);
   }
 
   getFooterLinksSettings(): Observable<FooterLinksSettings> {
-    return this.http.get<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}/FooterLinksSettings/Get`);
+    return this.http.get<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}/Get`);
   }
 
   // Combined GET method
@@ -52,22 +52,22 @@ export class SettingsService {
 
   // Individual UPDATE methods
   updateAuctionSettings(settings: AuctionSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.AUCTIONSETTINGS}/AuctionSettings`, settings);
+    return this.http.put(`${ApiEndpoints.AUCTIONSETTINGS}`, settings);
   }
 
   updateFinanceSettings(settings: FinanceSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.FINANCESETTINGS}/FinanceSettings`, settings);
+    return this.http.put(`${ApiEndpoints.FINANCESETTINGS}`, settings);
   }
 
   updateDirectSaleSettings(settings: DirectSaleSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.DIRECTSALESETTINGS}/DirectSaleSettings`, settings);
+    return this.http.put(`${ApiEndpoints.DIRECTSALESETTINGS}`, settings);
   }
 
   updateStaticPagesSettings(settings: StaticPagesSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.STATICPAGESETTINGS}/StaticPagesSettings`, settings);
+    return this.http.put(`${ApiEndpoints.STATICPAGESETTINGS}`, settings);
   }
 
   updateFooterLinksSettings(settings: FooterLinksSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.FOOTERLINKSETTINGS}/FooterLinksSettings`, settings);
+    return this.http.put(`${ApiEndpoints.FOOTERLINKSETTINGS}`, settings);
   }
 }

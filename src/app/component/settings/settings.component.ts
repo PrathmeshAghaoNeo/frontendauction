@@ -34,12 +34,12 @@ export class SettingsComponent implements OnInit {
         globalIncrementalTimeInMinutes: ['']
       }),
       financeSettings: this.fb.group({
-        vat: [''],
+        vatPercent: [''],
         creditCardFee: [''],
         debitCardFee: [''],
         adminFees: [''],
         auctionFees: [''],
-        buyerCommission: ['']
+        buyerCommissionPercent: ['']
       }),
       directSaleSettings: this.fb.group({
         cartItemsLimit: [''],
@@ -74,17 +74,22 @@ export class SettingsComponent implements OnInit {
     });
 
     // Load finance settings
-    this.settingsService.getFinanceSettings().subscribe((data: FinanceSettings) => {
-      this.latestSettings.financeSettings = data;
-      this.settingsForm.get('financeSettings')?.patchValue(data);
+    this.settingsService.getFinanceSettings().subscribe((data: FinanceSettings[] | FinanceSettings) => {
+      const lastData = Array.isArray(data) ? data[data.length - 1] : data;
+      this.latestSettings.financeSettings = lastData;
+      // console.log('Last Finance Settings:', lastData);
+      this.settingsForm.get('financeSettings')?.patchValue(lastData);
     });
+    
 
     // Load direct sale settings
-    this.settingsService.getDirectSaleSettings().subscribe((data: DirectSaleSettings) => {
-      this.latestSettings.directSaleSettings = data;
-      this.settingsForm.get('directSaleSettings')?.patchValue(data);
+    this.settingsService.getDirectSaleSettings().subscribe((data: DirectSaleSettings[] | DirectSaleSettings) => {
+      const lastData = Array.isArray(data) ? data[data.length - 1] : data;
+      this.latestSettings.directSaleSettings = lastData;
+      // console.log('Last Direct Sale Settings:', lastData);
+      this.settingsForm.get('directSaleSettings')?.patchValue(lastData);
     });
-
+    
     // Load static pages settings
     this.settingsService.getStaticPagesSettings().subscribe((data: StaticPagesSettings) => {
       this.latestSettings.staticPages = data;
@@ -113,7 +118,7 @@ export class SettingsComponent implements OnInit {
         this.settingsForm.patchValue(this.latestSettings);
         this.viewMode = true;
         console.log(this.latestSettings);
-        // console.log('Raw auction settings:', data.auctionSettings);
+        console.log('Raw  settings:', data);
  
       },
       error: (error: any) => {
