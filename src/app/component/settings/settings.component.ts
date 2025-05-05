@@ -91,15 +91,17 @@ export class SettingsComponent implements OnInit {
     });
     
     // Load static pages settings
-    this.settingsService.getStaticPagesSettings().subscribe((data: StaticPagesSettings) => {
-      this.latestSettings.staticPages = data;
-      this.settingsForm.get('staticPages')?.patchValue(data);
+    this.settingsService.getStaticPagesSettings().subscribe((data: any) => {
+      const latest = Array.isArray(data) ? data[data.length - 1] : data;
+      this.latestSettings.staticPages = latest;
+      this.settingsForm.get('staticPages')?.patchValue(latest);
     });
 
     // Load footer links settings
-    this.settingsService.getFooterLinksSettings().subscribe((data: FooterLinksSettings) => {
-      this.latestSettings.footerLinks = data;
-      this.settingsForm.get('footerLinks')?.patchValue(data);
+    this.settingsService.getFooterLinksSettings().subscribe((data: any) => {
+      const latest = Array.isArray(data) ? data[data.length - 1] : data;
+      this.latestSettings.footerLinks = latest;
+      this.settingsForm.get('footerLinks')?.patchValue(latest);
     });
   }
 
