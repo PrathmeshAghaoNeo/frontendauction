@@ -6,13 +6,13 @@ import { ManageAssetService } from '../../services/asset.service';
 import { from } from 'rxjs';
 
 @Component({
-  selector: 'app-add-asset',
+  selector: 'app-edit-asset',
   standalone: true,
   imports: [CommonModule,FormsModule],
-  templateUrl: './add-asset.component.html',
-  styleUrl: './add-asset.component.css'
+  templateUrl: './edit-asset.component.html',
+  styleUrl: './edit-asset.component.css'
 })
-export class AddAssetComponent {
+export class EditAssetComponent {
 
   documentUrls: string[] = [];
 
@@ -185,6 +185,42 @@ export class AddAssetComponent {
   
   
   ngOnInit(): void {
+    // Initializing asset with empty values
+    // this.asset = {
+    //   assetNumber: '',
+    //   title: '',
+    //   categoryId: 0,
+    //   deposit: 0,
+    //   sellerId: 0,
+    //   commission: 0,
+    //   startingPrice: 0,
+    //   reserveAmount: 0,
+    //   incrementalTime: 0,
+    //   minIncrement: 0,
+    //   makeOffer: false,
+    //   featured: false,
+    //   awardingId: 0,
+    //   statusId: 0,
+    //   vatid: 0,
+    //   vatpercent: 0,
+    //   courtCaseNumber: '',
+    //   registrationDeadline: 0,
+    //   requestForViewing: false,
+    //   requestForInquiry: false,
+    //   description: '',
+    //   MapLatitude: 0,
+    //   MapLongitude: 0,
+    //   adminFees: 0,
+    //   auctionFees: 0,
+    //   buyerCommission: 0,
+    //   winnerId: 6,
+    //   awardedPrice: 0,
+    //   salesNotes: '',
+    //   galleryFiles: [],
+    //   documentFiles: [],
+    //   detailsJson: [],
+    //   auctionIds: [43]
+    // };
   }  
   
   getMakeOfferId(value: string): number {
@@ -280,10 +316,7 @@ export class AddAssetComponent {
     formData.append('RegistrationDeadline', this.asset.registrationDeadline.toString());
     formData.append('RequestForViewing', this.asset.requestForViewing.toString());
     formData.append('RequestForInquiry', this.asset.requestForInquiry.toString());
-    formData.append('Description', this.asset.description); 
-    formData.append('MapLatitude', this.asset.MapLatitude.toString());
-    formData.append('MapLongitude', this.asset.MapLongitude.toString());
-
+    formData.append('Description', this.asset.description); // ✅ You had this twice — removed duplicate
     formData.append('AdminFees', this.asset.adminFees.toString());
     formData.append('AuctionFees', this.asset.auctionFees.toString());
     formData.append('BuyerCommission', this.asset.buyerCommission.toString());
@@ -342,7 +375,116 @@ export class AddAssetComponent {
         }
       });
     }
+    
+    // Inside your AddAssetComponent
   
+  // getCategoryId(value: string): number {
+  //   switch (value) {
+  //     case 'Auction': return 1;
+  //     case 'Fixed Price': return 2;
+  //     case 'Instant Buy': return 3;
+  //     // case 'Real Estate': return 4;
+  //     // case 'Art': return 5;
+  //     // case 'Collectibles': return 6;
+  //     default: return -1; // Default case if no match is found
+  //   }
+  // }
+  
+  
+    // Convert all dropdown values to numeric IDs
+    // getMappedDropdownValues(): any {
+    //   return {
+    //     makeOffer: this.getMakeOfferId(this.formValues.makeOffer),
+    //     featured: this.getFeaturedId(this.formValues.featured),
+    //     winnerAwarding: this.getWinnerAwardingId(this.formValues.winnerAwarding),
+    //     deliveryRequired: this.getDeliveryRequiredId(this.formValues.deliveryRequired),
+    //     status: this.getStatusId(this.formValues.status),
+    //     vat: this.getVatId(this.formValues.vat),
+    //     requestForViewing: this.getRequestForViewingId(this.formValues.requestForViewing),
+    //     requestForInquiry: this.getRequestForInquiryId(this.formValues.requestForInquiry),
+    //   };
+    // }
+  
+    
+    
+  // preparePayload(): FormData {
+  //   const formData = new FormData();
+  
+  //   const dropdownMapped = {
+  //     makeOffer: this.getMakeOfferId(this.formValues.makeOffer),
+  //     featured: this.getFeaturedId(this.formValues.featured),
+  //     winnerAwarding: this.getWinnerAwardingId(this.formValues.winnerAwarding),
+  //     deliveryRequired: this.getDeliveryRequiredId(this.formValues.deliveryRequired),
+  //     statusId: this.getStatusId(this.formValues.status),
+  //     vatid: this.getVatId(this.formValues.vat),
+  //     requestForViewing: this.getRequestForViewingId(this.formValues.requestForViewing),
+  //     requestForInquiry: this.getRequestForInquiryId(this.formValues.requestForInquiry),
+  //   }; 
+  
+
+
+  //   const payload = {
+  //     ...this.asset,
+  //     ...dropdownMapped,
+  //     // Remove details if your backend expects a different structure
+  //     details: undefined
+  //   };
+
+
+  //   formData.append('asset', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+
+  //   // Append details
+  //   this.asset.detailsJson.forEach((detail, index) => {
+  //     formData.append(`details[${index}].attributeName`, detail.attributeName);
+  //     formData.append(`details[${index}].attributeValue`, detail.attributeValue);
+  //   });
+
+    
+  // // Append files
+  // this.asset.galleryFiles.forEach(file => formData.append('galleryFiles', file));
+ 
+  // this.documentUrls.forEach(url => formData.append('documentFiles', url));
+  // this.asset.documentFiles.forEach(file => formData.append('documentFiles', file));
+
+  // console.log('Request payload:', this.asset);
+
+  //   console.log("this is payload" , formData);
+  //   return formData;
+  // }
+
+
+  // // updateAsset(): void {
+  // //   const dropdownMapped = this.getMappedDropdownValues();
+
+  // //   // Example integration: attach to asset or send separately
+  // //   const updatedPayload = {
+  // //     ...this.asset,
+  // //     ...dropdownMapped
+  // //   };
+
+  // //   console.log('Final Payload for Backend:', updatedPayload);
+  // //   alert('Asset updated successfully!');
+  // // }
+
+
+
+  // updateAsset(): void {
+  //   const payload = this.preparePayload();
+    
+  //   // Call your service to save the asset
+  //   this.assetService.addAssetWithGallery(payload).subscribe({
+  //     next: (response) => {
+  //       console.log('Asset created successfully:', response);
+  //       alert('Asset created successfully!');
+  //       this.router.navigate(['assets']);
+  //     },
+  //     error: (error) => {
+  //       console.error('Error creating asset:', error);
+  //       alert('Error creating asset. Please try again.');
+  //     }
+  //   });
+  // }
+
 
   assetRoute(): void {
     this.router.navigate(['assets']);
@@ -379,6 +521,35 @@ export class AddAssetComponent {
     return typeof file === 'string' && file.startsWith('data:');
   }
   
+  
+  
+  // onGalleryFileSelected(event: any): void {
+  //   const file: File = event.target.files[0];
+  //   this.imageUploadError = '';
+  //   if (file) {
+  //     if (file.size > 500 * 1024) {
+  //       this.imageUploadError = 'Image exceeds 500KB limit.';
+  //       return;
+  //     }
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       const result = reader.result as string;
+  //       this.asset.gallery.push(result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  //   event.target.value = '';
+  // }
+  
+
+  // convertToDataUrl(file: File): Promise<string> {
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.onload = () => resolve(reader.result as string);
+  //     reader.onerror = reject;
+  //     reader.readAsDataURL(file);
+  //   });
+  // }
   
 
 
@@ -646,148 +817,3 @@ isUrl(doc: any): boolean {
 
   
 }
-
-
-
-  
-    // Inside your AddAssetComponent
-  
-  // getCategoryId(value: string): number {
-  //   switch (value) {
-  //     case 'Auction': return 1;
-  //     case 'Fixed Price': return 2;
-  //     case 'Instant Buy': return 3;
-  //     // case 'Real Estate': return 4;
-  //     // case 'Art': return 5;
-  //     // case 'Collectibles': return 6;
-  //     default: return -1; // Default case if no match is found
-  //   }
-  // }
-  
-  
-    // Convert all dropdown values to numeric IDs
-    // getMappedDropdownValues(): any {
-    //   return {
-    //     makeOffer: this.getMakeOfferId(this.formValues.makeOffer),
-    //     featured: this.getFeaturedId(this.formValues.featured),
-    //     winnerAwarding: this.getWinnerAwardingId(this.formValues.winnerAwarding),
-    //     deliveryRequired: this.getDeliveryRequiredId(this.formValues.deliveryRequired),
-    //     status: this.getStatusId(this.formValues.status),
-    //     vat: this.getVatId(this.formValues.vat),
-    //     requestForViewing: this.getRequestForViewingId(this.formValues.requestForViewing),
-    //     requestForInquiry: this.getRequestForInquiryId(this.formValues.requestForInquiry),
-    //   };
-    // }
-  
-    
-    
-  // preparePayload(): FormData {
-  //   const formData = new FormData();
-  
-  //   const dropdownMapped = {
-  //     makeOffer: this.getMakeOfferId(this.formValues.makeOffer),
-  //     featured: this.getFeaturedId(this.formValues.featured),
-  //     winnerAwarding: this.getWinnerAwardingId(this.formValues.winnerAwarding),
-  //     deliveryRequired: this.getDeliveryRequiredId(this.formValues.deliveryRequired),
-  //     statusId: this.getStatusId(this.formValues.status),
-  //     vatid: this.getVatId(this.formValues.vat),
-  //     requestForViewing: this.getRequestForViewingId(this.formValues.requestForViewing),
-  //     requestForInquiry: this.getRequestForInquiryId(this.formValues.requestForInquiry),
-  //   }; 
-  
-
-
-  //   const payload = {
-  //     ...this.asset,
-  //     ...dropdownMapped,
-  //     // Remove details if your backend expects a different structure
-  //     details: undefined
-  //   };
-
-
-  //   formData.append('asset', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
-
-  //   // Append details
-  //   this.asset.detailsJson.forEach((detail, index) => {
-  //     formData.append(`details[${index}].attributeName`, detail.attributeName);
-  //     formData.append(`details[${index}].attributeValue`, detail.attributeValue);
-  //   });
-
-    
-  // // Append files
-  // this.asset.galleryFiles.forEach(file => formData.append('galleryFiles', file));
- 
-  // this.documentUrls.forEach(url => formData.append('documentFiles', url));
-  // this.asset.documentFiles.forEach(file => formData.append('documentFiles', file));
-
-  // console.log('Request payload:', this.asset);
-
-  //   console.log("this is payload" , formData);
-  //   return formData;
-  // }
-
-
-  // // updateAsset(): void {
-  // //   const dropdownMapped = this.getMappedDropdownValues();
-
-  // //   // Example integration: attach to asset or send separately
-  // //   const updatedPayload = {
-  // //     ...this.asset,
-  // //     ...dropdownMapped
-  // //   };
-
-  // //   console.log('Final Payload for Backend:', updatedPayload);
-  // //   alert('Asset updated successfully!');
-  // // }
-
-
-
-  // updateAsset(): void {
-  //   const payload = this.preparePayload();
-    
-  //   // Call your service to save the asset
-  //   this.assetService.addAssetWithGallery(payload).subscribe({
-  //     next: (response) => {
-  //       console.log('Asset created successfully:', response);
-  //       alert('Asset created successfully!');
-  //       this.router.navigate(['assets']);
-  //     },
-  //     error: (error) => {
-  //       console.error('Error creating asset:', error);
-  //       alert('Error creating asset. Please try again.');
-  //     }
-  //   });
-  // }
-  
-
-
-
-
-  // onGalleryFileSelected(event: any): void {
-  //   const file: File = event.target.files[0];
-  //   this.imageUploadError = '';
-  //   if (file) {
-  //     if (file.size > 500 * 1024) {
-  //       this.imageUploadError = 'Image exceeds 500KB limit.';
-  //       return;
-  //     }
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       const result = reader.result as string;
-  //       this.asset.gallery.push(result);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  //   event.target.value = '';
-  // }
-  
-
-  // convertToDataUrl(file: File): Promise<string> {
-  //   return new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.onload = () => resolve(reader.result as string);
-  //     reader.onerror = reject;
-  //     reader.readAsDataURL(file);
-  //   });
-  // }
-  

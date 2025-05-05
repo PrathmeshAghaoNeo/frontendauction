@@ -90,7 +90,9 @@ export class ManageAssetComponent implements OnInit {
   newAssestRoute():void {
     this.router.navigate(['/newAsset']);
   }
-  
+  EditAssestRoute():void {
+    this.router.navigate(['/editAsset']);
+  }
 
   deleteAsset(asset: Asset): void {
     Swal.fire({

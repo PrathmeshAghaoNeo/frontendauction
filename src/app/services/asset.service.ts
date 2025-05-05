@@ -11,7 +11,7 @@ export class ManageAssetService {
 
 
   
-  // private baseUrl = 'https://localhost:7159/api/Assets';
+ 
   constructor(private http: HttpClient) { }
   
 
