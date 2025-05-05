@@ -1,0 +1,110 @@
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="text-purple">Manage Assets</h2>
+  <div>
+    <button class="btn btn-outline-secondary me-2">Filters</button>
+    <button class="btn bt_export me-2">Export</button>
+    <button class="btn bt_import me-2">Import</button>
+    <button class="btn bt_newAsset" (click)="newAssestRoute()">New Asset</button>
+  </div>
+</div>
+
+<!-- Search Bar -->
+<div class="row mb-3">
+  <div class="col-md-4">
+    <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Search..." (ngModelChange)="onSearchChange()">
+  </div>
+</div>
+
+<!-- Assets Table -->
+<div class="table-responsive">
+  <table class="table table-hover shadow-sm border-0 rounded">
+    <thead class="table-purple text-white">
+      <tr>
+        <th>Image</th>
+        <th>Title</th>
+        <th>#Asset Number</th>
+        <th>Starting Price</th>
+        <th>Category</th>
+        <th>Auction Status</th>
+        <th>Asset Status</th>
+        <th>End Time</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let asset of assets | paginate: { id: 'asset', itemsPerPage: itemsPerPage, currentPage: page }">
+        <td>
+          <img [src]="asset.galleries?.[0]?.fileUrl || 'https://via.placeholder.com/100'" class="img-thumbnail" width="60" />
+        </td>
+        <td>{{ asset.title }}</td>
+        <td>#{{ asset.assetNumber }}</td>
+        <td>BHD {{ asset.startingPrice | number }}</td>
+        <td>{{ asset.categoryName }}</td>
+        <td>{{ getAuctionStatus(asset.assetId) }}</td>
+        <td>{{ asset.statusName }}</td>
+        <td>{{ asset.registrationDeadline }} days</td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" (click)="viewAsset(asset.assetId)">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-success me-1" (click)="newAssestRoute()">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="deleteAsset(asset)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls id="asset" (pageChange)="page = $event"></pagination-controls>
+</div>
+
+<div *ngIf="selectedAsset" class="modal-overlay">
+  <!-- Modal Content -->
+  <div class="modal-content">
+    <!-- Close Button -->
+    <!-- <span class="close-btn" (click)="selectedAsset = null">&times;</span> -->
+   
+    <button  class="back-btn" (click)="selectedAsset = null">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+    
+    
+    <div class="modal-body">
+      <!-- Gallery Section -->
+      <div class="modal-gallery" *ngIf="selectedAsset.galleries.length > 0">
+        <div *ngFor="let gallery of selectedAsset.galleries" class="gallery-item">
+          <img [src]="gallery.fileUrl" alt="Gallery Image" />
+        </div>
+      </div>
+
+      <!-- Asset Details Section -->
+      <div class="modal-details">
+        <h2>Asset Details</h2>
+        <div class="asset-info">
+          <div><strong>Title:</strong> {{ selectedAsset.title }}</div>
+          <div><strong>Category:</strong> {{ selectedAsset.categoryName || 'Not Available' }}</div>
+          <div><strong>Asset Number:</strong> {{ selectedAsset.assetNumber }}</div>
+          <div><strong>Starting Price:</strong> BHD {{ selectedAsset.startingPrice | number }}</div>
+          <div><strong>Status:</strong> {{ selectedAsset.statusName }}</div>
+          <div><strong>Auction Status:</strong> {{ getAuctionStatus(selectedAsset.assetId) }}</div>
+          <div><strong>Registration Deadline:</strong> {{ selectedAsset.registrationDeadline }} days</div>
+          <div><strong>Description:</strong> {{ selectedAsset.description }}</div>
+        </div>
+
+        <!-- Asset Documents Section -->
+        <div class="asset-documents" *ngIf="selectedAsset.documents.length > 0">
+          <h3>Asset Documents</h3>
+          <ul>
+            <li *ngFor="let document of selectedAsset.documents">
+              <a [href]="document.filePath" target="_blank">{{ document.documentType }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,399 @@
+
+
+<div class="container-fluid  text-[11px] font-sans">
+    <form (ngSubmit)="updateAsset()" #assetForm="ngForm">
+      <!-- Top Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0"> 
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#" >Assets</a></li>
+            <li class="breadcrumb-item active">#{{ asset.assetNumber }}</li>
+          </ol>
+        </nav>
+        <button class="btn btn-primary" type="submit">Update</button>
+      </div>
+  
+      <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-4">
+          <div class="card p-3 shadow-sm">
+            <h5>Basic Details</h5>
+            <div class="mb-2">
+              <label class="form-label"># Asset Number</label>
+              <input class="form-control"  type="text"
+              [(ngModel)]="asset.assetNumber"
+              name="assetNumber"  
+              placeholder="Enter Asset Number"
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Title</label>
+              <input class="form-control" [(ngModel)]="asset.title" name="title" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Category</label>
+              <select class="form-select" [(ngModel)]="asset.categoryId" name="category">
+                <option *ngFor="let category of categories" [ngValue]="category.id">
+                  {{ category.name }}
+                </option>
+              </select>
+              
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Deposit %</label>
+              <input class="form-control" type="number" [(ngModel)]="asset.deposit"    name="depositPercent" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Seller</label>
+              <select class="form-select" [(ngModel)]="asset.sellerId" name="seller">
+                <option>Select</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Commission %</label>
+              <input class="form-control" [(ngModel)]="asset.commission" name="commissionPercent" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Starting Price</label>
+              <input class="form-control" [(ngModel)]="asset.startingPrice" name="startingPrice" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Reserve Amount</label>
+              <input class="form-control" [(ngModel)]="asset.reserveAmount" name="reserveAmount" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Incremental Time</label>
+              <input class="form-control" [(ngModel)]="asset.incrementalTime" name="incrementalTime" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Min Increment</label>
+              <input class="form-control" [(ngModel)]="asset.minIncrement" name="minIncrement" />
+            </div>
+<!--   
+            <div class="mb-2" *ngFor="let field of dropdownFields">
+              <label class="font-semibold text-[11px]">{{ field.label }}</label>
+              <select class="border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full" [name]="field.model">
+                <option *ngFor="let option of field.options">{{ option }}</option>
+              </select>
+            </div> -->
+  
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Make Offer</label>
+              <select class="form-select  border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+                      [(ngModel)]="formValues.makeOffer" name="makeOffer">
+                <option *ngFor="let option of makeOfferOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+            
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Featured</label>
+              <select class="form-select  border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+                      [(ngModel)]="formValues.featured" name="featured">
+                <option *ngFor="let option of featuredOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+            
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Winner Awarding</label>
+              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+                      [(ngModel)]="formValues.winnerAwarding" name="winnerAwarding">
+                <option *ngFor="let option of winnerAwardingOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+            
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Delivery Required</label>
+              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+                      [(ngModel)]="formValues.deliveryRequired" name="deliveryRequired">
+                <option *ngFor="let option of deliveryRequiredOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+            
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Status</label>
+              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+                      [(ngModel)]="asset.statusId" name="status">
+                <option *ngFor="let option of statusOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+            
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">VAT</label>
+              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+                      [(ngModel)]="asset.vatid" name="vat">
+                <option *ngFor="let option of vatOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+                        
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">VAT % </label>
+              <input type="text" class="form-control" [(ngModel)]="asset.vatpercent " name="vatPercent" />
+            </div>
+  
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Court Case Number</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.courtCaseNumber" name="courtCaseNumber" />
+            </div>
+  
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Registration Deadline</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.registrationDeadline" name="registrationDeadline" />
+            </div>
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Request for Viewing</label>
+              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+                      [(ngModel)]="formValues.requestForViewing" name="requestForViewing">
+                <option *ngFor="let option of requestForViewingOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+            
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Request for Inquiry</label>
+              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+                      [(ngModel)]="formValues.requestForInquiry" name="requestForInquiry">
+                <option *ngFor="let option of requestForInquiryOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+            
+          </div>
+        </div>
+  
+        <!-- Middle Column -->
+        <div class="col-lg-4">
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Description & Gallery</h5>
+            <div class="mb-2">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="asset.description" name="description"></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Gallery</label>
+              <div class="d-flex flex-wrap gap-2 align-items-start">
+                <ng-container *ngFor="let img of asset.galleryFiles; let i = index">
+                  <div *ngIf="isImage(img)" class="border p-2 position-relative">
+                    <img [src]="img" alt="Asset" width="100" />
+                    <button
+                      *ngIf="isDataUrl(img)"
+                      type="button"
+                      class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                        (click)="removeGalleryItem(i)">
+                      ×
+                    </button>
+                  </div>
+                </ng-container>
+            
+                <div
+                  class="border rounded p-3 text-center bg-light"
+                  style="min-width: 200px; cursor: pointer;"
+                  (dragover)="onImageDragOver($event)"
+                  (drop)="onImageDrop($event)">
+                  <p class="mb-1">Drag & drop image here</p>
+                  <button class="btn btn-outline-success btn-sm" type="button" (click)="fileInput.click()">
+                    Or select Image
+                  </button>
+                  <input
+                    type="file"
+                    #fileInput
+                    (change)="onGalleryFileSelected($event)"
+                    accept="image/*"
+                    hidden />
+                  <div *ngIf="imageUploadError" class="text-danger mt-2 small">{{ imageUploadError }}</div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Details</h5>
+            <div *ngFor="let detail of asset.detailsJson; let i = index" class="row g-2 align-items-end mb-2">
+              <div class="col-5">
+                <label class="form-label">Attribute</label>
+                <input class="form-control" [(ngModel)]="detail.attributeName " [name]="'attributeName' + i" />
+              </div>
+              <div class="col-5">
+                <label class="form-label">Value</label>
+                <input class="form-control" [(ngModel)]="detail.attributeValue " [name]="'attributeValue' + i" />
+              </div>
+              <div class="col-2">
+                <button type="button" class="btn btn-danger btn-sm" (click)="removeDetail(i)">×</button>
+              </div>
+            </div>
+          
+            <button type="button" class="btn btn-outline-primary btn-sm" (click)="addDetail()">Add More Details</button>
+          </div>
+
+          
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Documents</h5>
+            <div class="d-flex flex-wrap gap-2 align-items-start">
+              <ng-container *ngFor="let doc of asset.documentFiles; let i = index">
+                <div *ngIf="isPdf(doc)" class="border p-2 position-relative">
+                  <a [href]="doc" target="_blank">{{ getDocumentName(doc) }}</a>
+                  <button
+                    *ngIf="isPdfDataUrl(doc) || isUrl(doc)"
+                    type="button"
+                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                    (click)="removeDocument(i)">
+                    ×
+                  </button>
+                </div>
+              </ng-container>
+          
+              <div
+                class="border rounded p-3 text-center bg-light"
+                style="min-width: 200px; cursor: pointer;"
+                (dragover)="onDragOver($event)"
+                (drop)="onDropPdf($event)">
+                <p class="mb-1">Drag & drop PDF here</p>
+                <button type="button" class="btn btn-sm btn-outline-info" (click)="docFileInput.click()">
+                  Or select PDF
+                </button>
+                <input type="file" accept="application/pdf" hidden #docFileInput (change)="onDocumentSelected($event)" />
+                <div *ngIf="documentUploadError" class="text-danger mt-2 small">{{ documentUploadError }}</div>
+              </div>
+            </div>
+          </div>
+          
+          
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Map</h5>
+            <input type="text" placeholder="Search..." class="form-control mb-2" />
+            <div class="border text-center text-muted p-3">Map Pin Location Adjusting</div>
+          </div>
+          
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Fees</h5>
+            <div class="mb-2">
+              <label class="form-label">Admin Fees</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.adminFees" name="adminFees" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Auction Fees</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.auctionFees" name="auctionFees" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Buyer Commission</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.buyerCommission" name="buyerCommission" />
+            </div>
+          </div>
+        
+        </div>
+  
+        <!-- Right Column -->
+        <div class="col-lg-4">
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>360 View</h5>
+            <button class="btn btn-outline-secondary w-100">Upload 360 Media</button>
+          </div>
+  
+          <!-- <div class="card p-3 shadow-sm mb-4">
+            <h5>Auctions</h5>
+            <div *ngFor="let auction of asset.auctionIds">
+              <span class="badge bg-warning">{{ auction }}</span>
+            </div>
+          </div> -->
+
+
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Auctions</h5>
+            <div *ngFor="let auctionId of asset.auctionIds">
+              <div class="d-flex align-items-center mb-2">
+                <span class="badge bg-warning me-2">{{ auctionId }}</span>
+                <!-- Add auction title, date, or other relevant details here -->
+                <!-- <span class="text-muted">{{ getAuctionDetails(auctionId).title }} - {{ getAuctionDetails(auctionId).date | date:'short' }}</span> -->
+              </div>
+            </div>
+          </div>
+          
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Results</h5>
+            <ul class="list-unstyled small">
+              <!-- <li>Total Bids: {{ asset.results.totalBids }}</li>
+              <li>Total Bidders: {{ asset.results.totalBidders }}</li>
+              <li>Start Price: {{ asset.results.startPrice }}</li>
+              <li>Highest Price: {{ asset.results.highestPrice }}</li>
+              <li>Commission Calculation: {{ asset.results.commission }}</li>
+              <li>Total Payable: {{ asset.results.totalPayable }}</li> -->
+            </ul>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Winner</h5>
+            <!-- <p>{{ asset.winner }}</p> -->
+            <div class="d-flex gap-2 mb-2">
+              <button class="btn btn-primary btn-sm">Change Winner</button>
+              <select class="form-select form-select-sm w-auto" name="reason">
+                <option>Reason</option>
+                <option>Duplicate</option>
+                <option>Error</option>
+              </select>
+            </div>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Sale</h5>
+            <!-- <p>Amount: {{ asset.results.totalPayable }}</p> -->
+            <button class="btn btn-success btn-sm mb-2">Approve Sale</button>
+            <input type="text" class="form-control form-control-sm" placeholder="Note" />
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Winner Documents <small class="text-muted">(Passport / Personal ID)</small></h5>
+          
+            <div class="d-flex flex-wrap gap-2 align-items-start">
+              
+              <!-- Uploaded Documents Preview -->
+
+
+              <!-- <ng-container *ngFor="let doc of asset.winnerDocuments; let i = index">
+                <div *ngIf="isPdfDoc(doc)" class="border p-2 position-relative">
+                  <a [href]="doc" target="_blank">{{ getWinnerDocName(doc) }}</a>
+                  <button
+                    *ngIf="isPdfDataUrlDoc(doc) || isUrlDoc(doc)"
+                    type="button"
+                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                    (click)="removeWinnerDocument(i)">
+                    ×
+                  </button>
+                </div>
+              </ng-container> -->
+          
+              <!-- Drag-and-drop area -->
+              <!-- <div
+                class="border rounded p-3 text-center bg-light"
+                style="min-width: 200px; cursor: pointer;"
+                (dragover)="onWinnerDocDragOver($event)"
+                (drop)="onWinnerDocDrop($event)"
+              >
+                <p class="mb-1">Drag & drop PDF here</p>
+                <button type="button" class="btn btn-sm btn-outline-info" (click)="winnerDocFileInput.click()">
+                  Or select PDF
+                </button>
+                <input type="file" accept="application/pdf" hidden #winnerDocFileInput (change)="onWinnerDocumentSelected($event)" />
+                <div *ngIf="winnerDocError" class="text-danger mt-2 small">{{ winnerDocError }}</div>
+              </div> -->
+          
+            </div>
+          </div>
+           
+                            
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Requests</h5>
+            <!-- <button class="btn btn-info btn-sm">{{ asset.requests[0] }}</button> -->
+          </div>
+  
+          <div class="card p-3 shadow-sm">
+            <h5>Transactions</h5>
+            <!-- <button class="btn btn-info btn-sm">{{ asset.transactions[0] }}</button> -->
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  

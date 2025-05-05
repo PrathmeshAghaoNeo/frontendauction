@@ -1,0 +1,55 @@
+/* Start page container */
+.start-page {
+  height: 95vh;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+/* Full-screen background image */
+.bg-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Center buttons vertically and horizontally */
+.overlay-buttons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  gap: 30px; /* spacing between buttons */
+  z-index: 2;
+  flex-wrap: wrap;
+}
+
+/* Bigger Purple Button */
+.btn-purple {
+  background-color: #6f42c1;
+  color: white;
+  padding: 18px 36px;
+  border: none;
+  border-radius: 10px;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Purple hover effect */
+.btn-purple:hover {
+  background-color: #5936a8;
+}
+
+/* Bigger outline light button */
+.btn-outline-light {
+  padding: 18px 36px;
+  border-radius: 10px;
+  font-size: 24px;
+  font-weight: 500;
+  cursor: pointer;
+}

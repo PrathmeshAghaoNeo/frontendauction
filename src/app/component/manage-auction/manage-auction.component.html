@@ -1,0 +1,137 @@
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="text-purple">Manage Auctions</h2>
+  <button class="btn custom-purple-btn" [routerLink]="'/newAuction'" routerLinkActive="active">
+    Add Auction
+  </button>
+</div>
+
+<!-- Table -->
+<div class="table-responsive">
+  <table class="table table-hover shadow-sm border-0 rounded">
+    <thead class="table-purple text-white">
+      <tr>
+        <th>Auction Number</th> 
+        <th>Title</th>
+        <th>Type</th>
+        <th>Auction Start</th>
+        <th>Auction End</th>
+        <th>Status</th>
+        <th>Incremental Time</th>
+        <th>Category</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let auction of auctions | paginate: { id: 'auction', itemsPerPage: itemsPerPage, currentPage: page}">
+
+        <td>{{ auction.auctionNumber }}</td>
+        <td>{{ auction.title }}</td>
+        <td>{{ auction.type }}</td>
+        <td>{{ auction.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ auction.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ auction.statusName }}</td>
+        <td>{{ auction.incrementalTime }} mins</td>
+        <td>{{ auction.categoryName }}</td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" (click)="openViewModal(auction)">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-primary me-1" (click)="openEditModal(auction)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(auction)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls id="auction" (pageChange)="page = $event"></pagination-controls>
+</div>
+
+
+<!-- View Auction Modal -->
+<ng-template #viewAuctionModal let-modal>
+  <div class="modal-header bg-info text-white">
+    <h5 class="modal-title">Auction Details</h5>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row mb-2">
+      <div class="col-md-6"><strong>Title:</strong> {{ selectedAuction?.title }}</div>
+      <div class="col-md-6"><strong>Type:</strong> {{ selectedAuction?.type }}</div>
+      <div class="col-md-6"><strong>Status:</strong> {{ selectedAuction?.statusName }}</div>
+      <div class="col-md-6"><strong>Category:</strong> {{ selectedAuction?.categoryName }}</div>
+      <div class="col-md-6"><strong>Start:</strong> {{ selectedAuction?.startDateTime | date:'dd/MM/yyyy HH:mm' }}</div>
+      <div class="col-md-6"><strong>End:</strong> {{ selectedAuction?.endDateTime | date:'dd/MM/yyyy HH:mm' }}</div>
+      <div class="col-md-6"><strong>Incremental Time:</strong> {{ selectedAuction?.incrementalTime }} mins</div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #editAuctionModal let-modal>
+  <div class="modal-header bg-warning text-dark">
+    <h5 class="modal-title">Edit Auction</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  
+  <!-- Add formGroup binding here -->
+  <form [formGroup]="auctionForm" (ngSubmit)="submitEdit()">
+    <div class="modal-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Title</label>
+          <input formControlName="title" type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Type</label>
+          <input formControlName="type" type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Status</label>
+          <input formControlName="statusId" type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Category</label>
+          <input formControlName="categoryId" type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Start Date/Time</label>
+          <input formControlName="startDateTime" type="datetime-local" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">End Date/Time</label>
+          <input formControlName="endDateTime" type="datetime-local" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Incremental Time (mins)</label>
+          <input formControlName="incrementalTime" type="number" class="form-control" />
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <!-- Disable button if form is invalid -->
+      <button type="submit" class="btn btn-primary" [disabled]="auctionForm.invalid">Update</button>
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+    </div>
+  </form>
+</ng-template>
+
+
+<!-- Delete Confirmation Modal -->
+<ng-template #deleteAuctionModal let-modal>
+  <div class="modal-header bg-danger text-white">
+    <h5 class="modal-title">Confirm Deletion</h5>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete <strong>{{ selectedAuction?.title }}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="deleteAuctionConfirmed(); modal.close()">Yes, Delete</button>
+  </div>
+</ng-template>

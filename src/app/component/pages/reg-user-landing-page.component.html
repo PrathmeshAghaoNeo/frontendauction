@@ -1,0 +1,44 @@
+<div class="start-page-container d-flex flex-column justify-content-center align-items-center text-center">
+  <h1 class="welcome-text">Welcome, Registered User!</h1>
+  <p class="lead-text">What would you like to do today?</p>
+
+  <div class="button-group d-flex flex-wrap justify-content-center gap-4 mt-4">
+    <button class="btn btn-lg browse-btn" routerLink="/auctions">
+      <i class="bi bi-search me-2"></i>Browse Auctions
+    </button>
+
+    <button class="btn btn-lg account-btn" routerLink="/my-account">
+      <i class="bi bi-person-circle me-2"></i>My Account
+    </button>
+  </div>
+
+  <section class="mt-5 w-100">
+    <app-direct-sale></app-direct-sale>
+  </section>
+
+  <section class="mt-5 w-100">
+    <app-category-card></app-category-card>
+  </section>
+
+  <section class="help-resources-section mt-5">
+    <div class="tabs-container d-flex flex-wrap justify-content-center gap-5">
+      <div class="tab text-start">
+        <h3>Help</h3>
+        <ul>
+          <li><a href="/contact-support">Contact Support</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/terms-of-services">Terms of Services</a></li>
+          <li><a href="/cookie-policy">Cookie Policy</a></li>
+        </ul>
+      </div>
+      <div class="tab text-start">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/guides">Guides</a></li>
+          <li><a href="/status">Status</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
