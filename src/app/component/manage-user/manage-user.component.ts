@@ -31,7 +31,7 @@ export class ManageUserComponent implements OnInit {
   
   sortColumn: string = 'uid';
   sortDirection: string = 'asc';
-  sortKey: keyof UserView | null = null;
+  sortKey: keyof UserView| 'roleName' | null = null;
   sortAsc: boolean = true;
 
   constructor(private userService: UserService, private router: Router) { }
@@ -140,22 +140,35 @@ export class ManageUserComponent implements OnInit {
       return matchesSearch && matchesRole && matchesStatus;
     });
   }
-   // Sorting logic
-   sortData(key: keyof UserView) {
-    if (this.sortKey === key) {
+   sortData(key: keyof UserView | 'roleName') {
+    if (this.sortKey === key || this.sortKey === 'roleName') {
       this.sortAsc = !this.sortAsc;
     } else {
-      this.sortKey = key;
+      this.sortKey = key as keyof UserView | 'roleName';
       this.sortAsc = true;
     }
   
     this.users.sort((a, b) => {
-      const aValue = a[key];
-      const bValue = b[key];
+      let aValue : any;
+      let bValue : any;
+
+
+      if (key === 'roleName') {
+        const aRole = this.roles.find(role => role.roleId === a.roleId);
+        const bRole = this.roles.find(role => role.roleId === b.roleId);
+  
+        aValue = aRole ? aRole.roleName.toLowerCase() : '';
+        bValue = bRole ? bRole.roleName.toLowerCase() : '';
+      } else {
+        aValue = a[key];
+        bValue = b[key];
+        if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+        if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+      }
   
       if (aValue == null) return 1;
       if (bValue == null) return -1;
-  
+
       return this.sortAsc
         ? aValue > bValue ? 1 : aValue < bValue ? -1 : 0
         : aValue < bValue ? 1 : aValue > bValue ? -1 : 0;

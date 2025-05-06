@@ -26,6 +26,11 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    if(this.loginForm.invalid){
+      Object.values(this.loginForm.controls).forEach(control => {
+        control.markAsTouched();
+      });
+    }
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       const success = this.auth.login(email, password);
