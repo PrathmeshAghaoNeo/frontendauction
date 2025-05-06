@@ -76,6 +76,7 @@
             'bi-arrow-down-up': sortColumn !== 'auctionEnd' && sortDirection === ''
           }" class="ms-1"></i>
         </th>
+        
         <th (click)="sortAuctions('statusId')" style="cursor:pointer">
           Status
           <i class="bi" [ngClass]="{

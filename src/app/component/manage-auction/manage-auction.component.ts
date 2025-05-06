@@ -46,8 +46,8 @@ export class ManageAuctionComponent implements OnInit {
   ];
 
   statuses = [
-    { statusId: 1, statusName: 'Active' },
-    { statusId: 2, statusName: 'Pending' },
+    { statusId: 1, statusName: 'Pending' },
+    { statusId: 2, statusName: 'Active' },
     { statusId: 3, statusName: 'Closed' },
     { statusId: 4, statusName: 'Completed' }
   ];
@@ -121,16 +121,28 @@ sortAuctions(column: string): void {
   }
 
   const dir = this.sortDirection === 'asc' ? 1 : -1;
+  
   this.auctions.sort((a, b) => {
-    const valA = (a as any)[column]?.toString().toLowerCase();
-    const valB = (b as any)[column]?.toString().toLowerCase();
+    const valA = (a as any)[column];
+    const valB = (b as any)[column];
 
-    if (valA < valB) return -1 * dir;
-    if (valA > valB) return 1 * dir;
+    if (column.includes('Date') || column.includes('date')) {
+      const dateA = new Date(valA).getTime();
+      const dateB = new Date(valB).getTime();
+      
+      if (dateA < dateB) return -1 * dir;
+      if (dateA > dateB) return 1 * dir;
+      return 0;
+    }
+
+    const strA = valA?.toString().toLowerCase();
+    const strB = valB?.toString().toLowerCase();
+
+    if (strA < strB) return -1 * dir;
+    if (strA > strB) return 1 * dir;
     return 0;
   });
 }
-
 
 
 

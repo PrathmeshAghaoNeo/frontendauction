@@ -2,17 +2,21 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 import { Location } from '@angular/common';
+import {
+  formatToDateTimeLocalFormat,
+  normalizeDateTime,
+  futureDateValidator,
+  endDateAfterStartDateValidator
+} from '../../utils/date-time.utils'; // Adjust path if needed
 
 @Component({
   selector: 'app-update-auction',
@@ -56,6 +60,7 @@ export class UpdateAuctionComponent implements OnInit {
 
   ngOnInit(): void {
     this.auctionId = Number(this.route.snapshot.paramMap.get('id'));
+    this.currentDateTime = formatToDateTimeLocalFormat(new Date());
     this.initForm();
     this.loadAuction();
   }
@@ -66,20 +71,22 @@ export class UpdateAuctionComponent implements OnInit {
         auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
         title: ['', [Validators.required, Validators.maxLength(20)]],
         type: ['', Validators.required],
-        startDateTime: ['', [this.futureDateValidator]],
-        endDateTime: ['', [Validators.required, this.futureDateValidator]],
+        startDateTime: ['',Validators.required, ],
+        endDateTime: ['',Validators.required],
         statusId: ['', Validators.required],
         incrementalTime: ['', Validators.required],
         categoryId: ['', Validators.required]
       },
       {
-        validators: [this.endDateAfterStartDateValidator]
+        validators: [endDateAfterStartDateValidator]
       }
     );
   }
+
   goBack(): void {
     this.location.back();
   }
+  
   loadAuction() {
     this.http.get<any>(`${ApiEndpoints.AUCTION}/${this.auctionId}`).subscribe({
       next: (data) => {
@@ -87,8 +94,8 @@ export class UpdateAuctionComponent implements OnInit {
           auctionNumber: data.auctionNumber,
           title: data.title,
           type: data.type,
-          startDateTime: this.formatToDateTimeLocalFormat(data.startDateTime),
-          endDateTime: this.formatToDateTimeLocalFormat(data.endDateTime),
+          startDateTime: formatToDateTimeLocalFormat(data.startDateTime),
+          endDateTime: formatToDateTimeLocalFormat(data.endDateTime),
           statusId: data.statusId,
           incrementalTime: data.incrementalTime,
           categoryId: data.categoryId
@@ -101,35 +108,6 @@ export class UpdateAuctionComponent implements OnInit {
     });
   }
 
-  formatToDateTimeLocalFormat(dateStr: string): string {
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
-
-  futureDateValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) return null;
-    const selectedDate = new Date(control.value);
-    const now = new Date();
-    return selectedDate <= now ? { pastDate: true } : null;
-  }
-
-  endDateAfterStartDateValidator(group: AbstractControl): ValidationErrors | null {
-    const start = group.get('startDateTime')?.value;
-    const end = group.get('endDateTime')?.value;
-
-    if (!start || !end) return null;
-
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-
-    return endDate > startDate ? null : { endBeforeStart: true };
-  }
-
   onSubmit() {
     if (this.auctionForm.invalid) {
       this.auctionForm.markAllAsTouched();
@@ -139,16 +117,13 @@ export class UpdateAuctionComponent implements OnInit {
 
     const formValue = this.auctionForm.value;
 
-    const normalizeDateTime = (val: string): string =>
-      val.length === 16 ? `${val}:00` : val;
-
     const payload = {
-      auctionId: this.auctionId, // ✅ required by backend
+      auctionId: this.auctionId,
       auctionNumber: formValue.auctionNumber,
       title: formValue.title,
       type: formValue.type,
-      startDateTime: new Date(normalizeDateTime(formValue.startDateTime)).toISOString(),
-      endDateTime: new Date(normalizeDateTime(formValue.endDateTime)).toISOString(),
+      startDateTime: normalizeDateTime(formValue.startDateTime), 
+      endDateTime: normalizeDateTime(formValue.endDateTime),
       statusId: +formValue.statusId,
       incrementalTime: +formValue.incrementalTime,
       categoryId: +formValue.categoryId
