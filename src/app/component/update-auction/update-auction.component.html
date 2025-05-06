@@ -1,5 +1,8 @@
 
 <div class="container-fluid auction-form-container" style="max-width: 1100px; margin: auto;">
+  <button class="back-btn btn btn-link p-0" (click)="goBack()">
+    <i class="bi bi-arrow-left-circle"></i>
+  </button>
     <h3 class="auction-form-title">Update Auction</h3>
 
 
@@ -19,10 +22,10 @@
         
         <div class="col-md-6 mb-3">
           <label for="title" id="title" class="form-label required-label">Title</label>
-          <input type="text" formControlName="title"  class="form-control" maxlength="10">
+          <input type="text" formControlName="title"  class="form-control" maxlength="20">
           <div *ngIf="auctionForm.get('title')?.touched && auctionForm.get('title')?.invalid" class="text-danger">
             <div *ngIf="auctionForm.get('title')?.errors?.['required']">Title is required</div>
-            <div *ngIf="auctionForm.get('title')?.errors?.['maxlength']">Title cannot exceed 10 characters</div>
+            <div *ngIf="auctionForm.get('title')?.errors?.['maxlength']">Title cannot exceed 20 characters</div>
           </div>
         </div>
         

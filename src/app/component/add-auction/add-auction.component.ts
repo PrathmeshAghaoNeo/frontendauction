@@ -12,9 +12,8 @@ import {
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
-
-// Import date utility functions
 import { formatToDateTimeLocalFormat, normalizeDateTime, futureDateValidator, endDateAfterStartDateValidator } from '../../utils/date-time.utils';  // Adjust the path if necessary
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-add-auction',
@@ -50,31 +49,40 @@ export class AddAuctionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private router: Router
-  ) {
-    this.currentDateTime = formatToDateTimeLocalFormat(new Date()); // Use updated format function
+    private router: Router,
+    private location: Location  ) {
+    this.currentDateTime = formatToDateTimeLocalFormat(new Date()); 
 
     this.auctionForm = this.fb.group(
       {
         auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
         title: ['', [Validators.required, Validators.maxLength(20)]],
         type: ['', Validators.required],
-        startDateTime: ['', futureDateValidator], // Updated to use external validator
-        endDateTime: ['', [Validators.required, futureDateValidator]], // Updated to use external validator
+        startDateTime: ['', futureDateValidator],
+        endDateTime: ['', [Validators.required, futureDateValidator]], 
         statusId: ['', Validators.required],
         incrementalTime: ['', Validators.required],
         categoryId: ['', Validators.required]
       },
-      { validators: endDateAfterStartDateValidator } // Use updated endDate validator
+      { validators: endDateAfterStartDateValidator } 
     );
   }
 
   ngOnInit() {
     const now = new Date();
+    const formattedNow = formatToDateTimeLocalFormat(now);
     this.auctionForm.patchValue({
-      startDateTime: formatToDateTimeLocalFormat(now),
-      endDateTime: formatToDateTimeLocalFormat(now)
-    });
+    startDateTime: formattedNow,
+    endDateTime: formattedNow
+});
+    console.log('Init datetime:', this.auctionForm.getRawValue());
+
+  }
+    
+
+
+  goBack(): void {
+    this.location.back();
   }
 
   onSubmit() {
@@ -84,17 +92,21 @@ export class AddAuctionComponent implements OnInit {
         icon: 'warning',
         title: 'Incomplete Form',
         text: 'Please fill all required fields correctly before submitting.',
-        confirmButtonText: 'OK'
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
       });
       return;
     }
-
-    const formValue = this.auctionForm.value;
-
-    // Normalize the date-time values before sending the payload
+  
+    const formValue = this.auctionForm.getRawValue();  // <-- FIXED
+  
+    console.log('Raw startDateTime:', formValue.startDateTime);
+    console.log('Raw endDateTime:', formValue.endDateTime);
+  
     const normalizedStartDateTime = normalizeDateTime(formValue.startDateTime);
     const normalizedEndDateTime = normalizeDateTime(formValue.endDateTime);
-
+  
     const payload = {
       auctionNumber: formValue.auctionNumber,
       title: formValue.title,
@@ -105,6 +117,7 @@ export class AddAuctionComponent implements OnInit {
       incrementalTime: +formValue.incrementalTime,
       categoryId: +formValue.categoryId
     };
+  
     console.log('Payload:', payload);
 
     this.http.post(ApiEndpoints.AUCTION, payload).subscribe({
@@ -113,7 +126,9 @@ export class AddAuctionComponent implements OnInit {
           icon: 'success',
           title: 'Success',
           text: 'Auction created successfully',
-          confirmButtonText: 'OK'
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false
         }).then(() => {
           this.auctionForm.reset();
           this.router.navigate(['/auctions']);

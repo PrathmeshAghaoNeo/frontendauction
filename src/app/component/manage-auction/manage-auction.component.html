@@ -36,15 +36,78 @@
   <table class="table table-hover shadow-sm border-0 rounded">
     <thead class="table-purple text-white">
       <tr>
-        <th>Auction Number</th> 
-        <th>Title</th>
-        <th>Type</th>
-        <th>Auction Start</th>
-        <th>Auction End</th>
-        <th>Status</th>
-        <th>Incremental Time</th>
-        <th>Category</th>
-        <th class="text-end">Actions</th>
+        <th (click)="sortAuctions('auctionNumber')" style="cursor:pointer">
+          Auction Number
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'auctionNumber' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'auctionNumber' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionNumber' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('title')" style="cursor:pointer">
+          Title
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'title' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'title' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'title' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('type')" style="cursor:pointer">
+          Type
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'type' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'type' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'type' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('auctionStart')" style="cursor:pointer">
+          Auction Start
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'auctionStart' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'auctionStart' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionStart' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('auctionEnd')" style="cursor:pointer">
+          Auction End
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'auctionEnd' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'auctionEnd' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionEnd' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        
+        <th (click)="sortAuctions('statusId')" style="cursor:pointer">
+          Status
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'statusId' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'statusId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'statusId' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        
+        <th (click)="sortAuctions('incrementalTime')" style="cursor:pointer">
+          Incremental Time 
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'incrementalTime' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'incrementalTime' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'incrementalTime' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('categoryName')" style="cursor:pointer">
+          Category
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'categoryName' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'categoryName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'categoryName' || sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        
+        
+        <th class="text-end" >
+          Actions
+        </th>
+        
       </tr>
     </thead>
     <tbody>
@@ -56,19 +119,18 @@
         <td>{{ auction.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ auction.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
       
-          <!-- 👇 Status Badge -->
-          <td>
-            <span 
-              [ngClass]="{
-                'badge bg-success': auction.statusId === 1,     
-                'badge bg-warning text-dark': auction.statusId === 2, 
-                'badge bg-danger': auction.statusId === 3,       
-                'badge bg-primary': auction.statusId === 4        
-              }" 
-              class="px-3 py-2 rounded-pill">
-              {{ getStatusName(auction.statusId) }}
-            </span>
-          </td>
+        <td>
+          <span [ngClass]="{
+            'bg-success': auction.statusId === 1,
+            'bg-warning ': auction.statusId === 2,
+            'bg-danger ': auction.statusId === 3,
+            'bg-info ': auction.statusId === 4
+            
+             }" class="badge badge-fixed-width text-dark">
+            {{ getStatusName(auction.statusId) }}
+          </span>
+
+        </td>
           
         <td>{{ auction.incrementalTime }} mins</td>
         <td>{{ auction.categoryName }}</td>

@@ -1,172 +1,170 @@
 /* ==================== ADD-ASSET FORM STYLES ==================== */
-
+ 
 /* Add Asset Form Container */
 .add-asset-container {
-    background-color: white;
-    padding: var(--form-padding);
-    border-radius: var(--card-radius);
-    box-shadow: var(--shadow-light);
-    max-width: 800px;
-    margin: 20px auto;
-  }
-  
-  /* Add Asset Form Header */
-  .add-asset-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .add-asset-breadcrumb {
-    margin-bottom: 0;
-  }
-  
-  /* Add Asset Button */
-  .add-asset-btn {
-    background-color: var(--primary-dark);
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    padding: 10px 20px;
-    border-radius: var(--input-radius);
-    transition: background-color 0.3s;
-  }
-  
-  .add-asset-btn:hover {
-    background-color: var(--primary-color);
-  }
-  
-  /* Column Layout */
-  .add-asset-col {
-    padding: 15px;
-  }
-  
-  /* Card Wrapper */
-  .add-asset-card {
-    padding: 15px;
-    box-shadow: var(--shadow-light);
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Form Inputs */
-  .add-asset-form-input {
-    width: 100%;
-    padding: 10px;
-    border-radius: var(--input-radius);
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    font-size: 14px;
-    transition: border-color 0.3s;
-  }
-  
-  /* Input Focus */
-  .add-asset-form-input:focus {
-    border-color: var(--primary-dark);
-    outline: none;
-  }
-  
-  /* Form Select */
-  .add-asset-form-select {
-    width: 100%;
-    padding: 8px 12px;
-    border-radius: var(--input-radius);
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    font-size: 14px;
-  }
-  
-  /* Custom Label */
-  .add-asset-label {
-    font-weight: 600;
-    color: var(--accent-color);
-    font-size: 14px;
-  }
-  
-  /* Gallery Images */
-  .add-asset-gallery-images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .add-asset-gallery-image {
-    border: 1px solid #ccc;
-    padding: 10px;
-  }
-  
-  /* Add Image Button */
-  .add-asset-gallery-btn {
-    background-color: var(--primary-dark);
-    color: white;
-    padding: 5px 15px;
-    font-size: 12px;
-    border-radius: 5px;
-  }
-  
-  /* Documents Section */
-  .add-asset-documents {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .add-asset-documents-btn {
-    background-color: var(--primary-dark);
-    color: white;
-    padding: 5px 15px;
-    font-size: 12px;
-    border-radius: 5px;
-  }
-  
-  /* Input Textarea */
-  .add-asset-form-textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: var(--input-radius);
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    font-size: 14px;
-    resize: vertical;
-  }
-  
-  /* Map Section */
-  .add-asset-map {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-    font-size: 14px;
-    color: var(--muted-color);
-  }
-  
-  /* Result Table */
-  .add-asset-results-table {
-    width: 100%;
-    margin-top: 1rem;
-    font-size: 14px;
-  }
-  
-  .add-asset-results-table td,
-  .add-asset-results-table th {
-    padding: 8px;
-    text-align: left;
-  }
-  
-  /* Transaction Button */
-  .add-asset-transaction-btn {
-    background-color: var(--primary-dark);
-    color: white;
-    padding: 5px 10px;
-    font-size: 12px;
-    border-radius: 5px;
-  }
-  
-  /* Winner Button */
-  .add-asset-winner-btn {
-    background-color: var(--primary-dark);
-    color: white;
-    padding: 5px 15px;
-    font-size: 12px;
-    border-radius: 5px;
-  }
-  
+  background-color: white;
+  padding: var(--form-padding);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-light);
+  margin: 20px auto;
+}
+
+/* Add Asset Form Header */
+.add-asset-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.add-asset-breadcrumb {
+  margin-bottom: 0;
+}
+
+/* Add Asset Button */
+.add-asset-btn {
+  background-color: var(--primary-dark);
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: var(--input-radius);
+  transition: background-color 0.3s;
+}
+
+.add-asset-btn:hover {
+  background-color: var(--primary-color);
+}
+
+/* Column Layout */
+.add-asset-col {
+  padding: 15px;
+}
+
+/* Card Wrapper */
+.add-asset-card {
+  padding: 15px;
+  box-shadow: var(--shadow-light);
+  margin-bottom: 1.5rem;
+}
+
+/* Form Inputs */
+.add-asset-form-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--input-radius);
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+/* Input Focus */
+.add-asset-form-input:focus {
+  border-color: var(--primary-dark);
+  outline: none;
+}
+
+/* Form Select */
+.add-asset-form-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--input-radius);
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Custom Label */
+.add-asset-label {
+  font-weight: 600;
+  color: var(--accent-color);
+  font-size: 14px;
+}
+
+/* Gallery Images */
+.add-asset-gallery-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.add-asset-gallery-image {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/* Add Image Button */
+.add-asset-gallery-btn {
+  background-color: var(--primary-dark);
+  color: white;
+  padding: 5px 15px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+/* Documents Section */
+.add-asset-documents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.add-asset-documents-btn {
+  background-color: var(--primary-dark);
+  color: white;
+  padding: 5px 15px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+/* Input Textarea */
+.add-asset-form-textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--input-radius);
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+/* Map Section */
+.add-asset-map {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted-color);
+}
+
+/* Result Table */
+.add-asset-results-table {
+  width: 100%;
+  margin-top: 1rem;
+  font-size: 14px;
+}
+
+.add-asset-results-table td,
+.add-asset-results-table th {
+  padding: 8px;
+  text-align: left;
+}
+
+/* Transaction Button */
+.add-asset-transaction-btn {
+  background-color: var(--primary-dark);
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+/* Winner Button */
+.add-asset-winner-btn {
+  background-color: var(--primary-dark);
+  color: white;
+  padding: 5px 15px;
+  font-size: 12px;
+  border-radius: 5px;
+}

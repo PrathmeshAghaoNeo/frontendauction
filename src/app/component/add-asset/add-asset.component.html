@@ -2,7 +2,7 @@
 
 
 <div class="container-fluid p-4 text-[11px] font-sans">
-    <form (ngSubmit)="updateAsset()" #assetForm="ngForm">
+    <form (ngSubmit)="updateAsset()" #assetForm="ngForm" novalidate>
       <!-- Top Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <nav aria-label="breadcrumb">
@@ -25,19 +25,41 @@
               <input class="form-control" [value]="asset.assetNumber" disabled />
             </div>
             <div class="mb-2">
-              <label class="form-label">Title</label>
-              <input class="form-control" [(ngModel)]="asset.title" name="title" />
+              <label class="form-label">Title<span class="text-danger">*</span></label>
+              <input
+                class="form-control"
+                [(ngModel)]="asset.title"
+                name="title"
+                required
+                #titleRef="ngModel"
+                maxlength="20"
+              />
+              <div *ngIf="titleRef.invalid && titleRef.touched" class="text-danger small">
+                Title is required.
+              </div>
             </div>
             <div class="mb-2">
-              <label class="form-label">Category</label>
+              <label class="form-label">Category<span class="text-danger">*</span></label>
               <select class="form-select" [(ngModel)]="asset.category" name="category">
                 <option>Cars</option>
                 <option>Electronics</option>
               </select>
             </div>
             <div class="mb-2">
-              <label class="form-label">Deposit %</label>
-              <input class="form-control" type="number" [(ngModel)]="asset.depositPercent" name="depositPercent" />
+              <label class="form-label">Deposit %<span class="text-danger">*</span></label>
+              <input
+                class="form-control"
+                type="number"
+                [(ngModel)]="asset.depositPercent"
+                name="depositPercent"
+                required
+                min="0"
+                max="100"
+                #depositRef="ngModel"
+              />
+              <div *ngIf="depositRef.invalid && depositRef.touched" class="text-danger small">
+                Deposit must be between 0 and 100.
+              </div>
             </div>
             <div class="mb-2">
               <label class="form-label">Seller</label>
@@ -75,7 +97,17 @@
   
             <div class="mb-2">
               <label class="font-semibold text-[11px]">VAT %</label>
-              <input type="text" class="form-control" [(ngModel)]="asset.vatPercent" name="vatPercent" />
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="asset.vatPercent"
+                name="vatPercent"
+                pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                #vatRef="ngModel"
+              />
+              <div *ngIf="vatRef.invalid && vatRef.touched" class="text-danger small">
+                Please enter a valid number (up to 2 decimal places).
+              </div>
             </div>
   
             <div class="mb-2">
