@@ -1,0 +1,145 @@
+
+.toast-success {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 9999;
+    animation: fadeIn 0.3s, fadeOut 0.5s 2.5s;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+
+  
+
+.filter-panel {
+    border-left: 4px solid #6f42c1;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-purple-btn {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    color: white;
+  }
+  
+  .custom-purple-btn:hover {
+    background-color: #5a32a3;
+    border-color: #5a32a3;
+    color: white;
+  }
+  
+  .table-purple {
+    background-color: #6f42c1;
+  }
+  
+  .action-buttons .btn {
+    transition: all 0.2s;
+  }
+  
+  .action-buttons .btn:hover {
+    transform: translateY(-2px);
+  }
+
+
+
+.filter-panel {
+  border-left: 4px solid #6f42c1;
+  transition: all 0.3s ease;
+}
+
+.custom-purple-btn {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+  color: white;
+}
+
+.custom-purple-btn:hover {
+  background-color: #5a32a3;
+  border-color: #5a32a3;
+  color: white;
+}
+
+.table-purple {
+  background-color: #6f42c1;
+}
+
+.action-buttons .btn {
+  transition: all 0.2s;
+}
+
+.action-buttons .btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Delete confirmation modal styles */
+.modal-header.bg-danger {
+  background-color: #dc3545;
+}
+
+.modal-body strong {
+  font-weight: 600;
+}
+
+/* Toast notification styles */
+.toast {
+  min-width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 1;
+}
+
+.toast.bg-success {
+  background-color: #28a745 !important;
+}
+
+.toast.bg-danger {
+  background-color: #dc3545 !important;
+}
+
+.toast-body {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.toast-body i {
+  margin-right: 8px;
+}
+
+/* Animation for toasts */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.toast-container .toast {
+  animation: slideInRight 0.3s ease-out, fadeOut 0.5s ease-in 2.5s;
+}

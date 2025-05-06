@@ -1,80 +1,172 @@
-<!-- Page Header -->
+<!-- Page Header - Without refresh button -->
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-purple">Manage Requests</h2>
-    <div>
-      <button class="btn btn-outline-secondary me-2">Filters</button>
-      <button class="btn custom-purple-btn me-2">Export</button>
-      <button class="btn custom-purple-btn" [routerLink]="['/requests/new']">
-        New Request
-      </button>
+  <h2 class="text-purple">Manage Requests</h2>
+  <div>
+    <button type="button" class="btn btn-outline-secondary me-2" (click)="toggleFilters()" aria-label="Toggle filters" hidden>
+      <i class="bi bi-funnel me-1"></i>Filters
+    </button>
+    <button type="button" class="btn custom-purple-btn me-2" (click)="exportToExcel()" [disabled]="isExporting" aria-label="Export to Excel">
+      <i class="bi" [ngClass]="isExporting ? 'bi-hourglass-split' : 'bi-file-earmark-excel'"></i>
+      {{ isExporting ? 'Exporting...' : 'Export' }}
+    </button>
+    <button type="button" class="btn custom-purple-btn" [routerLink]="['/requests/new']" aria-label="Create new request">
+      <i class="bi bi-plus-circle me-1"></i>New Request
+    </button>
+  </div>
+</div>
+
+<!-- Status messages with higher z-index to ensure visibility -->
+<div *ngIf="deleteSuccess" class="alert alert-success alert-dismissible fade show position-relative" 
+     role="alert" style="z-index: 1050;">
+  <strong>Success!</strong> {{ deleteSuccess }}
+  <button type="button" class="btn-close" (click)="deleteSuccess = ''"></button>
+</div>
+
+<div *ngIf="deleteError" class="alert alert-danger alert-dismissible fade show position-relative" 
+     role="alert" style="z-index: 1050;">
+  <strong>Error:</strong> {{ deleteError }}
+  <button type="button" class="btn-close" (click)="deleteError = ''"></button>
+</div>
+
+<!-- Advanced Filters Panel -->
+<div class="filter-panel card shadow-sm mb-4" [class.d-none]="!showFilters">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="card-title mb-0">Advanced Filters</h5>
+      <button type="button" class="btn-close" (click)="toggleFilters()" aria-label="Close filter panel"></button>
+    </div>
+    
+    <div class="row g-3">
+      <!-- Request Number -->
+      <div class="col-md-4">
+        <label class="form-label">Request Number</label>
+        <input type="text" class="form-control" [(ngModel)]="filters.requestNumber" placeholder="Request #">
+      </div>
+      
+      <!-- UID -->
+      <div class="col-md-4">
+        <label class="form-label">User ID</label>
+        <input type="text" class="form-control" [(ngModel)]="filters.userId" placeholder="User ID">
+      </div>
+      
+      <!-- Username -->
+      <div class="col-md-4">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control" [(ngModel)]="filters.username" placeholder="Username">
+      </div>
+      
+      <!-- Asset ID/Title -->
+      <div class="col-md-4">
+        <label class="form-label">Asset</label>
+        <input type="text" class="form-control" [(ngModel)]="filters.assetId" placeholder="Asset ID or Title">
+      </div>
+      
+      <!-- Date Range -->
+      <div class="col-md-6">
+        <label class="form-label">From Date</label>
+        <input type="date" class="form-control" [(ngModel)]="filters.fromDate">
+      </div>
+      
+      <div class="col-md-6">
+        <label class="form-label">To Date</label>
+        <input type="date" class="form-control" [(ngModel)]="filters.toDate">
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-end mt-3">
+      <button type="button" class="btn btn-secondary me-2" (click)="resetFilters()">Reset</button>
+      <button type="button" class="btn custom-purple-btn" (click)="applyAdvancedFilters()">Apply Filters</button>
     </div>
   </div>
-  
-  <!-- Search and Filters Row -->
-  <div class="row mb-3">
-    <div class="col-md-4">
-      <input type="text" [(ngModel)]="searchTerm" class="form-control" placeholder="Search…">
-    </div>
-    <div class="col-md-3">
-      <select class="form-select" [(ngModel)]="filterType">
-        <option [value]="0">All Types</option>
-        <option [value]="1">Transfer of Ownership</option>
-        <option [value]="2">Inquiry</option>
-        <option [value]="3">Request for Viewing</option>
-        <option [value]="4">Offer</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <select class="form-select" [(ngModel)]="filterStatus">
-        <option [value]="0">All Statuses</option>
-        <option [value]="1">Pending</option>
-        <option [value]="2">Done</option>
-        <option [value]="3">Approved</option>
-        <option [value]="4">Rejected</option>
-      </select>
-    </div>
+</div>
+
+<!-- Search and Quick Filters Row -->
+<div class="row mb-3">
+  <div class="col-md-4">
+    <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFiltersToList()" class="form-control" placeholder="Search…" aria-label="Search requests">
   </div>
-  
-  <!-- Table -->
-  <div class="table-responsive">
-    <table class="table table-hover shadow-sm border-0 rounded">
-      <thead class="table-purple text-white">
-        <tr>
-          <th>#Req. Number</th>
-          <th>#UID</th>
-          <th>User</th>
-          <th>Asset</th>
-          <th>Type</th>
-          <th>DateTime</th>
-          <th>Status</th>
-          <th class="text-end">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let r of filteredRequests">
-          <td>#{{ r.requestNumber }}</td>
-          <td>#{{ r.userId }}</td>
-          <td>{{ r.username }}</td>
-          <td>#{{ r.assetId }}</td>
-          <td>{{ getTypeName(r.requestTypeId) }}</td>
-          <td>{{ r.requestDateTime | date: 'dd/MM/yyyy hh:mm a' }}</td>
-          <td>{{ getStatusName(r.requestStatusId) }}</td>
-          <td class="text-end action-buttons">
-            <button class="btn btn-sm btn-outline-primary me-1"
-                    [routerLink]="['/request-detail', r.requestId]">
-              <i class="bi bi-eye"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger me-1"
-                    (click)="deleteRequest(r.requestId)">
-              <i class="bi bi-trash"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-success"
-                    [routerLink]="['/request-detail', r.requestId]">
-              <i class="bi bi-pencil-square"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div> 
-  
+  <div class="col-md-4">
+    <select class="form-select" [(ngModel)]="filterType" (ngModelChange)="applyFiltersToList()" aria-label="Filter by type">
+      <option [ngValue]="0">All Types</option>
+      <option [ngValue]="1">Transfer of Ownership</option>
+      <option [ngValue]="2">Inquiry</option>
+      <option [ngValue]="3">Request for Viewing</option>
+      <option [ngValue]="4">Offer</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <select class="form-select" [(ngModel)]="filterStatus" (ngModelChange)="applyFiltersToList()" aria-label="Filter by status">
+      <option [ngValue]="0">All Statuses</option>
+      <option [ngValue]="1">Pending</option>
+      <option [ngValue]="2">Done</option>
+      <option [ngValue]="3">Approved</option>
+      <option [ngValue]="4">Rejected</option>
+    </select>
+  </div>
+</div>
+
+<!-- Loading indicator - only shows when loading -->
+<div *ngIf="isLoading" class="text-center my-3">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="table-responsive">
+  <table class="table table-hover shadow-sm border-0 rounded">
+    <thead class="table-purple text-white">
+      <tr>
+        <th (click)="sortBy('requestNumber')" style="cursor: pointer;">Req. Number</th>
+        <th>UID</th>
+        <th (click)="sortBy('username')" style="cursor: pointer;">User</th>
+        <th>Asset</th>
+        <th>Type</th>
+        <th>DateTime</th>
+        <th>Status</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of filteredRequests |  paginate: { id: 'request', itemsPerPage: itemsPerPage, currentPage: page } trackBy: trackByRequestId">
+        <td>{{ r.requestNumber }}</td>
+        <td>{{ getUserUid(r.userId) }}</td>
+        <td>{{ r.username }}</td>
+        <td>{{ getAssetTitle(r.assetId) }}</td>
+        <td>{{ getTypeName(r.requestTypeId) }}</td>
+        <td>{{ r.requestDateTime | date: 'dd/MM/yyyy hh:mm a' }}</td>
+        <td>{{ getStatusName(r.requestStatusId) }}</td>
+        <td class="text-end action-buttons">
+          <button type="button" class="btn btn-sm btn-outline-primary me-1"
+                  [routerLink]="['/view-request', r.requestId]"
+                  aria-label="View request details">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger me-1"
+                  (click)="deleteRequest(r.requestId, r.requestNumber)" 
+                  [disabled]="processingDelete"
+                  aria-label="Delete request">
+            <i class="bi" [ngClass]="processingDelete ? 'bi-hourglass-split' : 'bi-trash'"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-success"
+                  [routerLink]="['/request-detail', r.requestId]"
+                  aria-label="Edit request">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="filteredRequests.length === 0 && !isLoading">
+        <td colspan="8" class="text-center py-3">No requests found</td>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls id="request" (pageChange)="page = $event"></pagination-controls>
+</div>
+
+<!-- Success Toast Notification -->
+<div id="successToast" class="toast-success" *ngIf="deleteSuccess">
+  <div class="toast-body">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    {{ deleteSuccess }}
+  </div>
+</div>

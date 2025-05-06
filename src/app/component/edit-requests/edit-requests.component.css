@@ -1,20 +1,128 @@
+/* Required field indicator */
+.required-star {
+  color: red;
+  margin-left: 3px;
+}
+
+/* Custom styling for validation messages */
+.text-danger {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Custom styling for form controls */
+.form-control-sm, .form-select-sm {
+  font-size: 14px;
+  height: 38px; /* Consistent height for all inputs */
+}
+
+/* Consistent padding for all form controls */
+.form-control, .form-select {
+  padding: 0.375rem 0.75rem;
+}
+
+/* Custom card styling */
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card-details {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem 1.25rem; /* More padding for better spacing */
+}
+
+/* Form label styling */
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: var(--primary-color);
+}
+
+/* Read-only field styling */
+.form-control-plaintext {
+  font-weight: 400;
+  padding-left: 0.5rem;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  min-height: 38px; /* Match input height */
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+}
+
+/* Button styling */
+.button-container {
+  display: flex;
+  align-items: center;
+}
+
+.btn-save {
+  background-color: #6a1b9a;
+  color: white;
+  border-color: #6a1b9a;
+}
+
+.btn-save:hover {
+  background-color: #5a148a;
+  border-color: #5a148a;
+}
+
+/* Custom button styling */
+.custom-purple-btn {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border-width: 1px;
+}
+
+.custom-purple-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Better textarea sizing */
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Center the form on the page */
 .container {
-    padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .button-container {
+    flex-direction: column;
+    gap: 8px;
   }
   
-  h3 {
-    font-size: 24px;
+  .col-md-8 {
+    width: 100%;
   }
   
-  form label {
-    font-weight: 500;
+  .btn {
+    width: 100%;
+    margin-right: 0 !important;
+    margin-bottom: 8px;
   }
-  
-  .table {
-    margin-top: 20px;
-  }
-  
-  button {
-    width: 150px;
-  }
-  
+
+  /* Custom card styling - Increased size */
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 2rem; /* Added padding for larger content area */
+  margin-bottom: 2rem; /* Extra spacing below cards */
+  width: 100%; /* Make card take full container width */
+}
+
+
+
+}

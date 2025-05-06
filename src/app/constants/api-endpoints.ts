@@ -17,6 +17,7 @@ export const ApiEndpoints = {
   TRANSACTIONS: `${BASE_URL}/Transactions`,
   USER: `${BASE_URL}/User`,
   REQUEST: `${BASE_URL}/Request`,
+  //https://localhost:7159/api/Request
   
 };
 
