@@ -139,12 +139,12 @@
     background-color: white;
     padding: var(--form-padding);
     border-radius: var(--card-radius);
-    box-shadow: var(--shadow-light);
-    width: 100%; /* Ensure it takes up full container width */
-    max-width: 800px; /* Optional, controls the max width */
-    margin: 0 auto; /* Centers the form horizontally */
+    /* box-shadow: var(--shadow-light); */
+    width: 100%; 
+    max-width: 1000px; 
+    margin: 0 auto; 
     display: flex;
-    flex-direction: column; /* Keeps form elements stacked */
+    flex-direction: column; 
   }
   
   .form-page-container {
@@ -161,7 +161,7 @@
   .form-title {
     text-align: center;
     color: var(--primary-color);
-    margin-bottom: 25px;
+    margin-bottom: 45px;
     font-weight: 600;
     font-size: 26px;
     font-family: var(--font-family);

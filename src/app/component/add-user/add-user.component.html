@@ -1,19 +1,16 @@
-<div class="auction-form-header">
-  <button class="back-btn btn btn-link p-0" (click)="goBack()">
-    <i class="bi bi-arrow-left-circle"></i>
-  </button>
-  <div>
-    <h3 class="auction-form-title">Add User</h3>
-    <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+
+<form (ngSubmit)="onSubmit()" #userForm="ngForm" class="container mb-3 p-4 rounded shadow">
+  
+  <div class="auction-form-header">
+    <button class="back-btn btn btn-link p-0" (click)="goBack()">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+    <div>
+      <h3 class="auction-form-title">Add User</h3>
+      <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+    </div>
   </div>
-</div>
-
-
-<form (ngSubmit)="onSubmit()" #userForm="ngForm" class="container mb-3 p-4 bg-light rounded shadow">
-  <!-- <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
-    <button type="submit" class="btn btn-primary btn-lg px-4" >Submit</button>
-  </div> -->
-  <!-- <pre>{{ name.errors | json }}</pre> -->
+  
   <div class="row">
     <div class="col-md-6 mb-1">
       <div class="form-group">
@@ -243,7 +240,6 @@
     </button>
   </div>
 
-  <!-- Move validation OUTSIDE input-group, and use d-block -->
   <div *ngIf="personalIdExpiryDate.errors?.['required'] && (personalIdExpiryDate.dirty || personalIdExpiryDate.touched)" class="invalid-feedback d-block">
     Government ID Expiry Date is required.
   </div>

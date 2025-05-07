@@ -16,15 +16,28 @@ export class HeaderComponent {
   isLoggedIn = false;
   currentRoute = '';
 
+  // constructor(public authService: AuthService, private router: Router) {
+  //   this.authService.role$.subscribe(role => {
+  //     this.isLoggedIn = !!role;
+  //   });
+  //   this.currentRoute = this.router.url;
+  //   this.router.events.pipe(
+  //     filter(event => event instanceof NavigationEnd)
+  //   ).subscribe((event: NavigationEnd) => {
+  //     this.currentRoute = event.urlAfterRedirects
+  //   });
+  // }
   constructor(public authService: AuthService, private router: Router) {
-    this.authService.role$.subscribe(role => {
-      this.isLoggedIn = !!role;
+    this.authService.isLoggedIn$.subscribe(isLoggedIn => {
+      this.isLoggedIn = !!isLoggedIn;
     });
+  
     this.currentRoute = this.router.url;
+  
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.currentRoute = event.urlAfterRedirects
+      this.currentRoute = (event as NavigationEnd).urlAfterRedirects;
     });
   }
 

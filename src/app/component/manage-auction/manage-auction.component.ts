@@ -17,24 +17,21 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
   encapsulation: ViewEncapsulation.None
 })
 export class ManageAuctionComponent implements OnInit {
-  // Pagination & Data
+
   auctions: Auction[] = [];
   allAuctions: Auction[] = [];
   selectedAuction: Auction | null = null;
-
-  // Filters & Search
   searchText: string = '';
   filterCategory: number = 0;
   filterStatus: number = 0;
-
-  // Form & Modal
   auctionForm!: FormGroup;
   currentDateTime: string = new Date().toISOString().slice(0, 16);
-
-  // Paging
   page: number = 1;
   itemsPerPage: number = 5;
-
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' | '' = '';
+  defaultAuctions: Auction[] = [];
+  
   categories = [
     { categoryId: 1, categoryName: 'Electronics' },
     { categoryId: 2, categoryName: 'Vehicles' },
@@ -49,8 +46,8 @@ export class ManageAuctionComponent implements OnInit {
   ];
 
   statuses = [
-    { statusId: 1, statusName: 'Active' },
-    { statusId: 2, statusName: 'Pending' },
+    { statusId: 1, statusName: 'Pending' },
+    { statusId: 2, statusName: 'Active' },
     { statusId: 3, statusName: 'Closed' },
     { statusId: 4, statusName: 'Completed' }
   ];
@@ -103,6 +100,50 @@ fetchAuctions(): void {
   });
 }
 
+sortAuctions(column: string): void {
+  if (this.sortColumn === column) {
+    if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else if (this.sortDirection === 'desc') {
+      this.sortDirection = '';
+    } else {
+      this.sortDirection = 'asc';
+    }
+  } else {
+    this.sortColumn = column;
+    this.sortDirection = 'asc';
+  }
+
+  if (this.sortDirection === '') {
+    this.auctions = [...this.defaultAuctions];
+    this.applyFilters(); // reapply filters if needed
+    return;
+  }
+
+  const dir = this.sortDirection === 'asc' ? 1 : -1;
+  
+  this.auctions.sort((a, b) => {
+    const valA = (a as any)[column];
+    const valB = (b as any)[column];
+
+    if (column.includes('Date') || column.includes('date')) {
+      const dateA = new Date(valA).getTime();
+      const dateB = new Date(valB).getTime();
+      
+      if (dateA < dateB) return -1 * dir;
+      if (dateA > dateB) return 1 * dir;
+      return 0;
+    }
+
+    const strA = valA?.toString().toLowerCase();
+    const strB = valB?.toString().toLowerCase();
+
+    if (strA < strB) return -1 * dir;
+    if (strA > strB) return 1 * dir;
+    return 0;
+  });
+}
+
 
 
   // -------------------------------
@@ -122,9 +163,9 @@ fetchAuctions(): void {
     });
   }
 
+ 
   getStatusName(statusId: number): string {
-    const status = this.statuses.find(s => s.statusId === statusId);
-    return status ? status.statusName : 'Unknown';
+    return this.statuses.find(s => s.statusId === statusId)?.statusName || 'Unknown';
   }
   
 

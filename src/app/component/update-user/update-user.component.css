@@ -10,7 +10,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .auction-form-header {
     position: relative;
-    min-height: 60px; /* Ensures space for button and title */
+    min-height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
