@@ -131,12 +131,10 @@ export class UpdateUserComponent implements OnInit {
           timer: 2000,
           showConfirmButton: false
         });
-        event.target.value = ''; // Clear the input field
-        this[field] = file; // Clear the selected file for the specific field
-        return;
+        event.target.value = ''; 
+        this[field] = file; 
       }
   
-      // Validate file size (less than 2MB)
       if (file.size > 2 * 1024 * 1024) {
         Swal.fire({
           icon: 'error',
@@ -145,12 +143,11 @@ export class UpdateUserComponent implements OnInit {
           timer: 2000,
           showConfirmButton: false
         });
-        event.target.value = ''; // Clear the input field
-        this[field] = file; // Clear the selected file for the specific field
+        event.target.value = ''; 
+        this[field] = file; 
         return;
       }
   
-      // Set the selected file if all validations pass
       this[field] = file;
     }
   }
@@ -184,12 +181,10 @@ export class UpdateUserComponent implements OnInit {
       }
     }
 
-    // Append profile image if selected
     if (this.profileImageFile) {
       formData.append('profileImage', this.profileImageFile);
     }
 
-    // Append personal ID image if selected
     if (this.personalIdImageFile) {
       formData.append('personalIdImage', this.personalIdImageFile);
     }
@@ -225,7 +220,6 @@ export class UpdateUserComponent implements OnInit {
                     showConfirmButton:false
                   });
                 } else {
-                  // General fallback error message
                   Swal.fire({
                     icon: 'error',
                     title: 'Add Failed',

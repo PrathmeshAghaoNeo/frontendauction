@@ -1,4 +1,4 @@
-<!-- <div class="container-fluid p-4"> -->
+
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="text-purple">Manage Users</h2>
   <div>
@@ -28,21 +28,20 @@
   </div>
 </div>
 
-<!-- Table -->
+
 <div class="table-responsive">
   <table class="table table-hover shadow-sm border-0 rounded">
     <thead class="table-purple text-white">
       <tr>
         <th (click)="sortData('uid')">User ID <span *ngIf="sortKey === 'uid'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'uid'" class="sort-icon">⇅</i></th>
         <th (click)="sortData('name')">Name <span *ngIf="sortKey === 'name'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'name'" class="sort-icon">⇅</i></th>
-        <th (click)="sortData('roleId')">Role <span *ngIf="sortKey === 'roleId'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'roleId'" class="sort-icon">⇅</i></th>
+        <th (click)="sortData('roleName')">Role <span *ngIf="sortKey === 'roleName'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'roleName'" class="sort-icon">⇅</i></th>
         <th><span>Mobile Number</span></th>
         <th (click)="sortData('email')">Email <span *ngIf="sortKey === 'email'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'email'" class="sort-icon">⇅</i></th>
         <th (click)="sortData('statusId')">Status <span *ngIf="sortKey === 'statusId'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'statusId'" class="sort-icon">⇅</i>
         </th>
         <th (click)="sortData('gender')">Gender <span *ngIf="sortKey === 'gender'">{{ sortAsc ? '▲' : '▼' }}</span> <i *ngIf="sortKey !== 'gender'" class="sort-icon">⇅</i></th>
         <th class="text-end">Actions</th>
-
       </tr>
     </thead>
     <tbody>
@@ -80,8 +79,7 @@
   </table>
   <pagination-controls id="users" (pageChange)="page = $event"></pagination-controls>
 </div>
-<!-- No User Prsent -->
+
 <div *ngIf="filteredUsers.length === 0" class="text-center py-5 bg-light rounded mt-4">
   <p class="text-muted mb-0">No users found. Click "Add New User" to create one.</p>
 </div>
-<!-- </div> -->
