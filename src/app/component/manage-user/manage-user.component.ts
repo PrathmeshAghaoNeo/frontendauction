@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { Role, Status, UserView } from '../../modals/user';
+import { Country, Role, Status, UserView } from '../../modals/user';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-manage-user',
@@ -19,6 +20,7 @@ export class ManageUserComponent implements OnInit {
   users: UserView[] = [];
   roles: Role[] = [];
   statuses: Status[] = [];
+  countries: Country[] =[];
   page: number = 1;
   itemsPerPage: number = 5;
 
@@ -33,8 +35,10 @@ export class ManageUserComponent implements OnInit {
   sortDirection: string = 'asc';
   sortKey: keyof UserView| 'roleName' | null = null;
   sortAsc: boolean = true;
+   selectedUser: UserView | null = null;
+   @ViewChild('viewAuctionModal') viewAuctionModal!: TemplateRef<any>;
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router, private modalService: NgbModal,) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -48,6 +52,9 @@ export class ManageUserComponent implements OnInit {
       
     });
   }
+  loadCountry():void{
+    this.userService.getCountry().subscribe(data => this.countries = data);
+  }
 
   loadRoles(): void {
     this.userService.getRoles().subscribe(data => this.roles = data);
@@ -57,12 +64,15 @@ export class ManageUserComponent implements OnInit {
     this.userService.getStatuses().subscribe(data => this.statuses = data);
   }
 
-  getRoleName(roleId: number): string {
+  getRoleName(roleId: number | undefined): string {
     return this.roles.find(r => r.roleId === roleId)?.roleName || 'Unknown';
   }
 
-  getStatusName(statusId: number): string {
+  getStatusName(statusId: number | undefined): string {
     return this.statuses.find(s => s.statusId === statusId)?.statusName || 'Unknown';
+  }
+  getCountryName(countryId: number | undefined): string {
+    return this.countries.find(c => c.countryId === countryId)?.countryName || "Unknown";
   }
 
   openAddUserModal(): void {
@@ -174,5 +184,9 @@ export class ManageUserComponent implements OnInit {
         : aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
     });
   }
+  openViewModal(user: UserView): void {
+      this.selectedUser = user;
+      this.modalService.open(this.viewAuctionModal, { centered: true, size: 'xl', backdrop: 'static' });
+    }
   
 }

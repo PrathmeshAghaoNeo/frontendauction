@@ -16,7 +16,6 @@ import { DetailsUserComponent } from './component/details-user/details-user.comp
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
 import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
-import { AddRequestComponent } from './component/add-requests/add-requests.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
 
