@@ -40,7 +40,7 @@ export class AppComponent {
       this.currentRoute = event.urlAfterRedirects;
     });
   }
-
+ 
   get isStartPage(): boolean {
     return this.currentRoute === '/';
   }

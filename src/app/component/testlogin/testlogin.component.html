@@ -1,0 +1,11 @@
+<p>OTP sent on ....12gmail.com</p>
+<h1>Enter OTP</h1>
+<div class="otp-field">
+  <input *ngFor="let otpInput of otpArray; let i = index"
+         maxlength="1"
+         type="text"
+         [attr.data-index]="i"
+         (keyup)="handleOtp($event, i)"
+         (paste)="handlePaste($event)"
+         #otpInputRef />
+</div>

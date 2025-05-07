@@ -1,25 +1,52 @@
 <div class="form-page-container">
-    <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
-      <div class="form-title text-primary">Login</div>
-  
+  <div class="login-form">
+    <div class="d-flex align-items-center justify-content-center mb-4 position-relative">
+      <button type="button" *ngIf="step == 2" class="btn btn-link p-0 position-absolute start-0 cc" (click)="step = 1" title="Back to Email">
+        <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;"></i>
+      </button>
+      <h2 class="form-title m-0">Login</h2>
+    </div>
+
+    <!-- Step 1: Enter Email -->
+    <form #emailForm="ngForm" *ngIf="step === 1" (ngSubmit)="sendOtp(emailForm)">
       <div class="form-group">
-        <label class="form-label" for="email">Email</label>
-        <input type="email" class="form-control"  placeholder="e.g.jamie@gmail.com" formControlName="email" pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" />
-        <div *ngIf="loginForm.controls['email'].invalid && (loginForm.controls['email'].dirty || loginForm.controls['email'].touched)" class="text-danger">
-          <div *ngIf="loginForm.controls['email'].errors?.['required']">Email is required.</div>
-          <div *ngIf="loginForm.controls['email'].errors?.['email'] || loginForm.controls['email'].errors?.['pattern']">Please enter a valid email.</div>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          class="form-control"
+          #emailref = "ngModel"
+          required
+          min="3"
+          maxlength="40"
+          pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+          placeholder="Enter email"
+        />
+        <div *ngIf="emailref.invalid && (emailref.dirty || emailref.touched)" class="text-danger">
+          <div *ngIf="emailref.errors?.['required']">Email is required.</div>
+          <div *ngIf="emailref.errors?.['email'] ||emailref.errors?.['pattern']">Please enter a valid email.</div>
         </div>
       </div>
-  
       <div class="form-group">
-        <label class="form-label" for="password">Password</label>
-        <input type="password" class="form-control" formControlName="password" placeholder="Password" />
-        <div *ngIf="loginForm.controls['password'].invalid && (loginForm.controls['password'].dirty || loginForm.controls['password'].touched)" class="text-danger">
-          <div *ngIf="loginForm.controls['password'].errors?.['required']">Password is required.</div>
-        </div>
+        <button type="submit" class="btn btn-primary">Send OTP</button>
       </div>
-  
-      <button type="submit" class="btn btn-primary" >Login</button>
+    </form>
+
+    <!-- Step 2: Enter OTP -->
+    <form #otpForm="ngForm" *ngIf="step === 2" (ngSubmit)="verifyOtp(otpForm)">
+      <div class="form-group">
+        <input
+          type="text"
+          name="code"
+          [(ngModel)]="code"
+          class="form-control"
+          required
+          placeholder="Enter OTP"
+        />
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Verify OTP</button>
+      </div>
     </form>
   </div>
-  
+</div>
