@@ -1,8 +1,10 @@
 export interface AuctionSettings {
+  id?: number;
   globalIncrementalTimeInMinutes: number;
 }
  
 export interface FinanceSettings {
+  id?: number;
   vatPercent: number;
   creditCardFee: number;
   debitCardFee: number;
@@ -10,19 +12,26 @@ export interface FinanceSettings {
   auctionFees: number;
   buyerCommissionPercent: number;
 }
+
+export interface UpdateFinanceSettingsCommand {
+  financeSettings: FinanceSettings;
+}
  
 export interface DirectSaleSettings {
+  id?: number;
   cartItemsLimit: number;
   cartTimerInMinutes: number;
 }
  
 export interface StaticPagesSettings {
+  id?: number;
   privacyPolicy: string;
   termsAndConditions: string;
   cookiesPolicy: string;
 }
  
 export interface FooterLinksSettings {
+  id?: number;
   faq: string;
   blog: string;
   status: string;
@@ -35,6 +44,7 @@ export interface FooterLinksSettings {
   googlePlayLink: string;
 }
 export interface AllSettings {
+  id?: number;
   auctionSettings: AuctionSettings;
   financeSettings: FinanceSettings;
   directSaleSettings: DirectSaleSettings;
@@ -42,3 +52,13 @@ export interface AllSettings {
   footerLinks: FooterLinksSettings;
 }
  
+
+import { AbstractControl, ValidationErrors, Validators } from '@angular/forms';
+
+export function positiveIntegerValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  if (value !== null && (isNaN(value) || value <= 0 || !Number.isInteger(+value))) {
+    return { positiveInteger: true };
+  }
+  return null;
+}

@@ -18,6 +18,7 @@ import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { AddRequestComponent } from './component/add-requests/add-requests.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
+import { TransactionManagementComponent } from './component/manage-transaction/manage-transaction.component';
 
 
 export const routes: Routes = [
@@ -39,7 +40,7 @@ export const routes: Routes = [
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'requests/new', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'admin' }},
-    {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'transactions', component:TransactionManagementComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'admin' }},

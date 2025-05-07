@@ -7,7 +7,8 @@ import {
   DirectSaleSettings,
   StaticPagesSettings,
   FooterLinksSettings,
-  AllSettings
+  AllSettings,
+  UpdateFinanceSettingsCommand
 } from '../modals/settings';
 import { ApiEndpoints } from '../constants/api-endpoints';
 
@@ -36,7 +37,7 @@ export class SettingsService {
   }
 
   getFooterLinksSettings(): Observable<FooterLinksSettings> {
-    return this.http.get<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}/Get`);
+    return this.http.get<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}`);
   }
 
   // Combined GET method
@@ -52,22 +53,23 @@ export class SettingsService {
 
   // Individual UPDATE methods
   updateAuctionSettings(settings: AuctionSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.AUCTIONSETTINGS}`, settings);
+    return this.http.put(`${ApiEndpoints.AUCTIONSETTINGS}/${settings.id}`, settings);
   }
-
-  updateFinanceSettings(settings: FinanceSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.FINANCESETTINGS}`, settings);
+  
+  updateFinanceSettings(settings: { financeSettings: FinanceSettings }): Observable<FinanceSettings> {
+    return this.http.put<FinanceSettings>(`${ApiEndpoints.FINANCESETTINGS}/Update`, settings);
   }
-
+  
   updateDirectSaleSettings(settings: DirectSaleSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.DIRECTSALESETTINGS}`, settings);
+    return this.http.put(`${ApiEndpoints.DIRECTSALESETTINGS}/${settings.id}`, settings);
   }
-
-  updateStaticPagesSettings(settings: StaticPagesSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.STATICPAGESETTINGS}`, settings);
+  
+  updateStaticPagesSettings(settings:{settingsDto:StaticPagesSettings} ): Observable<StaticPagesSettings> {
+    return this.http.put<StaticPagesSettings>(`${ApiEndpoints.STATICPAGESETTINGS}/Update`, settings);
   }
-
-  updateFooterLinksSettings(settings: FooterLinksSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.FOOTERLINKSETTINGS}`, settings);
+  
+  updateFooterLinksSettings(settings: {footerLinksSettings:FooterLinksSettings}): Observable<FooterLinksSettings> {
+    return this.http.put<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}/Update`, settings);
   }
+  
 }
