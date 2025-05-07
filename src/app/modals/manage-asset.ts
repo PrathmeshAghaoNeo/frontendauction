@@ -1,52 +1,117 @@
+// export interface Asset {
+//   assetId: number;
+//   title: string;
+//   categoryId: number;
+//   categoryName: string;  
+//   deposit: number;
+//   sellerId: number;
+//   commission: number;
+//   startingPrice: number;
+//   reserveAmount: number;
+//   incrementalTime: number;
+//   minIncrement: number;
+//   makeOffer: boolean;
+//   featured: boolean;
+//   awardingId: number;
+//   awardingMethod: string; 
+//   statusId: number;
+//   statusName: string;    
+//   vatid: number;
+//   vatType: string;       
+//   vatpercent: number;
+//   courtCaseNumber: string;
+//   registrationDeadline: number;
+//   description: string;
+//   mapLatitude: number;
+//   mapLongitude: number;
+//   adminFees: number;
+//   auctionFees: number;
+//   buyerCommission: number;
+//   winnerId: number | null;   
+//   winnerName: string | null; 
+//   awardedPrice: number | null;
+//   salesNotes: string;
+//   assetNumber: string;
+//   createdAt: string;        
+//   updatedAt: string;       
+//   galleries: Gallery[] ;
+//   documents: Document[];
+// }
+
+// export interface Gallery {
+//   mediaType: string;
+//   filePath: string;
+//   sortOrder: number;
+//   fileUrl : string;
+// }
+
+// export interface Document {
+//   documentId: number;
+//   documentType: string;
+//   filePath: string;
+// }
+
+
 export interface Asset {
   assetId: number;
   title: string;
-  categoryId: number;
-  categoryName: string;  
-  deposit: number;
+  categoryId?: number;
+  categoryName?: string;
+  deposit?: number;
   sellerId: number;
-  commission: number;
+  commission?: number;
   startingPrice: number;
-  reserveAmount: number;
-  incrementalTime: number;
-  minIncrement: number;
-  makeOffer: boolean;
-  featured: boolean;
-  awardingId: number;
-  awardingMethod: string; 
-  statusId: number;
-  statusName: string;    
-  vatid: number;
-  vatType: string;       
-  vatpercent: number;
-  courtCaseNumber: string;
-  registrationDeadline: number;
-  description: string;
-  mapLatitude: number;
-  mapLongitude: number;
-  adminFees: number;
-  auctionFees: number;
-  buyerCommission: number;
-  winnerId: number | null;   
-  winnerName: string | null; 
-  awardedPrice: number | null;
-  salesNotes: string;
+  reserveAmount?: number;
+  incrementalTime?: number;
+  minIncrement?: number;
+  makeOffer?: boolean;
+  featured?: boolean;
+  awardingId?: number;
+  awardingMethod?: string;
+  statusId?: number;
+  statusName?: string;
+  vatid?: number;
+  vatType?: string;
+  vatpercent?: number;
+  courtCaseNumber?: string;
+  registrationDeadline?: number;
+  description?: string;
+  mapLatitude?: number;
+  mapLongitude?: number;
+  adminFees?: number;
+  auctionFees?: number;
+  requestForViewing: boolean;
+  requestForInquiry: boolean;
+  buyerCommission?: number;
+  winnerId?: number;
+  winnerName?: string;
+  awardedPrice?: number;
+  salesNotes?: string;
+  details: string | null;
+  createdAt?: string;
+  updatedAt?: string;
   assetNumber: string;
-  createdAt: string;        
-  updatedAt: string;       
-  galleries: Gallery[] ;
-  documents: Document[];
+  auctionIds: number[];
+  galleries: AssetGalleryDto[];
+  documents: AssetDocumentFormDto[];
+  attributes: AssetDetailDto[];
 }
 
-export interface Gallery {
-  mediaType: string;
-  filePath: string;
-  sortOrder: number;
-  fileUrl : string;
+export interface AssetGalleryDto {
+  mediaType?: string;
+  filePath?: string;
+  fileUrl: string;
+  sortOrder?: number;
 }
 
-export interface Document {
+export interface AssetDocumentFormDto {
   documentId: number;
-  documentType: string;
-  filePath: string;
+  documentType?: string;
+  filePath?: string;
 }
+
+export interface AssetDetailDto {
+  attributeName: string;
+  attributeValue: string;
+}
+  

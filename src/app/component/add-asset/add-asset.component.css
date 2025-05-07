@@ -170,3 +170,25 @@
     border-radius: 5px;
   }
   
+  .required-label::after {
+    content: "* ";
+    color: red;
+    font-weight: bold;
+  }
+  
+
+  .invalid-tooltip-box {
+    position: absolute;
+    top: -5px;
+    right: 110%;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 8px 12px;
+    max-width: 250px;
+    font-size: 0.875rem;
+    white-space: normal;
+    z-index: 1000;
+  }
+  

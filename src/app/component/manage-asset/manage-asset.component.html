@@ -16,45 +16,45 @@
   </div>
 </div>
 
-<!-- Assets Table -->
-<div class="table-responsive">
-  <table class="table table-hover shadow-sm border-0 rounded">
-    <thead class="table-purple text-white">
-      <tr>
-        <th>Image</th>
-        <th>Title</th>
-        <th>#Asset Number</th>
-        <th>Starting Price</th>
-        <th>Category</th>
-        <th>Auction Status</th>
-        <th>Asset Status</th>
-        <th>End Time</th>
-        <th class="text-end">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let asset of assets | paginate: { id: 'asset', itemsPerPage: itemsPerPage, currentPage: page }">
-        <td>
-          <img [src]="asset.galleries?.[0]?.fileUrl || 'https://via.placeholder.com/100'" class="img-thumbnail" width="60" />
-        </td>
-        <td>{{ asset.title }}</td>
-        <td>#{{ asset.assetNumber }}</td>
-        <td>BHD {{ asset.startingPrice | number }}</td>
-        <td>{{ asset.categoryName }}</td>
-        <td>{{ getAuctionStatus(asset.assetId) }}</td>
-        <td>{{ asset.statusName }}</td>
-        <td>{{ asset.registrationDeadline }} days</td>
-        <td class="text-end">
-          <button class="btn btn-sm btn-outline-primary me-1" (click)="viewAsset(asset.assetId)">
-            <i class="bi bi-eye"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-success me-1" (click)="EditAssestRoute()">
-            <i class="bi bi-pencil-square"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-danger" (click)="deleteAsset(asset)">
-            <i class="bi bi-trash"></i>
-          </button>
-        </td>
+  <!-- Assets Table -->
+  <div class="table-responsive">
+    <table class="table table-hover shadow-sm border-0 rounded">
+      <thead class="table-purple text-white">
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>#Asset Number</th>
+          <th>Starting Price</th>
+          <th>Category</th>
+          <th>Auction Status</th>
+          <th>Asset Status</th>
+          <th>End Time</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let asset of assets | paginate: { id: 'asset', itemsPerPage: itemsPerPage, currentPage: page }">
+          <td>
+            <img [src]="asset.galleries?.[0]?.fileUrl || 'https://via.placeholder.com/100'" class="img-thumbnail" width="60" />
+          </td>
+          <td>{{ asset.title }}</td>
+          <td>#{{ asset.assetNumber }}</td>
+          <td>BHD {{ asset.startingPrice | number }}</td>
+          <td>{{ asset.categoryName }}</td>
+          <td>{{ getAuctionStatus(asset.assetId) }}</td>
+          <td>{{ asset.statusName }}</td>
+          <td>{{ asset.registrationDeadline }} days</td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-outline-primary me-1" (click)="viewAsset(asset.assetId)">
+              <i class="bi bi-eye"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-success me-1" (click)="EditAssestRoute(asset.assetId)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteAsset(asset)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
       </tr>
     </tbody>
   </table>

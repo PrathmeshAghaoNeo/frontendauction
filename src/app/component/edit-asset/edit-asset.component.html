@@ -1,400 +1,728 @@
+<div class="container-fluid text-[11px] font-sans">
+  <form (ngSubmit)="updateAsset(assetForm)" #assetForm="ngForm">
+    <!-- Top Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item"><a href="#">Assets</a></li>
+          <li class="breadcrumb-item active">#{{ asset.assetNumber }}</li>
+        </ol>
+      </nav>
+      <!-- <button type="submit" class="btn btn-primary" [disabled]="isLoading || !assetForm.form.valid">
+       Update
+      </button> -->
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="submitForm(assetForm)"
+      >
+        Update
+      </button>
+    </div>
 
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-<div class="container-fluid  text-[11px] font-sans">
-    <form (ngSubmit)="updateAsset()" #assetForm="ngForm">
-      <!-- Top Header -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb mb-0"> 
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item"><a href="#" >Assets</a></li>
-            <li class="breadcrumb-item active">#{{ asset.assetNumber }}</li>
-          </ol>
-        </nav>
-        <button class="btn btn-primary" type="submit">Update</button>
-      </div>
-  
-      <div class="row g-4">
-        <!-- Left Column -->
-        <div class="col-lg-4">
-          <div class="card p-3 shadow-sm">
-            <h5>Basic Details</h5>
-            <div class="mb-2">
-              <label class="form-label"># Asset Number</label>
-              <input class="form-control"  type="text"
+    <div class="row g-4">
+      <!-- Left Column -->
+      <div class="col-lg-4">
+        <div class="card p-3 shadow-sm">
+          <h5>Basic Details</h5>
+          <div class="mb-2">
+            <label class="form-label required-label"># Asset Number</label>
+            <input
+              class="form-control"
+              type="text"
               [(ngModel)]="asset.assetNumber"
-              name="assetNumber"  
+              name="assetNumber"
               placeholder="Enter Asset Number"
-              />
+              #assetNumber="ngModel"
+              readonly
+            />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">Title</label>
+            <input
+              class="form-control"
+              [(ngModel)]="asset.title"
+              name="title"
+              required
+              maxlength="20"
+              #title="ngModel"
+              [class.is-invalid]="
+                title.invalid && (title.touched || assetForm.submitted)
+              "
+            />
+            <div
+              *ngIf="title.invalid && (title.touched || assetForm.submitted)"
+              class="invalid-feedback"
+            >
+              <div *ngIf="title.errors?.['required']">Title is required.</div>
+              <div *ngIf="title.errors?.['maxlength']">
+                Title can't exceed 100 characters.
+              </div>
             </div>
-            <div class="mb-2">
-              <label class="form-label">Title</label>
-              <input class="form-control" [(ngModel)]="asset.title" name="title" />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">Category</label>
+            <select
+              class="form-select"
+              [(ngModel)]="asset.categoryId"
+              name="category"
+              required
+              #category="ngModel"
+              [class.is-invalid]="
+                category.invalid && (category.touched || assetForm.submitted)
+              "
+            >
+              <option value="" disabled selected>Select a category</option>
+              <option
+                *ngFor="let category of categories"
+                [ngValue]="category.id"
+              >
+                {{ category.name }}
+              </option>
+            </select>
+
+            <div
+              *ngIf="
+                category.invalid && (category.touched || assetForm.submitted)
+              "
+              class="invalid-feedback"
+            >
+              Category is required.
             </div>
-            <div class="mb-2">
-              <label class="form-label">Category</label>
-              <select class="form-select" [(ngModel)]="asset.categoryId" name="category">
-                <option *ngFor="let category of categories" [ngValue]="category.id">
-                  {{ category.name }}
-                </option>
-              </select>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">Deposit %</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.deposit"
+              name="depositPercent"
+              required
+              min="0"
+              max="100"
+              #deposit="ngModel"
+              [class.is-invalid]="
+                deposit.invalid && (deposit.touched || assetForm.submitted)
+              "
+              (input)="limitToThreeDigits($event)"
+            />
+
+            <div
+              *ngIf="
+                deposit.invalid && (deposit.touched || assetForm.submitted)
+              "
+              class="invalid-feedback"
+            >
+              <div *ngIf="deposit.errors?.['required']">
+                Deposit is required.
+              </div>
+              <div *ngIf="deposit.errors?.['min'] || deposit.errors?.['max']">
+                Deposit must be between 0 and 100.
+              </div>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label required-label">Seller ID</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.sellerId"
+              name="seller"
+              required
+              min="1"
+              max="5000"
+              #sellerId="ngModel"
+              [class.is-invalid]="sellerId.invalid && (sellerId.touched || assetForm.submitted)"
               
+            />
+            <div *ngIf="sellerId.invalid && (sellerId.touched || assetForm.submitted)" class="invalid-feedback">
+              <div *ngIf="sellerId.errors?.['required']">Seller ID is required.</div>
+              <div *If="sellerId.errors?.['min']">Seller ID must be at least 1.</div>
+              <div *If="sellerId.errors?.['max']">Seller ID cannot exceed 5000.</div>
             </div>
-            <div class="mb-2">
-              <label class="form-label">Deposit %</label>
-              <input class="form-control" type="number" [(ngModel)]="asset.deposit"    name="depositPercent" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label required-label">Commission %</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.commission"
+              name="commissionPercent"
+              required
+              min="0"
+              max="100"
+              #commission="ngModel"
+              [class.is-invalid]="commission.invalid && (commission.touched || assetForm.submitted)"
+            />
+            <div *ngIf="commission.invalid && (commission.touched || assetForm.submitted)" class="invalid-feedback">
+              <div *If="commission.errors?.['required']">Commission is required.</div>
+              <div *If="commission.errors?.['min']">Commission cannot be less than 0%.</div>
+              <div *If="commission.errors?.['max']">Commission cannot exceed 100%.</div>
             </div>
-            <div class="mb-2">
-              <label class="form-label">Seller</label>
-              <input class="form-control" [(ngModel)]="asset.sellerId" name="seller" />
-              <!-- <select class="form-select" [(ngModel)]="asset.sellerId" name="seller">
-                <option>Select</option>
-              </select> -->
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">Starting Price</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.startingPrice"
+              name="startingPrice"
+              #startingPrice="ngModel"
+              required
+              min="1"
+              max="9999999999" 
+              step="any"
+            />
+            
+            <div *ngIf="startingPrice.invalid && (startingPrice.touched || startingPrice.dirty)" class="text-danger text-[11px]">
+              <div *ngIf="startingPrice.errors?.['required']">Starting Price is required.</div>
+              <div *ngIf="startingPrice.errors?.['min']">Starting Price must be greater than 0.</div>
+              <div *ngIf="startingPrice.errors?.['max']">Starting Price cannot exceed 10 digits.</div>
             </div>
-            <div class="mb-2">
-              <label class="form-label">Commission %</label>
-              <input class="form-control" [(ngModel)]="asset.commission" name="commissionPercent" />
+          </div>
+          
+          <div class="mb-2">
+            <label class="form-label required-label">Reserve Amount</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.reserveAmount"
+              name="reserveAmount"
+              #reserveAmount="ngModel"
+              required
+              min="1"
+              max="9999999999" 
+              step="any"
+            />
+            
+            <div *ngIf="reserveAmount.invalid && (reserveAmount.touched || reserveAmount.dirty)" class="text-danger text-[11px]">
+              <div *ngIf="reserveAmount.errors?.['required']">Reserve Amount is required.</div>
+              <div *ngIf="reserveAmount.errors?.['min']">Reserve Amount must be greater than 0.</div>
+              <div *ngIf="reserveAmount.errors?.['max']">Reserve Amount cannot exceed 10 digits.</div>
             </div>
-            <div class="mb-2">
-              <label class="form-label">Starting Price</label>
-              <input class="form-control" [(ngModel)]="asset.startingPrice" name="startingPrice" />
+          </div>
+          
+
+          <div class="mb-2">
+            <label class="form-label required-label">Incremental Time (minutes)</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.incrementalTime"
+              name="incrementalTime"
+              #incrementalTime="ngModel"
+              required
+              min="1"
+              max="1440"
+            />
+          
+            <div *ngIf="incrementalTime.invalid && (incrementalTime.touched || incrementalTime.dirty)" class="text-danger text-[11px]">
+              <div *ngIf="incrementalTime.errors?.['required']">Incremental Time is required.</div>
+              <div *ngIf="incrementalTime.errors?.['min']">Incremental Time must be at least 1 minute.</div>
+              <div *ngIf="incrementalTime.errors?.['max']">Incremental Time cannot exceed 1440 minutes (1 day).</div>
             </div>
-            <div class="mb-2">
-              <label class="form-label">Reserve Amount</label>
-              <input class="form-control" [(ngModel)]="asset.reserveAmount" name="reserveAmount" />
+          </div>
+          
+          <!-- min="1" -->
+
+          <div class="mb-2">
+            <label class="form-label required-label">Min Increment</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.minIncrement"
+              name="minIncrement"
+              #minIncrement="ngModel"
+              required
+              min="1"
+              max="1000"
+            />
+          
+            <div *ngIf="minIncrement.invalid && (minIncrement.touched || minIncrement.dirty)" class="text-danger text-[11px]">
+              <div *ngIf="minIncrement.errors?.['required']">Min Increment is required.</div>
+              <div *ngIf="minIncrement.errors?.['min']">Min Increment must be at least 1.</div>
+              <div *ngIf="minIncrement.errors?.['max']">Min Increment must not exceed 1000.</div>
             </div>
-            <div class="mb-2">
-              <label class="form-label">Incremental Time</label>
-              <input class="form-control" [(ngModel)]="asset.incrementalTime" name="incrementalTime" />
+          </div>
+          
+          <!-- min="1" -->
+
+          <div class="mb-2">
+            <label class="form-label required-label">Make Offer</label>
+            <select
+              class="form-select"
+              [(ngModel)]="asset.makeOffer"
+              name="makeOffer"
+            >
+              <option
+                *ngFor="let option of makeOfferOptions"
+                [value]="option === 'Yes'"
+              >
+                {{ option }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">Featured</label>
+            <select
+              class="form-select"
+              [(ngModel)]="asset.featured"
+              name="featured"
+            >
+              <option
+                *ngFor="let option of featuredOptions"
+                [value]="option === 'Yes'"
+              >
+                {{ option }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">Awarding Method</label>
+            <select
+              class="form-select"
+              [(ngModel)]="asset.awardingMethod"
+              name="awardingMethod"
+            >
+              <option
+                *ngFor="let option of winnerAwardingOptions"
+                [value]="option"
+              >
+                {{ option }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">Status</label>
+            <select
+              class="form-select"
+              [(ngModel)]="asset.statusId"
+              name="status"
+              #status="ngModel"
+              required
+            >
+              <option value="" disabled selected>Select status</option>
+              <option *ngFor="let option of statusOptions" [value]="option.id">
+                {{ option.name }}
+              </option>
+            </select>
+            <!-- Error message for required validation -->
+            <div
+              *ngIf="status.invalid && (status.touched || status.dirty)"
+              class="text-danger"
+            >
+              Status is required.
             </div>
-            <div class="mb-2">
-              <label class="form-label">Min Increment</label>
-              <input class="form-control" [(ngModel)]="asset.minIncrement" name="minIncrement" />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">VAT Type</label>
+            <select
+              class="form-select"
+              [(ngModel)]="asset.vatType"
+              name="vatType"
+            >
+              <option *ngFor="let option of vatOptions" [value]="option">
+                {{ option }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">VAT %</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.vatpercent"
+              name="vatPercent"
+              #vatPercent="ngModel"
+              required
+              min="0"
+              max="100"
+            />
+          
+            <div *ngIf="vatPercent.invalid && (vatPercent.touched || vatPercent.dirty)" class="text-danger text-[11px]">
+              <div *ngIf="vatPercent.errors?.['required']">VAT percentage is required.</div>
+              <div *ngIf="vatPercent.errors?.['min']">VAT percentage must be at least 0%.</div>
+              <div *ngIf="vatPercent.errors?.['max']">VAT percentage must not exceed 100%.</div>
             </div>
-<!--   
-            <div class="mb-2" *ngFor="let field of dropdownFields">
-              <label class="font-semibold text-[11px]">{{ field.label }}</label>
-              <select class="border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full" [name]="field.model">
-                <option *ngFor="let option of field.options">{{ option }}</option>
-              </select>
+          </div>
+          
+          <!-- max="100"
+            min="0" -->
+
+          <div class="mb-2">
+            <label class="form-label required-label">Court Case Number</label>
+            <input
+              class="form-control"
+              type="text"
+              [(ngModel)]="asset.courtCaseNumber"
+              name="courtCaseNumber"
+              #courtCaseNumber="ngModel"
+              readonly
+            />
+            <!-- maxlength="7" 
+              pattern="^[^-\s/@]*$"
+              minlength="7" 
+            <div *ngIf="courtCaseNumber.invalid && (courtCaseNumber.touched || courtCaseNumber.dirty)" class="text-danger">
+              <div *ngIf="courtCaseNumber.errors?.['required']">Court Case Number is required.</div>
+              <div *ngIf="courtCaseNumber.errors?.['minlength'] || courtCaseNumber.errors?.['maxlength']">
+                Must be exactly 7 characters.
+              </div>
+              <div *ngIf="courtCaseNumber.errors?.['pattern']">
+                Cannot contain - / &#64; or spaces.
+              </div>
             </div> -->
-  
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Make Offer</label>
-              <select class="form-select  border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
-                      [(ngModel)]="formValues.makeOffer" name="makeOffer">
-                <option *ngFor="let option of makeOfferOptions" [value]="option">{{ option }}</option>
-              </select>
-            </div>
-            
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Featured</label>
-              <select class="form-select  border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
-                      [(ngModel)]="formValues.featured" name="featured">
-                <option *ngFor="let option of featuredOptions" [value]="option">{{ option }}</option>
-              </select>
-            </div>
-            
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Winner Awarding</label>
-              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
-                      [(ngModel)]="formValues.winnerAwarding" name="winnerAwarding">
-                <option *ngFor="let option of winnerAwardingOptions" [value]="option">{{ option }}</option>
-              </select>
-            </div>
-            
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Delivery Required</label>
-              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
-                      [(ngModel)]="formValues.deliveryRequired" name="deliveryRequired">
-                <option *ngFor="let option of deliveryRequiredOptions" [value]="option">{{ option }}</option>
-              </select>
-            </div>
-            
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Status</label>
-              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
-                      [(ngModel)]="asset.statusId" name="status">
-                <option *ngFor="let option of statusOptions" [value]="option">{{ option }}</option>
-              </select>
-            </div>
-            
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">VAT</label>
-              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
-                      [(ngModel)]="asset.vatid" name="vat">
-                <option *ngFor="let option of vatOptions" [value]="option">{{ option }}</option>
-              </select>
-            </div>
-                        
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">VAT % </label>
-              <input type="text" class="form-control" [(ngModel)]="asset.vatpercent " name="vatPercent" />
-            </div>
-  
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Court Case Number</label>
-              <input type="text" class="form-control" [(ngModel)]="asset.courtCaseNumber" name="courtCaseNumber" />
-            </div>
-  
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Registration Deadline</label>
-              <input type="text" class="form-control" [(ngModel)]="asset.registrationDeadline" name="registrationDeadline" />
-            </div>
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Request for Viewing</label>
-              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
-                      [(ngModel)]="formValues.requestForViewing" name="requestForViewing">
-                <option *ngFor="let option of requestForViewingOptions" [value]="option">{{ option }}</option>
-              </select>
-            </div>
-            
-            <div class="mb-2">
-              <label class="font-semibold text-[11px]">Request for Inquiry</label>
-              <select class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
-                      [(ngModel)]="formValues.requestForInquiry" name="requestForInquiry">
-                <option *ngFor="let option of requestForInquiryOptions" [value]="option">{{ option }}</option>
-              </select>
-            </div>
-            
           </div>
+
+          <div class="mb-2">
+            <label class="form-label required-label">Registration Deadline (days)</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.registrationDeadline"
+              name="registrationDeadline"
+              #registrationDeadline="ngModel"
+              required
+              min="1"
+              max="1000"
+            />
+          
+            <div *ngIf="registrationDeadline.invalid && (registrationDeadline.touched || registrationDeadline.dirty)" class="text-danger text-[11px]">
+              <div *ngIf="registrationDeadline.errors?.['required']">Registration deadline is required.</div>
+              <div *ngIf="registrationDeadline.errors?.['min']">Deadline must be at least 1 day.</div>
+              <div *ngIf="registrationDeadline.errors?.['max']">Deadline must not exceed 1000 days.</div>
+            </div>
+          </div>
+          
+          <div class="mb-2">
+            <label class="font-semibold text-[11px] required-label">Request for Viewing</label>
+            <select
+              class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+              [(ngModel)]="asset.requestForViewing"
+              name="requestForViewing"
+            >
+            <option  [(ngModel)]="asset.requestForViewing" disabled>select option</option>
+              <option *ngFor="let option of requestForViewingOptions" [value]="option.id">
+                {{ option.name }}
+              </option>
+            </select>
+            <!-- <p>{{ asset.requestForViewing === 1 ? 'Yes' : 'No' }}</p> -->
+          </div>
+          
+          <div class="mb-2">
+            <label class="font-semibold text-[11px] required-label">Request for Inquiry</label>
+            <select
+              class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
+              [(ngModel)]="asset.requestForInquiry"
+              name="requestForInquiry"
+            >
+            <option  [(ngModel)]="asset.requestForInquiry" disabled>select option</option>
+              <option *ngFor="let option of requestForInquiryOptions" [value]="option.id">
+                {{ option.name }}
+              </option>
+            </select>
+            <!-- <p>{{ asset.requestForInquiry === 1 ? 'Yes' : 'No' }}</p> -->
+          </div>        
+                   
         </div>
-  
-        <!-- Middle Column -->
-        <div class="col-lg-4">
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Description & Gallery</h5>
-            <div class="mb-2">
-              <label class="form-label">Description</label>
-              <textarea class="form-control" rows="3" [(ngModel)]="asset.description" name="description"></textarea>
-            </div>
-            <div class="mb-2">
-              <label class="form-label">Gallery</label>
-              <div class="d-flex flex-wrap gap-2 align-items-start">
-                <ng-container *ngFor="let img of asset.galleryFiles; let i = index">
-                  <div *ngIf="isImage(img)" class="border p-2 position-relative">
-                    <img [src]="img" alt="Asset" width="100" />
-                    <button
-                      *ngIf="isDataUrl(img)"
-                      type="button"
-                      class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
-                        (click)="removeGalleryItem(i)">
-                      ×
-                    </button>
-                  </div>
-                </ng-container>
-            
-                <div
-                  class="border rounded p-3 text-center bg-light"
-                  style="min-width: 200px; cursor: pointer;"
-                  (dragover)="onImageDragOver($event)"
-                  (drop)="onImageDrop($event)">
-                  <p class="mb-1">Drag & drop image here</p>
-                  <button class="btn btn-outline-success btn-sm" type="button" (click)="fileInput.click()">
-                    Or select Image
-                  </button>
-                  <input
-                    type="file"
-                    #fileInput
-                    (change)="onGalleryFileSelected($event)"
-                    accept="image/*"
-                    hidden />
-                  <div *ngIf="imageUploadError" class="text-danger mt-2 small">{{ imageUploadError }}</div>
-                </div>
-              </div>
-            </div>
-            
-          </div>
+      </div>
 
-  
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Details</h5>
-            <div *ngFor="let detail of asset.detailsJson; let i = index" class="row g-2 align-items-end mb-2">
-              <div class="col-5">
-                <label class="form-label">Attribute</label>
-                <input class="form-control" [(ngModel)]="detail.attributeName " [name]="'attributeName' + i" />
-              </div>
-              <div class="col-5">
-                <label class="form-label">Value</label>
-                <input class="form-control" [(ngModel)]="detail.attributeValue " [name]="'attributeValue' + i" />
-              </div>
-              <div class="col-2">
-                <button type="button" class="btn btn-danger btn-sm" (click)="removeDetail(i)">×</button>
-              </div>
+      <!-- Middle Column -->
+      <div class="col-lg-4">
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>Description & Gallery</h5>
+          <div class="mb-2">
+            <label class="form-label required-label">Description</label>
+            <textarea
+              class="form-control"
+              rows="5"
+              [(ngModel)]="asset.description"
+              name="description"
+              #description="ngModel"
+              required
+              minlength="10"
+              maxlength="200"
+            ></textarea>
+          
+            <div *ngIf="description.invalid && (description.touched || description.dirty)" class="text-danger text-[11px]">
+              <div *ngIf="description.errors?.['required']">Description is required.</div>
+              <div *ngIf="description.errors?.['minlength']">Minimum 10 characters required.</div>
+              <div *ngIf="description.errors?.['maxlength']">Maximum 200 characters allowed.</div>
             </div>
-          
-            <button type="button" class="btn btn-outline-primary btn-sm" (click)="addDetail()">Add More Details</button>
           </div>
-
           
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Documents</h5>
-            <div class="d-flex flex-wrap gap-2 align-items-start">
-              <ng-container *ngFor="let doc of asset.documentFiles; let i = index">
-                <div *ngIf="isPdf(doc)" class="border p-2 position-relative">
-                  <a [href]="doc" target="_blank">{{ getDocumentName(doc) }}</a>
-                  <button
-                    *ngIf="isPdfDataUrl(doc) || isUrl(doc)"
-                    type="button"
-                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
-                    (click)="removeDocument(i)">
-                    ×
-                  </button>
-                </div>
-              </ng-container>
-          
+          <div class="mb-2">
+            <label class="form-label required-label">Gallery</label>
+            <div class="d-flex flex-wrap gap-2">
               <div
-                class="border rounded p-3 text-center bg-light"
-                style="min-width: 200px; cursor: pointer;"
-                (dragover)="onDragOver($event)"
-                (drop)="onDropPdf($event)">
-                <p class="mb-1">Drag & drop PDF here</p>
-                <button type="button" class="btn btn-sm btn-outline-info" (click)="docFileInput.click()">
-                  Or select PDF
-                </button>
-                <input type="file" accept="application/pdf" hidden #docFileInput (change)="onDocumentSelected($event)" />
-                <div *ngIf="documentUploadError" class="text-danger mt-2 small">{{ documentUploadError }}</div>
+                *ngFor="let gallery of asset.galleries"
+                class="position-relative"
+              >
+                <img
+                  [src]="gallery.fileUrl"
+                  class="img-thumbnail"
+                  width="100"
+                  height="100"
+                />
               </div>
-            </div>
-          </div>
-          
-          
-  
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Map</h5>
-            <input type="text" placeholder="Search..." class="form-control mb-2" />
-            <div class="border text-center text-muted p-3">Map Pin Location Adjusting</div>
-          </div>
-          
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Fees</h5>
-            <div class="mb-2">
-              <label class="form-label">Admin Fees</label>
-              <input type="text" class="form-control" [(ngModel)]="asset.adminFees" name="adminFees" />
-            </div>
-            <div class="mb-2">
-              <label class="form-label">Auction Fees</label>
-              <input type="text" class="form-control" [(ngModel)]="asset.auctionFees" name="auctionFees" />
-            </div>
-            <div class="mb-2">
-              <label class="form-label">Buyer Commission</label>
-              <input type="text" class="form-control" [(ngModel)]="asset.buyerCommission" name="buyerCommission" />
             </div>
           </div>
         
+          
+        
         </div>
-  
-        <!-- Right Column -->
-        <div class="col-lg-4">
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>360 View</h5>
-            <button class="btn btn-outline-secondary w-100">Upload 360 Media</button>
-          </div>
-  
-          <!-- <div class="card p-3 shadow-sm mb-4">
-            <h5>Auctions</h5>
-            <div *ngFor="let auction of asset.auctionIds">
-              <span class="badge bg-warning">{{ auction }}</span>
+
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>
+            <label class="required-label">Attributes</label>
+          </h5>
+          <div
+            *ngFor="let attribute of asset.attributes; let i = index"
+            class="row g-2 mb-2"
+          >
+            <div class="col-md-5">
+              <input
+                class="form-control"
+                [(ngModel)]="attribute.attributeName"
+                [name]="'attrName_' + i"
+                placeholder="Attribute name"
+                #attrName="ngModel"
+              />
+              <!-- required -->
             </div>
-          </div> -->
-
-
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Auctions</h5>
-            <div *ngFor="let auctionId of asset.auctionIds">
-              <div class="d-flex align-items-center mb-2">
-                <span class="badge bg-warning me-2">{{ auctionId }}</span>
-                <!-- Add auction title, date, or other relevant details here -->
-                <!-- <span class="text-muted">{{ getAuctionDetails(auctionId).title }} - {{ getAuctionDetails(auctionId).date | date:'short' }}</span> -->
-              </div>
+            <div class="col-md-5">
+              <input
+                class="form-control"
+                [(ngModel)]="attribute.attributeValue"
+                [name]="'attrValue_' + i"
+                placeholder="Attribute value"
+                #attrValue="ngModel"
+              />
+              <!-- required -->
             </div>
-          </div>
-          
-  
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Results</h5>
-            <ul class="list-unstyled small">
-              <!-- <li>Total Bids: {{ asset.results.totalBids }}</li>
-              <li>Total Bidders: {{ asset.results.totalBidders }}</li>
-              <li>Start Price: {{ asset.results.startPrice }}</li>
-              <li>Highest Price: {{ asset.results.highestPrice }}</li>
-              <li>Commission Calculation: {{ asset.results.commission }}</li>
-              <li>Total Payable: {{ asset.results.totalPayable }}</li> -->
-            </ul>
-          </div>
-  
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Winner</h5>
-            <!-- <p>{{ asset.winner }}</p> -->
-            <div class="d-flex gap-2 mb-2">
-              <button class="btn btn-primary btn-sm">Change Winner</button>
-              <select class="form-select form-select-sm w-auto" name="reason">
-                <option>Reason</option>
-                <option>Duplicate</option>
-                <option>Error</option>
-              </select>
-            </div>
-          </div>
-  
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Sale</h5>
-            <!-- <p>Amount: {{ asset.results.totalPayable }}</p> -->
-            <button class="btn btn-success btn-sm mb-2">Approve Sale</button>
-            <input type="text" class="form-control form-control-sm" name="salesNotes" placeholder="Note" [(ngModel)]="asset.salesNotes" />
-          </div>
-  
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Winner Documents <small class="text-muted">(Passport / Personal ID)</small></h5>
-          
-            <div class="d-flex flex-wrap gap-2 align-items-start">
-              
-              <!-- Uploaded Documents Preview -->
-
-
-              <!-- <ng-container *ngFor="let doc of asset.winnerDocuments; let i = index">
-                <div *ngIf="isPdfDoc(doc)" class="border p-2 position-relative">
-                  <a [href]="doc" target="_blank">{{ getWinnerDocName(doc) }}</a>
-                  <button
-                    *ngIf="isPdfDataUrlDoc(doc) || isUrlDoc(doc)"
-                    type="button"
-                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
-                    (click)="removeWinnerDocument(i)">
-                    ×
-                  </button>
-                </div>
-              </ng-container> -->
-          
-              <!-- Drag-and-drop area -->
-              <!-- <div
-                class="border rounded p-3 text-center bg-light"
-                style="min-width: 200px; cursor: pointer;"
-                (dragover)="onWinnerDocDragOver($event)"
-                (drop)="onWinnerDocDrop($event)"
+            <div class="col-md-2">
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                (click)="removeDetail(i)"
               >
-                <p class="mb-1">Drag & drop PDF here</p>
-                <button type="button" class="btn btn-sm btn-outline-info" (click)="winnerDocFileInput.click()">
-                  Or select PDF
-                </button>
-                <input type="file" accept="application/pdf" hidden #winnerDocFileInput (change)="onWinnerDocumentSelected($event)" />
-                <div *ngIf="winnerDocError" class="text-danger mt-2 small">{{ winnerDocError }}</div>
-              </div> -->
-          
+                <i class="bi bi-trash"></i>
+              </button>
             </div>
           </div>
-           
-                            
-  
-          <div class="card p-3 shadow-sm mb-4">
-            <h5>Requests</h5>
-            <!-- <button class="btn btn-info btn-sm">{{ asset.requests[0] }}</button> -->
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="addDetail()"
+          >
+            <i class="bi bi-plus"></i> Add Attribute
+          </button>
+        </div>
+
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>
+            <label class="required-label"> Documents </label>
+          </h5>
+          <div class="d-flex flex-wrap gap-2">
+            <div *ngFor="let doc of asset.documents" class="position-relative">
+              <a
+                [href]="'https://localhost:7159/' + doc.filePath"
+                target="_blank"
+                class="btn btn-sm btn-outline-primary"
+              >
+                <i class="bi bi-file-earmark-pdf"></i> View Document
+              </a>
+            </div>
           </div>
-  
-          <div class="card p-3 shadow-sm">
-            <h5>Transactions</h5>
-            <!-- <button class="btn btn-info btn-sm">{{ asset.transactions[0] }}</button> -->
+        </div>
+
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>Map Location</h5>
+          <div class="mb-2">
+            <label class="form-label">Latitude</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.mapLatitude"
+              name="latitude"
+              step="0.000001"
+              #latitude="ngModel"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Longitude</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.mapLongitude"
+              name="longitude"
+              step="0.000001"
+              #longitude="ngModel"
+            />
+          </div>
+        </div>
+
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>Fees</h5>
+          <div class="mb-2">
+            <label class="form-label required-label">Admin Fees</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.adminFees"
+              name="adminFees"
+              #adminFees="ngModel"
+              required
+              min="1"
+              max="10000000000" 
+              step="any"
+            />
+            
+            <div *ngIf="adminFees.invalid && adminFees.touched" class="text-danger text-[11px]">
+              <div *ngIf="adminFees.errors?.['required']">This field is required.</div>
+              <div *ngIf="adminFees.errors?.['min']">Minimum value is 1.</div>
+              <div *ngIf="adminFees.errors?.['max']">Maximum value is 10 digits.</div>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label required-label">Auction Fees</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.auctionFees"
+              name="auctionFees"
+              #auctionFees="ngModel"
+              required
+              min="1"
+              max="10000000000" 
+              step="any"
+            />
+          
+            <div *ngIf="auctionFees.invalid && auctionFees.touched" class="text-danger text-[11px]">
+              <div *ngIf="auctionFees.errors?.['required']">This field is required.</div>
+              <div *ngIf="auctionFees.errors?.['min']">Minimum value is 1.</div>
+              <div *ngIf="auctionFees.errors?.['max']">Maximum value is 10 digits.</div>
+            </div>
+          </div>
+          
+          <div class="mb-2">
+            <label class="form-label required-label">Buyer Commission</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.buyerCommission"
+              name="buyerCommission"
+              #buyerCommission="ngModel"
+              required
+              min="1"
+              max="100"
+              step="any"
+            />
+          
+            <div *ngIf="buyerCommission.invalid && buyerCommission.touched" class="text-danger text-[11px]">
+              <div *ngIf="buyerCommission.errors?.['required']">This field is required.</div>
+              <div *ngIf="buyerCommission.errors?.['min']">Minimum value is 1.</div>
+              <div *ngIf="buyerCommission.errors?.['max']">Value must be between 1 to 100.</div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-lg-4">
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>Winner Details</h5>
+          <!-- <div class="mb-2">
+            <label class="form-label">Winner ID</label>
+            <input class="form-control" 
+              type="number" 
+              [(ngModel)]="asset.winnerId" 
+              name="winnerId"
+              #winnerId="ngModel"
+            />
+          </div> -->
+          <div class="mb-2">
+            <label class="form-label">Winner Name</label>
+            <input
+              class="form-control"
+              type="text"
+              [(ngModel)]="asset.winnerName"
+              name="winnerName"
+              #winnerName="ngModel"
+              readonly
+            />
+          </div>
+          <div class="mb-2">
+            <label class="form-label required-label">Awarded Price</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="asset.awardedPrice"
+              name="awardedPrice"
+              #awardedPrice="ngModel"
+              readonly
+            />
+            <!-- min="0" -->
+          </div>
+        </div>
+
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>
+            <label class="required-label">Sales Notes</label>
+          </h5>
+          <textarea
+            class="form-control"
+            rows="4"
+            [(ngModel)]="asset.salesNotes"
+            name="salesNotes"
+            #salesNotes="ngModel"
+            required
+            minlength="10"
+            maxlength="50"
+          ></textarea>
+        
+          <div *ngIf="salesNotes.invalid && (salesNotes.touched || salesNotes.dirty)" class="text-danger text-[11px]">
+            <div *ngIf="salesNotes.errors?.['required']">Sales Notes are required.</div>
+            <div *ngIf="salesNotes.errors?.['minlength']">Sales Notes must be at least 10 characters.</div>
+            <div *ngIf="salesNotes.errors?.['maxlength']">Sales Notes cannot exceed 50 characters.</div>
+          </div>
+        </div>
+        
+
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>Timestamps</h5>
+          <div class="mb-2">
+            <label class="form-label">Created At</label>
+            <input
+              class="form-control"
+              type="text"
+              [value]="asset.createdAt | date : 'medium'"
+              readonly
+            />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Updated At</label>
+            <input
+              class="form-control"
+              type="text"
+              [value]="asset.updatedAt | date : 'medium'"
+              readonly
+            />
           </div>
         </div>
       </div>
-    </form>
-  </div>
-  
+    </div>
+  </form>
+</div>

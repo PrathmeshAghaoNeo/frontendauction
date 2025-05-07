@@ -90,10 +90,17 @@ export class ManageAssetComponent implements OnInit {
   newAssestRoute():void {
     this.router.navigate(['/newAsset']);
   }
-  EditAssestRoute():void {
-    this.router.navigate(['/editAsset']);
+  
+  EditAssestRoute(assetId: number): void {
+    if (assetId && !isNaN(assetId)) {
+      this.router.navigate(['/editAsset', assetId]);
+    } else {
+      console.error('Invalid assetId:', assetId);
+      // Optionally show error to user
+      Swal.fire('Error', 'Invalid asset ID', 'error');
+    }
   }
-
+  
   deleteAsset(asset: Asset): void {
     Swal.fire({
       title: `Delete "${asset.title}"?`,

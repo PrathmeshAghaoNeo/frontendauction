@@ -170,3 +170,10 @@
     border-radius: 5px;
   }
   
+
+  .required-label::after {
+    content: "* ";
+    color: red;
+    font-weight: bold;
+  }
+  
