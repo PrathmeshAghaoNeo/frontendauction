@@ -4,13 +4,12 @@
     </button>
   
     <div class="d-flex justify-content-center">
-      <h3 class="form-title m-0">Add Transaction</h3>
+      <h3 class="form-title m-0">Update Transaction</h3>
     </div>
-  
   
     <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
       <div class="row">
-        <!-- Amount Field -->
+        <!-- Amount -->
         <div class="col-md-6 mb-2">
           <label for="amount" class="form-label required-label">Amount</label>
           <input type="number" (input)="allowedSevenDigits($event)" formControlName="amount" id="amount" class="form-control" placeholder="Amount" step="0.01" maxlength="7">
@@ -19,10 +18,9 @@
             <div *ngIf="transactionForm.get('amount')?.errors?.['min']">Amount must be greater than 0.</div>
             <div *ngIf="transactionForm.get('amount')?.errors?.['max']">Amount must be less than or equal to 99999999.</div>
           </div>
-          
         </div>
   
-        <!-- User ID Field -->
+        <!-- User ID -->
         <div class="col-md-6 mb-2">
           <label for="userId" class="form-label required-label">User</label>
           <input type="number" formControlName="userId" id="userId" class="form-control" placeholder="User ID">
@@ -31,22 +29,28 @@
             <div *ngIf="transactionForm.get('userId')?.errors?.['min']">User ID must be greater than 0.</div>
             <div *ngIf="transactionForm.get('userId')?.errors?.['max']">User ID must be less than or equal to 99999.</div>
           </div>
-          
         </div>
   
-        <!-- Transaction Type Field -->
+        <!-- Transaction Type -->
         <div class="col-md-6 mb-2">
-          <label for="transactionTypeId" class="form-label required-label">Transaction Type</label>
-          <select formControlName="transactionTypeId" id="transactionTypeId" class="form-select">
-            <option value="" disabled>Select Type</option>
-            <option *ngFor="let type of transactionTypes" [value]="type.id">{{ type.name }}</option>
-          </select>
-          <div *ngIf="transactionForm.get('transactionTypeId')?.invalid && transactionForm.get('transactionTypeId')?.touched" class="text-danger">
-            Transaction type is required.
+            <label for="transactionTypeId" class="form-label required-label">Transaction Type</label>
+            <select
+              formControlName="transactionTypeId"
+              class="form-select"
+              [class.is-invalid]="transactionForm.get('transactionTypeId')?.invalid && transactionForm.get('transactionTypeId')?.touched"
+            >
+              <option value="" disabled>Select Transaction Type</option>
+              <option value="1">Credit</option>
+              <option value="2">Debit</option>
+              <option value="3">Refund</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="transactionForm.get('transactionTypeId')?.hasError('required') && transactionForm.get('transactionTypeId')?.touched">
+              Transaction type is required.
+            </div>
           </div>
-        </div>
+          
   
-        <!-- Payment Method Field -->
+        <!-- Payment Method -->
         <div class="col-md-6 mb-2">
           <label for="paymentMethodId" class="form-label required-label">Payment Method</label>
           <select formControlName="paymentMethodId" id="paymentMethodId" class="form-select">
@@ -58,7 +62,7 @@
           </div>
         </div>
   
-        <!-- Card Type Field -->
+        <!-- Card Type -->
         <div class="col-md-6 mb-2">
           <label for="cardTypeId" class="form-label required-label">Card Type</label>
           <select formControlName="cardTypeId" id="cardTypeId" class="form-select">
@@ -70,7 +74,6 @@
           </div>
         </div>
   
-        <!-- Merchant Transaction ID Field -->
         <div class="col-md-6 mb-2">
             <label for="merchantTransactionId" class="form-label required-label">Merchant Transaction ID</label>
             <input
@@ -95,23 +98,16 @@
           </div>
           
   
-        <!-- Transaction Date & Time Field -->
+        <!-- Transaction Date & Time -->
         <div class="col-md-6 mb-2">
           <label for="transactionDateTime" class="form-label required-label">Transaction Date & Time</label>
-          <input
-          type="datetime-local"
-          formControlName="transactionDateTime"
-          id="transactionDateTime"
-          class="form-control"
-          [min]="minDateTime"
-        />
-        
+          <input type="datetime-local" formControlName="transactionDateTime" id="transactionDateTime" class="form-control" [min]="minDateTime">
           <div *ngIf="transactionForm.get('transactionDateTime')?.invalid && transactionForm.get('transactionDateTime')?.touched" class="text-danger">
             Transaction date and time is required.
           </div>
         </div>
   
-        <!-- Status Field -->
+        <!-- Status -->
         <div class="col-md-6 mb-2">
           <label for="statusId" class="form-label required-label">Status</label>
           <select formControlName="statusId" id="statusId" class="form-select">
@@ -123,33 +119,20 @@
           </div>
         </div>
   
-        <!-- Notes Field -->
-            <label for="notes" class="form-label">Notes</label>
-            <textarea formControlName="notes" id="notes" class="form-control" rows="3"></textarea>
-            <div *ngIf="transactionForm.get('notes')?.invalid && transactionForm.get('notes')?.touched" class="text-danger">
-              <div *ngIf="transactionForm.get('notes')?.errors?.['maxlength']">Maximum 100 characters allowed.</div>
-            </div>
+        <!-- Notes -->
+        <div class="col-md-12 mb-2">
+          <label for="notes" class="form-label">Notes</label>
+          <textarea formControlName="notes" id="notes" class="form-control" rows="3"></textarea>
+          <div *ngIf="transactionForm.get('notes')?.invalid && transactionForm.get('notes')?.touched" class="text-danger">
+            <div *ngIf="transactionForm.get('notes')?.errors?.['maxlength']">Maximum 100 characters allowed.</div>
           </div>
-          
-          
-  
-        <!-- Document Path Field
-        <div class="col-md-6 mb-2">
-          <label for="documentPath" class="form-label required-label">Document Path</label>
-          <input type="text" formControlName="documentPath" id="documentPath" class="form-control">
-          <div *ngIf="transactionForm.get('documentPath')?.invalid && transactionForm.get('documentPath')?.touched" class="text-danger">
-            <div *ngIf="transactionForm.get('documentPath')?.errors?.['required']">Document path is required.</div>
-            <div *ngIf="transactionForm.get('documentPath')?.errors?.['maxlength']">Maximum 255 characters allowed.</div>
-          </div>
-        </div> -->
-  
-        <div class="row">
-            <div class="col-md-12 text-center mt-4">
-                <button type="submit" class="btn btn-primary">Submit</button>
-
-            </div>
         </div>
   
+        <!-- Submit Button -->
+        <div class="col-md-12 text-center mt-4">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
     </form>
   </div>
   

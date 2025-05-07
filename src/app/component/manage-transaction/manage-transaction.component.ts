@@ -2,7 +2,7 @@ import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Transaction } from '../../modals/add-transaction';
 import { FormsModule } from '@angular/forms';
-import { CurrencyPipe, DatePipe, NgClass, NgFor } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe, NgClass, NgFor } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { RouterModule } from '@angular/router';
 import { TransactionService } from '../../services/transaction.service';
@@ -10,7 +10,7 @@ import { TransactionService } from '../../services/transaction.service';
 @Component({
   selector: 'app-transaction-management',
   standalone: true,
-  imports: [NgFor, NgClass, NgxPaginationModule, CurrencyPipe, DatePipe, FormsModule, RouterModule],
+  imports: [NgFor, NgClass, NgxPaginationModule, CurrencyPipe, DatePipe, FormsModule, RouterModule, CommonModule],
   templateUrl: './manage-transaction.component.html',
   styleUrls: ['./manage-transaction.component.css']
 })
@@ -23,38 +23,47 @@ export class TransactionManagementComponent implements OnInit {
 
   loading = false;
   page = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 5;
 
   // Filters
   searchText = '';
   filterTransactionType = 0;
   filterPaymentMethod = 0;
   filterStatus = 0;
-  dateFilter: string | null = null;
+  filterCardType = 0; // Added card type filter
+  filterStartDate: string | null = null;
+  filterEndDate: string | null = null;
 
   selectedTransaction: Transaction | null = null;
 
-  // Static Dropdown Lists
   transactionTypes = [
-    { id: 1, name: 'Deposit' },
-    { id: 2, name: 'Invoice' },
-    { id: 3, name: 'Receipt' },
-    { id: 4, name: 'Refund' }
+    { id: 1, name: 'Receipt' },
+    { id: 2, name: 'Deposit' },
+    { id: 3, name: 'Refund' },
+    { id: 4, name: 'Invoice' }
   ];
 
   paymentMethods = [
-    { id: 1, name: 'Bank Transfer' },
-    { id: 2, name: 'Cash' },
+    { id: 1, name: 'Cash' },
+    { id: 2, name: 'Bank Transfer' },
     { id: 3, name: 'Credit Card' },
     { id: 4, name: 'Debit Card' },
     { id: 5, name: 'Online Wallet' }
   ];
 
+  cardTypes = [
+    { id: 1, name: 'Visa' },
+    { id: 2, name: 'MasterCard' },
+    { id: 3, name: 'American Express' },
+    { id: 4, name: 'AMEX' },
+    { id: 5, name: 'Debit' }
+  ];
+
   statuses = [
-    { id: 1, name: 'Active' },
-    { id: 2, name: 'Pending' },
-    { id: 3, name: 'Closed' },
-    { id: 4, name: 'Completed' }
+    { id: 1, name: 'Pending' },
+    { id: 2, name: 'Completed' },
+    { id: 3, name: 'Cancelled' },
+    { id: 4, name: 'Failed' }
   ];
 
   constructor(
@@ -70,8 +79,8 @@ export class TransactionManagementComponent implements OnInit {
     this.loading = true;
     this.transactionService.getTransactions().subscribe({
       next: (data) => {
-        this.transactions = data;
-        this.filteredTransactions = data;
+        this.transactions = data.sort((a, b) => b.transactionId - a.transactionId);
+        this.filteredTransactions = this.applyFilters;
         this.loading = false;
       },
       error: (error) => {
@@ -81,31 +90,54 @@ export class TransactionManagementComponent implements OnInit {
     });
   }
 
-  applyFilters(): void {
+  get applyFilters(): Transaction[] {
     const search = this.searchText.trim().toLowerCase();
-    const transactionType = Number(this.filterTransactionType);
-    const paymentMethod = Number(this.filterPaymentMethod);
-    const status = Number(this.filterStatus);
-  
-    this.filteredTransactions = this.transactions.filter(transaction => {
-      const matchesSearch = !search || 
-        transaction.transactionNumber?.toLowerCase().includes(search) || 
-        transaction.userFullName?.toLowerCase().includes(search);
-  
+    const status = this.filterStatus?Number(this.filterStatus):0;
+    const transactionType = this.filterTransactionType?Number(this.filterTransactionType):0;
+    console.log("transactionType"+transactionType);
+    const paymentMethod = this.filterPaymentMethod?Number(this.filterPaymentMethod):0;
+    const cardType = this.filterCardType?Number(this.filterCardType):0;
+    // const startDate = this.filterStartDate?Number(this.filterStartDate):0;
+    // const endDate = this.filterEndDate;
+
+    // Filtering logic
+    console.log('Transactions before filtering:', this.transactions); //is not eamty here
+
+    return this.transactions.filter(transaction => {
+      console.log('Checking transaction:', transaction); //it gives in the console
+      // const matchesSearch = !search || transaction.userId;
+      const matchesStatus = status === 0 || transaction.statusId === status;
+      console.log("match status scalled");
       const matchesTransactionType = transactionType === 0 || transaction.transactionTypeId === transactionType;
       const matchesPaymentMethod = paymentMethod === 0 || transaction.paymentMethodId === paymentMethod;
-      const matchesStatus = status === 0 || transaction.statusId === status;
-  
-      return matchesSearch && matchesTransactionType && matchesPaymentMethod && matchesStatus;
+      const matchesCardType = cardType === 0 || transaction.cardTypeId === cardType;
+      // const matchesDateRange = this.isWithinDateRange(transaction.transactionDate, startDate, endDate);
+
+      return    matchesStatus && matchesTransactionType && matchesPaymentMethod && matchesCardType ;
+
     });
-  
-    this.page = 1; // Reset to the first page after applying filters
   }
-  
-  
-  clearDateFilter(): void {
-    this.dateFilter = null;
-    this.applyFilters();
+
+  isWithinDateRange(transactionDate: string, startDate: string | null, endDate: string | null): boolean {
+    const transactionDateObj = new Date(transactionDate);
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    if (start && transactionDateObj < start) return false;
+    if (end && transactionDateObj > end) return false;
+    return true;
+  }
+
+  clearFilters(): void {
+    this.searchText = '';
+    this.filterTransactionType = 0;
+    this.filterPaymentMethod = 0;
+    this.filterStatus = 0;
+    this.filterCardType = 0;
+    this.filterStartDate = null;
+    this.filterEndDate = null;
+
+    this.filteredTransactions = this.applyFilters;
   }
 
   openViewModal(transaction: Transaction): void {
@@ -123,7 +155,7 @@ export class TransactionManagementComponent implements OnInit {
       this.loading = true;
       this.transactionService.deleteTransaction(this.selectedTransaction.transactionId).subscribe({
         next: () => {
-          this.loadTransactions();
+          this.loadTransactions(); // Reload transactions after deletion
           this.loading = false;
         },
         error: (error) => {
@@ -134,17 +166,27 @@ export class TransactionManagementComponent implements OnInit {
     }
   }
 
+  // Helper methods for getting names based on IDs
   getTransactionTypeName(id: number): string {
     const type = this.transactionTypes.find(t => t.id === id);
+    console.log(type);
     return type ? type.name : 'Unknown';
   }
 
   getPaymentMethodName(id: number): string {
     const method = this.paymentMethods.find(p => p.id === id);
+    console.log(method);
     return method ? method.name : 'Unknown';
   }
 
   getStatusName(id: number): string {
+
     return this.statuses.find(s => s.id === id)?.name || 'Unknown';
+  }
+
+  getCardTypeName(id: number): string {
+    const card = this.cardTypes.find(c => c.id === id);
+    console.log(card);
+    return card ? card.name : 'Unknown';
   }
 }

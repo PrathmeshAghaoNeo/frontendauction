@@ -1,15 +1,19 @@
 export interface Transaction {
   transactionId: number;
   transactionNumber: string;
-  amount: number;
+  userId: number;
   userFullName: string;
-  transactionType: string;
   transactionTypeId: number;
-  paymentMethod: string;
+  transactionTypeName: string;
+  amount: number;
   paymentMethodId: number;
-  status: string;
+  paymentMethodName: string;
+  cardTypeId?: number;
+  cardTypeName?: string;
+  merchantTransactionId?: string;
+  transactionDateTime: Date | string;
   statusId: number;
-  transactionDateTime: string;
+  statusName: string;
   notes?: string;
   documentUrls: string[];
 }

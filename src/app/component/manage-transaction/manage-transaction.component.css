@@ -1,19 +1,23 @@
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem; 
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 999px; 
+  align-content: center;
+}
 
-.badge{
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    font-size: 0.75em;
-    font-weight: 600;
-    line-height: 1;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    border-radius: 999px;
-  }
+.badge-fixed-width {
+  min-height: 35px; 
+  min-width: 90px; 
+  max-width: 120px; 
+}
 
-  .bagde-fixed-width{
-    min-width: 90x;
-    min-height:35px ;
-    max-width: 120px;
-  }
+.modal-header-purple {
+  background-color: #b99af3;
+  color: white;
+}
