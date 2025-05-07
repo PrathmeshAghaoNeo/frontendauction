@@ -1,15 +1,15 @@
-<div class="auction-form-header">
-  <button class="back-btn btn btn-link p-0" (click)="goBack()">
-    <i class="bi bi-arrow-left-circle"></i>
-  </button>
-  <div>
-    <h3 class="auction-form-title">Add User</h3>
-    <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+
+<form (ngSubmit)="onSubmit()" #userForm="ngForm" class="container mb-3 p-4 rounded shadow">
+  
+  <div class="auction-form-header">
+    <button class="back-btn btn btn-link p-0" (click)="goBack()">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+    <div>
+      <h3 class="auction-form-title">Add User</h3>
+      <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+    </div>
   </div>
-</div>
-
-
-<form (ngSubmit)="onSubmit()" #userForm="ngForm" class="container mb-3 p-4 bg-light rounded shadow">
   
   <div class="row">
     <div class="col-md-6 mb-1">
