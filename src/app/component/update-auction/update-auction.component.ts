@@ -54,7 +54,7 @@ export class UpdateAuctionComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: Router,  
     private location: Location
   ) {}
 
