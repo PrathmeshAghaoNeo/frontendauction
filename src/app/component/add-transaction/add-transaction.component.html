@@ -1,0 +1,94 @@
+<div class="container-fluid">
+    <button class="back-btn btn btn-link p-0" (click)="goBack()">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+
+    <h3 class="form-title">Add Transaction</h3>
+
+    <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- Amount Field -->
+        <div class="col-md-6 mb-2">
+          <label for="amount" class="form-label">Amount</label>
+          <input type="number" formControlName="amount" id="amount" class="form-control" placeholder="Amount" step="0.01">
+          <div *ngIf="transactionForm.get('amount')?.invalid && transactionForm.get('amount')?.touched" class="text-danger">
+            <div *ngIf="transactionForm.get('amount')?.errors?.['required']">Amount is required.</div>
+            <div *ngIf="transactionForm.get('amount')?.errors?.['min']">Amount must be greater than 0.</div>
+          </div>
+        </div>
+
+        <!-- User ID Field -->
+        <div class="col-md-6 mb-2">
+          <label for="userId" class="form-label">User</label>
+          <input type="number" formControlName="userId" id="userId" class="form-control" placeholder="User ID">
+        </div>
+
+        <!-- Transaction Type Field -->
+        <div class="col-md-6 mb-2">
+          <label for="transactionTypeId" class="form-label">Transaction Type</label>
+          <select formControlName="transactionTypeId" id="transactionTypeId" class="form-select">
+            <option value="" disabled>Select Type</option>
+            <option *ngFor="let type of transactionTypes" [value]="type.id">{{ type.name }}</option>
+          </select>
+        </div>
+
+        <!-- Payment Method Field -->
+        <div class="col-md-6 mb-2">
+          <label for="paymentMethodId" class="form-label">Payment Method</label>
+          <select formControlName="paymentMethodId" id="paymentMethodId" class="form-select">
+            <option value="" disabled>Select Payment Method</option>
+            <option *ngFor="let method of paymentMethods" [value]="method.id">{{ method.name }}</option>
+          </select>
+        </div>
+
+        <!-- Card Type Field -->
+        <div class="col-md-6 mb-2">
+          <label for="cardTypeId" class="form-label">Card Type</label>
+          <select formControlName="cardTypeId" id="cardTypeId" class="form-select">
+            <option value="" disabled>Select Card Type</option>
+            <option *ngFor="let card of cardTypes" [value]="card.id">{{ card.name }}</option>
+          </select>
+        </div>
+
+        <!-- Merchant Transaction ID Field -->
+        <div class="col-md-6 mb-2">
+          <label for="merchantTransactionId" class="form-label">Merchant Transaction ID</label>
+          <input type="text" formControlName="merchantTransactionId" id="merchantTransactionId" class="form-control">
+        </div>
+
+        <!-- Transaction Date & Time Field -->
+        <div class="col-md-6 mb-2">
+          <label for="transactionDateTime" class="form-label">Transaction Date & Time</label>
+          <input type="datetime-local" formControlName="transactionDateTime" id="transactionDateTime" class="form-control">
+        </div>
+
+        <!-- Status Field -->
+        <div class="col-md-6 mb-2">
+          <label for="statusId" class="form-label">Status</label>
+          <select formControlName="statusId" id="statusId" class="form-select">
+            <option value="" disabled>Select Status</option>
+            <option *ngFor="let status of statuses" [value]="status.id">{{ status.name }}</option>
+          </select>
+        </div>
+
+        <!-- Notes Field -->
+        <div class="col-md-6 mb-2">
+          <label for="notes" class="form-label">Notes</label>
+          <textarea formControlName="notes" id="notes" class="form-control" rows="3"></textarea>
+        </div>
+
+        <!-- Document Path Field -->
+        <div class="col-md-6 mb-2">
+          <label for="documentPath" class="form-label">Document Path</label>
+          <input type="text" formControlName="documentPath" id="documentPath" class="form-control">
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="row">
+        <div class="col-md-12 text-center mt-4">
+          <button type="submit" [disabled]="transactionForm.invalid" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+</div>
