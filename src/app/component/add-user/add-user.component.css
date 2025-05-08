@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: 20px;
 }
 
 .auction-form-title {
@@ -105,7 +106,10 @@
   gap: 10px;
   margin-bottom: 1rem; 
 }
-
+.container{
+  width: 80%;
+  background-color: white;
+}
 
 .btn-outline-primary {
   background-color: transparent;

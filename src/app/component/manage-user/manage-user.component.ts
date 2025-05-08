@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { Role, Status, UserView } from '../../modals/user';
+import { Country, Role, Status, UserView } from '../../modals/user';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-manage-user',
@@ -19,22 +20,25 @@ export class ManageUserComponent implements OnInit {
   users: UserView[] = [];
   roles: Role[] = [];
   statuses: Status[] = [];
+  countries: Country[] =[];
   page: number = 1;
   itemsPerPage: number = 5;
 
-  // for filters
+  
   searchTerm: string = '';
   filterRole: number = 0;
   filterStatus: number = 0; 
 
 
-  //sorting
+  
   sortColumn: string = 'uid';
   sortDirection: string = 'asc';
-  sortKey: keyof UserView | null = null;
+  sortKey: keyof UserView| 'roleName' | null = null;
   sortAsc: boolean = true;
+   selectedUser: UserView | null = null;
+   @ViewChild('viewAuctionModal') viewAuctionModal!: TemplateRef<any>;
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router, private modalService: NgbModal,) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -48,6 +52,9 @@ export class ManageUserComponent implements OnInit {
       
     });
   }
+  loadCountry():void{
+    this.userService.getCountry().subscribe(data => this.countries = data);
+  }
 
   loadRoles(): void {
     this.userService.getRoles().subscribe(data => this.roles = data);
@@ -57,12 +64,15 @@ export class ManageUserComponent implements OnInit {
     this.userService.getStatuses().subscribe(data => this.statuses = data);
   }
 
-  getRoleName(roleId: number): string {
+  getRoleName(roleId: number | undefined): string {
     return this.roles.find(r => r.roleId === roleId)?.roleName || 'Unknown';
   }
 
-  getStatusName(statusId: number): string {
+  getStatusName(statusId: number | undefined): string {
     return this.statuses.find(s => s.statusId === statusId)?.statusName || 'Unknown';
+  }
+  getCountryName(countryId: number | undefined): string {
+    return this.countries.find(c => c.countryId === countryId)?.countryName || "Unknown";
   }
 
   openAddUserModal(): void {
@@ -123,7 +133,6 @@ export class ManageUserComponent implements OnInit {
   }
 
   get filteredUsers(): UserView[] {
-    // Convert filterRole and filterStatus to numbers to ensure accurate comparison
     const roleFilter = this.filterRole ? Number(this.filterRole) : 0;
     const statusFilter = this.filterStatus ? Number(this.filterStatus) : 0;
   
@@ -140,27 +149,45 @@ export class ManageUserComponent implements OnInit {
   
       return matchesSearch && matchesRole && matchesStatus;
     });
+    this.page = 1;
   }
-   // Sorting logic
-   sortData(key: keyof UserView) {
-    if (this.sortKey === key) {
+   sortData(key: keyof UserView | 'roleName') {
+    if (this.sortKey === key || this.sortKey === 'roleName') {
       this.sortAsc = !this.sortAsc;
     } else {
-      this.sortKey = key;
+      this.sortKey = key as keyof UserView | 'roleName';
       this.sortAsc = true;
     }
   
     this.users.sort((a, b) => {
-      const aValue = a[key];
-      const bValue = b[key];
+      let aValue : any;
+      let bValue : any;
+
+
+      if (key === 'roleName') {
+        const aRole = this.roles.find(role => role.roleId === a.roleId);
+        const bRole = this.roles.find(role => role.roleId === b.roleId);
+  
+        aValue = aRole ? aRole.roleName.toLowerCase() : '';
+        bValue = bRole ? bRole.roleName.toLowerCase() : '';
+      } else {
+        aValue = a[key];
+        bValue = b[key];
+        if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+        if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+      }
   
       if (aValue == null) return 1;
       if (bValue == null) return -1;
-  
+
       return this.sortAsc
         ? aValue > bValue ? 1 : aValue < bValue ? -1 : 0
         : aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
     });
   }
+  openViewModal(user: UserView): void {
+      this.selectedUser = user;
+      this.modalService.open(this.viewAuctionModal, { centered: true, size: 'xl', backdrop: 'static' });
+    }
   
 }

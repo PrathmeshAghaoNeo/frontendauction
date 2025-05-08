@@ -139,9 +139,9 @@
     background-color: white;
     padding: var(--form-padding);
     border-radius: var(--card-radius);
-    box-shadow: var(--shadow-light);
+    /* box-shadow: var(--shadow-light); */
     width: 100%; 
-    max-width: 800px; 
+    max-width: 1000px; 
     margin: 0 auto; 
     display: flex;
     flex-direction: column; 

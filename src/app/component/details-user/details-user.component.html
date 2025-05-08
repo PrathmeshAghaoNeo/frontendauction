@@ -13,7 +13,6 @@
         <div class="card shadow-lg">
           <div class="card-body">
             <div class="row">
-              <!-- User Details Column -->
               <div class="col-md-8 pt-2">
                 <div class="d-flex align-items-center mb-4">
                   <h2 class="card-title mb-0 text-primary">{{ user.name }}</h2>
@@ -26,7 +25,6 @@
                   </span>
                 </div>
 
-                <!-- Contact and Details Section -->
                 <div class="row">
                   <div class="col-md-6">
                     <p class="mb-3">
@@ -79,7 +77,6 @@
                   </div>
                 </div>
 
-                <!-- User Role Badge -->
                 <div class="mt-4">
                   <span class="badge me-2"
                         [ngClass]="{
@@ -98,10 +95,8 @@
                 </div>
               </div>
 
-              <!-- Profile and ID Images Column -->
               <div class="col-md-4">
                 <div class="d-flex flex-column align-items-center">
-                  <!-- Profile Image -->
                   <div class="mb-4 text-center" *ngIf="user.profileImageUrl">
                     <div class="position-relative">
                       <img [src]="user.profileImageUrl"
@@ -114,7 +109,6 @@
                     <p class="mt-2 text-muted small">Profile Picture</p>
                   </div>
 
-                  <!-- ID Image -->
                   <div class="text-center" *ngIf="user.personalIdImageUrl">
                     <div class="border p-2 rounded">
                       <img [src]="user.personalIdImageUrl"
@@ -133,3 +127,8 @@
   </div>
 
 
+
+
+
+
+ 

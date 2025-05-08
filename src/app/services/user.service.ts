@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Country, Role, Status, User,UserView } from '../modals/user';
@@ -11,8 +11,14 @@ export class UserService {
   
 
   constructor(private http:HttpClient) { }
- 
+
+  
   addUser(formData: FormData): Observable<any> {
+    const token = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json' // Optional, but good practice to specify
+    });
     return this.http.post(`${ApiEndpoints.USER}/Add`, formData);
   }
   getUserById (id:number): Observable<UserView> {
