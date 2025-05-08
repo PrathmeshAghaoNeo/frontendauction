@@ -13,7 +13,7 @@ export class ManageAssetService {
  
   // Fetch all assets
   getAssets(): Observable<Asset[]> {
-    return this.http.get<Asset[]>(`${ApiEndpoints.ASSETS}/GetAll`); // Add GetAll here
+    return this.http.get<Asset[]>(`${ApiEndpoints.ASSETS}/GetAll`); 
   }
  
   // Search assets based on search text

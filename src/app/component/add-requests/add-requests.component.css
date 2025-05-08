@@ -1,12 +1,63 @@
+/* Base container styles */
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 20px;
 }
 
-h3 {
-  font-weight: 500;
-  margin-bottom: 20px;
+/* Form container */
+.container.bg-light {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Form header styling */
+.auction-form-header {
+  position: relative;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.auction-form-title {
+  color: #6a1b9a;
+  font-weight: 600;
+  font-size: 29px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.auction-form-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
+/* Back button styling */
+.back-btn {
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #6a1b9a;
+  transform: scale(1.1);
+}
+
+.back-btn i {
+  font-size: 2rem;
 }
 
 /* Form layout and alignment fixes */
@@ -35,6 +86,7 @@ h3 {
   font-weight: 500;
   display: block;
   margin-bottom: 0.5rem;
+  color: #444;
 }
 
 .form-control {
@@ -51,6 +103,11 @@ h3 {
   border: 1px solid #ced4da;
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control-lg {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
 }
 
 textarea.form-control {
@@ -77,6 +134,52 @@ textarea.form-control {
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 16px 12px;
+  text-overflow: ellipsis;
+  overflow: visible !important;
+}
+
+.form-select-lg {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  height: auto;
+  min-height: 52px;
+}
+
+/* Form label styling */
+.form-label, .form-label.fw-bold {
+  margin-bottom: 0.5rem;
+  color: #444;
+  font-weight: 500;
+}
+
+/* Required field indicator */
+.required-star, span.text-danger {
+  color: red;
+  margin-left: 2px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* Error styling */
+.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+  animation: shake 0.5s;
+}
+
+.invalid-feedback, .text-danger {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
+}
+
+/* Shake animation for error fields */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
 /* Button styling */
@@ -99,48 +202,50 @@ button {
   border-color: #6610f2;
 }
 
+.btn-primary:hover {
+  background-color: #5a0dd1;
+  border-color: #5a0dd1;
+  transform: translateY(-2px);
+}
+
 .btn-secondary {
   color: #fff;
   background-color: #6c757d;
   border-color: #6c757d;
 }
 
-.required-star {
-  color: red;
-  margin-left: 2px;
+.btn-success {
+  background-color: #6a1b9a;
+  border-color: #6a1b9a;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-/* Error styling */
-.is-invalid {
-  border-color: #dc3545 !important;
-  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
-  animation: shake 0.5s;
+.btn-success:hover {
+  background-color: #5a1687;
+  border-color: #5a1687;
+  transform: translateY(-2px);
 }
 
-.invalid-feedback {
-  display: block;
-  width: 100%;
-  margin-top: 0.25rem;
-  font-size: 0.875em;
-  color: #dc3545;
-}
-
-/* Shake animation for error fields */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+.btn-lg {
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  border-radius: 0.3rem;
 }
 
 /* Fix date input styling */
-input[type="datetime-local"] {
+input[type="datetime-local"], input[type="date"] {
   color: black;
 }
 
-/* Hide the default calendar/clock icon in Chrome */
+/* Calendar picker styling */
+input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-  color: black;
+  position: absolute;
+  right: 10px;
+  z-index: 2;
   opacity: 1;
+  cursor: pointer;
 }
 
 /* Form spacing fixes */
@@ -152,8 +257,42 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   justify-content: space-between !important;
 }
 
+.justify-content-end {
+  justify-content: flex-end !important;
+}
+
+.justify-content-md-end {
+  justify-content: flex-end !important;
+}
+
 .align-items-center {
   align-items: center !important;
+}
+
+.mt-4 {
+  margin-top: 1.5rem !important;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.me-2 {
+  margin-right: 0.5rem !important;
+}
+
+.px-4 {
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+.g-3 {
+  --bs-gutter-y: 1rem;
+  --bs-gutter-x: 1rem;
+}
+
+.gap-2 {
+  gap: 0.5rem !important;
 }
 
 /* Form check styling */
@@ -170,10 +309,122 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   margin-top: 0.25em;
   margin-left: -1.5em;
   vertical-align: top;
+  cursor: pointer;
 }
 
 .form-check-label {
   margin-bottom: 0;
+  cursor: pointer;
+}
+
+/* Alert styling */
+.alert {
+  position: relative;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.alert-success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.alert-dismissible {
+  padding-right: 3rem;
+}
+
+.alert-dismissible .btn-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  padding: 1.25rem 1rem;
+}
+
+.fade.show {
+  opacity: 1;
+}
+
+/* Text alignment */
+.text-muted.mb-3 {
+  text-align: center;
+}
+
+/* Ensure fields in same row have equal height */
+.row .form-control,
+.row .form-select {
+  height: 38px;
+}
+
+/* Fix for select dropdown visibility */
+.form-select option {
+  overflow: visible;
+  width: auto;
+  white-space: normal;
+}
+
+/* Ensure consistent form field spacing */
+@media (min-width: 768px) {
+  .row > [class*="col-"] {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Radio button group styling */
+.btn-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  color: #6a1b9a;
+  border: 2px solid #6a1b9a;
+  font-weight: 500;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover, 
+.btn-outline-primary:active {
+  background-color: #6a1b9a;
+  color: white;
+  border-color: #6a1b9a;
+}
+
+.btn-check:checked + .btn-outline-primary {
+  background-color: #6a1b9a;
+  color: white;
+  border-color: #6a1b9a;
+}
+
+/* Hide the default calendar/clock icon in Chrome */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color: black;
+  opacity: 1;
+}
+
+/* Remove username hidden field spacing issues */
+input[hidden] {
+  display: none;
+}
+
+/* Link styling */
+a {
+  color: #6a1b9a;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 /* SweetAlert Styles */
@@ -210,81 +461,8 @@ body .swal2-backdrop-show {
   background-color: rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Remove username hidden field spacing issues */
-input[hidden] {
-  display: none;
-}
-
-/* Ensure fields in same row have equal height */
-.row .form-control,
-.row .form-select {
-  height: 38px;
-}
-
-/* Ensure consistent form field spacing */
-@media (min-width: 768px) {
-  .row > [class*="col-"] {
-    margin-bottom: 1rem;
-  }
-
-
-
-
-  /* Fix for faint dropdown text and placeholder styling */
-.form-select {
-  color: #212529 !important; /* Darker text color for better visibility */
-  font-weight: 500;          /* Semi-bold font weight for selected values */
-}
-
-.form-select option {
-  color: #212529;            /* Ensure dropdown options are also dark */
-  font-weight: normal;       /* Normal weight for options */
-}
-
-/* Better styling for focused and hover states */
-.form-select:focus,
-.form-select:hover {
-  border-color: #8540f5;     /* Purple border to match theme */
-  box-shadow: 0 0 0 0.25rem rgba(133, 64, 245, 0.25); /* Subtle purple glow */
-}
-
-/* Style for dropdown arrows */
-.form-select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%238540f5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 16px 12px;
-}
-
-/* Fix for placeholder text in dropdowns */
-.form-select.placeholder-as-label {
-  color: #6c757d !important; /* Gray color for placeholder text */
-  font-style: italic;
-}
-
-/* Make required asterisk more visible */
-.required-star {
-  color: #dc3545;
-  margin-left: 2px;
-}
-
-/* Improve dropdown button styling */
-button.dropdown-toggle {
-  text-align: left;
-  color: #212529 !important;
-  background-color: #fff;
-  border: 1px solid #ced4da;
-}
-
-/* Ensure consistent dropdown width */
-.form-select,
-.dropdown-toggle {
-  width: 100%;
-}
-
-/* Custom styles for date picker */
-input[type="datetime-local"] {
-  color: #212529;
-  font-weight: 500;
-}
+.required-label::after {
+  content: "* ";
+  color: red;
+  /* font-weight: bold; */
 }

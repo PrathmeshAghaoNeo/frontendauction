@@ -1,4 +1,10 @@
+
+
 <!-- Page Header -->
+<div *ngIf="loading" class="text-center my-4">
+  <div class="spinner-border text-primary" role="status"></div>
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="text-purple">Manage Auctions</h2>
   <button class="btn custom-purple-btn" [routerLink]="'/newAuction'" routerLinkActive="active">
@@ -6,20 +12,103 @@
   </button>
 </div>
 
+<div class="row mb-3">
+  <div class="col-md-4">
+    <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Search Auctions…(Title)" (input)="applyFilters()" />
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" [(ngModel)]="filterCategory" (change)="applyFilters()">
+      <option [value]="0">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat.categoryId">{{ cat.categoryName }}</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
+      <option [value]="0">All Statuses</option>
+      <option *ngFor="let status of statuses" [value]="status.statusId">{{ status.statusName }}</option>
+    </select>
+  </div>
+</div>
+
+
+
+
 <!-- Table -->
 <div class="table-responsive">
   <table class="table table-hover shadow-sm border-0 rounded">
     <thead class="table-purple text-white">
       <tr>
-        <th>Auction Number</th> 
-        <th>Title</th>
-        <th>Type</th>
-        <th>Auction Start</th>
-        <th>Auction End</th>
-        <th>Status</th>
-        <th>Incremental Time</th>
-        <th>Category</th>
-        <th class="text-end">Actions</th>
+        <th (click)="sortAuctions('auctionNumber')" style="cursor:pointer">
+          Auction Number
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'auctionNumber' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'auctionNumber' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionNumber' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('title')" style="cursor:pointer">
+          Title
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'title' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'title' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'title' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('type')" style="cursor:pointer">
+          Type
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'type' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'type' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'type' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('auctionStart')" style="cursor:pointer">
+          Auction Start
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'auctionStart' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'auctionStart' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionStart' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('auctionEnd')" style="cursor:pointer">
+          Auction End
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'auctionEnd' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'auctionEnd' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionEnd' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('statusId')" style="cursor:pointer">
+          Status
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'statusId' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'statusId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'statusId' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        
+        <th (click)="sortAuctions('incrementalTime')" style="cursor:pointer">
+          Incremental Time 
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'incrementalTime' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'incrementalTime' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'incrementalTime' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuctions('categoryName')" style="cursor:pointer">
+          Category
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'categoryName' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'categoryName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'categoryName' || sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        
+        
+        <th class="text-end" >
+          Actions
+        </th>
+        
       </tr>
     </thead>
     <tbody>
@@ -30,16 +119,30 @@
         <td>{{ auction.type }}</td>
         <td>{{ auction.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ auction.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
-        <td>{{ auction.statusName }}</td>
+      
+        <td>
+          <span [ngClass]="{
+            'bg-success': auction.statusId === 1,
+            'bg-warning ': auction.statusId === 2,
+            'bg-danger ': auction.statusId === 3,
+            'bg-info ': auction.statusId === 4
+            
+             }" class="badge badge-fixed-width text-dark">
+            {{ getStatusName(auction.statusId) }}
+          </span>
+
+        </td>
+          
         <td>{{ auction.incrementalTime }} mins</td>
         <td>{{ auction.categoryName }}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-outline-primary me-1" (click)="openViewModal(auction)">
             <i class="bi bi-eye"></i>
           </button>
-          <button class="btn btn-sm btn-outline-primary me-1" (click)="openEditModal(auction)">
+          <button class="btn btn-sm btn-outline-primary me-1" [routerLink]="['/update-auction', auction.auctionId]">
             <i class="bi bi-pencil"></i>
           </button>
+          
           <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(auction)">
             <i class="bi bi-trash"></i>
           </button>
@@ -53,101 +156,44 @@
 
 <!-- View Auction Modal -->
 <ng-template #viewAuctionModal let-modal>
-  <div class="modal-header bg-primary text-white">
-    <h4 class="modal-title  ">Auction Details</h4>
+    <div class="modal-header modal-header-purple">
+    <h5 class="modal-title text-white">Auction Details</h5>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
-
-  <div class="modal-body fs-5">
-    <div class="container">
-      <div class="row mb-3">
-        <div class="col-md-6 mb-2">
-          <strong>Title:</strong>
-          <div class="text-muted">{{ selectedAuction?.title }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Type:</strong>
-          <div class="text-muted">{{ selectedAuction?.type }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Status:</strong>
-          <div>
-            <span class="badge bg-success">{{ selectedAuction?.statusName }}</span>
-          </div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Category:</strong>
-          <div class="text-muted">{{ selectedAuction?.categoryName }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Start:</strong>
-          <div class="text-muted">{{ selectedAuction?.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>End:</strong>
-          <div class="text-muted">{{ selectedAuction?.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Incremental Time:</strong>
-          <div class="text-muted">{{ selectedAuction?.incrementalTime }} mins</div>
-        </div>
+  <div class="modal-body">
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <label for="title" class="form-label required-label">Title:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.title }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="type" class="form-label required-label">Type:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.type }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="status" class="form-label required-label">Status:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.statusName }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="category" class="form-label required-label">Category:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.categoryName }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="startDate" class="form-label required-label">Start:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="endDate" class="form-label required-label">End:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="incrementalTime" class="form-label required-label">Incremental Time:</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.incrementalTime }} mins</p>
       </div>
     </div>
   </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Close</button>
-  </div>
 </ng-template>
 
-
-
-<!-- Edit Auction Modal -->
-<ng-template #editAuctionModal let-modal>
-  <div class="modal-header bg-warning text-dark">
-    <h5 class="modal-title">Edit Auction</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
-  </div>
-  <form [formGroup]="editForm" (ngSubmit)="submitEdit()">
-
-    <div class="modal-body">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label">Title</label>
-          <input formControlName="title" type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Type</label>
-          <input formControlName="type" type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Status</label>
-          <input formControlName="statusName" type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Category</label>
-          <input formControlName="categoryName" type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Start Date/Time</label>
-          <input formControlName="startDateTime" type="datetime-local" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">End Date/Time</label>
-          <input formControlName="endDateTime" type="datetime-local" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Incremental Time (mins)</label>
-          <input formControlName="incrementalTime" type="number" class="form-control" />
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Update</button>
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
-    </div>
-  </form>
-</ng-template>
 
 
 <!-- Delete Confirmation Modal -->

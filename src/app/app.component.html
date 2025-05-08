@@ -4,7 +4,8 @@
   <div class="app-body" [ngClass]="{ 'no-sidebar': !showSidebar }">
     <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
 
-    <main class="app-content">
+    <main class="app-content"  [ngClass]="{ 'auth-bg': isCurrentRoute(['/login','/']) }">
+      <!-- <app-back-button *ngIf="showBackButton"></app-back-button> -->
       <router-outlet></router-outlet>
     </main>
   </div>

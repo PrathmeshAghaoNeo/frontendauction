@@ -8,7 +8,6 @@ import { ApiEndpoints } from '../constants/api-endpoints';
   providedIn: 'root'
 })
 export class AuctionService {
-  private apiUrl = 'http://10.0.103.6:8081/api/Auction'; 
 
   constructor(private http: HttpClient) {}
 

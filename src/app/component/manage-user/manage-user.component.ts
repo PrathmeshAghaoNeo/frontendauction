@@ -27,6 +27,13 @@ export class ManageUserComponent implements OnInit {
   filterRole: number = 0;
   filterStatus: number = 0;
 
+
+  //sorting
+  sortColumn: string = 'uid';
+  sortDirection: string = 'asc';
+  sortKey: keyof UserView | null = null;
+  sortAsc: boolean = true;
+
   constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
@@ -36,7 +43,10 @@ export class ManageUserComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.userService.getAllUser().subscribe(data => this.users = data);
+    this.userService.getAllUser().subscribe(data => {
+      this.users = data
+      
+    });
   }
 
   loadRoles(): void {
@@ -122,6 +132,8 @@ export class ManageUserComponent implements OnInit {
         user.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         user.mobileNumber.toLowerCase().includes(this.searchTerm.toLowerCase());
+        user.uid.toString().includes(this.searchTerm);
+
   
       const matchesRole = roleFilter === 0 || user.roleId === roleFilter;
       const matchesStatus = statusFilter === 0 || user.statusId === statusFilter;
@@ -129,5 +141,26 @@ export class ManageUserComponent implements OnInit {
       return matchesSearch && matchesRole && matchesStatus;
     });
   }
-
+   // Sorting logic
+   sortData(key: keyof UserView) {
+    if (this.sortKey === key) {
+      this.sortAsc = !this.sortAsc;
+    } else {
+      this.sortKey = key;
+      this.sortAsc = true;
+    }
+  
+    this.users.sort((a, b) => {
+      const aValue = a[key];
+      const bValue = b[key];
+  
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+  
+      return this.sortAsc
+        ? aValue > bValue ? 1 : aValue < bValue ? -1 : 0
+        : aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+    });
+  }
+  
 }

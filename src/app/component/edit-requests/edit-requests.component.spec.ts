@@ -24,6 +24,9 @@ export class EditRequestsComponent implements OnInit {
   isViewMode: boolean = false;
   users: UserView[] = [];
   assets: Asset[] = [];
+assetsError: any;
+assetsLoaded: any;
+transactions: any;
  
   constructor(
     private route: ActivatedRoute,

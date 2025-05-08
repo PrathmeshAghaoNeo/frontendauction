@@ -20,10 +20,11 @@ export class HeaderComponent {
     this.authService.role$.subscribe(role => {
       this.isLoggedIn = !!role;
     });
+    this.currentRoute = this.router.url;
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.currentRoute = this.router.url;
+    ).subscribe((event: NavigationEnd) => {
+      this.currentRoute = event.urlAfterRedirects
     });
   }
 

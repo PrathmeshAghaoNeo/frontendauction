@@ -3,3 +3,101 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     right: 5rem;
     z-index: 2;
   }
+
+  .text-muted.mb-3 {
+    text-align: center;
+  }
+
+  .auction-form-header {
+    position: relative;
+    min-height: 60px; /* Ensures space for button and title */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .auction-form-title {
+    color: #6a1b9a;
+    font-weight: 600;
+    font-size: 29px;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .auction-form-subtitle {
+    font-size: 14px;
+    color: #6c757d;
+    text-align: center;
+  }
+  
+  .back-btn {
+    position: absolute;
+    left: 0;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .back-btn:hover {
+    color: #6a1b9a;
+    transform: scale(1.1);
+  }
+  
+  .back-btn i {
+    font-size: 2rem;
+  }
+  
+  .img-new {
+    width: 120px;        
+    height: 120px;         
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .img-new img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   
+    border-radius: 8px;
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 1rem; 
+  }
+
+  
+  .btn-outline-primary {
+    background-color: transparent;
+    color: #6a1b9a; 
+    border: 2px solid #6a1b9a;
+    font-weight: 500;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-outline-primary:hover, .btn-outline-primary:active {
+    background-color: #6a1b9a;
+    color: white;
+    border-color: #6a1b9a;
+  }
+  
+ 
+  .btn-check:checked + .btn-outline-primary {
+    background-color: #6a1b9a; 
+    color: white;
+    border-color: #6a1b9a; 
+  }

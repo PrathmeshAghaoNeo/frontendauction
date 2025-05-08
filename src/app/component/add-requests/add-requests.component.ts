@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import moment from 'moment';
 import { AddRequest } from '../../modals/add-requests';
@@ -14,9 +14,11 @@ import { FormsModule, ReactiveFormsModule, NgForm } from '@angular/forms';
 @Component({
   selector: 'app-add-request',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule],
   templateUrl: './add-requests.component.html',
   styleUrls: ['./add-requests.component.css'],
+  // imports: [CommonModule, RouterModule, FormsModule]
+  
 })
 export class AddRequestsComponent implements OnInit {
   @ViewChild('formRef') formRef!: NgForm;

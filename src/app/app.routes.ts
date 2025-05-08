@@ -14,9 +14,12 @@ import { ManageRequestsComponent } from './component/manage-requests/manage-requ
 import { UpdateUserComponent } from './component/update-user/update-user.component';
 import { DetailsUserComponent } from './component/details-user/details-user.component';
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
+import { ViewRequestComponent } from './component/view-request/view-request.component';
 import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { AddRequestsComponent } from './component/add-requests/add-requests.component';
+import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
+import { UserProfileComponent } from './component/user-profile/user-profile.component';
 
 
 export const routes: Routes = [
@@ -37,6 +40,7 @@ export const routes: Routes = [
     { path: 'detailsUser', component: DetailsUserComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'requests/new', component: AddRequestsComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
-    { path: 'view-request/:id', component: EditRequestsComponent, canActivate: [RoleGuard], data: { role: 'admin', mode: 'view' }},
+    { path: 'view-request/:id', component: ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+    {path:'user-profile/:id',component:UserProfileComponent,canActivate: [RoleGuard], data: { role: 'admin' }}
     // { path: '**', redirectTo: '/login' }
 ];

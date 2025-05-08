@@ -1,9 +1,10 @@
 import { Directive } from '@angular/core';
 import { NG_VALIDATORS, Validator, AbstractControl, ValidationErrors } from '@angular/forms';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Directive({
   selector: '[futureDate]',
-  standalone: true, 
+  standalone: true,
   providers: [{
     provide: NG_VALIDATORS,
     useExisting: FutureDateValidatorDirective,
@@ -12,19 +13,15 @@ import { NG_VALIDATORS, Validator, AbstractControl, ValidationErrors } from '@an
 })
 export class FutureDateValidatorDirective implements Validator {
   validate(control: AbstractControl): ValidationErrors | null {
-    console.log("new")
-    if (!control.value) {
-      return null; // If empty, don't validate here
+    const value: NgbDateStruct = control.value;
+
+    if (!value || !value.year || !value.month || !value.day) {
+      return null; 
     }
-    
-    const selectedDate = new Date(control.value);
+
+    const selectedDate = new Date(value.year, value.month - 1, value.day);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    // extra safety: if selectedDate is invalid
-    if (isNaN(selectedDate.getTime())) {
-      return { dateInvalid: true };
-    }
 
     return selectedDate > today ? null : { dateInvalid: true };
   }

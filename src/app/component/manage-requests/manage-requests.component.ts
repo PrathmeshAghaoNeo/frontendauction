@@ -23,14 +23,15 @@ import { Asset } from '../../modals/manage-asset';
 })
 export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
   requestList: ManageRequest[] = [];
+  defaultRequests: ManageRequest[] = []; // Reference to unsorted list
   filteredRequests: ManageRequest[] = [];
   userList: UserView[] = [];
-  assetList: Asset[] = []; // Add asset list
+  assetList: Asset[] = [];
   searchTerm = '';
   filterType = 0;
   filterStatus = 0;
   
-  // Sort properties
+  // Sort properties - updated to support three-state sorting
   sortColumn: string = 'requestDateTime'; // Default sort by date
   sortDirection: string = 'desc'; // Default sort direction (newest first)
   
@@ -60,7 +61,7 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
   constructor(
     private requestService: RequestServices,
     private userService: UserService,
-    private assetService: ManageAssetService, // Add asset service
+    private assetService: ManageAssetService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
@@ -116,7 +117,7 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
     });
   }
 
-  // Load all assets to display asset titles - IMPROVED VERSION
+  // Load all assets to display asset titles
   private loadAssets(): void {
     this.isLoading = true; // Show loading indicator while fetching assets
     
@@ -153,7 +154,7 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
     return user ? user.uid.toString() : userId.toString();
   }
 
-  // IMPROVED VERSION - Get asset title from assetId with better fallback
+  // Get asset title from assetId with better fallback
   getAssetTitle(assetId: number): string {
     // First try to find the asset in our list
     const asset = this.assetList.find(a => a.assetId === assetId);
@@ -175,6 +176,7 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
       next: data => {
         // Store the raw data 
         this.requestList = data;
+        this.defaultRequests = [...data]; // Keep a reference to unsorted data
         
         // Apply proper sorting BEFORE filtering
         this.applyFiltersToList(); 
@@ -189,10 +191,42 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
     });
   }
   
+  // Updated sortBy method with three-state sorting logic
+  sortBy(column: string): void {
+    if (this.sortColumn === column) {
+      // Cycle through sort states: asc -> desc -> none
+      if (this.sortDirection === 'asc') {
+        this.sortDirection = 'desc';
+      } else if (this.sortDirection === 'desc') {
+        this.sortDirection = ''; // Empty string indicates no sorting
+      } else {
+        this.sortDirection = 'asc';
+      }
+    } else {
+      // New column, start with ascending
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    
+    // If no sorting is selected, revert to default ordering
+    if (this.sortDirection === '') {
+      this.requestList = [...this.defaultRequests];
+    }
+    
+    // Apply the sort and filters
+    this.applyFiltersToList();
+  }
+
   // Updated sorting function based on sortColumn and sortDirection
   private sortRequests(requests: ManageRequest[]): ManageRequest[] {
+    // If no sort direction specified, return the original array
+    if (this.sortDirection === '') {
+      return [...requests];
+    }
+    
     return [...requests].sort((a, b) => {
       let comparison = 0;
+      const dir = this.sortDirection === 'asc' ? 1 : -1;
       
       // Sort based on selected column
       switch(this.sortColumn) {
@@ -204,9 +238,29 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
           );
           break;
           
+        case 'userId':
+          // Sort by userId numerically
+          comparison = (a.userId || 0) - (b.userId || 0);
+          break;
+          
         case 'username':
           // Sort by username (alphabetically)
           comparison = (a.username || '').localeCompare(b.username || '', undefined, { sensitivity: 'base' });
+          break;
+          
+        case 'assetId':
+          // Sort by assetId numerically
+          comparison = (a.assetId || 0) - (b.assetId || 0);
+          break;
+          
+        case 'requestTypeId':
+          // Sort by request type
+          comparison = (a.requestTypeId || 0) - (b.requestTypeId || 0);
+          break;
+          
+        case 'requestStatusId':
+          // Sort by request status
+          comparison = (a.requestStatusId || 0) - (b.requestStatusId || 0);
           break;
           
         case 'requestDateTime':
@@ -219,25 +273,8 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
       }
       
       // Apply sort direction
-      return this.sortDirection === 'asc' ? comparison : -comparison;
+      return comparison * dir;
     });
-  }
-  
-  // Method to handle column header clicks
-  sortBy(column: string): void {
-    // If clicking the same column, toggle direction
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      // New column, set default direction
-      this.sortColumn = column;
-      // For most columns we default to ascending order (A-Z)
-      // except for dateTime which defaults to descending (newest first)
-      this.sortDirection = column === 'requestDateTime' ? 'desc' : 'asc';
-    }
-    
-    // Apply the sort
-    this.applyFiltersToList();
   }
   
   // Natural sort function for alphanumeric values

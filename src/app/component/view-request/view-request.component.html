@@ -1,0 +1,125 @@
+<div class="auction-form-header">
+  <button class="back-btn btn btn-link p-0" (click)="goBack()">
+    <i class="bi bi-arrow-left-circle"></i>
+  </button>
+  <div>
+    <h3 class="auction-form-title">View Request</h3>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10" *ngIf="requestData">
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <div class="row">
+            <!-- Request Details Column -->
+            <div class="col-md-8 pt-2">
+              <div class="d-flex align-items-center mb-4">
+                <h2 class="card-title mb-0 text-primary">#{{ requestData.requestNumber || 'N/A' }}</h2>
+                <span class="badge ms-3"
+                      [ngClass]="{
+                        'bg-success': requestData.requestStatusId === 3,
+                        'bg-warning text-dark': requestData.requestStatusId === 1,
+                        'bg-secondary': requestData.requestStatusId === 2,
+                        'bg-danger': requestData.requestStatusId === 4
+                      }">
+                  {{ getStatusName(requestData.requestStatusId) }}
+                </span>
+              </div>
+
+              <!-- Contact and Details Section -->
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="mb-3">
+                    <i class="bi bi-person-fill text-muted me-2"></i>
+                    <strong>User:</strong> {{ requestData.username || 'N/A' }}
+                  </p>
+                  <p class="mb-3">
+                    <i class="bi bi-envelope-fill text-muted me-2"></i>
+                    <strong>Email:</strong> {{ requestData.email || 'N/A' }}
+                  </p>
+                  <p class="mb-3">
+                    <i class="bi bi-telephone-fill text-muted me-2"></i>
+                    <strong>Mobile:</strong> {{ requestData.mobileNumber || 'N/A' }}
+                  </p>
+                  <p class="mb-3">
+                    <i class="bi bi-box-seam text-muted me-2"></i>
+                    <strong>Asset:</strong> {{ getAssetName(requestData.assetId) }}
+                  </p>
+                </div>
+
+                <div class="col-md-6">
+                  <p class="mb-3">
+                    <i class="bi bi-calendar-event text-muted me-2"></i>
+                    <strong>Date/Time:</strong> {{ requestData.requestDateTime | date:'dd/MM/yyyy hh:mm a' }}
+                  </p>
+                  <p class="mb-3">
+                    <i class="bi bi-tag-fill text-muted me-2"></i>
+                    <strong>Request Type:</strong> {{ getTypeName(requestData.requestTypeId) }}
+                  </p>
+                  <p class="mb-3">
+                    <i class="bi bi-credit-card text-muted me-2"></i>
+                    <strong>Transaction:</strong> {{ getTransactionDisplay(requestData.transactionId) }}
+                  </p>
+                  <p class="mb-3">
+                    <i class="bi bi-person-badge text-muted me-2"></i>
+                    <strong>Created By:</strong> {{ requestData.createdByAdmin ? 'Admin' : 'User' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Notes Section -->
+              <div class="mt-4">
+                <h5 class="text-primary mb-3">Notes</h5>
+                <div class="mb-3">
+                  <strong><i class="bi bi-chat-left-text text-muted me-2"></i>Customer Note:</strong>
+                  <p class="mt-2 p-3 bg-light rounded">{{ requestData.customerNote || 'No customer notes' }}</p>
+                </div>
+                <div>
+                  <strong><i class="bi bi-chat-left-quote text-muted me-2"></i>Admin Note:</strong>
+                  <p class="mt-2 p-3 bg-light rounded">{{ requestData.adminNote || 'No admin notes' }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions Column -->
+            <div class="col-md-4">
+              <div class="d-flex flex-column align-items-center">
+                <!-- Request Type Badge -->
+                <div class="text-center mb-4">
+                  <div class="bg-light p-4 rounded-circle mb-3 d-inline-block">
+                    <i class="bi" 
+                       [ngClass]="{
+                         'bi-arrow-left-right fs-1 text-primary': requestData.requestTypeId === 1,
+                         'bi-question-circle fs-1 text-info': requestData.requestTypeId === 2,
+                         'bi-eye fs-1 text-success': requestData.requestTypeId === 3,
+                         'bi-currency-dollar fs-1 text-warning': requestData.requestTypeId === 4
+                       }"></i>
+                  </div>
+                  <h5 class="mb-0">{{ getTypeName(requestData.requestTypeId) }}</h5>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 w-100 mt-4">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="navigateToEdit()">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Request
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="goBack()">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

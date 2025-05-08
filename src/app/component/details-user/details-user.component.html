@@ -1,12 +1,20 @@
+<div class="auction-form-header">
+  <button class="back-btn btn btn-link p-0" (click)="goBack()">
+    <i class="bi bi-arrow-left-circle"></i>
+  </button>
+  <div>
+    <h3 class="auction-form-title">User Details</h3>
+  </div>
+</div>
 
-  <div class="container my-5">
+  <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-10" *ngIf="user">
         <div class="card shadow-lg">
           <div class="card-body">
             <div class="row">
               <!-- User Details Column -->
-              <div class="col-md-8">
+              <div class="col-md-8 pt-2">
                 <div class="d-flex align-items-center mb-4">
                   <h2 class="card-title mb-0 text-primary">{{ user.name }}</h2>
                   <span class="badge ms-3"
@@ -38,6 +46,10 @@
                       <strong>Company Number:</strong> {{ user.companyNumber }}
                     </p>
                     <p class="mb-3">
+                      <i class="bi bi-cash text-muted me-2"></i>
+                      <strong>Deposit:</strong> {{ user.deposit || 'Not specified' }}
+                    </p>
+                    <p class="mb-3">
                       <i class="bi bi-chat text-muted me-2"></i>
                       <strong>Chat Enabled:</strong> {{ user.chatEnabled ? 'Enabled' : 'Disabled' }}
                     </p>
@@ -50,15 +62,19 @@
                     </p>
                     <p class="mb-3">
                       <i class="bi bi-person-badge-fill text-muted me-2"></i>
-                      <strong>ID Number:</strong> {{ user.personalIdNumber || 'N/A' }}
+                      <strong> ID Number:</strong> {{ user.personalIdNumber || 'N/A' }}
                     </p>
                     <p class="mb-3">
                       <i class="bi bi-calendar-check text-muted me-2"></i>
-                      <strong>ID Expiry:</strong> {{ user.personalIdExpiryDate | date: 'dd-MM-yyyy' }}
+                      <strong> Govermet ID Expiry:</strong> {{ user.personalIdExpiryDate | date: 'dd-MM-yyyy' }}
                     </p>
                     <p class="mb-3">
                       <i class="bi bi-flag-fill text-muted me-2"></i>
                       <strong>Country:</strong> {{ getCountryName(user.countryId) }}
+                    </p>
+                    <p class="mb-3">
+                      <i class="bi bi-cash-stack text-muted me-2"></i>
+                      <strong>Total Limit:</strong> {{ user.totalLimit || 'N/A' }}
                     </p>
                   </div>
                 </div>
@@ -77,7 +93,7 @@
                          'bi-shield-lock': user.roleId === 2,
                          'bi-truck': user.roleId === 3
                        }"></i>
-                    {{ getRoleName(user.roleId) }}
+                    Role : {{ getRoleName(user.roleId) }}
                   </span>
                 </div>
               </div>

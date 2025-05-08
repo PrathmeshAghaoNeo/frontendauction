@@ -1,3 +1,6 @@
+
+
+
 <!-- Page Header - Without refresh button -->
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="text-purple">Manage Requests</h2>
@@ -5,7 +8,7 @@
     <button type="button" class="btn btn-outline-secondary me-2" (click)="toggleFilters()" aria-label="Toggle filters" hidden>
       <i class="bi bi-funnel me-1"></i>Filters
     </button>
-    <button type="button" class="btn custom-purple-btn me-2" (click)="exportToExcel()" [disabled]="isExporting" aria-label="Export to Excel">
+    <button type="button" class="btn custom-purple-btn me-2" (click)="exportToExcel()" [disabled]="isExporting" aria-label="Export to Excel" hidden>
       <i class="bi" [ngClass]="isExporting ? 'bi-hourglass-split' : 'bi-file-earmark-excel'"></i>
       {{ isExporting ? 'Exporting...' : 'Export' }}
     </button>
@@ -117,41 +120,100 @@
   <table class="table table-hover shadow-sm border-0 rounded">
     <thead class="table-purple text-white">
       <tr>
-        <th (click)="sortBy('requestNumber')" style="cursor: pointer;">Req. Number</th>
-        <th>UID</th>
-        <th (click)="sortBy('username')" style="cursor: pointer;">User</th>
-        <th>Asset</th>
-        <th>Type</th>
-        <th>DateTime</th>
-        <th>Status</th>
+        <th (click)="sortBy('requestNumber')" style="cursor: pointer;">
+          Req. Number
+          <i class="bi ms-1" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'requestNumber' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'requestNumber' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'requestNumber' || sortDirection === ''
+          }"></i>
+        </th>
+        <th (click)="sortBy('userId')" style="cursor: pointer;">
+          UID
+          <i class="bi ms-1" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'userId' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'userId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'userId' || sortDirection === ''
+          }"></i>
+        </th>
+        <th (click)="sortBy('username')" style="cursor: pointer;">
+          User
+          <i class="bi ms-1" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'username' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'username' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'username' || sortDirection === ''
+          }"></i>
+        </th>
+        <th (click)="sortBy('assetId')" style="cursor: pointer;">
+          Asset
+          <i class="bi ms-1" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'assetId' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'assetId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'assetId' || sortDirection === ''
+          }"></i>
+        </th>
+        <th (click)="sortBy('requestTypeId')" style="cursor: pointer;">
+          Type
+          <i class="bi ms-1" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'requestTypeId' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'requestTypeId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'requestTypeId' || sortDirection === ''
+          }"></i>
+        </th>
+        <th (click)="sortBy('requestDateTime')" style="cursor: pointer;">
+          DateTime
+          <i class="bi ms-1" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'requestDateTime' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'requestDateTime' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'requestDateTime' || sortDirection === ''
+          }"></i>
+        </th>
+        <th (click)="sortBy('requestStatusId')" style="cursor: pointer;">
+          Status
+          <i class="bi ms-1" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'requestStatusId' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'requestStatusId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'requestStatusId' || sortDirection === ''
+          }"></i>
+        </th>
         <th class="text-end">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let r of filteredRequests |  paginate: { id: 'request', itemsPerPage: itemsPerPage, currentPage: page } trackBy: trackByRequestId">
+      <tr *ngFor="let r of filteredRequests | paginate: { id: 'request', itemsPerPage: itemsPerPage, currentPage: page } trackBy: trackByRequestId">
         <td>{{ r.requestNumber }}</td>
         <td>{{ getUserUid(r.userId) }}</td>
         <td>{{ r.username }}</td>
         <td>{{ getAssetTitle(r.assetId) }}</td>
         <td>{{ getTypeName(r.requestTypeId) }}</td>
         <td>{{ r.requestDateTime | date: 'dd/MM/yyyy hh:mm a' }}</td>
-        <td>{{ getStatusName(r.requestStatusId) }}</td>
+        <td class="text-center">
+          <span class="status-badge" 
+                [ngClass]="{
+                  'bg-warning text-dark': r.requestStatusId === 1,
+                  'bg-success text-white': r.requestStatusId === 2,
+                  'bg-orange text-white': r.requestStatusId === 3,
+                  'bg-danger text-white': r.requestStatusId === 4
+                }">
+            {{ getStatusName(r.requestStatusId) }}
+          </span>
+        </td>
         <td class="text-end action-buttons">
           <button type="button" class="btn btn-sm btn-outline-primary me-1"
                   [routerLink]="['/view-request', r.requestId]"
                   aria-label="View request details">
             <i class="bi bi-eye"></i>
           </button>
+          <button type="button" class="btn btn-sm btn-outline-success"
+                  [routerLink]="['/request-detail', r.requestId]"
+                  aria-label="Edit request">
+            <i class="bi bi-pencil-square"></i>
+          </button>
           <button type="button" class="btn btn-sm btn-outline-danger me-1"
                   (click)="deleteRequest(r.requestId, r.requestNumber)" 
                   [disabled]="processingDelete"
                   aria-label="Delete request">
             <i class="bi" [ngClass]="processingDelete ? 'bi-hourglass-split' : 'bi-trash'"></i>
-          </button>
-          <button type="button" class="btn btn-sm btn-outline-success"
-                  [routerLink]="['/request-detail', r.requestId]"
-                  aria-label="Edit request">
-            <i class="bi bi-pencil-square"></i>
           </button>
         </td>
       </tr>
@@ -160,7 +222,11 @@
       </tr>
     </tbody>
   </table>
-  <pagination-controls id="request" (pageChange)="page = $event"></pagination-controls>
+  
+  <!-- Pagination adjusted to left bottom -->
+  <div class="d-flex justify-content-start mt-3">
+    <pagination-controls id="request" (pageChange)="page = $event"></pagination-controls>
+  </div>
 </div>
 
 <!-- Success Toast Notification -->

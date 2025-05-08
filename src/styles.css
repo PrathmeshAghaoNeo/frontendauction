@@ -140,8 +140,11 @@
     padding: var(--form-padding);
     border-radius: var(--card-radius);
     box-shadow: var(--shadow-light);
-    max-width: 800px;
-    margin: 20px auto;
+    width: 100%; 
+    max-width: 800px; 
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column; 
   }
   
   .form-page-container {
@@ -150,14 +153,15 @@
     align-items: flex-start;
     padding: 20px;
     background-color: var(--light-bg);
-    min-height: calc(100vh - 120px); /* Adjust based on header/footer */
+    min-height: auto; /* Adjust to content height */
+    height: auto; /* Remove fixed height */
     box-sizing: border-box;
   }
   
   .form-title {
     text-align: center;
     color: var(--primary-color);
-    margin-bottom: 25px;
+    margin-bottom: 45px;
     font-weight: 600;
     font-size: 26px;
     font-family: var(--font-family);
@@ -201,3 +205,5 @@
   
   /* ==================== END GLOBAL ==================== */
   
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

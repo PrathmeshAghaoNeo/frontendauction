@@ -1,0 +1,177 @@
+/* ==================== VIEW REQUEST SECTION ==================== */
+
+/* Header Section */
+.auction-form-header {
+    position: relative;
+    min-height: 20px;
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .auction-form-title {
+    color: #6a1b9a;
+    font-weight: 600;
+    font-size: 29px;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .back-btn {
+    position: absolute;
+    left: 0;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .back-btn:hover {
+    color: #6a1b9a;
+    transform: scale(1.1);
+  }
+  
+  .back-btn i {
+    font-size: 2rem;
+  }
+  
+  /* Card Styling */
+  .container {
+    margin-bottom: 50px;
+  }
+  
+  .card {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-body {
+    padding: 30px;
+    padding-bottom: 10px;
+  }
+  
+  /* Column Layout */
+  .col-md-8 {
+    border-right: 2px solid #f1f1f1;
+    padding-right: 20px;
+  }
+  
+  .col-md-4 {
+    padding-left: 20px;
+  }
+  
+  /* Request Title */
+  .card-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--primary-color, #673ab7);
+  }
+  
+  /* Status Badge */
+  .badge {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 20px;
+  }
+  
+  .bg-success {
+    background-color: var(--success-color, #28a745) !important;
+  }
+  
+  .bg-secondary {
+    background-color: #6c757d !important;
+  }
+  
+  .bg-warning {
+    background-color: #ffc107 !important;
+  }
+  
+  .bg-danger {
+    background-color: #dc3545 !important;
+  }
+  
+  /* Request Details */
+  p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555;
+  }
+  
+  p i {
+    color: var(--accent-color, #9c27b0);
+    margin-right: 10px;
+  }
+  
+  p strong {
+    font-weight: 600;
+    color: var(--primary-dark, #512da8);
+    margin-right: 10px;
+  }
+  
+  /* Notes Section */
+  .bg-light {
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Type Icon */
+  .rounded-circle {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Buttons */
+  .btn-primary {
+    background-color: #6a1b9a;
+    border-color: #6a1b9a;
+  }
+  
+  .btn-primary:hover {
+    background-color: #581b87;
+    border-color: #581b87;
+  }
+  
+  .btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 767px) {
+    .col-md-8, .col-md-4 {
+      padding-right: 0;
+      padding-left: 0;
+      border-right: none;
+    }
+  
+    .row {
+      display: block;
+    }
+  
+    .card-body {
+      padding-top: 10px !important;
+    }
+  
+    .card-title {
+      font-size: 1.5rem;
+    }
+  
+    p {
+      font-size: 0.95rem;
+    }
+  }

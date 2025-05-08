@@ -1,1 +1,268 @@
-<p>add-asset works!</p>
+<!-- Angular Enhanced HTML Template -->
+
+
+<div class="container-fluid p-4 text-[11px] font-sans">
+    <form (ngSubmit)="updateAsset()" #assetForm="ngForm" novalidate>
+      <!-- Top Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#" >Assets</a></li>
+            <li class="breadcrumb-item active">#{{ asset.assetNumber }}</li>
+          </ol>
+        </nav>
+        <button class="btn btn-primary" type="submit">Update</button>
+      </div>
+  
+      <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-4">
+          <div class="card p-3 shadow-sm">
+            <h5>Basic Details</h5>
+            <div class="mb-2">
+              <label class="form-label"># Asset Number</label>
+              <input class="form-control" [value]="asset.assetNumber" disabled />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Title<span class="text-danger">*</span></label>
+              <input
+                class="form-control"
+                [(ngModel)]="asset.title"
+                name="title"
+                required
+                #titleRef="ngModel"
+                maxlength="20"
+              />
+              <div *ngIf="titleRef.invalid && titleRef.touched" class="text-danger small">
+                Title is required.
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Category<span class="text-danger">*</span></label>
+              <select class="form-select" [(ngModel)]="asset.category" name="category">
+                <option>Cars</option>
+                <option>Electronics</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Deposit %<span class="text-danger">*</span></label>
+              <input
+                class="form-control"
+                type="number"
+                [(ngModel)]="asset.depositPercent"
+                name="depositPercent"
+                required
+                min="0"
+                max="100"
+                #depositRef="ngModel"
+              />
+              <div *ngIf="depositRef.invalid && depositRef.touched" class="text-danger small">
+                Deposit must be between 0 and 100.
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Seller</label>
+              <select class="form-select" [(ngModel)]="asset.seller" name="seller">
+                <option>Select</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Commission %</label>
+              <input class="form-control" [(ngModel)]="asset.commissionPercent" name="commissionPercent" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Starting Price</label>
+              <input class="form-control" [(ngModel)]="asset.startingPrice" name="startingPrice" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Reserve Amount</label>
+              <input class="form-control" [(ngModel)]="asset.reserveAmount" name="reserveAmount" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Incremental Time</label>
+              <input class="form-control" [(ngModel)]="asset.incrementalTime" name="incrementalTime" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Min Increment</label>
+              <input class="form-control" [(ngModel)]="asset.minIncrement" name="minIncrement" />
+            </div>
+  
+            <div class="mb-2" *ngFor="let field of dropdownFields">
+              <label class="font-semibold text-[11px]">{{ field.label }}</label>
+              <select class="border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full" [name]="field.model">
+                <option *ngFor="let option of field.options">{{ option }}</option>
+              </select>
+            </div>
+  
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">VAT %</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="asset.vatPercent"
+                name="vatPercent"
+                pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                #vatRef="ngModel"
+              />
+              <div *ngIf="vatRef.invalid && vatRef.touched" class="text-danger small">
+                Please enter a valid number (up to 2 decimal places).
+              </div>
+            </div>
+  
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Court Case Number</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.courtCaseNumber" name="courtCaseNumber" />
+            </div>
+  
+            <div class="mb-2">
+              <label class="font-semibold text-[11px]">Registration Deadline</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.registrationDeadline" name="registrationDeadline" />
+            </div>
+            <div class="mb-2">
+                <label class="font-semibold text-[11px]">Request for Viewing</label>
+                <select class="border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full" name="requestForViewing">
+                  <option>On/Off</option>
+                </select>
+              </div>
+    
+              <div class="mb-2">
+                <label class="font-semibold text-[11px]">Request for Inquiry</label>
+                <select class="border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full" name="requestForInquiry">
+                  <option>On/Off</option>
+                </select>
+              </div>
+          </div>
+        </div>
+  
+        <!-- Middle Column -->
+        <div class="col-lg-4">
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Description & Gallery</h5>
+            <div class="mb-2">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="asset.description" name="description"></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Gallery</label>
+              <div class="d-flex flex-wrap gap-2">
+                <div class="border p-2" *ngFor="let img of asset.gallery">{{ img }}</div>
+                <button class="btn btn-outline-success btn-sm" type="button">Add Image/Video</button>
+              </div>
+            </div>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Details</h5>
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label">Color</label>
+                <input class="form-control" [(ngModel)]="asset.color" name="color" />
+              </div>
+              <div class="col-6">
+                <label class="form-label">Condition</label>
+                <input class="form-control" [(ngModel)]="asset.condition" name="condition" />
+              </div>
+            </div>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Documents</h5>
+            <div class="d-flex flex-wrap gap-2">
+              <div class="border p-2" *ngFor="let doc of asset.documents">{{ doc }}</div>
+              <button class="btn btn-outline-info btn-sm" type="button">Add PDF/Link</button>
+            </div>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Map</h5>
+            <input type="text" placeholder="Search..." class="form-control mb-2" />
+            <div class="border text-center text-muted p-3">Map Pin Location Adjusting</div>
+          </div>
+          
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Fees</h5>
+            <div class="mb-2">
+              <label class="form-label">Admin Fees</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.adminFees" name="adminFees" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Auction Fees</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.auctionFees" name="auctionFees" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Buyer Commission</label>
+              <input type="text" class="form-control" [(ngModel)]="asset.buyerCommission" name="buyerCommission" />
+            </div>
+          </div>
+        
+        </div>
+  
+        <!-- Right Column -->
+        <div class="col-lg-4">
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>360 View</h5>
+            <button class="btn btn-outline-secondary w-100">Upload 360 Media</button>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Auctions</h5>
+            <div *ngFor="let auction of asset.auctions">
+              <span class="badge bg-warning">{{ auction }}</span>
+            </div>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Results</h5>
+            <ul class="list-unstyled small">
+              <li>Total Bids: {{ asset.results.totalBids }}</li>
+              <li>Total Bidders: {{ asset.results.totalBidders }}</li>
+              <li>Start Price: {{ asset.results.startPrice }}</li>
+              <li>Highest Price: {{ asset.results.highestPrice }}</li>
+              <li>Commission Calculation: {{ asset.results.commission }}</li>
+              <li>Total Payable: {{ asset.results.totalPayable }}</li>
+            </ul>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Winner</h5>
+            <p>{{ asset.winner }}</p>
+            <div class="d-flex gap-2 mb-2">
+              <button class="btn btn-primary btn-sm">Change Winner</button>
+              <select class="form-select form-select-sm w-auto" name="reason">
+                <option>Reason</option>
+                <option>Duplicate</option>
+                <option>Error</option>
+              </select>
+            </div>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Sale</h5>
+            <p>Amount: {{ asset.results.totalPayable }}</p>
+            <button class="btn btn-success btn-sm mb-2">Approve Sale</button>
+            <input type="text" class="form-control form-control-sm" placeholder="Note" />
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Winner Documents</h5>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-secondary" *ngFor="let doc of asset.winnerDocuments">{{ doc }}</span>
+              <button class="btn btn-outline-dark btn-sm">Add Document</button>
+            </div>
+          </div>
+  
+          <div class="card p-3 shadow-sm mb-4">
+            <h5>Requests</h5>
+            <button class="btn btn-info btn-sm">{{ asset.requests[0] }}</button>
+          </div>
+  
+          <div class="card p-3 shadow-sm">
+            <h5>Transactions</h5>
+            <button class="btn btn-info btn-sm">{{ asset.transactions[0] }}</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  
