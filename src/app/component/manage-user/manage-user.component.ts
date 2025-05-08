@@ -25,7 +25,7 @@ export class ManageUserComponent implements OnInit {
   // for filters
   searchTerm: string = '';
   filterRole: number = 0;
-  filterStatus: number = 0;
+  filterStatus: number = 0; 
 
 
   //sorting
