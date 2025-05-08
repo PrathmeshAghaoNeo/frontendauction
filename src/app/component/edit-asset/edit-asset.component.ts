@@ -81,6 +81,7 @@ export class EditAssetComponent implements OnInit {
   featuredOptions = ['Yes', 'No'];
   winnerAwardingOptions = ['Automatic', 'Manual'];
   deliveryRequiredOptions = ['Yes', 'No'];
+  selectedOpton: number= 0;
   
   statusOptions = [
     { id: 1, name: 'Draft' },
@@ -116,10 +117,14 @@ requestForInquiryOptions = [
 
 
 // // Method to display 'Yes' for true and 'No' for false
-// getRequestLabel(value: boolean | undefined): string {
-//   // Default to false if value is undefined
-//   return value ? 'Yes' : 'No';
-// }
+getRequestLabel(value: Number | undefined) {
+  // Default to false if value is undefined
+  if(value== 0){
+    this.asset.requestForViewing = false;
+  }else{
+    this.asset.requestForViewing = true;
+  }
+}
 
 
   // getRequestForViewingId(value: string): number {
@@ -228,6 +233,7 @@ requestForInquiryOptions = [
     form.control.markAllAsTouched(); // This forces all fields to show errors
      return;
    }
+   console.log(this.asset.requestForViewing);
     if (form.valid) {
       this.isLoading = true;
 

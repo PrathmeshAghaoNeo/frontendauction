@@ -412,10 +412,17 @@
               [(ngModel)]="asset.requestForViewing"
               name="requestForViewing"
             >
-            <option  [(ngModel)]="asset.requestForViewing" disabled>select option</option>
-              <option *ngFor="let option of requestForViewingOptions" [value]="option.id">
+            <option [value]="null" disabled selected>Select option</option>
+            <option [value]="false">No</option>
+            <option [value]="true">Yes</option>
+            <!-- @ngif(asset.requestForViewing === false) {
+              <option value="0" selected>No</option>
+            }else {
+              <option value="1" selected>Yes</option>
+            } -->
+              <!-- <option *ngFor="let option of requestForViewingOptions" [value]="option.id">
                 {{ option.name }}
-              </option>
+              </option> -->
             </select>
             <!-- <p>{{ asset.requestForViewing === 1 ? 'Yes' : 'No' }}</p> -->
           </div>
@@ -427,10 +434,13 @@
               [(ngModel)]="asset.requestForInquiry"
               name="requestForInquiry"
             >
-            <option  [(ngModel)]="asset.requestForInquiry" disabled>select option</option>
+            <!-- <option  [(ngModel)]="asset.requestForInquiry" disabled>select option</option>
               <option *ngFor="let option of requestForInquiryOptions" [value]="option.id">
                 {{ option.name }}
-              </option>
+              </option> -->
+              <option [value]="null" disabled selected>Select option</option>
+              <option [value]="false">No</option>
+              <option [value]="true">Yes</option>
             </select>
             <!-- <p>{{ asset.requestForInquiry === 1 ? 'Yes' : 'No' }}</p> -->
           </div>        
