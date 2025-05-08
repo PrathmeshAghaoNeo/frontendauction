@@ -18,6 +18,7 @@ import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
+import { ChartComponent } from './component/chart/chart.component';
 
 
 export const routes: Routes = [
@@ -44,7 +45,7 @@ export const routes: Routes = [
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
-
+    {path: 'testing', component:ChartComponent}, 
     { path: '**', redirectTo: '/login' }
 
 ];
