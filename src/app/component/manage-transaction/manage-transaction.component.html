@@ -1,0 +1,254 @@
+<!-- Transaction Management Page -->
+
+<!-- Page Header -->
+<div *ngIf="loading" class="text-center my-4">
+  <div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="text-purple">Manage Transactions</h2>
+  <div class="col-md-3 text-end">
+    <button class="btn custom-purple-btn" [routerLink]="'/newTransaction'" routerLinkActive="active">
+      Add Transaction
+    </button>
+  </div>
+</div>
+<!-- Filters -->
+<div class="row mb-3">
+  <div class="col-md-3">
+    <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchTerm" minlength="1"
+      (ngModelChange)="onFilterChange()" />
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" [(ngModel)]="filterTransactionType" (change)="onFilterChange()">
+      <option value="0">All Transaction Types</option>
+      <option value="1">Receipt</option>
+      <option value="2">Deposit</option>
+      <option value="3">Refund</option>
+      <option value="4">Invoice</option>
+
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" [(ngModel)]="filterPaymentMethod" (change)="onFilterChange()">
+      <option value="0">All Payment Methods</option>
+      <option value="1">Cash</option>
+      <option value="2">Bank Transfer</option>
+      <option value="3">Credit Card</option>
+      <option value="4">Debit Card</option>
+      <option value="5">Online Wallet</option>
+
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" [(ngModel)]="filterCardType" (change)="onFilterChange()">
+      <option value="0">All Card Types</option>
+      <option value="1">Visa</option>
+      <option value="2">Mastercard</option>
+      <option value="3">Debit</option>
+      <option value="4">AMEX</option>
+
+
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" [(ngModel)]="filterStatus" (change)="onFilterChange()">
+      <option value="0">All Statuses</option>
+      <option value="1">Pending</option>
+      <option value="2">Completed</option>
+      <option value="4">Cancelled</option>
+      <option value="3">Failed</option>
+    </select>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="table-responsive">
+  <table class="table table-hover shadow-sm border-0 rounded">
+    <thead class="table-purple text-white">
+      <tr>
+        <th (click)="sortTransactions('transactionNumber')" style="cursor:pointer">
+          Txn #
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'transactionNumber' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'transactionNumber' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'transactionNumber' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortTransactions('userFullName')" style="cursor:pointer">
+          User
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'userFullName' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'userFullName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'userFullName' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortTransactions('transactionTypeName')" style="cursor:pointer">
+          Type
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'transactionTypeName' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'transactionTypeName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'transactionTypeName' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortTransactions('amount')" style="cursor:pointer">
+          Amount
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'amount' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'amount' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'amount' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortTransactions('paymentMethodName')" style="cursor:pointer">
+          Payment Method
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'paymentMethodName' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'paymentMethodName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'paymentMethodName' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortTransactions('cardTypeName')" style="cursor:pointer">
+          Card Type
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'cardTypeName' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'cardTypeName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'cardTypeName' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortTransactions('transactionDateTime')" style="cursor:pointer">
+          Date & Time
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'transactionDateTime' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'transactionDateTime' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'transactionDateTime' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortTransactions('statusName')" style="cursor:pointer">
+          Status
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'statusName' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'statusName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'statusName' && sortDirection === ''
+          }" class="ms-1"></i>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let txn of FilteredTransactions | paginate: { itemsPerPage: itemsPerPage, currentPage: page }">
+        <td>{{ txn.transactionNumber }}</td>
+        <td>{{ txn.userFullName }}</td>
+        <td>{{ txn.transactionTypeName }}</td>
+        <td>{{ txn.amount | currency }}</td>
+        <td>{{ txn.paymentMethodName }}</td>
+        <td>{{ txn.cardTypeName || 'N/A' }}</td>
+        <td>{{ txn.transactionDateTime | date: 'short' }}</td>
+        <td>
+          <span [ngClass]="[ 
+            'badge',
+            'badge-fixed-width',
+            txn.statusName === 'Completed' ? 'bg-success text-dark' : 
+            txn.statusName === 'Pending' ? 'bg-warning text-dark' : 
+            txn.statusName === 'Failed' ? 'bg-danger' : 
+            txn.statusName === 'Cancelled' ? 'bg-info text-dark' : 'bg-secondary'
+          ]" class="px-3 py-2 rounded-pill text-center d-inline-block">
+            {{ txn.statusName }}
+          </span>
+        </td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" (click)="openViewModal(txn)">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-primary me-1" [routerLink]="['/update-transaction', txn.transactionId]">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(txn)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+</div>
+
+
+
+<!-- View Transaction Modal -->
+<ng-template #viewTransactionModal let-modal>
+  <div class="modal-header modal-header-purple">
+    <h5 class="modal-title text-white">Transaction Details</h5>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <label class="form-label required-label">Transaction Number:</label>
+        <p class="form-control-plaintext">{{ selectedTransaction?.transactionNumber }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label required-label">User:</label>
+        <p class="form-control-plaintext">{{ selectedTransaction?.userId }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label required-label">Amount:</label>
+        <p class="form-control-plaintext">{{ selectedTransaction?.amount | currency }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label required-label">Transaction Type:</label>
+        <p class="form-control-plaintext">{{ selectedTransaction?.transactionTypeName }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label required-label">Payment Method:</label>
+        <p class="form-control-plaintext">{{ selectedTransaction?.paymentMethodName }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Card Type:</label>
+        <p class="form-control-plaintext">{{ selectedTransaction?.cardTypeName || 'N/A' }}</p>
+      </div>
+
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Merchant Transaction ID:</label>
+      <p class="form-control-plaintext">{{ selectedTransaction?.merchantTransactionId || 'N/A' }}</p>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label required-label">Date & Time:</label>
+      <p class="form-control-plaintext">{{ selectedTransaction?.transactionDateTime | date: 'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label required-label">Status:</label>
+      <p class="form-control-plaintext">{{ selectedTransaction?.statusName }}</p>
+    </div>
+    <div class="col-md-12">
+      <label class="form-label">Notes:</label>
+      <p class="form-control-plaintext">{{ selectedTransaction?.notes || 'No notes' }}</p>
+    </div>
+    <div class="col-md-12" *ngIf="selectedTransaction?.documentUrls?.length">
+      <label class="form-label">Documents:</label>
+      <div class="mt-2">
+        <div *ngFor="let doc of selectedTransaction?.documentUrls; let i = index" class="mb-1">
+          <a [href]="doc" target="_blank" class="text-decoration-none">
+            <i class="bi bi-file-earmark-text me-1"></i> Document {{ i + 1 }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Delete Confirmation Modal -->
+<ng-template #deleteTransactionModal let-modal>
+  <div class="modal-header bg-danger text-white">
+    <h5 class="modal-title">Confirm Deletion</h5>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete transaction <strong>{{ selectedTransaction?.transactionNumber }}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="deleteTransactionConfirmed(); modal.close()">Yes,
+      Delete</button>
+  </div>
+</ng-template>

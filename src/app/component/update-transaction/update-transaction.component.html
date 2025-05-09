@@ -1,0 +1,138 @@
+<div class="container-fluid position-relative mb-3">
+    <button class="back-btn" (click)="goBack()">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+  
+    <div class="d-flex justify-content-center">
+      <h3 class="form-title m-0">Update Transaction</h3>
+    </div>
+  
+    <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- Amount -->
+        <div class="col-md-6 mb-2">
+          <label for="amount" class="form-label required-label">Amount</label>
+          <input type="number" (input)="allowedSevenDigits($event)" formControlName="amount" id="amount" class="form-control" placeholder="Amount" step="0.01" maxlength="7">
+          <div *ngIf="transactionForm.get('amount')?.invalid && transactionForm.get('amount')?.touched" class="text-danger">
+            <div *ngIf="transactionForm.get('amount')?.errors?.['required']">Amount is required.</div>
+            <div *ngIf="transactionForm.get('amount')?.errors?.['min']">Amount must be greater than 0.</div>
+            <div *ngIf="transactionForm.get('amount')?.errors?.['max']">Amount must be less than or equal to 99999999.</div>
+          </div>
+        </div>
+  
+        <!-- User ID -->
+        <div class="col-md-6 mb-2">
+          <label for="userId" class="form-label required-label">User</label>
+          <input type="number" formControlName="userId" id="userId" class="form-control" placeholder="User ID">
+          <div *ngIf="transactionForm.get('userId')?.invalid && transactionForm.get('userId')?.touched" class="text-danger">
+            <div *ngIf="transactionForm.get('userId')?.errors?.['required']">User ID is required.</div>
+            <div *ngIf="transactionForm.get('userId')?.errors?.['min']">User ID must be greater than 0.</div>
+            <div *ngIf="transactionForm.get('userId')?.errors?.['max']">User ID must be less than or equal to 99999.</div>
+          </div>
+        </div>
+  
+        <!-- Transaction Type -->
+        <div class="col-md-6 mb-2">
+            <label for="transactionTypeId" class="form-label required-label">Transaction Type</label>
+            <select
+              formControlName="transactionTypeId"
+              class="form-select"
+              [class.is-invalid]="transactionForm.get('transactionTypeId')?.invalid && transactionForm.get('transactionTypeId')?.touched"
+            >
+              <option value="" disabled>Select Transaction Type</option>
+              <option value="1">Credit</option>
+              <option value="2">Debit</option>
+              <option value="3">Refund</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="transactionForm.get('transactionTypeId')?.hasError('required') && transactionForm.get('transactionTypeId')?.touched">
+              Transaction type is required.
+            </div>
+          </div>
+          
+  
+        <!-- Payment Method -->
+        <div class="col-md-6 mb-2">
+          <label for="paymentMethodId" class="form-label required-label">Payment Method</label>
+          <select formControlName="paymentMethodId" id="paymentMethodId" class="form-select">
+            <option value="" disabled>Select Payment Method</option>
+            <option *ngFor="let method of paymentMethods" [value]="method.id">{{ method.name }}</option>
+          </select>
+          <div *ngIf="transactionForm.get('paymentMethodId')?.invalid && transactionForm.get('paymentMethodId')?.touched" class="text-danger">
+            Payment method is required.
+          </div>
+        </div>
+  
+        <!-- Card Type -->
+        <div class="col-md-6 mb-2">
+          <label for="cardTypeId" class="form-label required-label">Card Type</label>
+          <select formControlName="cardTypeId" id="cardTypeId" class="form-select">
+            <option value="" disabled>Select Card Type</option>
+            <option *ngFor="let card of cardTypes" [value]="card.id">{{ card.name }}</option>
+          </select>
+          <div *ngIf="transactionForm.get('cardTypeId')?.invalid && transactionForm.get('cardTypeId')?.touched" class="text-danger">
+            Card type is required.
+          </div>
+        </div>
+  
+        <div class="col-md-6 mb-2">
+            <label for="merchantTransactionId" class="form-label required-label">Merchant Transaction ID</label>
+            <input
+              type="text"
+              formControlName="merchantTransactionId"
+              id="merchantTransactionId"
+              class="form-control"
+              maxlength="12"
+              placeholder="Start with 'MERC' followed by up to 8 digits"
+            />
+            <div *ngIf="transactionForm.get('merchantTransactionId')?.touched && transactionForm.get('merchantTransactionId')?.invalid" class="text-danger">
+              <div *ngIf="transactionForm.get('merchantTransactionId')?.errors?.['required']">
+                Merchant Transaction ID is required
+              </div>
+              <div *ngIf="transactionForm.get('merchantTransactionId')?.errors?.['pattern']">
+                Must start with "MERC" followed by up to 8 digits
+              </div>
+              <div *ngIf="transactionForm.get('merchantTransactionId')?.errors?.['maxlength']">
+                Maximum 12 characters allowed
+              </div>
+            </div>
+          </div>
+          
+  
+        <!-- Transaction Date & Time -->
+        <div class="col-md-6 mb-2">
+          <label for="transactionDateTime" class="form-label required-label">Transaction Date & Time</label>
+          <input type="datetime-local" formControlName="transactionDateTime" id="transactionDateTime" class="form-control" [min]="minDateTime">
+          <div *ngIf="transactionForm.get('transactionDateTime')?.invalid && transactionForm.get('transactionDateTime')?.touched" class="text-danger">
+            Transaction date and time is required.
+          </div>
+        </div>
+  
+        <!-- Status -->
+        <div class="col-md-6 mb-2">
+          <label for="statusId" class="form-label required-label">Status</label>
+          <select formControlName="statusId" id="statusId" class="form-select">
+            <option value="" disabled>Select Status</option>
+            <option *ngFor="let status of statuses" [value]="status.id">{{ status.name }}</option>
+          </select>
+          <div *ngIf="transactionForm.get('statusId')?.invalid && transactionForm.get('statusId')?.touched" class="text-danger">
+            Status is required.
+          </div>
+        </div>
+  
+        <!-- Notes -->
+        <div class="col-md-12 mb-2">
+          <label for="notes" class="form-label">Notes</label>
+          <textarea formControlName="notes" id="notes" class="form-control" rows="3"></textarea>
+          <div *ngIf="transactionForm.get('notes')?.invalid && transactionForm.get('notes')?.touched" class="text-danger">
+            <div *ngIf="transactionForm.get('notes')?.errors?.['maxlength']">Maximum 100 characters allowed.</div>
+          </div>
+        </div>
+  
+        <!-- Submit Button -->
+        <div class="col-md-12 text-center mt-4">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  

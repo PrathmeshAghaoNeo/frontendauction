@@ -17,11 +17,15 @@ import { EditRequestsComponent } from './component/edit-requests/edit-requests.c
 import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
+import { TransactionManagementComponent } from './component/manage-transaction/manage-transaction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
 import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
 import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
 import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
 import { AddRequestComponent } from './component/add-requests/add-requests.component';
+import { AddTransactionComponent } from './component/add-transaction/add-transaction.component';
+import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
+import { ChartComponent } from './component/chart/chart.component';
 
 
 export const routes: Routes = [
@@ -48,6 +52,10 @@ export const routes: Routes = [
     {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'addassetcategories', component:AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'update-assetcategories/:id', component:UpdateAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'transactions', component:TransactionManagementComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'newTransaction', component:AddTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'update-transaction/:id', component:UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
 

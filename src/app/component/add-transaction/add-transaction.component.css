@@ -1,0 +1,47 @@
+.required-label::after {
+    content: "* ";
+    color: red;
+    font-weight: bold;
+  }
+
+  .back-btn {
+    position: absolute;
+    left: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    color: #6a1b9a;
+  }
+  
+  
+  .back-btn:hover {
+    color: #6a1b9a;
+    transform: scale(1.1);
+  }
+  
+  .back-btn i {
+    font-size: 2rem;
+  }
+  .required-label::after {
+    content: "* ";
+    color: red;
+    font-weight: bold;
+  }
+
+  .auction-form-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
+.auction-form-title {
+  color: #6a1b9a;
+  font-weight: 600;
+  font-size: 29px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  margin-top: 15px;
+  text-align: center;
+}
