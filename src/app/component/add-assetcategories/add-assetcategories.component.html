@@ -12,12 +12,13 @@
     <form [formGroup]="assetCategoryForm" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="title" class="form-label required-label">Title</label>
-          <input type="text" formControlName="title" id="title" class="form-control"  maxlength="20"   />
-          <div *ngIf="assetCategoryForm.get('title')?.invalid && assetCategoryForm.get('title')?.touched" class="text-danger">
+          <label for="categoryName" class="form-label required-label">Title</label>
+          <input type="text" formControlName="categoryName" id="categoryName" class="form-control" maxlength="20" />
+          <div *ngIf="assetCategoryForm.get('categoryName')?.invalid && assetCategoryForm.get('categoryName')?.touched" class="text-danger">
             Title is required.
           </div>
         </div>
+      
   
         <div class="col-md-6 mb-3">
             <label for="subCategory" class="form-label">Sub Category</label>
@@ -147,13 +148,16 @@
           </div>
         </div>
   
-        <div class="col-md-6 mb-3">
-          <label for="registrationDeadline" class="form-label">Registration Deadline</label>
-          <input type="number" formControlName="registrationDeadline" id="registrationDeadline" class="form-control" />
-          <div *ngIf="assetCategoryForm.get('registrationDeadline')?.invalid && assetCategoryForm.get('registrationDeadline')?.touched" class="text-danger">
-            Registration Deadline is required and must be a number.
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="registrationDeadline" class="form-label">Registration Deadline</label>
+            <input type="date" formControlName="registrationDeadline" id="registrationDeadline" class="form-control" [min]="minDate" />
+            <div *ngIf="assetCategoryForm.get('registrationDeadline')?.invalid && assetCategoryForm.get('registrationDeadline')?.touched" class="text-danger">
+              Invalid Registration Deadline.
+            </div>
           </div>
         </div>
+        
   
         <div class="col-md-6 mb-3">
           <label for="vat" class="form-label ">VAT ID</label>

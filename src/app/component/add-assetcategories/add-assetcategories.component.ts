@@ -8,18 +8,19 @@ import { CommonModule, Location } from '@angular/common';
 
 @Component({
   selector: 'app-add-assetcategories',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  standalone:true,
+  imports: [CommonModule,FormsModule,ReactiveFormsModule],
   templateUrl: './add-assetcategories.component.html',
   styleUrls: ['./add-assetcategories.component.css']
 })
 export class AddAssetCategoriesComponent implements OnInit {
   assetCategoryForm: FormGroup;
-
+  
   statuses = [
     { statusId: 1, statusName: 'Draft' },
     { statusId: 2, statusName: 'Published' }
   ];
+  minDate: string | undefined;
   paymentMethods = [
     { methodId: 1, methodName: 'Bank Transfer' },
     { methodId: 2, methodName: 'Debit Card' },
@@ -34,76 +35,85 @@ export class AddAssetCategoriesComponent implements OnInit {
   };
 
   formFiles: { [key: string]: File | null } = {
-    icon: null,
+    iconFile: null,
     document: null
   };
-
+  
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private location: Location
+    private location: Location,
   ) {
     this.assetCategoryForm = this.fb.group({
-      categoryId: [null],
-      categoryName: ['', [Validators.required]],
-      subcategory: ['', [Validators.maxLength(50)]],
-      depositPercentage: [null, [Validators.pattern('^[0-9]+$')]],
-      details: ['', [Validators.maxLength(200)]],
-      adminFees: [null, [Validators.pattern('^[0-9]+$')]],
-      auctionFees: [null, [Validators.pattern('^[0-9]+$')]],
-      buyerCommission: [null, [Validators.pattern('^[0-9]+$')]],
-      registrationDeadline: [null],
-      iconFile: [null, [Validators.required]],
-      document: [null, [Validators.required]],
-      vatpercentage: [null, [Validators.pattern('^[0-9]+$')]],
-      statusId: [1, [Validators.required]],
-      vatid: [null],
-      sortOrder: [null],
-      statusName: [null]
+      categoryName: ['', Validators.required],
+      subCategory: ['', Validators.maxLength(30)],
+      depositPercentage: [null, [Validators.required, Validators.pattern('^[0-9]+$')]],
+      details: ['', Validators.required],
+      iconFile: [null, Validators.required],
+      document: [null, Validators.required],
+      paymentMethods: this.fb.array([]),
+      statusId: [null, Validators.required],
+      adminFees: [null, Validators.pattern('^[0-9]+$')],
+      auctionFees: [null, Validators.pattern('^[0-9]+$')],
+      buyersCommission: [null, Validators.pattern('^[0-9]+$')],
+      registrationDeadline: [''],
+      vat: [''],
+      vatPercentage: [null, Validators.pattern('^[0-9]+$')]
     });
+    const today = new Date();
+    this.minDate = today.toISOString().split('T')[0];
   }
-
+  dateValidator(control: any) {
+    if (control.value && isNaN(Date.parse(control.value))) {
+      return { invalidDate: true };
+    }
+    return null;
+  }
   ngOnInit(): void {}
+
+  get paymentMethodsArray(): FormArray {
+    return this.assetCategoryForm.get('paymentMethods') as FormArray;
+  }
 
   goBack(): void {
     this.location.back();
   }
+
   onCheckboxChange(event: any): void {
-    const formArray = this.assetCategoryForm.get('paymentMethods') as FormArray;
-  
+    const methodName = event.target.value;
     if (event.target.checked) {
-      // Add the selected payment method to the FormArray if checked
-      formArray.push(new FormControl(event.target.value));
+      this.paymentMethodsArray.push(new FormControl(methodName));
     } else {
-      // Remove the unselected payment method from the FormArray if unchecked
-      const index = formArray.controls.findIndex(c => c.value === event.target.value);
+      const index = this.paymentMethodsArray.controls.findIndex(x => x.value === methodName);
       if (index !== -1) {
-        formArray.removeAt(index);
+        this.paymentMethodsArray.removeAt(index);
       }
     }
   }
-  
+
   onFileChange(event: any, controlName: 'iconFile' | 'document') {
     const file = event.target.files[0];
     if (!file) return;
-  
-    const isImage = file.type.startsWith('image/');
-    const isDocument = controlName === 'document';
-  
-    if (!isImage && !isDocument) {
+
+    const isValidImage = controlName === 'iconFile' && file.type.startsWith('image/');
+    const isValidDocument = controlName === 'document' && file.type === 'application/pdf';
+
+    if (!isValidImage && !isValidDocument) {
       Swal.fire('Invalid File', 'Please upload a valid file.', 'error');
       return;
     }
-  
+
     if (file.size > 2 * 1024 * 1024) {
       Swal.fire('File Too Large', 'Max size is 2MB.', 'error');
       return;
     }
-  
+
     this.formFiles[controlName] = file;
-  
-    if (isImage) {
+
+    if (controlName === 'iconFile') {
+      this.previewUrls[controlName] = URL.createObjectURL(file);
+    } else {
       this.previewUrls[controlName] = URL.createObjectURL(file);
     }
   }
@@ -113,43 +123,39 @@ export class AddAssetCategoriesComponent implements OnInit {
       this.assetCategoryForm.markAllAsTouched();
       return;
     }
-  
+
     const iconFile = this.formFiles['iconFile'];
     const documentFile = this.formFiles['document'];
-  
+
     if (!iconFile || !documentFile) {
       Swal.fire('Missing Files', 'Please upload both an icon and a document.', 'warning');
       return;
     }
-  
+
     const formValue = this.assetCategoryForm.getRawValue();
     const formData = new FormData();
-  
-    formData.append('CategoryName', formValue.categoryName);
-    formData.append('Subcategory', formValue.subcategory ?? '');
+
+    formData.append('categoryName', formValue.categoryName);
+    formData.append('SubCategory', formValue.subCategory ?? '');
     formData.append('DepositPercentage', formValue.depositPercentage ?? '');
     formData.append('Details', formValue.details ?? '');
-    formData.append('Vatpercentage', formValue.vatpercentage ?? '');
+    formData.append('Vat', formValue.vat ?? '');
+    formData.append('VatPercentage', formValue.vatPercentage ?? '');
     formData.append('StatusId', formValue.statusId.toString());
-  
-    if (formValue.adminFees !== null && formValue.adminFees !== undefined) {
-      formData.append('AdminFees', formValue.adminFees.toString());
+
+    if (formValue.adminFees != null) formData.append('AdminFees', formValue.adminFees);
+    if (formValue.auctionFees != null) formData.append('AuctionFees', formValue.auctionFees);
+    if (formValue.buyersCommission != null) formData.append('BuyersCommission', formValue.buyersCommission);
+    if (formValue.buyersCommission != null) formData.append('RegistrationDeadline', formValue.registrationDeadline); 
+    
+
+    for (let method of formValue.paymentMethods) {
+      formData.append('PaymentMethods', method);
     }
-    if (formValue.auctionFees !== null && formValue.auctionFees !== undefined) {
-      formData.append('AuctionFees', formValue.auctionFees.toString());
-    }
-    if (formValue.buyerCommission !== null && formValue.buyerCommission !== undefined) {
-      formData.append('BuyerCommission', formValue.buyerCommission.toString());
-    }
-  
-    if (formValue.registrationDeadline) {
-      const isoDate = new Date(formValue.registrationDeadline).toISOString();
-      formData.append('RegistrationDeadline', isoDate);
-    }
-  
+
     formData.append('IconFile', iconFile);
     formData.append('Document', documentFile);
-  
+
     this.http.post(`${ApiEndpoints.ASSETCATEGORIES}/create`, formData).subscribe({
       next: () => {
         Swal.fire('Success', 'Asset Category created successfully!', 'success');
@@ -157,9 +163,8 @@ export class AddAssetCategoriesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Create failed:', err);
-        Swal.fire('Error', err?.error?.message || 'Something went wrong. Please try again.', 'error');
+        Swal.fire('Error', err?.error?.message || 'Something went wrong.', 'error');
       }
     });
   }
 }
-
