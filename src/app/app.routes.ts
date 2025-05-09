@@ -21,6 +21,7 @@ import { TransactionManagementComponent } from './component/manage-transaction/m
 import { TestloginComponent } from './component/testlogin/testlogin.component';
 import { AddTransactionComponent } from './component/add-transaction/add-transaction.component';
 import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
+import { ChartComponent } from './component/chart/chart.component';
 
 
 export const routes: Routes = [
@@ -49,7 +50,7 @@ export const routes: Routes = [
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path: 'testing', component:ChartComponent}, 
+    { path: '**', redirectTo: '/login' }
 
-    { path: '**', redirectTo: '/transactions' }
-    
 ];
