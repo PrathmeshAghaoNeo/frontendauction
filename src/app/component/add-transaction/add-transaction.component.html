@@ -1,11 +1,13 @@
 <div class="container-fluid position-relative mb-3">
-    <button class="back-btn" (click)="goBack()">
+    <div class="auction-form-header">
+    <button class="back-btn btn btn-link p-0" (click)="goBack()">
       <i class="bi bi-arrow-left-circle"></i>
     </button>
-  
-    <div class="d-flex justify-content-center">
-      <h3 class="form-title m-0">Add Transaction</h3>
+    <div>
+      <h3 class="auction-form-title">Add Transaction</h3>
+      <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
     </div>
+  </div>
   
   
     <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">

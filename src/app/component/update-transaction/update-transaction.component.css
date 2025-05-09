@@ -1,0 +1,21 @@
+  .back-btn {
+    position: absolute;
+    left: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    color: #6a1b9a;
+  }
+  
+  
+  .back-btn:hover {
+    color: #6a1b9a;
+    transform: scale(1.1);
+  }
+  
+  .back-btn i {
+    font-size: 2rem;
+  }

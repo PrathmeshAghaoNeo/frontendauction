@@ -16,6 +16,7 @@
     color: #6a1b9a;
   }
   
+  
   .back-btn:hover {
     color: #6a1b9a;
     transform: scale(1.1);
@@ -29,3 +30,18 @@
     color: red;
     font-weight: bold;
   }
+
+  .auction-form-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
+.auction-form-title {
+  color: #6a1b9a;
+  font-weight: 600;
+  font-size: 29px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  margin-top: 15px;
+  text-align: center;
+}

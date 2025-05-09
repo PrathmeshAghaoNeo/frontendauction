@@ -20,7 +20,7 @@ import { UpdateAuctionComponent } from './component/update-auction/update-auctio
 import { TransactionManagementComponent } from './component/manage-transaction/manage-transaction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
 import { AddTransactionComponent } from './component/add-transaction/add-transaction.component';
-import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
+import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
 
 
 export const routes: Routes = [

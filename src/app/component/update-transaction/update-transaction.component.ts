@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Location, CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
-import { ApiEndpoints } from '../constants/api-endpoints';
+import { ApiEndpoints } from '../../constants/api-endpoints';
 
 @Component({
   selector: 'app-update-transaction',
