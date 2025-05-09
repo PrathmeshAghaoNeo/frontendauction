@@ -101,6 +101,8 @@ fetchAuctions(): void {
 }
 
 sortAuctions(column: string): void {
+  console.log("functioncalled");
+  
   if (this.sortColumn === column) {
     if (this.sortDirection === 'asc') {
       this.sortDirection = 'desc';

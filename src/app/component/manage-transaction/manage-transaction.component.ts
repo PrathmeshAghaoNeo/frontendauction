@@ -22,12 +22,11 @@ export class TransactionManagementComponent implements OnInit {
 
   transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
-
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' | '' = ''; // Include '' as a valid option
   loading = false;
   page = 1;
   itemsPerPage = 5;
-
-  // Filters
   searchText = '';
   filterTransactionType = 0;
   filterStatus = 0;
@@ -92,6 +91,8 @@ export class TransactionManagementComponent implements OnInit {
      });
     }
 
+    
+
   isWithinDateRange(transactionDate: Date | string, startDate: string | null, endDate: string | null): boolean {
     const txnDate = new Date(transactionDate);
     const start = startDate ? new Date(startDate) : null;
@@ -111,6 +112,57 @@ export class TransactionManagementComponent implements OnInit {
     this.filterStartDate = null;
     this.filterEndDate = null;
   }
+
+
+  
+
+  sortTransactions(column: string): void {
+
+  if (this.sortColumn === column) {
+    if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';      
+    } else if (this.sortDirection === 'desc') {
+      this.sortDirection = '';
+    } else {
+      this.sortDirection = 'asc';
+    }
+  } else {
+    this.sortColumn = column;
+    this.sortDirection = 'asc';
+  }
+
+  if (this.sortDirection === '') {
+    this.transactions = [...this.filteredTransactions];
+    this.FilteredTransactions; // reapply filters if needed
+    return;
+  }
+  
+  const dir = this.sortDirection === 'asc' ? 1 : -1;
+  
+  this.transactions.sort((a, b) => {
+    const valA = (a as any)[column];
+    const valB = (b as any)[column];
+
+    if (column.includes('Date') || column.includes('date')) {
+      const dateA = new Date(valA).getTime();
+      const dateB = new Date(valB).getTime();
+      
+      if (dateA < dateB) return -1 * dir;
+      if (dateA > dateB) return 1 * dir;
+      return 0;
+    }
+
+    const strA = valA?.toString().toLowerCase();
+    const strB = valB?.toString().toLowerCase();
+
+    if (strA < strB) return -1 * dir;
+    if (strA > strB) return 1 * dir;
+    return 0;
+  });
+}
+
+
+
 
   onFilterChange(): void {
     this.page = 1;
