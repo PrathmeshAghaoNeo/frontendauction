@@ -19,6 +19,9 @@ import { ManageAssetComponent } from './component/manage-asset/manage-asset.comp
 import { AddRequestComponent } from './component/add-requests/add-requests.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
+import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
+import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
+import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
 
 
 export const routes: Routes = [
@@ -42,10 +45,12 @@ export const routes: Routes = [
     { path: 'requests/new', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
-    {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'addassetcategories', component:AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'update-assetcategories/:id', component:UpdateAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
 
-    { path: '**', redirectTo: '/login' }
+    { path: '**', redirectTo: '/assetcategories' }
 
 ];

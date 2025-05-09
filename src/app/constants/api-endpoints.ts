@@ -6,6 +6,7 @@ const BASE_URL = environment.apiUrl;
 export const ApiEndpoints = {
   ASSESTDOCUMENT: `${BASE_URL}/AssetDocument`,
   ASSETGALLERY: `${BASE_URL}/AssetGallery`,
+  ASSETCATEGORIES:`${BASE_URL}/AssetCategories`,
   ASSETS: `${BASE_URL}/Assets`,
   AUCTION: `${BASE_URL}/Auction`,
   AUCTIONSETTINGS: `${BASE_URL}/auction-settings`,
