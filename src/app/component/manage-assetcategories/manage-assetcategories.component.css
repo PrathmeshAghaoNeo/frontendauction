@@ -1,7 +1,4 @@
 .swal2-popup.custom-purple-popup {
-  width: 900px !important;
-  max-width: 95vw !important;
-
   border: 2px solid #ce93d8;
   border-radius: 18px;
   font-family: 'Segoe UI', sans-serif;
@@ -17,6 +14,16 @@
   border-radius: 4px;
   border: 1px solid #ddd;
 }
+/* Add this to your styles */
+.custom-wide-modal .modal-dialog {
+  width: 90%; /* or use a custom width like 900px */
+  max-width: 1000px; /* Ensure it doesn't exceed a certain size */
+}
+
+.custom-wide-modal .modal-content {
+  border-radius: 18px; /* Optional, for rounded corners */
+  box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2); /* Optional, for a shadow */
+}
 
 @keyframes slideIn {
   from {
@@ -27,6 +34,15 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+::ng-deep .custom-wide-modal .modal-dialog {
+  max-width: 800px;
+}
+
+
+img.rounded-circle.img-thumbnail {
+  object-fit: cover;
+  border: 1px solid #ccc;
 }
 
 .modal-header-purple {

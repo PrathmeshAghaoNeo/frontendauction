@@ -1,5 +1,5 @@
   export interface AssetCategory {
-      categoryId: number | null;          
+      categoryId: number;         
       categoryName: string;               
       subcategory: string | null;         
       depositPercentage: number | null;   

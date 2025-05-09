@@ -14,29 +14,43 @@ import { AssetCategory } from '../../modals/assetcategories';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ApiEndpoints } from '../../constants/api-endpoints';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { environment } from '../../constants/enviroments';
 
 @Component({
   selector: 'app-manage-assetcategories',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgxPaginationModule],
+  imports: [CommonModule, RouterModule, NgxPaginationModule,FormsModule],
   templateUrl: './manage-assetcategories.component.html',
   styleUrls: ['./manage-assetcategories.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class ManageAssetCategoriesComponent implements OnInit {
   assetCategories: AssetCategory[] = [];
+  allAssetCategories: AssetCategory[] = [];
+  searchText: string = '';
+  page: number = 1;
+  itemsPerPage: number = 5; 
+  filterStatus: string = 'All';
+  
+  filteredCategories: any[] = []; 
   selectedCategory: AssetCategory | null = null;
   selectedAssetCategory: AssetCategory | null = null;
 
   statuses = [
-    { statusId: 1, statusName: 'Pending' },
-    { statusId: 2, statusName: 'Active' },
-    { statusId: 3, statusName: 'Closed' },
-    { statusId: 4, statusName: 'Completed' }
+    // { statusId: 0, statusName: 'All' }, 
+    { statusId: 1, statusName: 'Draft' },
+    { statusId: 2, statusName: 'Published' }
+  ];
+  paymentMethods = [
+    { methodId: 1, methodName: 'Bank Transfer' },
+    { methodId: 2, methodName: 'Debit Card' },
+    { methodId: 3, methodName: 'Apply Pay' },
+    { methodId: 4, methodName: 'Google Pay' },
+    { methodId: 5, methodName: 'Cheque' },
   ];
 
-  page: number = 1;
-  itemsPerPage: number = 5;
+  
 
   @ViewChild('viewAssetCategoryModal') viewAssetCategoryModal!: TemplateRef<any>;
 
@@ -47,22 +61,46 @@ export class ManageAssetCategoriesComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {}
 
-  ngOnInit(): void {
-    this.fetchAssetCategories();
-  }
-  sanitizeImageUrl(url: string): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(url);
-  }
-  fetchAssetCategories(): void {
-    this.assetCategoriesService.getAll().subscribe(
-      (data) => {
-        this.assetCategories = data;
-      },
-      (error) => {
-        console.error('Error fetching asset categories:', error);
-      }
-    );
-  }
+  
+
+ngOnInit(): void {
+  this.fetchAssetCategories();
+}
+
+
+fetchAssetCategories(): void {
+  this.assetCategoriesService.getAll().subscribe(
+    (data) => {
+      this.allAssetCategories = data;
+      this.assetCategories = data.sort((a, b) => b.categoryId - a.categoryId);
+      // this.applyFilters();
+    },
+    (error) => {
+      console.error('Error fetching asset categories:', error);
+    }
+  );
+}
+applyFilters(): void {
+  const search = this.searchText.trim().toLowerCase();
+  const statusId = Number(this.filterStatus); 
+
+  this.assetCategories = this.allAssetCategories.filter(category => {
+    const matchesSearch = !search || category.categoryName.toLowerCase().includes(search);
+    const matchesStatus = statusId === 0 || category.statusId === statusId;
+
+    return matchesSearch && matchesStatus;
+  });
+}
+assetBaseUrl: string = `${environment.imgUrl}`;
+
+filterCategories(): void {
+  const search = this.searchText.toLowerCase();
+  this.assetCategories = this.allAssetCategories.filter((category) =>
+    category.categoryName.toLowerCase().includes(search)
+  );
+}
+
+  
 
   getStatusName(statusId: number | null | undefined): string {
     if (statusId === null || statusId === undefined) {

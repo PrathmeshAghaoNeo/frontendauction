@@ -4,6 +4,31 @@
       New Category
     </button>
   </div>
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search by Category Title"
+        [(ngModel)]="searchText"
+        (ngModelChange)="filterCategories()"
+      />
+    </div>
+    
+    <div class="col-md-4">
+      <select
+        class="form-select"
+        [(ngModel)]="filterStatus"
+        (ngModelChange)="applyFilters()"
+      >
+        <option value="All">All Statuses</option>
+        <option *ngFor="let status of statuses" [value]="status.statusId">
+          {{ status.statusName }}
+        </option>
+      </select>
+    </div>
+    
+</div>
   
   <div class="table-responsive">
     <table class="table table-hover shadow-sm border-0 rounded">
@@ -22,7 +47,6 @@
       <tbody>
         <tr *ngFor="let category of assetCategories | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index">
 
-            <!-- Combine icon and title in one cell -->
             <td class="d-flex align-items-center gap-2">
               <img [src]="category.icon"
                    alt="icon"
@@ -38,10 +62,8 @@
             <td>
               <span
                 [ngClass]="{
-                  'bg-success': category.statusId === 2,
                   'bg-warning': category.statusId === 1,
-                  'bg-danger': category.statusId === 3,
-                  'bg-info': category.statusId === 4
+                  'bg-success': category.statusId === 2
                 }" class="badge badge-fixed-width text-dark">
                 {{ getStatusName(category.statusId) }}
               </span>
@@ -72,80 +94,98 @@
   </div>
   
   <!-- View Asset Category Modal -->
-<ng-template #viewAssetCategoryModal let-modal>
-  <div class="modal-header modal-header-purple">
-    <h5 class="modal-title text-white">Asset Category Details</h5>
-    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
-  </div>
-  <div class="modal-body">
-    <div class="row mb-2">
-      <div class="col-md-6">
-        <label for="title" class="form-label required-label">Category Name:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.categoryName }}</p>
-      </div>
-      <div class="col-md-6">
-        <label for="subCategory" class="form-label">Sub Category:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.subcategory }}</p>
-      </div>
-      <div class="col-md-6">
-        <label for="depositPercentage" class="form-label">Deposit Percentage:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.depositPercentage }}%</p>
-      </div>
-      <div class="col-md-6">
-        <label for="details" class="form-label">Details:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.details }}</p>
-      </div>
-      <div class="col-md-6">
-        <label for="status" class="form-label">Status:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.statusId }}</p>
-      </div>
-      <div class="col-md-6">
-        <label for="icon" class="form-label">Icon:</label>
-        <div *ngIf="selectedAssetCategory?.icon">
-          <img [src]="sanitizeImageUrl(selectedAssetCategory?.icon || '')" />
+  <ng-template #viewAssetCategoryModal let-modal>
+    <div class="modal-header modal-header-purple">
+      <h5 class="modal-title text-white">Asset Category Details</h5>
+      <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+  
+    <div class="modal-body">
+      <div class="row mb-4">
+        <div class="col-md-4 text-end">
+          <div *ngIf="selectedAssetCategory?.icon; else noIcon">
+            <img
+              [src]="assetBaseUrl + selectedAssetCategory?.icon"
+              alt="Category Icon"
+              class="img-thumbnail"
+              style="
+              position: absolute;
+              top: 16px;
+              right: 60px;
+              width: 200px;
+              height: 200px;
+              object-fit: cover;
+              border-radius: 10px;
+              box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            " />
+          </div>
+          <ng-template #noIcon>
+            <div class="text-muted">No Icon Available</div>
+          </ng-template>
+        </div>
+        
+        
+    </div>
+    
+    
+  
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label">Sub Category:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.subcategory }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Deposit Percentage:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.depositPercentage }}%</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Details:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.details }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Status:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.statusName }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Admin Fees:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.adminFees | currency }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Auction Fees:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.auctionFees | currency }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Buyers Commission:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.buyerCommission | currency }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Registration Deadline:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.registrationDeadline }} days</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">VAT ID:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.vatid }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">VAT Percentage:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.vatpercentage }}%</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Sort Order:</label>
+          <p class="form-control-plaintext">{{ selectedAssetCategory?.sortOrder }}</p>
 
         </div>
-        <p class="form-control-plaintext" *ngIf="!selectedAssetCategory?.icon">No Icon Available</p>
-      </div>
-      <div class="col-md-6">
-        <label for="document" class="form-label">Document:</label>
-        <div *ngIf="selectedAssetCategory?.document">
-          <a [href]="selectedAssetCategory?.document" target="_blank">View Document</a>
+        <div class="col-md-6">
+          <label class="form-label">Document:</label>
+          <div *ngIf="selectedAssetCategory?.document">
+            <a [href]="selectedAssetCategory?.document" target="_blank">View Document</a>
+          </div>
+          <p class="form-control-plaintext" *ngIf="!selectedAssetCategory?.document">No Document Available</p>
         </div>
-        <p class="form-control-plaintext" *ngIf="!selectedAssetCategory?.document">No Document Available</p>
-      </div>
-      <!-- <div class="col-md-6">
-        <label for="paymentMethods" class="form-label">Payment Methods:</label>
-        <ul class="list-unstyled">
-          <li *ngFor="let method of selectedAssetCategory?.paymentMethods">{{ method }}</li>
-        </ul>
-      </div> -->
-      <div class="col-md-6">
-        <label for="adminFees" class="form-label">Admin Fees:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.adminFees | currency }}</p>
-      </div>
-      <div class="col-md-6">
-        <label for="auctionFees" class="form-label">Auction Fees:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.auctionFees | currency }}</p>
-      </div>
-      <div class="col-md-6">
-        <label for="buyersCommission" class="form-label">Buyers Commission:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.buyerCommission | currency }}</p>
-      </div>
-      <div class="col-md-6">
-        <label for="registrationDeadline" class="form-label">Registration Deadline:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.registrationDeadline }} days</p>
-      </div>
-      <div class="col-md-6">
-        <label for="vat" class="form-label">VAT ID:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.vatid }}</p>
-      </div>
-      <div class="col-md-6">
-        <label for="vatPercentage" class="form-label">VAT %:</label>
-        <p class="form-control-plaintext">{{ selectedAssetCategory?.vatpercentage }}%</p>
       </div>
     </div>
-  </div>
-</ng-template>
+  </ng-template>
+  
+  
 
   

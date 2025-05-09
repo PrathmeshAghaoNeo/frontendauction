@@ -18,6 +18,10 @@ import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
+import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
+import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
+import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
+import { AddRequestComponent } from './component/add-requests/add-requests.component';
 
 
 export const routes: Routes = [
@@ -38,7 +42,7 @@ export const routes: Routes = [
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
-    { path: 'requests/new', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
@@ -47,6 +51,6 @@ export const routes: Routes = [
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
 
-    { path: '**', redirectTo: '/login' }
+    { path: '**', redirectTo: '/assetcategories' }
 
 ];
