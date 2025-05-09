@@ -72,3 +72,56 @@
     }
   }
   
+  .card {
+    width: 100%; /* Increase the width of the card */
+  }
+  
+  .table {
+    width: 100%; /* Ensure the table takes full width */
+  }
+  
+  .table th, .table td {
+    padding: 0.5rem; /* Reduce padding between each row */
+  }
+  
+  .table th {
+    background-color: #6f42c1; /* Example background color for the header */
+    color: white; /* Text color for the header */
+  }
+  
+  .table tbody tr:hover {
+    background-color: #f8f9fa; /* Highlight row on hover */
+  }
+  
+  .table-responsive {
+    overflow-x: hidden; /* Prevent horizontal scroll */
+  }
+  .table-sm > tr{
+    font-size: x-small;
+  }
+  .scaled-table-container {
+    transform: scale(0.6);
+    width: fit-content;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-light) !important;
+    transform-origin: top left; /* So it doesn't shift */
+    display: inline-block; /* So width auto adjusts after scaling */
+  }
+  
+  .row.table-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem; /* minimal space between cards */
+    margin: 0;
+    padding: 0.25rem;
+    align-items: stretch;
+  }
+  .views{
+    min-width: 520px;
+  }
+  .tables.con{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+  }

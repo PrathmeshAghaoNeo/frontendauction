@@ -16,12 +16,8 @@ import { DetailsUserComponent } from './component/details-user/details-user.comp
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
 import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
-import { AddRequestComponent } from './component/add-requests/add-requests.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
-import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
-import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
-import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
 
 
 export const routes: Routes = [
@@ -51,6 +47,6 @@ export const routes: Routes = [
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
 
-    { path: '**', redirectTo: '/assetcategories' }
+    { path: '**', redirectTo: '/login' }
 
 ];

@@ -1,5 +1,5 @@
 <div class="container-fluid dashboard">
-    <main class="main-content">
+    <!-- <main class="main-content"> -->
       <h2 class="mb-4 text-purple">Auction Management Dashboard</h2>
   
       <div class="row mb-4">
@@ -28,35 +28,7 @@
           </div>
         </div>
       </div>
-  
-      <div class="row mb-4">
-        <div class="col-md-6">
-          <div class="card section-card">
-            <div class="card-body">
-              <h5 class="card-title text-purple mb-3">Recent Activities</h5>
-              <ul class="list-unstyled activity-list">
-                <li><span class="dot purple"></span> Auction "Rolex Watch" created.</li>
-                <li><span class="dot green"></span> Payment of 3,000 BHD received.</li>
-                <li><span class="dot blue"></span> Auction "Land in Manama" completed.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-md-6">
-          <div class="card section-card">
-            <div class="card-body">
-              <h5 class="card-title text-purple mb-3">Top Categories</h5>
-              <div class="d-flex flex-wrap gap-3">
-                <span class="badge bg-purple">Electronics</span>
-                <span class="badge bg-purple">Cars</span>
-                <span class="badge bg-purple">Watches</span>
-                <span class="badge bg-purple">Real Estate</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
   
       <div class="row">
         <div class="col-md-12">
@@ -97,6 +69,110 @@
           </div>
         </div>
       </div>
-    </main>
-  </div>
-  
+    <!-- </main> -->
+ 
+
+
+    <div class="row mt-4 mx-1">
+      <!-- Table 1 -->
+      <div class="col-md-4 mb-1">
+        <div class="card shadow-sm scaled-table-container" style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
+          <div class="card-body views p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+              <h4 class="mb-0 text-primary fw-semibold">Users</h4>
+              <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
+                View More
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered table-hover mb-0">
+                <thead class="table-purple">
+                  <tr>
+                    <th>UserId</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users | slice:0:5; let i = index">
+                    <td>{{ user.uid }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.gender }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Repeat for Table 2 and Table 3 -->
+      <div class="col-md-4 mb-1">
+        <div class="card shadow-sm scaled-table-container" style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
+          <div class="card-body views p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+              <h4 class="mb-0 text-primary fw-semibold">Requests</h4>
+              <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
+                View More
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered table-hover mb-0">
+                <thead class="table-purple">
+                  <tr>
+                    <th>UserId</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let request of requestList | slice:0:5; let i = index">
+                    <td>{{ i+1 }}</td>
+                    <td>{{ getTypeName(request.requestTypeId) }}</td>
+                    <td>{{ getStatusName(request.requestStatusId) }}</td>
+                    <td>{{ request.requestDateTime}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="col-md-4 mb-1">
+        <div class="card shadow-sm scaled-table-container" style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
+          <div class="card-body views p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+              <h4 class="mb-0 text-primary fw-semibold">Assets</h4>
+              <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
+                View More
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered table-hover mb-0">
+                <thead class="table-purple">
+                  <tr>
+                    <th>Sr No.</th>
+                    <th>Title</th>
+                    <th>starting Price</th>
+                    <th>End Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let asset of assets| slice:0:5; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ asset.title }}</td>
+                    <td>{{ asset.startingPrice }}</td>
+                    <td>{{ asset.registrationDeadline }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    

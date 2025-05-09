@@ -17,3 +17,7 @@
   max-width: 120px; 
 }
 
+.modal-header-purple {
+  background-color: #b99af3;
+  color: white;
+}

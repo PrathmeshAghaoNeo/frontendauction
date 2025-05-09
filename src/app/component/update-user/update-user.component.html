@@ -1,14 +1,14 @@
-<div class="auction-form-header">
-  <button class="back-btn btn btn-link p-0" (click)="goBack()">
-    <i class="bi bi-arrow-left-circle"></i>
-  </button>
-  <div>
-    <h3 class="auction-form-title">Update User</h3>
-    <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+<form (ngSubmit)="onUpdateUser(userForm)"    #userForm="ngForm" class="container  p-4 rounded shadow">
+  
+  <div class="auction-form-header">
+    <button type="button" class="back-btn btn btn-link p-0" (click)="goBack()">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+    <div>
+      <h3 class="auction-form-title">Update User</h3>
+      <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+    </div>
   </div>
-</div>
-
-<form (ngSubmit)="onUpdateUser(userForm)"    #userForm="ngForm" class="container  p-4 bg-light rounded shadow">
   <div class="row">
     <div class="col-md-6 mb-3">
       <div class="form-group">
@@ -67,7 +67,7 @@
           inputmode="numeric" 
           pattern="^[0-9]*$"
           class="form-control form-control-lg" 
-          [(ngModel)]="user.mobileNumber" s
+          [(ngModel)]="user.mobileNumber" 
           name="mobileNumber" 
           required
           placeholder="e.g. 9876534526"
@@ -118,7 +118,7 @@
         <input type="text" placeholder="e.g. A53DH"  minlength="3" maxlength="15" #companyNumber="ngModel" class="form-control form-control-lg" [(ngModel)]="user.companyNumber" name="companyNumber" (input)="user.companyNumber = user.companyNumber.toUpperCase()">
         <div *ngIf="companyNumber.invalid && (companyNumber.dirty || companyNumber.touched)" class="text-danger">
           <div *ngIf="companyNumber.errors?.['minlength']">Minimum 3 characters required.</div>
-          <div *ngIf="companyNumber.errors?.['maxlength']">Maximum 20 characters allowed.</div>
+          <div *ngIf="companyNumber.errors?.['maxlength']">Maximum 15 characters allowed.</div>
         </div>
       </div>
     </div>
@@ -131,7 +131,7 @@
     <div class="col-md-6 mb-1">
       <div class="form-group">
         <label class="form-label fw-bold">Deposit Amount</label>
-        <input type="text" placeholder="Enter Deposit Amount" required="true"  pattern="^\d{1,7}(\.\d{1,2})?$"  minlength="3" maxlength="10" class="form-control form-control-lg" [(ngModel)]="user.deposit" (ngModelChange)="updateTotalLimit()" #deposit="ngModel" name="deposit">
+        <input type="text" placeholder="Enter Deposit Amount" required  pattern="^\d{1,7}(\.\d{1,2})?$"  minlength="3" maxlength="10" class="form-control form-control-lg" [(ngModel)]="user.deposit" (ngModelChange)="updateTotalLimit()" #deposit="ngModel" name="deposit">
         <div *ngIf="deposit.invalid && (deposit.dirty || deposit.touched)" class="text-danger">
           <div *ngIf="deposit.errors?.['required']">Deposit Amount is Required</div>
           <div *ngIf="deposit.errors?.['pattern']"> Enter a valid number with up to 7 digits and a maximum of 2 decimal places.</div>
