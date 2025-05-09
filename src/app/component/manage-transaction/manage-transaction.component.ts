@@ -7,6 +7,9 @@ import { CommonModule, CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
+
 
 
 @Component({
@@ -193,4 +196,39 @@ export class TransactionManagementComponent implements OnInit {
       });
     }
   }
+
+  exportToExcel(): void {
+  // Format the data
+  const exportData = this.filteredTransactions.map(txn => ({
+    'Transaction ID': txn.transactionId,
+    'Transaction No.': txn.transactionNumber,
+    'User': txn.userFullName,
+    'Amount': txn.amount,
+    'Transaction Type': txn.transactionTypeName,
+    'Payment Method': txn.paymentMethodName,
+    'Card Type': txn.cardTypeName || '-',
+    'Merchant Txn ID': txn.merchantTransactionId,
+    'Date/Time': new Date(txn.transactionDateTime).toLocaleString(),
+    'Status': txn.statusName,
+    'Notes': txn.notes,
+  }));
+
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Transactions': worksheet },
+    SheetNames: ['Transactions']
+  };
+
+  const excelBuffer: any = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  });
+
+  const blob: Blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+  });
+
+  FileSaver.saveAs(blob, 'Transactions.xlsx');
+}
+
 }
