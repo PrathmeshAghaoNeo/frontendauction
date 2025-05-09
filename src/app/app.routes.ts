@@ -58,7 +58,6 @@ export const routes: Routes = [
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
-
-    { path: '**', redirectTo: '/assetcategories' }
-
+    {path: 'testing', component:ChartComponent}, 
+    { path: '**', redirectTo: '/login' }
 ];

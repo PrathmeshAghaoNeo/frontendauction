@@ -7,7 +7,12 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="text-purple">Manage Transactions</h2>
+
+
   <div class="col-md-3 text-end">
+    <button class="btn custom-purple-btn" (click)="exportToExcel()" id="export">
+      <i class="bi bi-file-earmark-excel"></i> Export
+    </button>
     <button class="btn custom-purple-btn" [routerLink]="'/newTransaction'" routerLinkActive="active">
       Add Transaction
     </button>
@@ -236,6 +241,10 @@
     </div>
   </div>
 </ng-template>
+
+
+
+
 
 <!-- Delete Confirmation Modal -->
 <ng-template #deleteTransactionModal let-modal>
