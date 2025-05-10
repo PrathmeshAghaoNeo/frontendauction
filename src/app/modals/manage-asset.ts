@@ -95,6 +95,7 @@ export interface Asset {
   galleries: AssetGalleryDto[];
   documents: AssetDocumentFormDto[];
   attributes: AssetDetailDto[];
+  auctionStatusId?: number;
 }
 
 export interface AssetGalleryDto {

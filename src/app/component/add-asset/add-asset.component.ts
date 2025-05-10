@@ -12,6 +12,8 @@ import { Location } from '@angular/common';
 
 import { from } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Auction } from '../../modals/auctions';
+import { AuctionService } from '../../services/auction.service';
 
 @Component({
   selector: 'app-add-asset',
@@ -21,11 +23,15 @@ import Swal from 'sweetalert2';
   styleUrl: './add-asset.component.css',
 })
 export class AddAssetComponent {
+  auctions: Auction[] = [];
   assetForm: FormGroup;
   documentUrls: string[] = [];
   imageUploadError: string = '';
   documentUploadError: string = '';
   formSubmitted = false;
+
+  imagePreviews: string[] = [];
+
 
   categories = [
     { id: 1, name: 'Auction' },
@@ -80,7 +86,7 @@ export class AddAssetComponent {
     galleryFiles: [] as File[],
     documentFiles: [] as File[],
     detailsJson: [] as Array<{ attributeName: string; attributeValue: string }>,
-    auctionIds: [43] as number[],
+    auctionIds: [] as number[],
     // auctionIds: [] as number[]
   };
 
@@ -125,11 +131,16 @@ export class AddAssetComponent {
     'Special Edition Auction AUC29212',
   ];
 
+
+
+
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private assetService: ManageAssetService,
-    private location: Location
+    private location: Location,
+    private auctionService: AuctionService
   ) {
     this.assetForm = this.fb.group({
       assetNumber: [
@@ -195,16 +206,36 @@ export class AddAssetComponent {
   goBack1(): void {
     this.location.back();
   }
+  onAuctionSelectionChange(selectedIds: number[]) {
+    console.log('Selected auction IDs:', selectedIds);
+  }
+  
 
   ngOnInit() {
     // Log asset object on page load
+    this.fetchAuctions();
     console.log('Asset on page load:', this.asset);
 
+    
     // Listen to value changes of the form
     this.assetForm.valueChanges.subscribe((changes) => {
       console.log('Asset changed:', changes);
     });
   }
+  
+  
+  fetchAuctions(): void {
+    this.auctionService.getAllAuctions().subscribe({
+      next: (data) => {
+        this.auctions = data;
+        console.log("auction" , this.auctions);
+        },
+        error: (err) => {
+          console.error('Error fetching auctions', err);
+          Swal.fire('Error!', 'Failed to load auctions.', 'error');
+        }
+      });
+    }
 
   limitToThreeDigits(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -511,6 +542,8 @@ export class AddAssetComponent {
   sellerError: string = '';
   courtCaseNumberError: string = '';
   registrationDeadlineError: string = '';
+  auctionError : string = '';
+  attributeError: string = '';
 
   updateAsset(form: any): void {
     // if (!this.assetForm.valid) {
@@ -518,6 +551,7 @@ export class AddAssetComponent {
     //   this.formSubmitted = true;
     //   return;
     // }
+
 
     if (
       !this.isGalleryValid() ||
@@ -545,7 +579,16 @@ export class AddAssetComponent {
       this.asset.courtCaseNumber == null ||
       this.asset.courtCaseNumber.trim() === '' ||
       this.asset.registrationDeadline == null ||
-      this.asset.registrationDeadline === 0
+      this.asset.registrationDeadline === 0 ||
+      !this.asset.auctionIds || this.asset.auctionIds.length === 0 ||
+      
+      this.asset.detailsJson.some(detail =>
+        !detail.attributeName ||
+        detail.attributeName.trim() === '' ||
+        !detail.attributeValue ||
+        detail.attributeValue.trim() === ''
+      )
+      
     ) {
       this.assetForm.markAllAsTouched();
       this.formSubmitted = true;
@@ -666,6 +709,33 @@ export class AddAssetComponent {
         this.registrationDeadlineError = '';
       }
 
+      if (!this.asset.auctionIds || this.asset.auctionIds.length === 0) {
+        this.auctionError = 'At least one auction must be selected.';
+      } else {
+        this.auctionError = '';
+      }
+
+      // if (this.asset.detailsJson.some(detail =>
+      //     !detail.attributeName || detail.attributeName.trim() === '' ||
+      //     !detail.attributeValue || detail.attributeValue.trim() === ''
+      //   )
+      // ) {
+      //   this.attributeError = 'All attribute names and values must be filled.';
+      // }else{
+      //   this.attributeError = '';
+      // }
+
+      if (this.asset.detailsJson.length === 0 || this.asset.detailsJson == null) {
+        this.attributeError = 'At least one detail is required.';
+      } else if (this.asset.detailsJson.some(detail => 
+        !detail.attributeName || detail.attributeName.trim() === '' ||
+        !detail.attributeValue || detail.attributeValue.trim() === '')) {
+        this.attributeError = 'All attribute names and values must be filled.';
+      } else {
+        this.attributeError = '';
+      }
+      
+
       return;
     }
 
@@ -756,6 +826,8 @@ export class AddAssetComponent {
       reader.onload = () => {
         const result = reader.result as string;
         this.asset.galleryFiles.push(file);
+        this.imagePreviews.push(result); // Add the preview to the array
+        console.log('Image preview:', result); // Debugging log to see the preview
       };
       reader.readAsDataURL(file);
     }
@@ -764,6 +836,7 @@ export class AddAssetComponent {
 
   removeGalleryItem(index: number): void {
     this.asset.galleryFiles.splice(index, 1);
+    this.imagePreviews.splice(index, 1); // Remove the corresponding preview
   }
 
   onImageDrop(event: DragEvent): void {
@@ -787,6 +860,7 @@ export class AddAssetComponent {
       reader.onload = () => {
         const result = reader.result as string;
         this.asset.galleryFiles.push(file);
+        this.imagePreviews.push(result); // Add the preview to the array
       };
       reader.readAsDataURL(file);
     }

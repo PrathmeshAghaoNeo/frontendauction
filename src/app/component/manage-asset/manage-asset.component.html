@@ -41,8 +41,48 @@
           <td>#{{ asset.assetNumber }}</td>
           <td>BHD {{ asset.startingPrice | number }}</td>
           <td>{{ asset.categoryName }}</td>
-          <td>{{ getAuctionStatus(asset.assetId) }}</td>
-          <td>{{ asset.statusName }}</td>
+          <!-- <td>{{ getAuctionStatus(asset.auctionStatusId ?? 0) }}</td> -->
+
+          <td>
+            <span
+              class="asset-status"
+              [ngClass]="{
+                'status-pending': asset.auctionStatusId === 1,
+                'status-active': asset.auctionStatusId === 2,
+                'status-closed': asset.auctionStatusId === 3,
+                'status-completed': asset.auctionStatusId === 4,
+                'status-unknown': ![1, 2, 3, 4].includes(asset.auctionStatusId ?? 0)
+              }"
+              class="badge badge-fixed-width text-dark"
+            >
+              {{ getAuctionStatus(asset.auctionStatusId ?? 0) }}
+            </span>
+          </td>
+          
+          
+          <!-- <td>{{ asset.statusName }}</td> -->
+
+          <td>
+            <span
+              class="asset-status"
+              [ngClass]="{
+                'status-draft': asset.statusName === 'Draft',
+                'status-published': asset.statusName === 'Published',
+                'status-auctioned': asset.statusName === 'Auctioned',
+                'status-archived': asset.statusName === 'Archived',
+                'status-pending': asset.statusName === 'Pending',
+                'status-approved': asset.statusName === 'Approved',
+                'status-payment': asset.statusName === 'Payment',
+                'status-registration': asset.statusName === 'Registration',
+                'status-transferred': asset.statusName === 'Transferred',
+                'status-closed': asset.statusName === 'Closed'
+              }"  class="badge badge-fixed-width text-dark"
+            >
+              {{ asset.statusName }}
+            </span>
+          </td>
+          
+          
           <td>{{ asset.registrationDeadline }} days</td>
           <td class="text-end">
             <button class="btn btn-sm btn-outline-primary me-1" (click)="viewAsset(asset.assetId)">
@@ -76,7 +116,10 @@
       <!-- Gallery Section -->
       <div class="modal-gallery" *ngIf="selectedAsset.galleries.length > 0">
         <div *ngFor="let gallery of selectedAsset.galleries" class="gallery-item">
-          <img [src]="gallery.fileUrl" alt="Gallery Image" />
+          <!-- <img [src]="gallery.fileUrl" alt="Gallery Image" /> -->
+          <a [href]="gallery.fileUrl" target="_blank">
+            <img [src]="gallery.fileUrl" alt="Gallery Image" />
+          </a>
         </div>
       </div>
 
@@ -88,8 +131,16 @@
           <div><strong>Category:</strong> {{ selectedAsset.categoryName || 'Not Available' }}</div>
           <div><strong>Asset Number:</strong> {{ selectedAsset.assetNumber }}</div>
           <div><strong>Starting Price:</strong> BHD {{ selectedAsset.startingPrice | number }}</div>
-          <div><strong>Status:</strong> {{ selectedAsset.statusName }}</div>
-          <div><strong>Auction Status:</strong> {{ getAuctionStatus(selectedAsset.assetId) }}</div>
+            <div><strong>Status:</strong> {{ selectedAsset.statusName }}</div>
+            <!-- <div>
+              <strong>Status:</strong>
+              <span class="status-badge status-success ms-2">
+                {{ selectedAsset.statusName }}
+              </span>
+            </div>             -->
+            
+            
+          <div><strong>Auction Status:</strong> {{ getAuctionStatus(selectedAsset.auctionStatusId ?? 0) }}</div>
           <div><strong>Registration Deadline:</strong> {{ selectedAsset.registrationDeadline }} days</div>
           <div><strong>Description:</strong> {{ selectedAsset.description }}</div>
         </div>
@@ -99,8 +150,11 @@
           <h3>Asset Documents</h3>
           <ul>
             <li *ngFor="let document of selectedAsset.documents">
-              <a [href]="document.filePath" target="_blank">{{ document.documentType }}</a>
+              <a 
+              [href]=" environment.baseurl + document.filePath"
+              target="_blank">{{ document.documentType }}</a>
             </li>
+            <!-- [href]="document.filePath" -->
           </ul>
         </div>
       </div>    

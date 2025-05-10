@@ -383,3 +383,93 @@ to {
 .back-btn i {
   font-size: 2rem;     
 }
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 999px; 
+  align-content: center;
+  color: #000;  /* Set the text color to dark */
+}
+
+.badge-fixed-width {
+  min-height: 35px; 
+  min-width: 90px; 
+  max-width: 120px; 
+}
+
+.asset-status {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+
+.status-draft {
+  background-color: #f0ad4e; /* Bootstrap 'warning' */
+  color: white;
+}
+
+.status-published {
+  background-color: #5bc0de; /* Bootstrap 'info' */
+  color: white;
+}
+
+.status-auctioned {
+  background-color: #d9534f; /* Bootstrap 'danger' */
+  color: white;
+}
+
+.status-archived {
+  background-color: #6c757d; /* Bootstrap 'secondary' */
+  color: white;
+}
+
+.status-pending {
+  background-color: #ffc107; /* Bootstrap 'warning' */
+  color: white;
+}
+
+.status-approved {
+  background-color: #28a745; /* Bootstrap 'success' */
+  color: white;
+}
+
+.status-payment {
+  background-color: #17a2b8; /* Bootstrap 'info' */
+  color: white;
+}
+
+.status-registration {
+  background-color: #007bff; /* Bootstrap 'primary' */
+  color: white;
+}
+
+.status-transferred {
+  background-color: #343a40; /* Bootstrap 'dark' */
+  color: white;
+}
+
+.status-closed {
+  background-color: #28a745; /* Bootstrap 'success' */
+  color: white;
+}
+
+.status-unknown {
+  background-color: #c9d6e2; /* Bootstrap 'secondary' */
+  color: white;
+}
+
+.status-active{
+  background-color: #9cdaaa; /* Bootstrap 'success' */
+  color: white;
+}

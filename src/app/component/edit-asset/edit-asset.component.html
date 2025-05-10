@@ -136,15 +136,29 @@
               name="seller"
               required
               min="1"
-              max="5000"
+              maxlength="5000"
               #sellerId="ngModel"
-              [class.is-invalid]="sellerId.invalid && (sellerId.touched || assetForm.submitted)"
-              
+
+              [class.is-invalid]="
+                sellerId.invalid && (sellerId.touched || assetForm.submitted)
+              " 
+              (input)="limitToThreeDigits($event)"
             />
-            <div *ngIf="sellerId.invalid && (sellerId.touched || assetForm.submitted)" class="invalid-feedback">
-              <div *ngIf="sellerId.errors?.['required']">Seller ID is required.</div>
-              <div *If="sellerId.errors?.['min']">Seller ID must be at least 1.</div>
-              <div *If="sellerId.errors?.['max']">Seller ID cannot exceed 5000.</div>
+            <div
+              *ngIf="
+                sellerId.invalid && (sellerId.touched || assetForm.submitted)
+              "
+              class="invalid-feedback"
+            >
+              <div *ngIf="sellerId.errors?.['required']">
+                Seller ID is required.
+              </div>
+              <div *If="sellerId.errors?.['min']">
+                Seller ID must be at least 1.
+              </div>
+              <div *If="sellerId.errors?.['max']">
+                Seller ID cannot exceed 5000.
+              </div>
             </div>
           </div>
           <div class="mb-2">
@@ -158,12 +172,27 @@
               min="0"
               max="100"
               #commission="ngModel"
-              [class.is-invalid]="commission.invalid && (commission.touched || assetForm.submitted)"
+              [class.is-invalid]="
+                commission.invalid &&
+                (commission.touched || assetForm.submitted)
+              "
             />
-            <div *ngIf="commission.invalid && (commission.touched || assetForm.submitted)" class="invalid-feedback">
-              <div *If="commission.errors?.['required']">Commission is required.</div>
-              <div *If="commission.errors?.['min']">Commission cannot be less than 0%.</div>
-              <div *If="commission.errors?.['max']">Commission cannot exceed 100%.</div>
+            <div
+              *ngIf="
+                commission.invalid &&
+                (commission.touched || assetForm.submitted)
+              "
+              class="invalid-feedback"
+            >
+              <div *If="commission.errors?.['required']">
+                Commission is required.
+              </div>
+              <div *If="commission.errors?.['min']">
+                Commission cannot be less than 0%.
+              </div>
+              <div *If="commission.errors?.['max']">
+                Commission cannot exceed 100%.
+              </div>
             </div>
           </div>
 
@@ -177,17 +206,29 @@
               #startingPrice="ngModel"
               required
               min="1"
-              max="9999999999" 
+              max="9999999999"
               step="any"
             />
-            
-            <div *ngIf="startingPrice.invalid && (startingPrice.touched || startingPrice.dirty)" class="text-danger text-[11px]">
-              <div *ngIf="startingPrice.errors?.['required']">Starting Price is required.</div>
-              <div *ngIf="startingPrice.errors?.['min']">Starting Price must be greater than 0.</div>
-              <div *ngIf="startingPrice.errors?.['max']">Starting Price cannot exceed 10 digits.</div>
+
+            <div
+              *ngIf="
+                startingPrice.invalid &&
+                (startingPrice.touched || startingPrice.dirty)
+              "
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="startingPrice.errors?.['required']">
+                Starting Price is required.
+              </div>
+              <div *ngIf="startingPrice.errors?.['min']">
+                Starting Price must be greater than 0.
+              </div>
+              <div *ngIf="startingPrice.errors?.['max']">
+                Starting Price cannot exceed 10 digits.
+              </div>
             </div>
           </div>
-          
+
           <div class="mb-2">
             <label class="form-label required-label">Reserve Amount</label>
             <input
@@ -198,20 +239,33 @@
               #reserveAmount="ngModel"
               required
               min="1"
-              max="9999999999" 
+              max="9999999999"
               step="any"
             />
-            
-            <div *ngIf="reserveAmount.invalid && (reserveAmount.touched || reserveAmount.dirty)" class="text-danger text-[11px]">
-              <div *ngIf="reserveAmount.errors?.['required']">Reserve Amount is required.</div>
-              <div *ngIf="reserveAmount.errors?.['min']">Reserve Amount must be greater than 0.</div>
-              <div *ngIf="reserveAmount.errors?.['max']">Reserve Amount cannot exceed 10 digits.</div>
+
+            <div
+              *ngIf="
+                reserveAmount.invalid &&
+                (reserveAmount.touched || reserveAmount.dirty)
+              "
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="reserveAmount.errors?.['required']">
+                Reserve Amount is required.
+              </div>
+              <div *ngIf="reserveAmount.errors?.['min']">
+                Reserve Amount must be greater than 0.
+              </div>
+              <div *ngIf="reserveAmount.errors?.['max']">
+                Reserve Amount cannot exceed 10 digits.
+              </div>
             </div>
           </div>
-          
 
           <div class="mb-2">
-            <label class="form-label required-label">Incremental Time (minutes)</label>
+            <label class="form-label required-label"
+              >Incremental Time (minutes)</label
+            >
             <input
               class="form-control"
               type="number"
@@ -222,14 +276,26 @@
               min="1"
               max="1440"
             />
-          
-            <div *ngIf="incrementalTime.invalid && (incrementalTime.touched || incrementalTime.dirty)" class="text-danger text-[11px]">
-              <div *ngIf="incrementalTime.errors?.['required']">Incremental Time is required.</div>
-              <div *ngIf="incrementalTime.errors?.['min']">Incremental Time must be at least 1 minute.</div>
-              <div *ngIf="incrementalTime.errors?.['max']">Incremental Time cannot exceed 1440 minutes (1 day).</div>
+
+            <div
+              *ngIf="
+                incrementalTime.invalid &&
+                (incrementalTime.touched || incrementalTime.dirty)
+              "
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="incrementalTime.errors?.['required']">
+                Incremental Time is required.
+              </div>
+              <div *ngIf="incrementalTime.errors?.['min']">
+                Incremental Time must be at least 1 minute.
+              </div>
+              <div *ngIf="incrementalTime.errors?.['max']">
+                Incremental Time cannot exceed 1440 minutes (1 day).
+              </div>
             </div>
           </div>
-          
+
           <!-- min="1" -->
 
           <div class="mb-2">
@@ -244,14 +310,26 @@
               min="1"
               max="1000"
             />
-          
-            <div *ngIf="minIncrement.invalid && (minIncrement.touched || minIncrement.dirty)" class="text-danger text-[11px]">
-              <div *ngIf="minIncrement.errors?.['required']">Min Increment is required.</div>
-              <div *ngIf="minIncrement.errors?.['min']">Min Increment must be at least 1.</div>
-              <div *ngIf="minIncrement.errors?.['max']">Min Increment must not exceed 1000.</div>
+
+            <div
+              *ngIf="
+                minIncrement.invalid &&
+                (minIncrement.touched || minIncrement.dirty)
+              "
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="minIncrement.errors?.['required']">
+                Min Increment is required.
+              </div>
+              <div *ngIf="minIncrement.errors?.['min']">
+                Min Increment must be at least 1.
+              </div>
+              <div *ngIf="minIncrement.errors?.['max']">
+                Min Increment must not exceed 1000.
+              </div>
             </div>
           </div>
-          
+
           <!-- min="1" -->
 
           <div class="mb-2">
@@ -350,14 +428,25 @@
               min="0"
               max="100"
             />
-          
-            <div *ngIf="vatPercent.invalid && (vatPercent.touched || vatPercent.dirty)" class="text-danger text-[11px]">
-              <div *ngIf="vatPercent.errors?.['required']">VAT percentage is required.</div>
-              <div *ngIf="vatPercent.errors?.['min']">VAT percentage must be at least 0%.</div>
-              <div *ngIf="vatPercent.errors?.['max']">VAT percentage must not exceed 100%.</div>
+
+            <div
+              *ngIf="
+                vatPercent.invalid && (vatPercent.touched || vatPercent.dirty)
+              "
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="vatPercent.errors?.['required']">
+                VAT percentage is required.
+              </div>
+              <div *ngIf="vatPercent.errors?.['min']">
+                VAT percentage must be at least 0%.
+              </div>
+              <div *ngIf="vatPercent.errors?.['max']">
+                VAT percentage must not exceed 100%.
+              </div>
             </div>
           </div>
-          
+
           <!-- max="100"
             min="0" -->
 
@@ -386,7 +475,9 @@
           </div>
 
           <div class="mb-2">
-            <label class="form-label required-label">Registration Deadline (days)</label>
+            <label class="form-label required-label"
+              >Registration Deadline (days)</label
+            >
             <input
               class="form-control"
               type="number"
@@ -397,25 +488,39 @@
               min="1"
               max="1000"
             />
-          
-            <div *ngIf="registrationDeadline.invalid && (registrationDeadline.touched || registrationDeadline.dirty)" class="text-danger text-[11px]">
-              <div *ngIf="registrationDeadline.errors?.['required']">Registration deadline is required.</div>
-              <div *ngIf="registrationDeadline.errors?.['min']">Deadline must be at least 1 day.</div>
-              <div *ngIf="registrationDeadline.errors?.['max']">Deadline must not exceed 1000 days.</div>
+
+            <div
+              *ngIf="
+                registrationDeadline.invalid &&
+                (registrationDeadline.touched || registrationDeadline.dirty)
+              "
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="registrationDeadline.errors?.['required']">
+                Registration deadline is required.
+              </div>
+              <div *ngIf="registrationDeadline.errors?.['min']">
+                Deadline must be at least 1 day.
+              </div>
+              <div *ngIf="registrationDeadline.errors?.['max']">
+                Deadline must not exceed 1000 days.
+              </div>
             </div>
           </div>
-          
+
           <div class="mb-2">
-            <label class="font-semibold text-[11px] required-label">Request for Viewing</label>
+            <label class="font-semibold text-[11px] required-label"
+              >Request for Viewing</label
+            >
             <select
               class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
               [(ngModel)]="asset.requestForViewing"
               name="requestForViewing"
             >
-            <option [value]="null" disabled selected>Select option</option>
-            <option [value]="false">No</option>
-            <option [value]="true">Yes</option>
-            <!-- @ngif(asset.requestForViewing === false) {
+              <option [value]="null" disabled selected>Select option</option>
+              <option [value]="false">No</option>
+              <option [value]="true">Yes</option>
+              <!-- @ngif(asset.requestForViewing === false) {
               <option value="0" selected>No</option>
             }else {
               <option value="1" selected>Yes</option>
@@ -426,15 +531,17 @@
             </select>
             <!-- <p>{{ asset.requestForViewing === 1 ? 'Yes' : 'No' }}</p> -->
           </div>
-          
+
           <div class="mb-2">
-            <label class="font-semibold text-[11px] required-label">Request for Inquiry</label>
+            <label class="font-semibold text-[11px] required-label"
+              >Request for Inquiry</label
+            >
             <select
               class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
               [(ngModel)]="asset.requestForInquiry"
               name="requestForInquiry"
             >
-            <!-- <option  [(ngModel)]="asset.requestForInquiry" disabled>select option</option>
+              <!-- <option  [(ngModel)]="asset.requestForInquiry" disabled>select option</option>
               <option *ngFor="let option of requestForInquiryOptions" [value]="option.id">
                 {{ option.name }}
               </option> -->
@@ -443,8 +550,7 @@
               <option [value]="true">Yes</option>
             </select>
             <!-- <p>{{ asset.requestForInquiry === 1 ? 'Yes' : 'No' }}</p> -->
-          </div>        
-                   
+          </div>
         </div>
       </div>
 
@@ -464,14 +570,26 @@
               minlength="10"
               maxlength="200"
             ></textarea>
-          
-            <div *ngIf="description.invalid && (description.touched || description.dirty)" class="text-danger text-[11px]">
-              <div *ngIf="description.errors?.['required']">Description is required.</div>
-              <div *ngIf="description.errors?.['minlength']">Minimum 10 characters required.</div>
-              <div *ngIf="description.errors?.['maxlength']">Maximum 200 characters allowed.</div>
+
+            <div
+              *ngIf="
+                description.invalid &&
+                (description.touched || description.dirty)
+              "
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="description.errors?.['required']">
+                Description is required.
+              </div>
+              <div *ngIf="description.errors?.['minlength']">
+                Minimum 10 characters required.
+              </div>
+              <div *ngIf="description.errors?.['maxlength']">
+                Maximum 200 characters allowed.
+              </div>
             </div>
           </div>
-          
+
           <div class="mb-2">
             <label class="form-label required-label">Gallery</label>
             <div class="d-flex flex-wrap gap-2">
@@ -479,18 +597,23 @@
                 *ngFor="let gallery of asset.galleries"
                 class="position-relative"
               >
-                <img
+                <!-- <img
                   [src]="gallery.fileUrl"
                   class="img-thumbnail"
                   width="100"
                   height="100"
-                />
+                /> -->
+                <a [href]="gallery.fileUrl" target="_blank">
+                  <img
+                    [src]="gallery.fileUrl"
+                    class="img-thumbnail"
+                    width="100"
+                    height="100"
+                  />
+                </a>
               </div>
             </div>
           </div>
-        
-          
-        
         </div>
 
         <div class="card p-3 shadow-sm mb-4">
@@ -508,6 +631,7 @@
                 [name]="'attrName_' + i"
                 placeholder="Attribute name"
                 #attrName="ngModel"
+                required
               />
               <!-- required -->
             </div>
@@ -518,6 +642,7 @@
                 [name]="'attrValue_' + i"
                 placeholder="Attribute value"
                 #attrValue="ngModel"
+                required
               />
               <!-- required -->
             </div>
@@ -538,6 +663,11 @@
           >
             <i class="bi bi-plus"></i> Add Attribute
           </button>
+
+          <!-- Custom error message here -->
+          <div *ngIf="attributeError" class="text-danger mt-2">
+            {{ attributeError }}
+          </div>
         </div>
 
         <div class="card p-3 shadow-sm mb-4">
@@ -547,7 +677,7 @@
           <div class="d-flex flex-wrap gap-2">
             <div *ngFor="let doc of asset.documents" class="position-relative">
               <a
-                [href]="'https://localhost:7159/' + doc.filePath"
+                [href]=" environment.baseurl + doc.filePath"
                 target="_blank"
                 class="btn btn-sm btn-outline-primary"
               >
@@ -559,8 +689,10 @@
 
         <div class="card p-3 shadow-sm mb-4">
           <h5>Map Location</h5>
+        
+          <!-- Latitude -->
           <div class="mb-2">
-            <label class="form-label">Latitude</label>
+            <label class="form-label required-label">Latitude</label>
             <input
               class="form-control"
               type="number"
@@ -568,21 +700,33 @@
               name="latitude"
               step="0.000001"
               #latitude="ngModel"
+              required
+              [class.is-invalid]="latitude.invalid && (latitude.touched || assetForm.submitted)"
             />
+            <div *ngIf="latitude.invalid && (latitude.touched || assetForm.submitted)" class="invalid-feedback">
+              <div *ngIf="latitude.errors?.['required']">Latitude is required.</div>
+            </div>
           </div>
+        
+          <!-- Longitude -->
           <div class="mb-2">
-            <label class="form-label">Longitude</label>
+            <label class="form-label required-label">Longitude</label>
             <input
               class="form-control"
               type="number"
               [(ngModel)]="asset.mapLongitude"
               name="longitude"
               step="0.000001"
+              required
               #longitude="ngModel"
+              [class.is-invalid]="longitude.invalid && (longitude.touched || assetForm.submitted)"
             />
+            <div *ngIf="longitude.invalid && (longitude.touched || assetForm.submitted)" class="invalid-feedback">
+              <div *ngIf="longitude.errors?.['required']">Longitude is required.</div>
+            </div>
           </div>
         </div>
-
+        
         <div class="card p-3 shadow-sm mb-4">
           <h5>Fees</h5>
           <div class="mb-2">
@@ -595,14 +739,21 @@
               #adminFees="ngModel"
               required
               min="1"
-              max="10000000000" 
+              max="10000000000"
               step="any"
             />
-            
-            <div *ngIf="adminFees.invalid && adminFees.touched" class="text-danger text-[11px]">
-              <div *ngIf="adminFees.errors?.['required']">This field is required.</div>
+
+            <div
+              *ngIf="adminFees.invalid && adminFees.touched"
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="adminFees.errors?.['required']">
+                This field is required.
+              </div>
               <div *ngIf="adminFees.errors?.['min']">Minimum value is 1.</div>
-              <div *ngIf="adminFees.errors?.['max']">Maximum value is 10 digits.</div>
+              <div *ngIf="adminFees.errors?.['max']">
+                Maximum value is 10 digits.
+              </div>
             </div>
           </div>
           <div class="mb-2">
@@ -615,17 +766,24 @@
               #auctionFees="ngModel"
               required
               min="1"
-              max="10000000000" 
+              max="10000000000"
               step="any"
             />
-          
-            <div *ngIf="auctionFees.invalid && auctionFees.touched" class="text-danger text-[11px]">
-              <div *ngIf="auctionFees.errors?.['required']">This field is required.</div>
+
+            <div
+              *ngIf="auctionFees.invalid && auctionFees.touched"
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="auctionFees.errors?.['required']">
+                This field is required.
+              </div>
               <div *ngIf="auctionFees.errors?.['min']">Minimum value is 1.</div>
-              <div *ngIf="auctionFees.errors?.['max']">Maximum value is 10 digits.</div>
+              <div *ngIf="auctionFees.errors?.['max']">
+                Maximum value is 10 digits.
+              </div>
             </div>
           </div>
-          
+
           <div class="mb-2">
             <label class="form-label required-label">Buyer Commission</label>
             <input
@@ -639,19 +797,41 @@
               max="100"
               step="any"
             />
-          
-            <div *ngIf="buyerCommission.invalid && buyerCommission.touched" class="text-danger text-[11px]">
-              <div *ngIf="buyerCommission.errors?.['required']">This field is required.</div>
-              <div *ngIf="buyerCommission.errors?.['min']">Minimum value is 1.</div>
-              <div *ngIf="buyerCommission.errors?.['max']">Value must be between 1 to 100.</div>
+
+            <div
+              *ngIf="buyerCommission.invalid && buyerCommission.touched"
+              class="text-danger text-[11px]"
+            >
+              <div *ngIf="buyerCommission.errors?.['required']">
+                This field is required.
+              </div>
+              <div *ngIf="buyerCommission.errors?.['min']">
+                Minimum value is 1.
+              </div>
+              <div *ngIf="buyerCommission.errors?.['max']">
+                Value must be between 1 to 100.
+              </div>
             </div>
           </div>
-          
         </div>
       </div>
 
       <!-- Right Column -->
       <div class="col-lg-4">
+        <!-- <div class="card p-3 shadow-sm mb-4">
+          <h5>Auctions</h5>
+          <div *ngFor="let auctionId of asset.auctionIds" class="mb-2">
+            <div class="d-flex align-items-center mb-2">
+              <span class="badge bg-warning me-2">Summer Auction 2023 - AUC12345</span>
+              <span class="text-muted ms-2">Date: 2025-06-15</span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <span class="badge bg-warning me-2">Winter Auction 2023 - AUC67890</span>
+              <span class="text-muted ms-2">Date: 2025-12-05</span>
+            </div>
+          </div>
+        </div> -->
+
         <div class="card p-3 shadow-sm mb-4">
           <h5>Winner Details</h5>
           <!-- <div class="mb-2">
@@ -714,14 +894,24 @@
             minlength="10"
             maxlength="50"
           ></textarea>
-        
-          <div *ngIf="salesNotes.invalid && (salesNotes.touched || salesNotes.dirty)" class="text-danger text-[11px]">
-            <div *ngIf="salesNotes.errors?.['required']">Sales Notes are required.</div>
-            <div *ngIf="salesNotes.errors?.['minlength']">Sales Notes must be at least 10 characters.</div>
-            <div *ngIf="salesNotes.errors?.['maxlength']">Sales Notes cannot exceed 50 characters.</div>
+
+          <div
+            *ngIf="
+              salesNotes.invalid && (salesNotes.touched || salesNotes.dirty)
+            "
+            class="text-danger text-[11px]"
+          >
+            <div *ngIf="salesNotes.errors?.['required']">
+              Sales Notes are required.
+            </div>
+            <div *ngIf="salesNotes.errors?.['minlength']">
+              Sales Notes must be at least 10 characters.
+            </div>
+            <div *ngIf="salesNotes.errors?.['maxlength']">
+              Sales Notes cannot exceed 50 characters.
+            </div>
           </div>
         </div>
-        
 
         <div class="card p-3 shadow-sm mb-4">
           <h5>Timestamps</h5>
@@ -744,7 +934,52 @@
             />
           </div>
         </div>
+
+        <div class="card p-3 shadow-sm mb-4">
+          <h5>Requests</h5>
+          <div class="mb-2"><strong>Request #:</strong> RQ-20250508-001</div>
+          <div class="mb-2"><strong>Type:</strong> Request for Viewing</div>
+          <div class="mb-2"><strong>Time:</strong> 2025-05-08 14:35</div>
+          <div><strong>Status:</strong> Pending</div>
+        </div>
+
+        <div class="card p-3 shadow-sm">
+          <h5>Transactions</h5>
+          <div class="mb-2"><strong>Transaction ID:</strong> TXN-984562</div>
+          <div class="mb-2"><strong>Type:</strong> Sale Approval</div>
+          <div class="mb-2"><strong>Amount:</strong> 25,000 AED</div>
+          <div><strong>Date:</strong> 2025-05-08</div>
+        </div>
+
+        <div class="card p-3 shadow-sm mt-4">
+          <h5>Auctions</h5>
+          <div *ngFor="let auction of selectedAuctions" class="mb-2 d-flex align-items-center">
+            <span class="badge bg-warning me-2">
+              {{ auction.title }} - {{ auction.auctionNumber }} ({{ auction.startDateTime| date:'short' }})
+            </span>
+          </div>
+        </div>
+
+
       </div>
     </div>
+
+    <div
+    class="d-flex justify-content-end align-items-center mt-4 position-relative"
+  >
+    <button class="btn btn-secondary me-2" type="button" (click)="goBack1()">
+      Back
+    </button>
+    
+    <button
+      class="btn btn-primary"
+      type="submit"
+      >
+      Update
+       <!-- [disabled]="assetForm.invalid" -->
+    </button>
+
+  
+  </div>
   </form>
 </div>

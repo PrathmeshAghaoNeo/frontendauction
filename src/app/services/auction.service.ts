@@ -8,6 +8,7 @@ import { ApiEndpoints } from '../constants/api-endpoints';
   providedIn: 'root'
 })
 export class AuctionService {
+  
 
   constructor(private http: HttpClient) {}
 

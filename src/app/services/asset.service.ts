@@ -10,19 +10,19 @@ import { ApiEndpoints } from '../constants/api-endpoints';
 export class ManageAssetService {
 
 
-  private baseUrl = 'https://localhost:7159/api/Assets';
+  // private baseUrl = 'https://localhost:7159/api/Assets';
  
 
   constructor(private http: HttpClient) { }
   
 
   addAssetWithGallery(formData: FormData): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/CreateWithGallery`, formData);
+    return this.http.post<any>(`${ApiEndpoints.ASSETS}/CreateWithGallery`, formData);
   }
 
   // Fetch all assets
   getAssets(): Observable<Asset[]> {
-    return this.http.get<Asset[]>(`${this.baseUrl}/GetAll`); 
+    return this.http.get<Asset[]>(`${ApiEndpoints.ASSETS}/GetAll`); 
   }
  
   // Search assets based on search text
@@ -33,16 +33,16 @@ export class ManageAssetService {
  
    // Delete asset by ID
    deleteAsset(assetId: number): Observable<void> {
-    const deleteUrl = `${this.baseUrl}/${assetId}`;  
+    const deleteUrl = `${ApiEndpoints.ASSETS}/${assetId}`;  
     return this.http.delete<void>(deleteUrl);
   }
  
   getAssetById(assetId: number): Observable<Asset> {
-    const url = `${this.baseUrl}/${assetId}`;
+    const url = `${ApiEndpoints.ASSETS}/${assetId}`;
     return this.http.get<Asset>(url);
   }
  
   updateAssetWithGallery(formData: FormData): Observable<any> {
-    return this.http.put(`${this.baseUrl}/update-asset-all`, formData);
+    return this.http.put(`${ApiEndpoints.ASSETS}/update-asset-all`, formData);
   }
 }

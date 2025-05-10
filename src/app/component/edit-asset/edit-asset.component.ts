@@ -7,6 +7,9 @@ import { AddAsset } from '../../modals/add-asset';
 import { Asset } from '../../modals/manage-asset';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { Auction } from '../../modals/auctions';
+import { AuctionService } from '../../services/auction.service';
+import { environment } from '../../constants/enviroments';
 
 @Component({
   selector: 'app-edit-asset',
@@ -17,10 +20,23 @@ import Swal from 'sweetalert2';
 })
 export class EditAssetComponent implements OnInit {
   
+  environment = environment;
   assetIdparam!: number;
   existingGalleryImages: string[] = []; // From DB
   galleriesToUpload: File[] = [];
   documentsToUpload: File[] = [];
+  attributeError: string | null = null;
+  lattitudeError: string | null = null;
+  longitudeError: string | null = null;
+  auctionIds: number[] = [];
+  selectedAuctions: Auction[] = [];
+
+  
+  auctions: Auction[] = [];
+
+  filteredAuctions: Auction[] = [];
+
+  attributeList: { attributeName: string; attributeValue: string }[] = [];
   asset: Asset = {
     assetId: this.assetIdparam,
     title: '',
@@ -127,6 +143,7 @@ getRequestLabel(value: Number | undefined) {
 }
 
 
+
   // getRequestForViewingId(value: string): number {
   //   switch (value) {
   //     case 'Yes':
@@ -153,7 +170,8 @@ getRequestLabel(value: Number | undefined) {
     private assetService: ManageAssetService,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location
+    private location: Location,
+     private auctionService: AuctionService
   ) {
   }
   
@@ -171,12 +189,16 @@ getRequestLabel(value: Number | undefined) {
 
   ngOnInit(): void {
     this.getAssetIdFromRoute();
+    
+    console.log('Asset on page load:', this.asset);
+
   }
 
   private getAssetIdFromRoute(): void {
     this.route.paramMap.subscribe({
       next: (params) => {
         const assetIdParam = params.get('assetId');
+        // this.attributeList = [...(this.asset.attributes || [])];
 
         if (assetIdParam) {
           this.assetIdparam = +assetIdParam;
@@ -199,7 +221,6 @@ getRequestLabel(value: Number | undefined) {
       this.updateAsset(form);
     }
   }
-  
 
 
   loadAsset(assetId: number): void {
@@ -217,7 +238,10 @@ getRequestLabel(value: Number | undefined) {
         this.asset = response;
         this.isLoading = false;
         this.isModalOpen = true;
+        this.attributeList = [...(this.asset.attributes || [])]; // Sync to local array
         console.log('Asset loaded successfully:', this.asset);
+        this.fetchAuctions();
+        
       },
       error: (err) => {
         this.error = 'Failed to load asset. Please try again later.';
@@ -228,11 +252,48 @@ getRequestLabel(value: Number | undefined) {
     
   }
 
+
+  fetchAuctions(): void {
+    this.auctionService.getAllAuctions().subscribe({
+    next: (data) => {
+      this.auctions = data;
+      console.log("auction", this.auctions);
+
+      this.selectedAuctions = this.auctions.filter(auction =>
+        this.asset.auctionIds.includes(auction.auctionId)
+      );
+      console.log('Selected auctions:', this.selectedAuctions);
+    
+    },
+    error: (err) => {
+      console.error('Error fetching auctions', err);
+      Swal.fire('Error!', 'Failed to load auctions.', 'error');
+    }
+  });
+}
+
+
   updateAsset(form: NgForm): void {
-   if(form.invalid) {
-    form.control.markAllAsTouched(); // This forces all fields to show errors
-     return;
-   }
+    
+    if(this.asset.mapLatitude === 0 || this.asset.mapLatitude === null){
+      this.lattitudeError = 'Please add latitude.'; 
+      form.control.markAllAsTouched(); 
+      return;
+    }
+    if(this.asset.mapLongitude === 0 || this.asset.mapLongitude === null){
+      this.longitudeError = 'Please add longitude.'; 
+      form.control.markAllAsTouched(); 
+      return;
+    }
+
+    if(form.invalid || this.asset.attributes.length === 0 ) {
+      this.attributeError = 'Please add at least one attribute.'; // Set error message
+      this.lattitudeError = 'Please add latitude.'; // Set error message
+      this.longitudeError = 'Please add longitude.'; // Set error message
+     form.control.markAllAsTouched(); // This forces all fields to show errors
+      return;
+    }
+
    console.log(this.asset.requestForViewing);
     if (form.valid) {
       this.isLoading = true;
@@ -250,19 +311,23 @@ getRequestLabel(value: Number | undefined) {
         'awardingMethod',
         'winnerName',
         'categoryName',
+        'auctionStatusId',
       ];
 
       // // Append user form fields to FormData
       // for (let key in this.asset) {
-      //   const value = (this.asset as any)[key];
-      //   if (value !== null && value !== undefined) {
-      //     formData.append(key, value);
-      //   }
+        //   const value = (this.asset as any)[key];
+        //   if (value !== null && value !== undefined) {
+          //     formData.append(key, value);
+          //   }
+          // this.asset.attributes = [...this.attributeList]; // Sync before submit
+          
 
-      for (let key in this.asset) {
-        if (excludedFields.includes(key)) continue;
-
-        const value = (this.asset as any)[key];
+          console.log('--- FormData Preview ---', formData);
+          for (let key in this.asset) {
+            if (excludedFields.includes(key)) continue;
+            
+            const value = (this.asset as any)[key];
 
         if (Array.isArray(value) || typeof value === 'object') continue;
 
@@ -271,18 +336,26 @@ getRequestLabel(value: Number | undefined) {
         }
       }
 
-    
-        // (multiple files)
+      
+      // (multiple files)
       this.newGalleryFiles.forEach((file) => {
-         formData.append('NewGalleryImages', file);
-    });
+        formData.append('NewGalleryImages', file);
+      });
       
       this.newDocumentFiles.forEach((file) => {
         formData.append('NewDocuments', file);
       });
-
+      
+      formData.append('DetailsJson', JSON.stringify(this.asset.attributes));
       formData.append('requestForViewing', this.asset.requestForViewing ? 'true' : 'false');
       formData.append('requestForInquiry', this.asset.requestForInquiry ? 'true' : 'false');
+
+      // if (this.asset.attributes && this.asset.attributes.length > 0) {
+      //   formData.append('attributes', JSON.stringify(this.asset.attributes));
+      // }
+
+
+      // formData.append('attributes', JSON.stringify(this.asset.attributes));
 
       
       console.log('--- FormData Preview ---');
@@ -293,16 +366,19 @@ getRequestLabel(value: Number | undefined) {
 
       console.log('this is form', this.asset);
 
-      console.log('this is form', this.asset);
 
+
+
+
+      
       this.assetService.updateAssetWithGallery(formData).subscribe({
         // this.isLoading = false;
         next: (response) => {
-          console.log('Asset created successfully:', response);
+          console.log('Asset updated successfully:', response);
           Swal.fire({
             icon: 'success',
-            title: 'Asset Created',
-            text: 'Asset created successfully!',
+            title: 'Asset Updated',
+            text: 'Asset updated successfully!',
           }).then(() => {
             this.router.navigate(['/assets']);
           });
@@ -324,7 +400,7 @@ getRequestLabel(value: Number | undefined) {
 
 
 
-
+  
   // removeExistingImage(index: number): void {
   //   this.existingGalleryImages.splice(index, 1);
   // }
@@ -346,17 +422,29 @@ getRequestLabel(value: Number | undefined) {
   }
 
   // Helper methods for the form
+  // addDetail(): void {
+    //   if (!this.asset.attributes) {
+  //     this.asset.attributes = [];
+  //   }
+  //   this.asset.attributes.push({ attributeName: '', attributeValue: '' });
+  // }
+
+  // removeDetail(index: number): void {
+  //   this.asset.attributes.splice(index, 1);
+  // }
+
+
   addDetail(): void {
     if (!this.asset.attributes) {
       this.asset.attributes = [];
     }
     this.asset.attributes.push({ attributeName: '', attributeValue: '' });
   }
-
+  
   removeDetail(index: number): void {
     this.asset.attributes.splice(index, 1);
   }
-
+  
   // Handle gallery image selection
   onGalleryFileSelected(event: any): void {
     const files: FileList = event.target.files;
@@ -383,7 +471,7 @@ getRequestLabel(value: Number | undefined) {
         this.imageUploadError = 'Only image files are allowed';
         continue;
       }
-
+      
       // Validate file size (example: 5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         this.imageUploadError = 'Image must be less than 5MB';
@@ -439,7 +527,7 @@ getRequestLabel(value: Number | undefined) {
         this.documentUploadError = 'PDF must be less than 10MB';
         continue;
       }
-
+      
       this.newDocumentFiles.push(file);
 
       // Add to documents array for preview
@@ -487,3 +575,28 @@ getRequestLabel(value: Number | undefined) {
 
 
 
+
+        // this.filteredAuctions = this.auction.filter(auction =>
+        //   this.asset.auctionIds.includes(auction.auctionId)
+        // );
+        
+          // fetchAuctions(): void {
+          //   this.auctionService.getAllAuctions().subscribe({
+          //     next: (data) => {
+          //       this.auctions = data;
+          //       console.log("auction" , this.auctions);
+          //       if (this.asset?.auctionIds) {
+                  
+          //         this.filteredAuctions = this.auctions.filter(a =>
+          //           this.asset.auctionIds.includes(a.auctionId)
+          //         );
+          //         console.log("Filtered auctions:", this.filteredAuctions);
+          //       }
+          //       },
+          //       error: (err) => {
+          //         console.error('Error fetching auctions', err);
+          //         Swal.fire('Error!', 'Failed to load auctions.', 'error');
+          //       }
+          //     });
+          //   }
+        

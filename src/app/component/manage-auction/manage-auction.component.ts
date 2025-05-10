@@ -29,6 +29,9 @@ export class ManageAuctionComponent implements OnInit {
   @ViewChild('viewAuctionModal') viewAuctionModal!: TemplateRef<any>;
   @ViewChild('editAuctionModal') editAuctionModal!: TemplateRef<any>;
 
+
+  
+
   constructor(
     private auctionService: AuctionService,
     private modalService: NgbModal,

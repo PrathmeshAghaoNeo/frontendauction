@@ -6,6 +6,7 @@ import { Asset } from '../../modals/manage-asset';
 import { Route, Router, RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import Swal from 'sweetalert2';
+import { environment } from "../../constants/enviroments";
  
 @Component({
   selector: 'app-manage-asset',
@@ -21,10 +22,32 @@ export class ManageAssetComponent implements OnInit {
   selectedAsset: Asset | null = null;
   page: number = 1;
   itemsPerPage: number = 5;
-
+  environment = environment;
+  
   constructor(private assetService: ManageAssetService, private router : Router , private location: Location) {}
 
 
+  statusOptions = [
+    { id: 1, name: 'Draft' },
+    { id: 2, name: 'Published' },
+    { id: 3, name: 'Auctioned' },
+    { id: 4, name: 'Archived' },
+    { id: 5, name: 'Pending' },
+    { id: 6, name: 'Approved' },
+    { id: 7, name: 'Payment' },
+    { id: 8, name: 'Registration' },
+    { id: 9, name: 'Transferred' },
+    { id: 10, name: 'Closed' },
+  ];
+  
+  statuses = [ 
+    { statusId: 1, statusName: 'Pending' },
+    { statusId: 2, statusName: 'Active' },
+    { statusId: 3, statusName: 'Closed' },
+    { statusId: 4, statusName: 'Completed' }
+  ];
+  
+  
   
   ngOnInit(): void {
     this.loadAssets();
@@ -39,6 +62,8 @@ export class ManageAssetComponent implements OnInit {
     this.assetService.getAssets().subscribe((data) => {
       this.assets = data;
       this.originalAssets = [...data]; // Assign random status ID
+
+      console.log('Assets:', this.assets); // Debugging log to see fetched data
       });
     }
   
@@ -62,18 +87,6 @@ export class ManageAssetComponent implements OnInit {
     );
   }
 
-  // Get auction status name based on status ID
-  getAuctionStatus(statusId: number): string {
-    switch (statusId) {
-      case 1: return 'Drafted';
-      case 2: return 'Published';
-      case 3: return 'Ongoing';
-      case 4: return 'Closed';
-      case 5: return 'Archived';
-      default: return 'Unknown';
-    }
-  }
-  
 
   // View asset details
     viewAsset(assetId: number): void {
@@ -100,6 +113,27 @@ export class ManageAssetComponent implements OnInit {
       Swal.fire('Error', 'Invalid asset ID', 'error');
     }
   }
+
+  // auctionStatuses = [
+  //   { statusId: 1, statusName: 'Drafted' },
+  //   { statusId: 2, statusName: 'Published' },
+  //   { statusId: 3, statusName: 'Ongoing' },
+  //   { statusId: 4, statusName: 'Closed' },
+  //   { statusId: 5, statusName: 'Archived' },
+  // ];
+  
+  // getAuctionStatus(auctionStatusId: number): string {
+  //   console.log('Auction Status ID:', auctionStatusId);
+  //   return this.statusOptions.find(s => s.id === auctionStatusId)?.name || 'Unknown';
+  // }
+  
+  getAuctionStatus(auctionStatusId: number): string {
+    if (auctionStatusId === undefined || auctionStatusId === null) {
+      return 'Unknown'; // or some default status
+    }
+    return this.statuses.find(s => s.statusId === auctionStatusId)?.statusName || 'Unknown';
+  }
+  
   
   deleteAsset(asset: Asset): void {
     Swal.fire({

@@ -667,7 +667,7 @@
           <div class="mb-2">
             <label class="form-label required-label">Gallery</label>
             <div class="d-flex flex-wrap gap-2 align-items-start">
-              <ng-container
+              <!-- <ng-container
                 *ngFor="let img of asset.galleryFiles; let i = index"
               >
                 <div *ngIf="isImage(img)" class="border p-2 position-relative">
@@ -681,8 +681,21 @@
                     ×
                   </button>
                 </div>
-              </ng-container>
+              </ng-container> -->
 
+              <ng-container *ngFor="let img of imagePreviews; let i = index">
+                <div class="border p-2 position-relative">
+                  <img [src]="img" alt="Asset" width="100" />
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                    (click)="removeGalleryItem(i)"
+                  >
+                    ×
+                  </button>
+                </div>
+              </ng-container>
+              
               <div
                 class="border rounded p-3 text-center bg-light"
                 style="min-width: 200px; cursor: pointer"
@@ -718,6 +731,11 @@
           <h5>
             <label class="required-label"> Details </label>
           </h5>
+
+          <div *ngIf="attributeError" class="text-danger">
+            {{ attributeError }}
+          </div>
+        
           <div
             *ngFor="let detail of asset.detailsJson; let i = index"
             class="row g-2 align-items-end mb-2"
@@ -778,6 +796,7 @@
             </div>
             <div class="col-2">
               <button
+              
                 type="button"
                 class="btn btn-danger btn-sm"
                 (click)="removeDetail(i)"
@@ -810,8 +829,9 @@
             >
               <div *ngIf="isPdf(doc)" class="border p-2 position-relative">
                 <a [href]="doc" target="_blank">{{ getDocumentName(doc) }}</a>
+                <!-- *ngIf="isPdfDataUrl(doc) || isUrl(doc)" -->
                 <button
-                  *ngIf="isPdfDataUrl(doc) || isUrl(doc)"
+                  *ngIf="doc"
                   type="button"
                   class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
                   (click)="removeDocument(i)"
@@ -969,12 +989,12 @@
 
       <!-- Right Column -->
       <div class="col-lg-4">
-        <div class="card p-3 shadow-sm mb-4">
+        <!-- <div class="card p-3 shadow-sm mb-4">
           <h5>360 View</h5>
           <button class="btn btn-outline-secondary w-100">
             Upload 360 Media
           </button>
-        </div>
+        </div> -->
 
         <!-- <div class="card p-3 shadow-sm mb-4">
             <h5>Auctions</h5>
@@ -985,14 +1005,24 @@
 
         <div class="card p-3 shadow-sm mb-4">
           <h5>Auctions</h5>
-          <div *ngFor="let auctionId of asset.auctionIds">
-            <div class="d-flex align-items-center mb-2">
-              <span class="badge bg-warning me-2">{{ auctionId }}</span>
-              <!-- Add auction title, date, or other relevant details here -->
-              <!-- <span class="text-muted">{{ getAuctionDetails(auctionId).title }} - {{ getAuctionDetails(auctionId).date | date:'short' }}</span> -->
-            </div>
-          </div>
+          <select
+          name="auctionIds"
+          id="auctionSelect"
+          class="form-select"
+          multiple
+          [(ngModel)]="asset.auctionIds"
+          (ngModelChange)="onAuctionSelectionChange($event)"
+        >
+          <option *ngFor="let auction of auctions" [value]="auction.auctionId">
+            {{ auction.title }} #{{ auction.auctionNumber }} - {{ auction.startDateTime | date: 'dd/MM/yyyy' }}
+          </option>
+        </select>
+
+        <div *ngIf="auctionError" class="text-danger mt-1">
+          {{ auctionError }}
         </div>
+        </div>
+     
 
         <!-- <div class="card p-3 shadow-sm mb-4">
           <h5>Results</h5>
