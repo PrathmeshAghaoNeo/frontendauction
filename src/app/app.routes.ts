@@ -77,7 +77,7 @@ export const routes: Routes = [
     {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'Admin' }},
     {path:'signup',component:SignupComponent},
     {path: 'testing', component:ChartComponent},  
-    { path: '**', redirectTo: '/login' }
+    { path: '**', redirectTo: '/login' },
 
   // Admin Routes
   {
