@@ -1,84 +1,98 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../constants/enviroments';
-
-export interface Transaction {
-  transactionId: number;
-  transactionNumber: string;
-  amount: number;
-  userFullName: string;
-  transactionType: string;
-  paymentMethod: string;
-  cardType: string;
-  merchantTransactionId: string;
-  transactionDateTime: string;
-  status: string;
-  notes: string;
-  documentUrls: string[];
-  userId?: number; // Optional property for filtering
-}
-
-export interface TransactionPaginatedResponse {
-  data: Transaction[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
+import { environment } from "../constants/enviroments";
+import { Transaction, TransactionType, PaymentMethod, CardType, TransactionStatus, AddTransaction } from '../modals/manage-transaction';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionService {
-  private baseUrl = environment.apiUrl;
+  private apiUrl = `${environment.apiUrl}/Transactions`;
 
   constructor(private http: HttpClient) { }
 
-  // Original method - get all transactions
-  getAllTransactions(): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.baseUrl}/transactions`);
+  // Convert to FormData utility
+  private toFormData(transaction: AddTransaction): FormData {
+    const formData = new FormData();
+    Object.entries(transaction).forEach(([key, value]) => {
+      if (key === 'documents' && Array.isArray(value)) {
+        value.forEach(file => formData.append('documents', file));
+      } else if (value != null) {
+        if (key === 'transactionDateTime') {
+          formData.append(key, new Date(value).toISOString());
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+    return formData;
   }
-  
-  // Get transactions by user ID
-  getTransactionsByUserId(userId: number): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.baseUrl}/transactions?userId=${userId}`);
+
+  // Get all transactions
+  getTransactions(): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>(this.apiUrl);
   }
-  
-  // Get transactions with pagination
-  getTransactionsPaginated(page: number = 1, pageSize: number = 10): Observable<TransactionPaginatedResponse> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-      
-    return this.http.get<TransactionPaginatedResponse>(`${this.baseUrl}/transactions/paginated`, { params });
+
+  // Get transactions with optional filtering
+  getFilteredTransactions(params?: any): Observable<Transaction[]> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach(key => {
+        if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+          httpParams = httpParams.set(key, params[key]);
+        }
+      });
+    }
+
+    return this.http.get<Transaction[]>(this.apiUrl, { params: httpParams });
   }
-  
-  // Get transaction by ID
-  getTransactionById(id: number): Observable<Transaction> {
-    return this.http.get<Transaction>(`${this.baseUrl}/transactions/${id}`);
+
+  // Get a single transaction by ID
+  getTransaction(id: number): Observable<Transaction> {
+    return this.http.get<Transaction>(`${this.apiUrl}/${id}`);
   }
-  
-  // Search transactions by query
-  searchTransactions(searchTerm: string): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.baseUrl}/transactions/search?term=${searchTerm}`);
+
+  // Add a new transaction
+  addTransaction(transaction: AddTransaction): Observable<Transaction> {
+    if (transaction.documents && transaction.documents.length > 0) {
+      return this.http.post<Transaction>(this.apiUrl, this.toFormData(transaction));
+    } else {
+      return this.http.post<Transaction>(this.apiUrl, transaction);
+    }
   }
-  
-  // Filter transactions by multiple criteria
-  filterTransactions(filters: {
-    userId?: number;
-    status?: string;
-    transactionType?: string;
-    fromDate?: string;
-    toDate?: string;
-  }): Observable<Transaction[]> {
-    let params = new HttpParams();
-    
-    if (filters.userId) params = params.set('userId', filters.userId.toString());
-    if (filters.status) params = params.set('status', filters.status);
-    if (filters.transactionType) params = params.set('transactionType', filters.transactionType);
-    if (filters.fromDate) params = params.set('fromDate', filters.fromDate);
-    if (filters.toDate) params = params.set('toDate', filters.toDate);
-    
-    return this.http.get<Transaction[]>(`${this.baseUrl}/transactions/filter`, { params });
+
+  // Update an existing transaction
+  updateTransaction(id: number, transaction: AddTransaction): Observable<Transaction> {
+    if (transaction.documents && transaction.documents.length > 0) {
+      return this.http.put<Transaction>(`${this.apiUrl}/${id}`, this.toFormData(transaction));
+    } else {
+      return this.http.put<Transaction>(`${this.apiUrl}/${id}`, transaction);
+    }
+  }
+
+  // Delete a transaction
+  deleteTransaction(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // Get reference data for dropdowns
+  getTransactionTypes(): Observable<TransactionType[]> {
+    return this.http.get<TransactionType[]>(`${environment.apiUrl}/transaction-types`);
+  }
+
+  getPaymentMethods(): Observable<PaymentMethod[]> {
+    return this.http.get<PaymentMethod[]>(`${environment.apiUrl}/payment-methods`);
+  }
+
+  getCardTypes(): Observable<CardType[]> {
+    return this.http.get<CardType[]>(`${environment.apiUrl}/card-types`);
+  }
+
+  getTransactionStatuses(): Observable<TransactionStatus[]> {
+    return this.http.get<TransactionStatus[]>(`${environment.apiUrl}/transaction-statuses`);
   }
 }
+
+export { Transaction };

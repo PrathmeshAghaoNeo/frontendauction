@@ -19,9 +19,9 @@ import { UpdateUserComponent } from './component/update-user/update-user.compone
 import { DetailsUserComponent } from './component/details-user/details-user.component';
 
 // Asset Management
-import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
+// import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
 import { ViewRequestComponent } from './component/view-request/view-request.component';
-import { RoleGuard } from './services/auth.guard';
+
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { AddAssetComponent } from './component/add-asset/add-asset.component';
 import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
@@ -35,7 +35,7 @@ import { UpdateAuctionComponent } from './component/update-auction/update-auctio
 
 // Request Management
 import { ManageRequestsComponent } from './component/manage-requests/manage-requests.component';
-import { AddRequestComponent } from './component/add-requests/add-requests.component';
+// Removed duplicate import of AddRequestsComponent
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
 
 // Transaction Management
@@ -110,7 +110,7 @@ export const routes: Routes = [
 
       // Requests
       { path: 'requests', component: ManageRequestsComponent },
-      { path: 'requests/new', component: AddRequestComponent },
+      { path: 'requests/new', component: AddRequestsComponent },
       { path: 'request-detail/:id', component: EditRequestsComponent },
 
       // Transactions
