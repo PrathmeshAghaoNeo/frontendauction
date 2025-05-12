@@ -92,7 +92,7 @@ applyFilters(): void {
     return matchesSearch && matchesStatus;
   });
 }
-assetBaseUrl: string = `${environment.imgUrl}`;
+assetBaseUrl: string = `${environment.baseurl}`;
 
 filterCategories(): void {
   const search = this.searchText.toLowerCase();
