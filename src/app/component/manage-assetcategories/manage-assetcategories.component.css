@@ -1,0 +1,85 @@
+.swal2-popup.custom-purple-popup {
+  border: 2px solid #ce93d8;
+  border-radius: 18px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+  max-height: 105vh;
+  overflow-y: auto;
+  animation: slideIn 0.4s ease-out;
+}
+
+.search-input {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+/* Add this to your styles */
+.custom-wide-modal .modal-dialog {
+  width: 90%; /* or use a custom width like 900px */
+  max-width: 1000px; /* Ensure it doesn't exceed a certain size */
+}
+
+.custom-wide-modal .modal-content {
+  border-radius: 18px; /* Optional, for rounded corners */
+  box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2); /* Optional, for a shadow */
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+::ng-deep .custom-wide-modal .modal-dialog {
+  max-width: 800px;
+}
+
+
+img.rounded-circle.img-thumbnail {
+  object-fit: cover;
+  border: 1px solid #ccc;
+}
+
+.modal-header-purple {
+  background-color: #b99af3;
+  color: white;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem; 
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 999px; 
+  align-content: center;
+}
+
+.badge-fixed-width {
+  min-height: 35px; 
+  min-width: 90px; 
+  max-width: 120px; 
+}
+
+.asset-category-form-container {
+  max-width: 1000px;
+  width: 60%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  margin-top: 10px; /* Less margin above */
+}
+
+.bg-purple {
+  background-color: #6f42c1 !important; /* Bootstrap's purple */
+  color: #fff;
+}

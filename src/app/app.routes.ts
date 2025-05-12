@@ -18,7 +18,14 @@ import { ViewRequestComponent } from './component/view-request/view-request.comp
 import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
+import { TransactionManagementComponent } from './component/manage-transaction/manage-transaction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
+import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
+import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
+import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
+import { AddRequestComponent } from './component/add-requests/add-requests.component';
+import { AddTransactionComponent } from './component/add-transaction/add-transaction.component';
+import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
 import { ChartComponent } from './component/chart/chart.component';
 import { AddRequestsComponent } from './component/add-requests/add-requests.component';
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
@@ -44,8 +51,15 @@ export const routes: Routes = [
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'requestsnew', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'addassetcategories', component:AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'update-assetcategories/:id', component:UpdateAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'transactions', component:TransactionManagementComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'newTransaction', component:AddTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'update-transaction/:id', component:UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
@@ -54,5 +68,4 @@ export const routes: Routes = [
     {path:'signup',component:SignupComponent},
     {path: 'testing', component:ChartComponent},  
     { path: '**', redirectTo: '/login' }
-
 ];

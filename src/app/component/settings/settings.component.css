@@ -1,51 +1,117 @@
-.text-purple {
-    color: #6f42c1;
-  }
-  
-  .btn-purple {
-    background-color: #6f42c1;
-    color: #fff;
-    border: none;
-  }
-  
-  .btn-purple:hover {
-    background-color: #5936a0;
-  }
-  
-  .btn-outline-purple {
-    border: 1px solid #6f42c1;
-    color: #6f42c1;
-    background: transparent;
-  }
-  
-  .btn-outline-purple:hover {
-    background-color: #f1e9ff;
-  }
-  
-  .settings-form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  fieldset {
-    border: none;
-  }
-  
-  legend {
-    font-weight: bold;
-    color: #6f42c1;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .card {
-    background-color: #f9f5ff;
-    border: 1px solid #e3d9fa;
-    border-radius: 12px;
-  }
-  
-  .full-width {
-    grid-column: 1 / -1;
-  }
-  
+.settings-container {
+  padding: 20px;
+}
+
+.settings-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.settings-form-section {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background-color: #fff;
+}
+
+.settings-form-section h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.form-group span,
+.form-group input {
+  font-size: 14px;
+  padding: 0.5rem;
+}
+
+.form-control {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-success,
+.btn-secondary,
+.btn-purple {
+  padding: 0.5rem 1.25rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+}
+
+.btn-purple {
+  background-color: #6f42c1;
+  color: white;
+  border: none;
+}
+/* Ensure select and input fields look the same */
+.settings-form-section .form-control {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Optional: make select element look more like input */
+.settings-form-section select.form-control {
+  appearance: none; /* Removes default dropdown arrow */
+  background-color: white;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='gray'><polygon points='4,6 12,6 8,10'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+  padding-right: 30px; /* Leave space for custom arrow */
+}
+
+.error {
+  color: red;
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}

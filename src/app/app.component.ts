@@ -20,7 +20,7 @@ import { BackButtonComponent } from './component/back-button/back-button.compone
     FooterComponent,
     SidebarComponent,
     NgIf,
-    BackButtonComponent
+    BackButtonComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

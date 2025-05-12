@@ -1,0 +1,177 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: #fff;
+    min-height: calc(100vh - 120px); /* Adjust if needed for header/footer */
+    box-sizing: border-box;
+}
+
+.asset-category-form-header {
+    position: relative;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.asset-category-form-title {
+    color: #6a1b9a;
+    font-weight: 600;
+    font-size: 29px;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.asset-category-form-subtitle {
+    font-size: 14px;
+    color: #6c757d;
+    text-align: center;
+}
+
+.back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: transparent;
+    border: none;
+    color: #4a148c;
+    cursor: pointer;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    border-radius: 6px;
+}
+
+.back-btn:hover {
+    background-color: rgba(106, 27, 154, 0.1);
+    color: #6a1b9a;
+    transform: scale(1.05);
+}
+
+.back-btn i {
+    font-size: 1.8rem;
+    margin-right: 6px;
+}
+
+.asset-category-form-container {
+    max-width: 1700px; /* Adjust the max-width */
+    width: 60%; /* Adjust the width if needed */
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    margin-top: 10px; /* Less margin above */
+    margin-bottom: 30px; /* Add margin below if needed */
+}
+
+.form-label {
+    font-weight: 500;
+    color: #4a148c;
+}
+
+.form-control {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #7b1fa2;
+    box-shadow: 0 0 0 0.2rem rgba(123, 31, 162, 0.2);
+    outline: none;
+}
+
+.form-select {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 16px;
+}
+
+.form-select:focus {
+    border-color: #7b1fa2;
+    box-shadow: 0 0 0 0.2rem rgba(123, 31, 162, 0.2);
+    outline: none;
+}
+
+.btn-primary {
+    background-color: #7b1fa2;
+    border-color: #7b1fa2;
+    font-weight: 500;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #6a1b9a;
+    border-color: #6a1b9a;
+}
+
+.required-label::after {
+    content: "* ";
+    color: red;
+    font-weight: bold;
+}
+
+.text-muted.mb-3 {
+    text-align: center;
+}
+
+.badge-status {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.375rem;
+}
+
+/* Custom Styling for File Upload */
+.file-upload-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.file-upload-input {
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.file-upload-info {
+    font-size: 12px;
+    color: #6c757d;
+    text-align: left;
+}
+
+.payment-method-list {
+    display: flex;
+    flex-direction: row; 
+    gap: 16px; 
+    font-size: 15px;
+    margin-top: 5px;
+    flex-wrap: wrap; 
+}
+
+.payment-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+    color: #333;
+}
+
+.payment-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+}

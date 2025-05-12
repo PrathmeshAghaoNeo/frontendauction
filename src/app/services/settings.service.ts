@@ -7,7 +7,8 @@ import {
   DirectSaleSettings,
   StaticPagesSettings,
   FooterLinksSettings,
-  AllSettings
+  AllSettings,
+  UpdateFinanceSettingsCommand
 } from '../modals/settings';
 import { ApiEndpoints } from '../constants/api-endpoints';
 
@@ -20,23 +21,23 @@ export class SettingsService {
 
   // Individual GET methods
   getAuctionSettings(): Observable<AuctionSettings> {
-    return this.http.get<AuctionSettings>(`${ApiEndpoints.AUCTIONSETTINGS}/AuctionSettings`);
+    return this.http.get<AuctionSettings>(`${ApiEndpoints.AUCTIONSETTINGS}`);
   }
 
   getFinanceSettings(): Observable<FinanceSettings> {
-    return this.http.get<FinanceSettings>(`${ApiEndpoints.FINANCESETTINGS}/FinanceSettings/GetAll`);
+    return this.http.get<FinanceSettings>(`${ApiEndpoints.FINANCESETTINGS}/GetAll`);
   }
 
   getDirectSaleSettings(): Observable<DirectSaleSettings> {
-    return this.http.get<DirectSaleSettings>(`${ApiEndpoints.DIRECTSALESETTINGS}/DirectSaleSettings`);
+    return this.http.get<DirectSaleSettings>(`${ApiEndpoints.DIRECTSALESETTINGS}`);
   }
 
   getStaticPagesSettings(): Observable<StaticPagesSettings> {
-    return this.http.get<StaticPagesSettings>(`${ApiEndpoints.STATICPAGESETTINGS}/StaticPagesSettings`);
+    return this.http.get<StaticPagesSettings>(`${ApiEndpoints.STATICPAGESETTINGS}`);
   }
 
   getFooterLinksSettings(): Observable<FooterLinksSettings> {
-    return this.http.get<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}/FooterLinksSettings/Get`);
+    return this.http.get<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}`);
   }
 
   // Combined GET method
@@ -52,22 +53,23 @@ export class SettingsService {
 
   // Individual UPDATE methods
   updateAuctionSettings(settings: AuctionSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.AUCTIONSETTINGS}/AuctionSettings`, settings);
+    return this.http.put(`${ApiEndpoints.AUCTIONSETTINGS}/${settings.id}`, settings);
   }
-
-  updateFinanceSettings(settings: FinanceSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.FINANCESETTINGS}/FinanceSettings`, settings);
+  
+  updateFinanceSettings(settings: { financeSettings: FinanceSettings }): Observable<FinanceSettings> {
+    return this.http.put<FinanceSettings>(`${ApiEndpoints.FINANCESETTINGS}/Update`, settings);
   }
-
+  
   updateDirectSaleSettings(settings: DirectSaleSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.DIRECTSALESETTINGS}/DirectSaleSettings`, settings);
+    return this.http.put(`${ApiEndpoints.DIRECTSALESETTINGS}/${settings.id}`, settings);
   }
-
-  updateStaticPagesSettings(settings: StaticPagesSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.STATICPAGESETTINGS}/StaticPagesSettings`, settings);
+  
+  updateStaticPagesSettings(settings:{settingsDto:StaticPagesSettings} ): Observable<StaticPagesSettings> {
+    return this.http.put<StaticPagesSettings>(`${ApiEndpoints.STATICPAGESETTINGS}/Update`, settings);
   }
-
-  updateFooterLinksSettings(settings: FooterLinksSettings): Observable<any> {
-    return this.http.put(`${ApiEndpoints.FOOTERLINKSETTINGS}/FooterLinksSettings`, settings);
+  
+  updateFooterLinksSettings(settings: {footerLinksSettings:FooterLinksSettings}): Observable<FooterLinksSettings> {
+    return this.http.put<FooterLinksSettings>(`${ApiEndpoints.FOOTERLINKSETTINGS}/Update`, settings);
   }
+  
 }
