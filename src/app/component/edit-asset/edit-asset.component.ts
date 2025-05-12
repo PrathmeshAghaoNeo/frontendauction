@@ -19,7 +19,8 @@ import { environment } from '../../constants/enviroments';
   styleUrl: './edit-asset.component.css',
 })
 export class EditAssetComponent implements OnInit {
-  
+  convertedGalleryFiles: File[] = [];
+
   environment = environment;
   assetIdparam!: number;
   existingGalleryImages: string[] = []; // From DB
@@ -241,6 +242,9 @@ getRequestLabel(value: Number | undefined) {
         this.attributeList = [...(this.asset.attributes || [])]; // Sync to local array
         console.log('Asset loaded successfully:', this.asset);
         this.fetchAuctions();
+
+        // this.convertGalleryUrlsToFiles();
+        this.handleGalleryConversion();
         
       },
       error: (err) => {
@@ -272,6 +276,50 @@ getRequestLabel(value: Number | undefined) {
   });
 }
 
+//////////////////////////////////=================================////////////////////////
+
+async handleGalleryConversion(): Promise<void> {
+  await this.convertGalleryUrlsToFiles();
+}
+
+
+async convertGalleryUrlsToFiles(): Promise<void> {
+  this.convertedGalleryFiles = []; // clear previous
+
+  for (let i = 0; i < this.asset.galleries.length; i++) {
+    const gallery = this.asset.galleries[i];
+
+    const extMatch = gallery.fileUrl.match(/\.(jpeg|jpg|png)$/i);
+    const ext = extMatch ? extMatch[1].toLowerCase() : 'jpg';
+    const filename = `gallery-${i}.${ext}`;
+
+    const file = await this.urlToFile(gallery.fileUrl, filename);
+    this.convertedGalleryFiles.push(file);
+
+    // ✅ Log file to console
+    console.log(`File ${i}:`, file);
+
+    // ✅ Log preview URL
+    const previewUrl = URL.createObjectURL(file);
+    console.log(`Preview URL ${i}:`, previewUrl);
+  }
+
+  // ✅ Log full list
+  console.log("All converted gallery files:", this.convertedGalleryFiles);
+}
+
+
+urlToFile(url: string, filename: string): Promise<File> {
+  return fetch(url)
+    .then(res => res.blob())
+    .then(blob => {
+      const mimeType = blob.type || 'image/jpeg'; // default fallback
+      return new File([blob], filename, { type: mimeType });
+    });
+}
+
+
+////////////////////////==============///////////////////
 
   updateAsset(form: NgForm): void {
     
