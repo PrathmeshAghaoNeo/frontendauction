@@ -2,10 +2,12 @@
   <h2 class="text-center section-heading">Explore by Category</h2>
 
   <div class="category-grid">
-    <div class="category-card" *ngFor="let category of categories">
-      <i class="{{ category.icon }} card-icon"></i>
+    <div class="category-card" *ngFor="let category of categories" (click)="onCardClick(category.categoryId)">
+      <!-- <i class="{{ category.icon }} card-icon"></i>
       <h4>{{ category.name }}</h4>
-      <p>{{ category.description }}</p>
+      <p>{{ category.description }}</p> -->
+      <div class="category-name">{{ category.categoryName }}</div>
+      <!-- <img [src]="category.icon" alt="{{ category.categoryName }}" class="category-icon" (error)="onImageError($event)"> -->
     </div>
   </div>
 </section>
