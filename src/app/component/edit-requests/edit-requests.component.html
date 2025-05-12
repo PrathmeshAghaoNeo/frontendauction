@@ -1,239 +1,192 @@
-<div class="container mt-4">
-  <div class="row gx-4">
-    <!-- LEFT CARD: Status History + Admin Notes -->
-    <div class="col-md-4">
-      <div class="card card-history mb-4">
-        <div class="card-header">
-          Request Status History
-        </div>
-        <div class="card-body p-2">
-          <table class="table table-sm mb-3">
-            <thead>
-              <tr>
-                <th>Admin</th>
-                <th>Status</th>
-                <th>Date/Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Faisal Murad</td>
-                <td>Done</td>
-                <td>20/11/2022 12:16 PM</td>
-              </tr>
-              <!-- future rows here -->
-            </tbody>
-          </table>
- 
-          <label class="form-label">Admin Notes</label>
-          <ng-container *ngIf="isViewMode; else editAdmin">
-            <p class="form-control-plaintext">{{ requestData.adminNote }}</p>
-          </ng-container>
-          <ng-template #editAdmin>
-            <textarea
-              class="form-control form-control-sm"
-              rows="3"
-              [(ngModel)]="requestData.adminNote"
-              name="adminNote">
-            </textarea>
-          </ng-template>
-        </div>
-      </div>
-    </div>
- 
-    <!-- RIGHT CARD: Request Details -->
-    <div class="col-md-8">
-      <div class="card card-details mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">
-            {{ requestId === 0 ? 'Create New Request' : (isViewMode ? 'View Request' : 'Edit Request') }}
-          </h5>
-          <button
-          *ngIf="!isViewMode"
-          class="btn btn-sm btn-save btn-outline-primary custom-purple-btn"
-          (click)="updateRequest()">
-          Save
-        </button>
-     
-        <button
-          class="btn btn-sm btn-secondary btn-outline-danger custom-purple-btn"
-          (click)="goBack()">
-          Back
-        </button>
-        </div>
-        <div class="card-body">
-          <form class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Request Number</label>
-              <p class="form-control-plaintext fw-bold">#{{ requestData.requestNumber }}</p>
-            </div>
- 
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Mobile Number<span class="required-star">*</span></label>
-              <ng-container *ngIf="isViewMode; else editMobile">
-                <p class="form-control-plaintext">{{ requestData.mobileNumber }}</p>
-              </ng-container>
-              <ng-template #editMobile>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="requestData.mobileNumber"
-                  name="mobileNumber"
-                  maxlength="10"
-                  pattern="^[0-9]{10}$"
-                  (keypress)="allowOnlyNumbers($event)"
-                  required>
-              </ng-template>
-            </div>
-           
-            <div class="col-md-6">
-              <label class="form-label">Username<span class="required-star">*</span></label>
-              <ng-container *ngIf="isViewMode; else editUser">
-                <p class="form-control-plaintext">{{ requestData.username }}</p>
-              </ng-container>
-              <ng-template #editUser>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="requestData.username"
-                  name="username" required>
-              </ng-template>
-              <div *ngIf="!isViewMode && !requestData.username" class="text-danger">This field is required</div>
-            </div>
- 
-            <!-- <div class="col-md-6">
-              <label class="form-label">Email<span class="required-star">*</span></label>
-              <ng-container *ngIf="isViewMode; else editEmail">
-                <p class="form-control-plaintext">{{ requestData.email }}</p>
-              </ng-container>
-              <ng-template #editEmail>
-                <input
-                  type="email"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="requestData.email"
-                  name="email" required>
-              </ng-template>
-              <div *ngIf="!isViewMode && !requestData.email" class="text-danger">This field is required</div>
-            </div> -->
- 
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Email<span class="required-star">*</span></label>
-              <ng-container *ngIf="isViewMode; else editEmail">
-                <p class="form-control-plaintext">{{ requestData.email }}</p>
-              </ng-container>
-              <ng-template #editEmail>
-                <input
-                type="email"
-                class="form-control form-control-sm"
-                [(ngModel)]="requestData.email"
-                name="email"
-                required
-                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$"
-                #emailField="ngModel">
-             
-                <div class="text-danger" *ngIf="emailField.invalid && emailField.touched">
-                  Please enter a valid email
-                   <!-- (must include '@' and end with '.com') -->
-                </div>
-               
-              </ng-template>
-            </div>
-           
-           
- 
-            <div class="col-md-6">
-              <label class="form-label">Asset ID<span class="required-star">*</span></label>
-              <ng-container *ngIf="isViewMode; else editAsset">
-                <p class="form-control-plaintext">#{{ requestData.assetId }}</p>
-              </ng-container>
-              <ng-template #editAsset>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="requestData.assetId"
-                  name="assetId" required>
-              </ng-template>
-              <div *ngIf="!isViewMode && !requestData.assetId" class="text-danger">This field is required</div>
-            </div>
- 
-            <div class="col-md-6">
-              <label class="form-label">Request Type<span class="required-star">*</span></label>
-              <ng-container *ngIf="isViewMode; else editType">
-                <p class="form-control-plaintext">{{ getTypeName(requestData.requestTypeId) }}</p>
-              </ng-container>
-              <ng-template #editType>
-                <select
-                  class="form-select form-select-sm"
-                  [(ngModel)]="requestData.requestTypeId"
-                  name="requestTypeId" required>
-                  <option [value]="1">Transfer of Ownership</option>
-                  <option [value]="2">Inquiry</option>
-                  <option [value]="3">Request for Viewing</option>
-                  <option [value]="4">Offer</option>
-                </select>
-              </ng-template>
-              <div *ngIf="!isViewMode && !requestData.requestTypeId" class="text-danger">This field is required</div>
-            </div>
- 
-            <div class="col-md-6">
-              <label class="form-label">Transaction ID<span class="required-star">*</span></label>
-              <ng-container *ngIf="isViewMode; else editTrans">
-                <p class="form-control-plaintext">{{ requestData.transactionId }}</p>
-              </ng-container>
-              <ng-template #editTrans>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="requestData.transactionId"
-                  name="transactionId" required>
-              </ng-template>
-              <div *ngIf="!isViewMode && !requestData.transactionId" class="text-danger">This field is required</div>
-            </div>
- 
-            <div class="col-md-6">
-              <label class="form-label">Date / Time</label>
-              <p class="form-control-plaintext">
-                {{ requestData.requestDateTime | date:'dd/MM/yyyy hh:mm a' }}
-              </p>
-            </div>
- 
-            <div class="col-md-6">
-              <label class="form-label">Status<span class="required-star">*</span></label>
-              <ng-container *ngIf="isViewMode; else editStatus">
-                <p class="form-control-plaintext">{{ getStatusName(requestData.requestStatusId) }}</p>
-              </ng-container>
-              <ng-template #editStatus>
-                <select
-                  class="form-select form-select-sm"
-                  [(ngModel)]="requestData.requestStatusId"
-                  name="requestStatusId" required>
-                  <option [value]="1">Pending</option>
-                  <option [value]="2">Done</option>
-                  <option [value]="3">Approved</option>
-                  <option [value]="4">Rejected</option>
-                </select>
-              </ng-template>
-              <div *ngIf="!isViewMode && !requestData.requestStatusId" class="text-danger">This field is required</div>
-            </div>
- 
-            <div class="col-12">
-              <label class="form-label">Customer Note</label>
-              <ng-container *ngIf="isViewMode; else editCustNote">
-                <p class="form-control-plaintext">{{ requestData.customerNote }}</p>
-              </ng-container>
-              <ng-template #editCustNote>
-                <textarea
-                  class="form-control form-control-sm"
-                  rows="2"
-                  [(ngModel)]="requestData.customerNote"
-                  name="customerNote">
-                </textarea>
-              </ng-template>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+
+
+<!-- Loading indicator -->
+<div *ngIf="!assets || assets.length === 0" class="alert alert-info">
+  Loading assets... Please wait.
+  <div *ngIf="assetsError" class="text-danger mt-2">
+    Error loading assets: {{assetsError}}
   </div>
 </div>
- 
+
+<!-- Debug Info (remove in production) -->
+<div *ngIf="assetsLoaded && (!assets || assets.length === 0)" class="alert alert-warning">
+  No assets found in the system. Please add assets before creating a request.
+</div>
+
+<form #requestForm="ngForm" (ngSubmit)="updateRequest()" class="container p-4 bg-white rounded shadow mt-4"  novalidate>
+  <div class="auction-form-header">
+    <button  type="button" class="back-btn btn btn-link p-0" (click)="goBack()">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+    <div>
+      <h3 class="auction-form-title">{{ requestId === 0 ? 'Create New Request' : 'Edit Request' }}</h3>
+      <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+    </div>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Request Number</label>
+      <p class="form-control-plaintext fw-bold">#{{ requestData.requestNumber || 'New' }}</p>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Mobile Number<span class="text-danger">*</span></label>
+      <input
+        type="tel"
+        class="form-control form-control-lg"
+        [(ngModel)]="requestData.mobileNumber"
+        name="mobileNumber"
+        #mobileField="ngModel"
+        maxlength="10"
+        pattern="^[0-9]{10}$"
+        (keypress)="allowOnlyNumbers($event)"
+        required>
+      <div class="text-danger" *ngIf="mobileField.invalid && mobileField.touched">
+        Please enter a valid 10-digit mobile number.
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-bold">User<span class="text-danger">*</span></label>
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="requestData.userId"
+        name="userId"
+        #userField="ngModel"
+        required
+        (change)="onUserChange($event)">
+        <option [ngValue]="null">Select a user</option>
+        <option *ngFor="let user of users" [ngValue]="user.userId">
+          {{ user.name }}
+        </option>
+      </select>
+      <div class="text-danger" *ngIf="userField.invalid && userField.touched">
+        This field is required.
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Email<span class="text-danger">*</span></label>
+      <input
+        type="email"
+        class="form-control form-control-lg"
+        [(ngModel)]="requestData.email"
+        name="email"
+        #emailField="ngModel"
+        required
+        maxlength="50"
+        pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[A-Za-z]{2,}$">
+      <div class="text-danger" *ngIf="emailField.invalid && emailField.touched">
+        <span *ngIf="emailField.errors?.['required']">Email is required.</span>
+        <span *ngIf="emailField.errors?.['pattern']">Please enter a valid email.</span>
+        <span *ngIf="emailField.errors?.['maxlength']">Maximum 50 characters allowed.</span>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Asset<span class="text-danger">*</span></label>
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="requestData.assetId"
+        name="assetId"
+        #assetField="ngModel"
+        required>
+        <option [ngValue]="null">Select an asset</option>
+        <option *ngFor="let asset of assets" [ngValue]="asset.assetId">
+          {{ asset.title || asset.categoryName || 'Asset #' + asset.assetId }}
+        </option>
+      </select>
+      <div class="text-danger" *ngIf="assetField.invalid && assetField.touched">
+        This field is required.
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Request Type<span class="text-danger">*</span></label>
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="requestData.requestTypeId"
+        name="requestTypeId"
+        #typeField="ngModel"
+        required>
+        <option [ngValue]="null">Select request type</option>
+        <option [ngValue]="1">Transfer of Ownership</option>
+        <option [ngValue]="2">Inquiry</option>
+        <option [ngValue]="3">Request for Viewing</option>
+        <option [ngValue]="4">Offer</option>
+      </select>
+      <div class="text-danger" *ngIf="typeField.invalid && typeField.touched">
+        This field is required.
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Transaction ID<span class="text-danger">*</span></label>
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="requestData.transactionId"
+        name="transactionId"
+        #transactionField="ngModel"
+        required>
+        <option [ngValue]="null">Select a transaction</option>
+        <option *ngFor="let txn of transactions" [ngValue]="txn.transactionId">
+          {{ txn.transactionNumber }} - {{ txn.amount | currency }} - {{ txn.userFullName }}
+        </option>
+      </select>
+      <div class="text-danger" *ngIf="transactionField.invalid && transactionField.touched">
+        Please select a transaction.
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Date / Time</label>
+      <p class="form-control-plaintext">
+        {{ requestData.requestDateTime | date:'dd-MM-yyyy hh:mm a' }}
+      </p>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Status<span class="text-danger">*</span></label>
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="requestData.requestStatusId"
+        name="requestStatusId"
+        #statusField="ngModel"
+        required>
+        <option [ngValue]="null">Select status</option>
+        <option [ngValue]="1">Pending</option>
+        <option [ngValue]="2">Done</option>
+        <option [ngValue]="3">Approved</option>
+        <option [ngValue]="4">Rejected</option>
+      </select>
+      <div class="text-danger" *ngIf="statusField.invalid && statusField.touched">
+        This field is required.
+      </div>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label fw-bold">Customer Note</label>
+      <textarea
+        class="form-control form-control-lg"
+        rows="2"
+        [(ngModel)]="requestData.customerNote"
+        name="customerNote">
+      </textarea>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label fw-bold">Admin Note</label>
+      <textarea
+        class="form-control form-control-lg"
+        rows="2"
+        [(ngModel)]="requestData.adminNote"
+        name="adminNote">
+      </textarea>
+    </div>
+  </div>
+
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+    <button type="button" class="btn btn-secondary btn-lg px-4 me-2" (click)="goBack()">Back</button>
+    <button type="submit" class="btn btn-success btn-lg px-4">Save</button>
+  </div>
+</form>

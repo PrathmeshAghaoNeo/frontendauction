@@ -19,6 +19,9 @@ import { UpdateUserComponent } from './component/update-user/update-user.compone
 import { DetailsUserComponent } from './component/details-user/details-user.component';
 
 // Asset Management
+import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
+import { ViewRequestComponent } from './component/view-request/view-request.component';
+import { RoleGuard } from './services/auth.guard';
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { AddAssetComponent } from './component/add-asset/add-asset.component';
 import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
@@ -42,13 +45,39 @@ import { UpdateTransactionComponent } from './component/update-transaction/updat
 
 // Miscellaneous
 import { ChartComponent } from './component/chart/chart.component';
+import { AddRequestsComponent } from './component/add-requests/add-requests.component';
+import { UserProfileComponent } from './component/user-profile/user-profile.component';
+import { SignupComponent } from './component/signup/signup.component';
 
 export const routes: Routes = [
-  { path: '', component: StartPageComponent, pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'logintest', component: TestloginComponent },
-  { path: 'landing-page', component: LandingPageComponent },
-  { path: 'reguserlandingpage', component: RegUserLandingPageComponent, canActivate: [RoleGuard], data: { role: 'User' } },
+    { path: '', component: StartPageComponent,pathMatch: 'full'},
+    {path:'login', component:LoginComponent},
+    { path: 'landing-page', component: LandingPageComponent, },
+    {path:'logintest', component:TestloginComponent},
+    { path: 'reguserlandingpage', component: RegUserLandingPageComponent, canActivate: [RoleGuard], data: { role: 'User' }},
+    {path:'dashboard', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'assets', component:ManageAssetComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'auctions', component:ManageAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'users', component: ManageUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
+    {path:'settings', component:SettingsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'newUser', component:AddUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'newAuction', component:AddAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'update-auction/:id', component:UpdateAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'newAsset', component:AddAssetComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
+    {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'requestsnew', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'Admin' }},
+    {path:'signup',component:SignupComponent},
+    {path: 'testing', component:ChartComponent},  
+    { path: '**', redirectTo: '/login' }
 
   // Admin Routes
   {

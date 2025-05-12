@@ -1,0 +1,295 @@
+/* Component-specific styles for manage-requests.component.css */
+/* Use the variables defined in the global CSS */
+:root {
+  --card-radius: 8px;
+  --input-radius: 6px;
+  --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.08);
+  --primary-color: #6f42c1;
+  --secondary-color: #e9ecef;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --orange-color: #fd7e14;
+}
+
+.filter-panel {
+  background-color: white;
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-light);
+  margin-bottom: 20px;
+}
+
+/* Custom styling for the table container */
+.table-responsive {
+  background-color: white;
+  border-radius: var(--card-radius);
+  padding: 10px;
+  box-shadow: var(--shadow-light);
+}
+
+/* Pagination styling */
+pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Make action buttons consistent */
+.action-buttons .btn {
+  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-buttons .btn i {
+  font-size: 1rem;
+}
+
+/* Animation for loading */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner-border {
+  border-color: var(--secondary-color);
+  border-right-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+/* Toast notification styling */
+.toast-success {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--success-color);
+  color: white;
+  padding: 15px 20px;
+  border-radius: var(--input-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1055;
+  animation: fade-in 0.3s, fade-out 0.3s 2.7s;
+  max-width: 350px;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+/* Enhanced Status indicators - button-like appearance */
+.status-badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 500;
+  border-radius: 20px; /* Fully rounded corners */
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  display: inline-block;
+  min-width: 80px; /* Consistent width */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Status-specific colors */
+/* Status 1 - Pending */
+.status-badge.bg-warning {
+  background-color: var(--warning-color) !important;
+  color: #212529 !important;
+  background-color:  #ffc107;
+}
+
+/* Status 2 - Done */
+.status-badge.bg-success {
+  background-color: var(--success-color) !important;
+  color: white !important;
+}
+
+/* Status 3 - Approved */
+.status-badge.bg-orange {
+  background-color: #fd7e14 !important; /* Direct color value for better compatibility */
+  color: white !important;
+}
+
+/* Define bg-orange class separately for broader compatibility */
+.bg-orange {
+  background-color: #fd7e14 !important;
+  color: white !important;
+}
+
+/* Status 4 - Rejected */
+.status-badge.bg-danger {
+  background-color: var(--danger-color) !important;
+  color: white !important;
+}
+
+/* Sort icons styling */
+th i.bi {
+  font-size: 0.8rem;
+  vertical-align: middle;
+  opacity: 0.7;
+}
+
+th:hover i.bi {
+  opacity: 1;
+}
+
+/* Table header styling */
+.table-purple {
+  background-color: var(--primary-color);
+}
+
+/* Custom purple button */
+.custom-purple-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.custom-purple-btn:hover {
+  background-color: #5a32a3;
+  border-color: #5a32a3;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .action-buttons .btn {
+    margin-bottom: 5px;
+  }
+  
+  .d-flex {
+    flex-direction: column;
+  }
+  
+  .d-flex > button {
+    margin-bottom: 10px;
+  }
+  
+  .status-badge {
+    min-width: 70px; /* Slightly smaller on mobile */
+  }
+
+
+
+.modal-body label {
+  font-size: 14px;
+  color: #555;
+}
+
+.modal-body p {
+  font-size: 16px;
+}
+
+.modal-body .bg-light {
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  font-size: 15px;
+  min-height: 60px;
+}
+
+
+/* Text primary color matching your theme */
+.text-primary {
+  color: #6f42c1 !important;
+}
+
+/* Modal footer button hover effects */
+.modal-footer .btn-primary {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #5e35b1;
+  border-color: #5e35b1;
+}
+
+.modal-footer .btn-outline-secondary:hover {
+  background-color: #f0f0f0;
+}
+
+/* SweetAlert2 custom purple popup */
+.swal2-popup.custom-purple-popup {
+  border: 2px solid #ce93d8;
+  border-radius: 18px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+  max-height: 95vh;
+  overflow-y: auto;
+  animation: slideIn 0.4s ease-out;
+}
+
+/* Search input helper */
+.search-input {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* Slide-in animation for popups */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal header purple (you already have, but include if missing) */
+.modal-header-purple {
+  background-color: #b99af3;
+  color: white;
+}
+
+bg-purple {
+  background-color: #6f42c1 !important;
+  color: #fff;
+}
+
+/* Reusable badge style */
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem; 
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 999px; 
+  align-content: center;
+}
+
+/* Fixed-width badge (for consistent width) */
+.badge-fixed-width {
+  min-height: 35px; 
+  min-width: 90px; 
+  max-width: 120px; 
+}
+
+/* Auction-style form container */
+.auction-form-container {
+  max-width: 500px;
+  width: 60%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  margin-top: 10px;
+}
+
+
+
+
+}
