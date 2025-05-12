@@ -12,7 +12,7 @@
       <i class="bi" [ngClass]="isExporting ? 'bi-hourglass-split' : 'bi-file-earmark-excel'"></i>
       {{ isExporting ? 'Exporting...' : 'Export' }}
     </button>
-    <button type="button" class="btn custom-purple-btn" [routerLink]="['/requests/new']" aria-label="Create new request">
+    <button type="button" class="btn custom-purple-btn" [routerLink]="['/requestsnew']" aria-label="Create new request">
       <i class="bi bi-plus-circle me-1"></i>New Request
     </button>
   </div>
@@ -199,11 +199,18 @@
           </span>
         </td>
         <td class="text-end action-buttons">
-          <button type="button" class="btn btn-sm btn-outline-primary me-1"
+          <!-- <button type="button" class="btn btn-sm btn-outline-primary me-1"
                   [routerLink]="['/view-request', r.requestId]"
                   aria-label="View request details">
             <i class="bi bi-eye"></i>
-          </button>
+          </button> -->
+           <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary me-1"
+                  (click)="openViewModal(r)"
+                   aria-label="View request details">
+                   <i class="bi bi-eye"></i>
+            </button>
           <button type="button" class="btn btn-sm btn-outline-success"
                   [routerLink]="['/request-detail', r.requestId]"
                   aria-label="Edit request">
@@ -236,3 +243,47 @@
     {{ deleteSuccess }}
   </div>
 </div>
+
+
+<ng-template #viewRequestModal let-modal>
+  <div class="modal-header modal-header-purple">
+    <h5 class="modal-title text-white">Request Details</h5>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      aria-label="Close"
+      (click)="modal.dismiss()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <label class="form-label">Request Number:</label>
+        <p class="form-control-plaintext">{{ selectedRequest?.requestNumber }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">User:</label>
+        <p class="form-control-plaintext">{{ selectedRequest ? getUserUid(selectedRequest.userId) : '' }} ({{ selectedRequest?.username }})</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Asset:</label>
+        <p class="form-control-plaintext">{{ selectedRequest ? getAssetTitle(selectedRequest.assetId) : '' }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Type:</label>
+        <p class="form-control-plaintext">{{ getTypeName(selectedRequest?.requestTypeId || 0) }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Status:</label>
+        <p class="form-control-plaintext">{{ getStatusName(selectedRequest?.requestStatusId || 0) }}</p>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Date &amp; Time:</label>
+        <p class="form-control-plaintext">{{ selectedRequest?.requestDateTime | date: 'dd/MM/yyyy hh:mm a' }}</p>
+      </div>
+      <!-- add any other fields you want to display -->
+    </div>
+  </div>
+</ng-template>
+
+

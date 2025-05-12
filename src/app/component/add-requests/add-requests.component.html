@@ -1,12 +1,4 @@
-<div class="auction-form-header">
-  <button class="back-btn btn btn-link p-0" (click)="goBack()">
-    <i class="bi bi-arrow-left-circle"></i>
-  </button>
-  <div>
-    <h3 class="auction-form-title">Create New Request</h3>
-    <p class="auction-form-subtitle"> indicates a required field</p>
-  </div>
-</div>
+
 
 <!-- Success Message Alert -->
 <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -14,7 +6,18 @@
   <button type="button" class="btn-close" (click)="successMessage = null" aria-label="Close"></button>
 </div>
 
-<form #formRef="ngForm" class="container p-4 bg-light rounded shadow mt-4">
+<form #formRef="ngForm" class="container p-4 bg-white rounded shadow mt-4">
+  <div class="auction-form-header">
+    <button class="back-btn btn btn-link p-0" (click)="goBack()">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+    <div>
+      <h3 class="auction-form-title">Create New Request</h3>
+      <p class="auction-form-subtitle"> indicates a required field</p>
+    </div>
+  </div>
+
+
   <div class="row g-3">
     <div class="col-md-6">
       <label class="form-label required-label fw-bold">Request Number</label>

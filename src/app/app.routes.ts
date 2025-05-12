@@ -20,6 +20,9 @@ import { ManageAssetComponent } from './component/manage-asset/manage-asset.comp
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
 import { ChartComponent } from './component/chart/chart.component';
+import { AddRequestsComponent } from './component/add-requests/add-requests.component';
+import { UserProfileComponent } from './component/user-profile/user-profile.component';
+import { SignupComponent } from './component/signup/signup.component';
 
 
 export const routes: Routes = [
@@ -40,13 +43,16 @@ export const routes: Routes = [
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
-    { path: 'requests/new', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'requestsnew', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
-    {path: 'testing', component:ChartComponent}, 
+    {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'Admin' }},
+    {path:'signup',component:SignupComponent},
+    {path: 'testing', component:ChartComponent},  
     { path: '**', redirectTo: '/login' }
 
 ];

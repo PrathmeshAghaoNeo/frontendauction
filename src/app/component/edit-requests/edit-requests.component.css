@@ -13,7 +13,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* Form header styling */
 .auction-form-header {
   position: relative;
-  min-height: 60px; /* Ensures space for button and title */
+  min-height: 60px;
+  padding-bottom: 20px; /* Ensures space for button and title */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,4 +166,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .img-new a:hover {
   text-decoration: underline;
+}
+form {
+  width: 80%;
 }

@@ -175,4 +175,121 @@ th:hover i.bi {
   .status-badge {
     min-width: 70px; /* Slightly smaller on mobile */
   }
+
+
+
+.modal-body label {
+  font-size: 14px;
+  color: #555;
+}
+
+.modal-body p {
+  font-size: 16px;
+}
+
+.modal-body .bg-light {
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  font-size: 15px;
+  min-height: 60px;
+}
+
+
+/* Text primary color matching your theme */
+.text-primary {
+  color: #6f42c1 !important;
+}
+
+/* Modal footer button hover effects */
+.modal-footer .btn-primary {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #5e35b1;
+  border-color: #5e35b1;
+}
+
+.modal-footer .btn-outline-secondary:hover {
+  background-color: #f0f0f0;
+}
+
+/* SweetAlert2 custom purple popup */
+.swal2-popup.custom-purple-popup {
+  border: 2px solid #ce93d8;
+  border-radius: 18px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+  max-height: 95vh;
+  overflow-y: auto;
+  animation: slideIn 0.4s ease-out;
+}
+
+/* Search input helper */
+.search-input {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* Slide-in animation for popups */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal header purple (you already have, but include if missing) */
+.modal-header-purple {
+  background-color: #b99af3;
+  color: white;
+}
+
+bg-purple {
+  background-color: #6f42c1 !important;
+  color: #fff;
+}
+
+/* Reusable badge style */
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem; 
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 999px; 
+  align-content: center;
+}
+
+/* Fixed-width badge (for consistent width) */
+.badge-fixed-width {
+  min-height: 35px; 
+  min-width: 90px; 
+  max-width: 120px; 
+}
+
+/* Auction-style form container */
+.auction-form-container {
+  max-width: 500px;
+  width: 60%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  margin-top: 10px;
+}
+
+
+
+
 }

@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, DoCheck } from '@angular/core';
+// import { Component, OnInit, OnDestroy, ChangeDetectorRef, DoCheck } from '@angular/core';
+import { Component, OnInit, OnDestroy, DoCheck, ChangeDetectorRef, ViewChild, TemplateRef } from '@angular/core';
 import { RequestServices } from '../../services/requests.service';
 import { UserService } from '../../services/user.service';
 import { ManageAssetService } from '../../services/asset.service';
@@ -13,17 +14,18 @@ import Swal from 'sweetalert2';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { UserView } from '../../modals/user';
 import { Asset } from '../../modals/manage-asset';
+import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';  
 
 @Component({
   selector: 'app-manage-requests',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NgxPaginationModule],
+  imports: [CommonModule, FormsModule, RouterModule, NgxPaginationModule, NgbModalModule],
   templateUrl: './manage-requests.component.html',
   styleUrl: './manage-requests.component.css'
 })
 export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
   requestList: ManageRequest[] = [];
-  defaultRequests: ManageRequest[] = []; // Reference to unsorted list
+  defaultRequests: ManageRequest[] = []; 
   filteredRequests: ManageRequest[] = [];
   userList: UserView[] = [];
   assetList: Asset[] = [];
@@ -58,12 +60,18 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
   page: number = 1;
   itemsPerPage: number = 5;
 
+
+  @ViewChild('viewRequestModal') viewRequestModal!: TemplateRef<any>;  // ViewChild for the modal
+  selectedRequest!: ManageRequest | null;                              
+
+  
   constructor(
     private requestService: RequestServices,
     private userService: UserService,
     private assetService: ManageAssetService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private modalService: NgbModal 
   ) {}
 
   ngOnInit(): void {
@@ -79,6 +87,21 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
         }
       }
     );
+  }
+
+
+  
+  openViewModal(request: ManageRequest): void {
+    this.selectedRequest = request;
+    this.modalService.open(this.viewRequestModal, {
+      centered: true,
+      size: 'xl',
+      backdrop: 'static'
+    });
+  }
+
+  navigateToEdit(request: ManageRequest): void {
+    this.router.navigate(['/request-detail', request.requestId]);
   }
 
   ngOnDestroy(): void {
@@ -163,7 +186,7 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
       return asset.title;
     }
     
-    // If we don't have this asset in our list, show a more user-friendly message
+
     return `Asset #${assetId}`;
   }
 
@@ -500,7 +523,7 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
                   timerProgressBar: true
                 });
                 
-                // Don't need to refresh the entire list since we already removed the item locally
+               
               },
               error: (err) => {
                 console.error('Delete API error:', err);

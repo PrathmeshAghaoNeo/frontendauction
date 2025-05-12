@@ -1,12 +1,4 @@
-<div class="auction-form-header">
-  <button class="back-btn btn btn-link p-0" (click)="goBack()">
-    <i class="bi bi-arrow-left-circle"></i>
-  </button>
-  <div>
-    <h3 class="auction-form-title">{{ requestId === 0 ? 'Create New Request' : 'Edit Request' }}</h3>
-    <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
-  </div>
-</div>
+
 
 <!-- Loading indicator -->
 <div *ngIf="!assets || assets.length === 0" class="alert alert-info">
@@ -21,7 +13,16 @@
   No assets found in the system. Please add assets before creating a request.
 </div>
 
-<form #requestForm="ngForm" (ngSubmit)="updateRequest()" class="container p-4 bg-light rounded shadow mt-4" novalidate>
+<form #requestForm="ngForm" (ngSubmit)="updateRequest()" class="container p-4 bg-white rounded shadow mt-4"  novalidate>
+  <div class="auction-form-header">
+    <button  type="button" class="back-btn btn btn-link p-0" (click)="goBack()">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+    <div>
+      <h3 class="auction-form-title">{{ requestId === 0 ? 'Create New Request' : 'Edit Request' }}</h3>
+      <p class="auction-form-subtitle"><span class="text-danger">*</span> indicates a required field</p>
+    </div>
+  </div>
   <div class="row g-3">
     <div class="col-md-6">
       <label class="form-label fw-bold">Request Number</label>

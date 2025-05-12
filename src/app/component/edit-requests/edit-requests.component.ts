@@ -209,7 +209,7 @@ export class EditRequestsComponent implements OnInit {
       return false; 
     }
     
-    if (this.requestData.email.length > 20) { 
+    if (this.requestData.email.length > 50) { 
       this.showErrorAlert('Email cannot exceed 20 characters'); 
       return false; 
     }
