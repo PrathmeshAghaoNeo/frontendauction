@@ -12,9 +12,10 @@ export class AuthService {
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
-  constructor(private router: Router,private http:HttpClient) {
+  constructor(private router: Router, private http: HttpClient) {
     this.monitorTokenChange(); 
   }
+  
   sendOtp(email: string): Observable<any> {
     return this.http.post(`${ApiEndpoints.Auth}/generate-otp`, { email });
   }
@@ -30,9 +31,10 @@ export class AuthService {
     );
   }
   
-  private hasToken(): boolean {
+  hasToken(): boolean {
     return !!localStorage.getItem('token');
   }
+  
   getRoleJwt(): string | null {
     const token = localStorage.getItem('token');
     if (!token) return null;
@@ -41,6 +43,24 @@ export class AuthService {
     return payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || null;
   }
   
+  getUserIdJwt(): number | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Check multiple possible claim names for user ID
+      const userId = payload["userId"] || 
+                    payload["sub"] || 
+                    payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+      
+      return userId ? Number(userId) : null;
+    } catch (error) {
+      console.error("Error parsing JWT token:", error);
+      return null;
+    }
+  }
   
   private monitorTokenChange() {
     window.addEventListener('storage', () => {
@@ -51,30 +71,6 @@ export class AuthService {
       }
     });
   }
-  // login(email: string, password: string): boolean {
-  //   if (email === 'admin@gmail.com' && password === 'admin123') {
-  //     this.setRole('admin');
-  //     return true;
-  //   }
-  //   if (email === 'pratik@gmail.com' && password === 'user123') {
-  //     this.setRole('user');
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  // private setRole(role: 'admin' | 'user') {
-  //   localStorage.setItem('role', role);
-  //   this.roleSubject.next(role);
-  // }
-
-  // getRole(): 'admin' | 'user' | null {
-  //   return this.roleSubject.value;
-  // }
-
-  // isLoggedIn(): boolean {
-  //   return this.getRole() !== null;
-  // }
 
   logout(): void {
     localStorage.removeItem('token');

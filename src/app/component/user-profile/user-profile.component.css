@@ -1,0 +1,119 @@
+:host {
+  display: block;
+}
+
+.list-group-item.active {
+  background-color: #f8f9fa;
+  color: #000;
+  font-weight: bold;
+  border-color: #dee2e6;
+  border-left: 3px solid #0d6efd;
+}
+
+footer h6 {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+footer i {
+  font-size: 1.2rem;
+}
+
+/* Style for readonly inputs */
+input[readonly] {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+/* Style for input focus in edit mode */
+input:not([readonly]):focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Transition for edit/save button */
+.btn {
+  transition: all 0.3s ease;
+}
+
+/* Highlight editable fields in edit mode */
+.form-control:not([readonly]) {
+  border-left: 3px solid #0d6efd;
+}
+
+/* Email field styling - should appear differently when always readonly */
+input[type="email"][readonly] {
+  background-color: #e9ecef;
+  border-left: 3px solid #6c757d;
+}
+
+/* Style for the gender dropdown in edit mode */
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Style for currency inputs */
+.input-group-text {
+  background-color: #f8f9fa;
+}
+
+/* Style for numeric inputs in edit mode */
+input[type="number"]:not([readonly]) {
+  border-left: 3px solid #0d6efd;
+}
+
+/* Government ID image styles */
+.img-thumbnail {
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.img-thumbnail:hover {
+  border-color: #0d6efd;
+}
+
+/* ID Image removal button styling */
+.position-relative .btn-danger {
+  opacity: 0.8;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.3rem;
+}
+
+.position-relative .btn-danger:hover {
+  opacity: 1;
+}
+
+/* Upload buttons styling */
+.btn-outline-secondary {
+  border-color: #ced4da;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+/* Add gap between the two input fields */
+.col-md-6:first-child {
+  padding-right: 10px;
+}
+
+.col-md-6:last-child {
+  padding-left: 10px;
+}
+
+/* Or alternatively, use margin instead */
+.col-md-6 {
+  margin-bottom: 1rem; /* Adds vertical spacing */
+}
+
+/* If you want horizontal spacing specifically */
+.d-flex.justify-content-between.align-items-center {
+  gap: 0.2rem; /* Creates equal spacing between flex items */
+}

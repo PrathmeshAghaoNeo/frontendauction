@@ -1,146 +1,283 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CommonModule, Location } from '@angular/common';
 import moment from 'moment';
-import { Location } from '@angular/common';
 import { AddRequest } from '../../modals/add-requests';
+import { UserView } from '../../modals/user';
+import { Asset } from '../../modals/manage-asset';
 import { RequestServices } from '../../services/requests.service';
- 
+import { UserService } from '../../services/user.service';
+import { ManageAssetService } from '../../services/asset.service';
+import { TransactionService, Transaction } from '../../services/transaction.service';
+import { FormsModule, ReactiveFormsModule, NgForm } from '@angular/forms';
+
 @Component({
   selector: 'app-add-request',
   standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule],
   templateUrl: './add-requests.component.html',
   styleUrls: ['./add-requests.component.css'],
-  imports: [CommonModule, RouterModule, FormsModule]
+  // imports: [CommonModule, RouterModule, FormsModule]
+  
 })
-export class AddRequestComponent implements OnInit {
- 
+export class AddRequestsComponent implements OnInit {
+  @ViewChild('formRef') formRef!: NgForm;
+  
   newRequest: AddRequest = {} as AddRequest;
- 
   currentDateTime: string = '';
-  currentDateTimeStart: string = '';
-  currentDateTimeEnd: string = '';
- 
+  users: UserView[] = [];
+  assets: Asset[] = [];
+  transactions: Transaction[] = [];
+  selectedUsername: string = '';
+  
+  // Form submission tracking
+  formSubmitted = false;
+  successMessage: string | null = null;
+
   constructor(
     private requestService: RequestServices,
     private router: Router,
-    private location: Location
-   
+    private location: Location,
+    private userservice: UserService,
+    private assetservice: ManageAssetService,
+    private transactionService: TransactionService
   ) {}
- 
-  goBack(): void {
-    this.location.back();
-  }
- 
+
   ngOnInit(): void {
-    this.generateRequestNumber();
- 
-    const now = moment();
-    this.currentDateTime = now.format('YYYY-MM-DDTHH:mm');
-    this.currentDateTimeStart = now.startOf('day').format('YYYY-MM-DDT00:00');
-    this.currentDateTimeEnd = now.endOf('day').format('YYYY-MM-DDT23:59');
-    this.newRequest.startDateTime = this.currentDateTime;
+    // Load server-generated template including requestNumber
+    this.requestService.getNewTemplate().subscribe({
+      next: template => {
+        this.newRequest = template;
+        // Initialize as numbers to ensure correct data types
+        this.newRequest.requestStatusId = 1;
+        this.newRequest.requestTypeId = 1;
+        this.newRequest.transactionId = null;
+        this.newRequest.createdByAdmin = false;
+        
+        // initialize date fields
+        const now = moment();
+        this.currentDateTime = now.format('YYYY-MM-DDTHH:mm');
+        this.newRequest.requestDateTime = this.currentDateTime;
+      },
+      error: err => {
+        console.error('Failed to load template', err);
+      }
+    });
+
+    this.loadUsers();
+    this.loadAssets();
+    this.loadTransactions();
   }
- 
-  generateRequestNumber() {
-    const today = new Date();
-    const yyyyMMdd = today.getFullYear().toString() +
-      (today.getMonth() + 1).toString().padStart(2, '0') +
-      today.getDate().toString().padStart(2, '0');
- 
-    const randomThreeDigit = Math.floor(1 + Math.random() * 999).toString().padStart(3, '0');
-    this.newRequest.requestNumber = `REQ-${yyyyMMdd}-${randomThreeDigit}`;
+
+  loadUsers(): void {
+    this.userservice.getAllUser().subscribe({
+      next: (data) => this.users = data,
+      error: (err) => {
+        console.error('Failed to load users', err);
+      }
+    });
   }
- 
-  createNew(): void {
-    const selectedDateTime = moment(this.newRequest.startDateTime);
-    const now = moment();
- 
-    // ✅ Validate: Only today's date allowed
-    if (!selectedDateTime.isSame(now, 'day')) {
-      alert('Start date/time must be from today only.');
-      return;
+
+  loadAssets(): void {
+    this.assetservice.getAssets().subscribe({
+      next: (data) => this.assets = data,
+      error: (err) => {
+        console.error('Failed to load assets', err);
+      }
+    });
+  }
+
+  loadTransactions(): void {
+    this.transactionService.getTransactions().subscribe({
+      next: (data) => this.transactions = data,
+      error: (err) => {
+        console.error('Failed to load transactions', err);
+      }
+    });
+  }
+
+  // Update username when user changes
+  onUserChange(): void {
+    const selectedUser = this.users.find(user => user.userId === this.newRequest.userId);
+    if (selectedUser) {
+      this.selectedUsername = selectedUser.name;
+      this.newRequest.username = selectedUser.name; // Add username to request
+      
+      // Optionally filter transactions by selected user
+      // You can implement this if needed
     }
- 
-    //  Copy startDateTime into requestDateTime before saving
-    this.newRequest.requestDateTime = this.newRequest.startDateTime;
- 
-    // Email Format Validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isEmailValid = this.newRequest.email != null && emailRegex.test(this.newRequest.email.trim());
-    if (this.newRequest.email && this.newRequest.email.length > 20)  {
-      alert('Email is invalid. Please enter a valid email address.');
-      return;
+  }
+
+  validateForm(): boolean {
+    this.formSubmitted = true; // Mark form as submitted to show validation messages
+    
+    // Check each required field individually
+    
+    // User validation
+    if (!this.newRequest.userId) {
+      return false;
     }
- 
-    //  Mobile Number Length Validation
+    
+    // Mobile Number validation
+    if (!this.newRequest.mobileNumber) {
+      return false;
+    }
+    
     const isMobileValid =
       typeof this.newRequest.mobileNumber === 'string' &&
       this.newRequest.mobileNumber.trim().length === 10 &&
-      /^[0-9]+$/.test(this.newRequest.mobileNumber); // Optional: check for numeric only
- 
+      /^[0-9]+$/.test(this.newRequest.mobileNumber);
+
     if (!isMobileValid) {
-      alert('Mobile number must be exactly 10 digits and numeric only.');
+      return false;
+    }
+    
+    // Email validation
+    if (!this.newRequest.email) {
+      return false;
+    }
+    
+    // More robust email regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(this.newRequest.email.trim())) {
+      return false;
+    }
+    
+    // Request Type validation
+    if (!this.newRequest.requestTypeId) {
+      return false;
+    }
+    
+    // Asset validation
+    if (!this.newRequest.assetId) {
+      return false;
+    }
+    
+    // Transaction ID validation
+    if (this.newRequest.transactionId === null || this.newRequest.transactionId === undefined) {
+      return false;
+    }
+    
+    // Date validation
+    if (!this.newRequest.requestDateTime) {
+      return false;
+    }
+    
+    const selectedDateTime = moment(this.newRequest.requestDateTime);
+    const now = moment();
+    if (!selectedDateTime.isSame(now, 'day')) {
+      return false;
+    }
+    
+    // Status validation
+    if (!this.newRequest.requestStatusId) {
+      return false;
+    }
+
+    return true;
+  }
+
+  createNew(): void {
+    if (!this.validateForm()) {
       return;
     }
- 
-    //  Check All Other Fields
-    if (this.isFormValid()) {
-      this.requestService.createRequest(this.newRequest).subscribe({
-        next: () => {
-          alert('Request created successfully!');
+
+    // Prepare the request object - ensure numeric types
+    const requestToSubmit: AddRequest = {
+      ...this.newRequest,
+      // Convert string values to numbers
+      userId: Number(this.newRequest.userId),
+      requestTypeId: Number(this.newRequest.requestTypeId),
+      assetId: Number(this.newRequest.assetId),
+      transactionId: this.newRequest.transactionId ? Number(this.newRequest.transactionId) : null,
+      requestStatusId: Number(this.newRequest.requestStatusId),
+      // Ensure other fields are properly set
+      createdOn: moment().format('YYYY-MM-DDTHH:mm:ss.SSS'),
+      updatedOn: moment().format('YYYY-MM-DDTHH:mm:ss.SSS')
+    };
+
+    console.log('Submitting request:', requestToSubmit);
+
+    this.requestService.createRequest(requestToSubmit).subscribe({
+      next: () => {
+        this.successMessage = 'Request successfully submitted!';
+        // Display success message for 2 seconds before navigating
+        setTimeout(() => {
           this.router.navigate(['/requests']);
-        },
-        error: (err) => {
-          console.error('Error creating request', err);
-          alert('Failed to create request.');
-        }
-      });
+        }, 2000);
+      },
+      error: (err) => {
+        console.error('Error creating request', err);
+      }
+    });
+  }
+
+  // Check if field is invalid and touched (for template validation display)
+  isFieldInvalid(fieldName: string): boolean {
+    if (!this.formRef) return false;
+    
+    const control = this.formRef.form.get(fieldName);
+    return control ? (control.invalid && (control.touched || this.formSubmitted)) : false;
+  }
+
+  // Get validation message for a field
+  getErrorMessage(fieldName: string): string {
+    if (!this.formRef) return '';
+    
+    const control = this.formRef.form.get(fieldName);
+    if (!control || !control.errors) return '';
+    
+    // Return appropriate error message based on error type
+    if (control.errors['required']) return 'This field is required';
+    if (control.errors['email']) return 'Please enter a valid email address';
+    if (control.errors['pattern']) {
+      if (fieldName === 'mobileNumber') return 'Mobile number must be exactly 10 digits';
+      if (fieldName === 'email') return 'Please enter a valid email address';
+      return 'Invalid format';
+    }
+    if (control.errors['minlength']) return `Minimum length is ${control.errors['minlength'].requiredLength} characters`;
+    if (control.errors['maxlength']) return `Maximum length is ${control.errors['maxlength'].requiredLength} characters`;
+    
+    return 'Invalid value';
+  }
+
+  // Get transaction display text for the dropdown
+  getTransactionLabel(transaction: Transaction): string {
+    return `${transaction.transactionNumber} - ${transaction.amount} - ${transaction.userFullName}`;
+  }
+
+  cancel(): void {
+    // delete the prepared number then go back
+    if (this.newRequest.requestNumber) {
+      this.requestService.deleteByNumber(this.newRequest.requestNumber)
+        .subscribe({
+          next: () => this.location.back(),
+          error: err => {
+            console.error('Failed to delete request number', err);
+            this.location.back();
+          }
+        });
     } else {
-      alert('Please fill all required fields.');
+      this.location.back();
     }
   }
- 
- 
- 
-// Validate the mobile number length
-isMobileNumberValid(): boolean {
-  // Ensure mobileNumber is treated as a string and check if its length is exactly 10
-  return typeof this.newRequest.mobileNumber === 'string' && this.newRequest.mobileNumber.length === 10;
-}
- 
- 
- 
-  cancel(): void {
-    this.router.navigate(['/requests']);
+
+  goBack(): void {
+    this.cancel();
   }
- 
+
   allowOnlyNumbers(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode < 48 || charCode > 57) {
       event.preventDefault();
     }
   }
- 
- 
- 
-  isFormValid(): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
- 
-    return (
-      this.newRequest.userId != null &&
-      this.newRequest.username != null && this.newRequest.username.trim() !== '' &&
-      this.newRequest.requestTypeId != null &&
-      this.newRequest.assetId != null &&
-      this.newRequest.transactionId != null &&
-      this.newRequest.startDateTime != null && this.newRequest.startDateTime.trim() !== '' &&
-      this.newRequest.requestStatusId != null &&
-      typeof this.newRequest.mobileNumber === 'string' && this.newRequest.mobileNumber.length === 10 &&
-      this.newRequest.email != null &&
-      emailRegex.test(this.newRequest.email.trim())
-    );
+
+  allowAlphaNumericAndHyphen(event: KeyboardEvent) {
+    const pattern = /^[a-zA-Z0-9\-]$/;
+    const inputChar = event.key;
+    if (!pattern.test(inputChar)) {
+      event.preventDefault();
+    }
   }
- 
- 
 }

@@ -1,20 +1,172 @@
-.container {
-    padding: 20px;
-  }
-  
-  h3 {
-    font-size: 24px;
-  }
-  
-  form label {
-    font-weight: 500;
-  }
-  
-  .table {
-    margin-top: 20px;
-  }
-  
-  button {
-    width: 150px;
-  }
-  
+/* Calendar picker styling */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 5rem;
+  z-index: 2;
+}
+
+/* Text alignment */
+.text-muted.mb-3 {
+  text-align: center;
+}
+
+/* Form header styling */
+.auction-form-header {
+  position: relative;
+  min-height: 60px;
+  padding-bottom: 20px; /* Ensures space for button and title */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auction-form-title {
+  color: #6a1b9a;
+  font-weight: 600;
+  font-size: 29px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.auction-form-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
+/* Back button styling */
+.back-btn {
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #6a1b9a;
+  transform: scale(1.1);
+}
+
+.back-btn i {
+  font-size: 2rem;
+}
+
+/* Image preview styling */
+.img-new {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-new img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Radio button group styling */
+.btn-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  color: #6a1b9a;
+  border: 2px solid #6a1b9a;
+  font-weight: 500;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover, 
+.btn-outline-primary:active {
+  background-color: #6a1b9a;
+  color: white;
+  border-color: #6a1b9a;
+}
+
+.btn-check:checked + .btn-outline-primary {
+  background-color: #6a1b9a;
+  color: white;
+  border-color: #6a1b9a;
+}
+
+/* Form control enhancements */
+.form-control-lg {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.form-select-lg {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+/* Form container */
+.container.bg-light {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Submit button styling */
+.btn-success {
+  background-color: #6a1b9a;
+  border-color: #6a1b9a;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #5a1687;
+  border-color: #5a1687;
+  transform: translateY(-2px);
+}
+
+/* Form label styling */
+.form-label.fw-bold {
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+/* Validation styling */
+.text-danger {
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* Calendar button styling */
+.btn-outline-secondary {
+  border-color: #ced4da;
+}
+
+/* Link styling in image preview */
+.img-new a {
+  color: #6a1b9a;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  text-decoration: none;
+}
+
+.img-new a:hover {
+  text-decoration: underline;
+}
+form {
+  width: 80%;
+}

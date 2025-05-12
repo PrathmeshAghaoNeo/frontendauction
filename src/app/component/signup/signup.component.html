@@ -1,0 +1,207 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-5">
+      <!-- Sign Up Card -->
+      <div class="card sign-up-card">
+        <div class="card-body p-4">
+          <!-- Header -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Sign Up</h2>
+          </div>
+
+          <!-- Add these form fields to signup.component.html before the email input -->
+<div class="form-group mb-4">
+  <label for="name" class="form-label">Full Name</label>
+  <input 
+    type="text"
+    id="name"
+    class="form-control"
+    placeholder="Enter your full name"
+    formControlName="name"
+    [class.is-invalid]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
+  >
+  <div class="invalid-feedback" *ngIf="signupForm.get('name')?.errors?.['required'] && signupForm.get('name')?.touched">
+    Please enter your name
+  </div>
+</div>
+
+<div class="form-group mb-4">
+  <label for="mobileNumber" class="form-label">Mobile Number</label>
+  <input 
+    type="text"
+    id="mobileNumber"
+    class="form-control"
+    placeholder="Enter your mobile number"
+    formControlName="mobileNumber"
+    [class.is-invalid]="signupForm.get('mobileNumber')?.invalid && signupForm.get('mobileNumber')?.touched"
+  >
+  <div class="invalid-feedback" *ngIf="signupForm.get('mobileNumber')?.errors?.['required'] && signupForm.get('mobileNumber')?.touched">
+    Mobile number is required
+  </div>
+  <div class="invalid-feedback" *ngIf="signupForm.get('mobileNumber')?.errors?.['pattern'] && signupForm.get('mobileNumber')?.touched">
+    Invalid mobile number (10 digits required)
+  </div>
+</div>
+
+          
+
+          <!-- Email Input Form -->
+         <!-- Email Input Form -->
+<div *ngIf="!showOtpScreen">
+  <!-- Move the form tag to wrap ALL form controls -->
+  <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+    <!-- Name Field -->
+    <div class="form-group mb-4">
+      <label for="name" class="form-label">Full Name</label>
+      <input 
+        type="text"
+        id="name"
+        class="form-control"
+        placeholder="Enter your full name"
+        formControlName="name"
+        [class.is-invalid]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
+      >
+      <div class="invalid-feedback" *ngIf="signupForm.get('name')?.errors?.['required'] && signupForm.get('name')?.touched">
+        Please enter your name
+      </div>
+    </div>
+
+    <!-- Mobile Number Field -->
+    <div class="form-group mb-4">
+      <label for="mobileNumber" class="form-label">Mobile Number</label>
+      <input 
+        type="text"
+        id="mobileNumber"
+        class="form-control"
+        placeholder="Enter your mobile number"
+        formControlName="mobileNumber"
+        [class.is-invalid]="signupForm.get('mobileNumber')?.invalid && signupForm.get('mobileNumber')?.touched"
+      >
+      <div class="invalid-feedback" *ngIf="signupForm.get('mobileNumber')?.errors?.['required'] && signupForm.get('mobileNumber')?.touched">
+        Mobile number is required
+      </div>
+      <div class="invalid-feedback" *ngIf="signupForm.get('mobileNumber')?.errors?.['pattern'] && signupForm.get('mobileNumber')?.touched">
+        Invalid mobile number (10 digits required)
+      </div>
+    </div>
+
+    <!-- Email Field -->
+    <div class="form-group mb-4">
+      <label for="email" class="form-label">Email address</label>
+      <input 
+        type="email"
+        id="email"
+        class="form-control"
+        placeholder="Enter your email"
+        formControlName="email"
+        [class.is-invalid]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+      >
+      <div class="invalid-feedback" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+        Please enter a valid email address
+      </div>
+    </div>
+    
+    <!-- Submit Button -->
+    <button 
+      type="submit" 
+      class="btn btn-primary w-100 mb-4" 
+      [disabled]="signupForm.invalid || isSubmitting"
+    >
+      <i class="bi bi-lock me-2"></i>
+      Get Verification Code
+      <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+    </button>
+
+    <!-- Rest of the form elements -->
+    <div class="text-center mb-4">
+      <!-- Terms and conditions -->
+    </div>
+
+    <!-- Sign In Link -->
+    <div class="text-center">
+      <!-- Sign in link -->
+    </div>
+  </form> <!-- Closing form tag -->
+</div>
+
+          <!-- OTP Verification Screen -->
+          <div *ngIf="showOtpScreen">
+            <h4 class="text-center mb-4">Enter Verification Code</h4>
+            <p class="text-center text-muted mb-4">
+              We've sent a 4-digit code to <br>
+              <strong>{{ email }}</strong>
+            </p>
+
+            <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
+              <div class="d-flex justify-content-center mb-4">
+                <div class="otp-inputs">
+                  <!-- signup.component.html -->
+                 <input
+                    #digit1
+                    type="text"
+                    maxlength="1"
+                    formControlName="digit1"
+                    class="form-control otp-input"
+                    (input)="onOtpInput($event, digit2)"
+                    (keydown.backspace)="onOtpInput($event, undefined, undefined)"
+                  >
+
+                  <input 
+                  #digit2
+                  type="text"
+                  maxlength="1"
+                  formControlName="digit2"
+                  class="form-control otp-input"
+                  (input)="onOtpInput($event, digit3, digit1)"
+                  (keydown.backspace)="onOtpInput($event, undefined, digit1)"
+                >
+
+
+                 <input
+                    #digit3
+                    type="text"
+                    maxlength="1"
+                    formControlName="digit3"
+                    class="form-control otp-input"
+                    (input)="onOtpInput($event, digit4, digit2)"
+                    (keydown.backspace)="onOtpInput($event, undefined, digit2)"
+                  >
+                  <input
+                    #digit4
+                    type="text"
+                    maxlength="1"
+                    formControlName="digit4"
+                    class="form-control otp-input"
+                    (input)="onOtpInput($event, undefined, digit3)"
+                    (keydown.backspace)="onOtpInput($event, undefined, digit3)"
+                  >
+                </div>
+              </div>
+
+              <div class="text-center mb-4">
+                <button 
+                  type="button" 
+                  class="btn btn-link text-primary" 
+                  [disabled]="resendTimer > 0" 
+                  (click)="resendOtp()"
+                >
+                  Request a code again
+                </button>
+                <span *ngIf="resendTimer > 0" class="ms-2 text-muted">({{ resendTimer }}s)</span>
+              </div>
+
+              <button 
+                type="submit" 
+                class="btn btn-primary w-100 mb-3" 
+                [disabled]="otpForm.invalid || isSubmitting"
+              >
+                Verify Email
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

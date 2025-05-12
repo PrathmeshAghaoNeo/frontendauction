@@ -40,6 +40,7 @@
       </div>
     </div>
 
+    
     <div class="col-md-6 mb-1">
       <div class="form-group">
         <label class="form-label fw-bold">Email<span class="text-danger">*</span></label>
@@ -74,7 +75,7 @@
           name="mobileNumber" 
           required
           placeholder="e.g. 9876534526"
-          maxlength="15"
+          maxlength="10"
           [mobilenumber]="countries"
           (ngModelChange)="onCountryChange()"
           #mobileNumber="ngModel">
