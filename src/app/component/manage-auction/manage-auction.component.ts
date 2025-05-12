@@ -118,7 +118,7 @@ sortAuctions(column: string): void {
 
   if (this.sortDirection === '') {
     this.auctions = [...this.defaultAuctions];
-    this.applyFilters(); // reapply filters if needed
+    this.applyFilters();
     return;
   }
 

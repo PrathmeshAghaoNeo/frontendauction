@@ -32,7 +32,7 @@ export class UpdateAssetCategoriesComponent implements OnInit {
   ];
 
   previewUrls: { [key: string]: string } = {
-    icon: '',
+    iconFile: '',
     document: ''
   };
 
@@ -45,19 +45,19 @@ export class UpdateAssetCategoriesComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.assetCategoryForm = this.fb.group({
-      title: ['', [Validators.required, Validators.maxLength(20)]],
+      categoryName: ['', [Validators.required, Validators.maxLength(20)]],
       subCategory: ['', Validators.maxLength(30)],
       depositPercentage: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       details: ['', [Validators.required, Validators.maxLength(50)]],
-      icon: [null],
+      iconFile: [null],
       document: [null],
       statusId: ['', Validators.required],
       paymentMethods: this.fb.array([]),
       adminFees: [null, [Validators.pattern('^[0-9]*$')]],
       auctionFees: [null, [Validators.pattern('^[0-9]*$')]],
       buyersCommission: [null, [Validators.pattern('^[0-9]*$')]],
-      registrationDeadline: [null, [Validators.pattern('^[0-9]*$')]],
-      vat: [null, [Validators.maxLength(10)]],
+      registrationDeadline: [null],
+      vat: [''],
       vatPercentage: [null, [Validators.pattern('^[0-9]*$')]]
     });
   }
@@ -70,20 +70,44 @@ export class UpdateAssetCategoriesComponent implements OnInit {
   }
 
   loadAssetCategoryData(): void {
-    if (this.assetCategoryId) {
-      this.http.get(`${ApiEndpoints.ASSETCATEGORIES}/${this.assetCategoryId}`).subscribe({
-        next: (data: any) => {
-          // Populate the form with the retrieved data
-          this.assetCategoryForm.patchValue(data);
-          this.previewUrls['icon'] = data.iconUrl;
-          this.previewUrls['document'] = data.documentUrl;
-        },
-        error: (err) => {
-          Swal.fire('Error', 'Failed to load asset category data', 'error');
+  if (this.assetCategoryId) {
+    this.http.get(`${ApiEndpoints.ASSETCATEGORIES}/${this.assetCategoryId}`).subscribe({
+      next: (data: any) => {
+        this.assetCategoryForm.patchValue({
+          categoryName: data.categoryName,
+          subCategory: data.subcategory,
+          depositPercentage: data.depositPercentage,
+          details: data.details,
+          statusId: data.statusId,
+          adminFees: data.adminFees,
+          auctionFees: data.auctionFees,
+          buyersCommission: data.buyerCommission,
+          registrationDeadline: data.registrationDeadline,
+          vat: data.vatid,
+          vatPercentage: data.vatpercentage,
+        });
+
+        // Preview URLs
+        this.previewUrls['iconFile'] = data.icon;
+        this.previewUrls['document'] = data.document;
+
+        // Optional: Clear and repopulate payment methods if applicable
+        const formArray = this.assetCategoryForm.get('paymentMethods') as FormArray;
+        formArray.clear(); // Clear existing
+        if (data.paymentMethods && Array.isArray(data.paymentMethods)) {
+          data.paymentMethods.forEach((method: string) => {
+            formArray.push(new FormControl(method));
+          });
         }
-      });
-    }
+      },
+      error: (err) => {
+        Swal.fire('Error', 'Failed to load asset category data', 'error');
+      }
+    });
   }
+}
+
+
 
   goBack(): void {
     this.location.back();
@@ -124,7 +148,7 @@ export class UpdateAssetCategoriesComponent implements OnInit {
     const formData = new FormData();
 
     // Append always-present values
-    formData.append('CategoryName', formValue.title);
+    formData.append('CategoryName', formValue.categoryName);
     formData.append('Subcategory', formValue.subCategory || '');
     formData.append('DepositPercentage', formValue.depositPercentage);
     formData.append('Details', formValue.details || '');
@@ -136,16 +160,18 @@ export class UpdateAssetCategoriesComponent implements OnInit {
       }
     }
 
-    // ✅ Use safeAppend AFTER the function is declared
-    safeAppend(formData, 'Vatid', formValue.vatId);
+    // Using safeAppend for additional fields
+    safeAppend(formData, 'Vatid', formValue.vat);
     safeAppend(formData, 'AdminFees', formValue.adminFees);
     safeAppend(formData, 'AuctionFees', formValue.auctionFees);
     safeAppend(formData, 'BuyerCommission', formValue.buyersCommission);
-    safeAppend(formData, 'RegistrationDeadline', new Date(formValue.registrationDeadline).toISOString());
+    if (formValue.registrationDeadline) {
+      safeAppend(formData, 'RegistrationDeadline', new Date(formValue.registrationDeadline).toISOString());
+    }
     safeAppend(formData, 'Vatpercentage', formValue.vatPercentage);
     safeAppend(formData, 'StatusId', formValue.statusId);
 
-    const iconFile = this.assetCategoryForm.get('icon')?.value;
+    const iconFile = this.assetCategoryForm.get('iconFile')?.value;
     if (iconFile instanceof File) {
       formData.append('IconFile', iconFile);
     }
