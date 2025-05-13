@@ -27,7 +27,7 @@ export class ManageUserComponent implements OnInit {
   
   searchTerm: string = '';
   filterRole: number = 0;
-  filterStatus: number = 0;
+  filterStatus: number = 0; 
 
 
   

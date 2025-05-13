@@ -31,14 +31,15 @@ export class ManageAssetCategoriesComponent implements OnInit {
   searchText: string = '';
   page: number = 1;
   itemsPerPage: number = 5; 
-  filterStatus: string = 'All';
+  filterStatus: number = 0;
+
   
   filteredCategories: any[] = []; 
   selectedCategory: AssetCategory | null = null;
   selectedAssetCategory: AssetCategory | null = null;
 
   statuses = [
-    // { statusId: 0, statusName: 'All' }, 
+    { statusId: 0, statusName: 'All' },  
     { statusId: 1, statusName: 'Draft' },
     { statusId: 2, statusName: 'Published' }
   ];
@@ -91,7 +92,7 @@ applyFilters(): void {
     return matchesSearch && matchesStatus;
   });
 }
-assetBaseUrl: string = `${environment.imgUrl}`;
+assetBaseUrl: string = `${environment.baseurl}`;
 
 filterCategories(): void {
   const search = this.searchText.toLowerCase();

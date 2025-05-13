@@ -1,33 +1,54 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './component/dashboard/dashboard.component';
-import { ManageAuctionComponent } from './component/manage-auction/manage-auction.component';
-import { ManageUserComponent } from './component/manage-user/manage-user.component';
-import { LoginComponent } from './component/login/login.component';
-import { SettingsComponent } from './component/settings/settings.component';
-import { AddUserComponent } from './component/add-user/add-user.component';
-import { AddAuctionComponent } from './component/add-auction/add-auction.component';
-import { AddAssetComponent } from './component/add-asset/add-asset.component';
-import { LandingPageComponent } from './component/landing-page/landing-page.component';
+import { RoleGuard } from './services/auth.guard';
+
+// Common Components
 import { StartPageComponent } from './component/start-page/start-page.component';
+import { LoginComponent } from './component/login/login.component';
+import { TestloginComponent } from './component/testlogin/testlogin.component';
+import { LandingPageComponent } from './component/landing-page/landing-page.component';
 import { RegUserLandingPageComponent } from './component/pages/reg-user-landing-page.component';
-import { ManageRequestsComponent } from './component/manage-requests/manage-requests.component';
+
+// Admin Dashboard Components
+import { DashboardComponent } from './component/dashboard/dashboard.component';
+import { SettingsComponent } from './component/settings/settings.component';
+
+// User Management
+import { ManageUserComponent } from './component/manage-user/manage-user.component';
+import { AddUserComponent } from './component/add-user/add-user.component';
 import { UpdateUserComponent } from './component/update-user/update-user.component';
 import { DetailsUserComponent } from './component/details-user/details-user.component';
-import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
-import { RoleGuard } from './services/auth.guard';
+
+// Asset Management
+// import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
+import { ViewRequestComponent } from './component/view-request/view-request.component';
+
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
-import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
-import { TransactionManagementComponent } from './component/manage-transaction/manage-transaction.component';
-import { TestloginComponent } from './component/testlogin/testlogin.component';
+import { AddAssetComponent } from './component/add-asset/add-asset.component';
 import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
 import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
 import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
-import { AddRequestComponent } from './component/add-requests/add-requests.component';
+
+// Auction Management
+import { ManageAuctionComponent } from './component/manage-auction/manage-auction.component';
+import { AddAuctionComponent } from './component/add-auction/add-auction.component';
+import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
+
+// Request Management
+import { ManageRequestsComponent } from './component/manage-requests/manage-requests.component';
+// Removed duplicate import of AddRequestsComponent
+import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
+
+// Transaction Management
+import { TransactionManagementComponent } from './component/manage-transaction/manage-transaction.component';
 import { AddTransactionComponent } from './component/add-transaction/add-transaction.component';
 import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
-import { ChartComponent } from './component/chart/chart.component';
-import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 
+// Miscellaneous
+import { ChartComponent } from './component/chart/chart.component';
+import { AddRequestsComponent } from './component/add-requests/add-requests.component';
+import { UserProfileComponent } from './component/user-profile/user-profile.component';
+import { SignupComponent } from './component/signup/signup.component';
+import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -47,7 +68,7 @@ export const routes: Routes = [
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
-    { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'requestsnew', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'addassetcategories', component:AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
@@ -62,3 +83,6 @@ export const routes: Routes = [
     {path: 'testing', component:ChartComponent}, 
     { path: '**', redirectTo: '/login' }
 ];
+   
+
+  

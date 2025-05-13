@@ -53,7 +53,7 @@ export class TransactionManagementComponent implements OnInit {
 
   loadTransactions(): void {
     this.loading = true;
-    this.transactionService.getTransactions().subscribe({
+    this.transactionService.getAllTransactions().subscribe({
       next: (data) => {
         this.transactions = data.sort((a, b) => b.transactionId - a.transactionId);
         console.log(this.transactions)
