@@ -26,6 +26,7 @@ import { AddRequestComponent } from './component/add-requests/add-requests.compo
 import { AddTransactionComponent } from './component/add-transaction/add-transaction.component';
 import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
 import { ChartComponent } from './component/chart/chart.component';
+import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 
 
 export const routes: Routes = [
@@ -57,6 +58,7 @@ export const routes: Routes = [
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
     {path: 'testing', component:ChartComponent}, 
     { path: '**', redirectTo: '/login' }
 ];

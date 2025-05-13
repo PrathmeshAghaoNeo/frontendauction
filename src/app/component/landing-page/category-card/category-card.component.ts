@@ -52,6 +52,8 @@ export class CategoryCardComponent implements OnInit {
   
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
-    target.src = 'assets/images/Screenshot28.png';
+    target.src = '';
   }
+
+  
 }

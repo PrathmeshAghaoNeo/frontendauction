@@ -11,7 +11,7 @@
         <img
           [src]="getFullIconUrl(category.icon)"
           alt="{{ category.categoryName }}"
-          (error)="onImageError($event)"
+          (error)="onImageError($event)"  
         />
       </div>
       <div class="category-name">{{ category.categoryName }}</div>
