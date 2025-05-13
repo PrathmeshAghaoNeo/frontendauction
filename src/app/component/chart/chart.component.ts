@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective, } from 'ng2-charts';
 import { UserView } from '../../modals/user';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 
 
 @Component({
