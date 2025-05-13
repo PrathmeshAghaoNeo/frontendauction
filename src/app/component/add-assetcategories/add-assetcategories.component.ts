@@ -53,12 +53,12 @@ export class AddAssetCategoriesComponent implements OnInit {
       iconFile: [null, Validators.required],
       document: [null, Validators.required],
       paymentMethods: this.fb.array([]),
-      statusId: [null, Validators.required],
+      statusId: ['', Validators.required],
       adminFees: [null, Validators.pattern('^[0-9]+$')],
       auctionFees: [null, Validators.pattern('^[0-9]+$')],
       buyersCommission: [null, Validators.pattern('^[0-9]+$')],
       registrationDeadline: [''],
-      vat: [''],
+      vat: ['',Validators.maxLength(5)],
       vatPercentage: [null, Validators.pattern('^[0-9]+$')]
     });
     const today = new Date();
@@ -75,6 +75,12 @@ export class AddAssetCategoriesComponent implements OnInit {
   get paymentMethodsArray(): FormArray {
     return this.assetCategoryForm.get('paymentMethods') as FormArray;
   }
+  enforceMaxLength(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.value.length > 7) {
+    input.value = input.value.slice(0, 7);
+  }
+}
 
   goBack(): void {
     this.location.back();

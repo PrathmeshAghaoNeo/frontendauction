@@ -30,7 +30,7 @@ export class TransactionService {
   }
 
   // Get all transactions
-  getAllTransactions(): Observable<Transaction[]> {
+  getTransactions(): Observable<Transaction[]> {
     return this.http.get<Transaction[]>(this.apiUrl);
   }
 

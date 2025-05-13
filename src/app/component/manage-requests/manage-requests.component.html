@@ -13,7 +13,7 @@
       {{ isExporting ? 'Exporting...' : 'Export' }}
     </button>
     <button type="button" class="btn custom-purple-btn" [routerLink]="['/requestsnew']" aria-label="Create new request">
-      <i class="bi bi-plus-circle me-1"></i>New Request
+      New Request
     </button>
   </div>
 </div>
@@ -187,14 +187,14 @@
         <td>{{ getAssetTitle(r.assetId) }}</td>
         <td>{{ getTypeName(r.requestTypeId) }}</td>
         <td>{{ r.requestDateTime | date: 'dd/MM/yyyy hh:mm a' }}</td>
-        <td class="text-center">
-          <span class="status-badge" 
-                [ngClass]="{
-                  'bg-warning text-dark': r.requestStatusId === 1,
-                  'bg-success text-white': r.requestStatusId === 2,
-                  'bg-orange text-white': r.requestStatusId === 3,
-                  'bg-danger text-white': r.requestStatusId === 4
-                }">
+
+        <td>
+          <span [ngClass]="{
+                  'bg-warning': r.requestStatusId === 1,
+                  'bg-success': r.requestStatusId === 2,
+                  'bg-orange': r.requestStatusId === 3,
+                  'bg-danger': r.requestStatusId === 4
+                }" class="badge badge-fixed-width text-dark">
             {{ getStatusName(r.requestStatusId) }}
           </span>
         </td>

@@ -101,10 +101,10 @@
 
     <div class="row">
       <!-- Status -->
-      <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3">
         <label for="statusId" class="form-label required-label">Status</label>
         <select formControlName="statusId" id="statusId" class="form-select">
-          <option value="" disabled>Select Status</option>
+          <option value="" disabled selected hidden>Select Status</option>
           <option *ngFor="let status of statuses" [value]="status.statusId">
             {{ status.statusName }}
           </option>
@@ -151,13 +151,17 @@
       </div>
 
       <!-- VAT ID -->
-      <div class="col-md-6 mb-3">
-        <label for="vat" class="form-label">VAT ID</label>
-        <input type="text" formControlName="vat" id="vat" class="form-control" />
-        <div *ngIf="assetCategoryForm.get('vat')?.invalid && assetCategoryForm.get('vat')?.touched" class="text-danger">
-          VAT is required.
+       <div class="col-md-6 mb-3">
+          <label for="vat" class="form-label">VAT Type</label>
+          <select formControlName="vat" id="vat" class="form-select">
+            <option [value]="1">Exclusive</option>
+            <option [value]="2">Inclusive</option>
+            <option [value]="3">Not Applicable</option>
+          </select>
+          <div *ngIf="assetCategoryForm.get('vat')?.invalid && assetCategoryForm.get('vat')?.touched" class="text-danger">
+            VAT is required.
+          </div>
         </div>
-      </div>  
 
       <!-- VAT Percentage -->
       <div class="col-md-6 mb-3">

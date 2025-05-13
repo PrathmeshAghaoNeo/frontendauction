@@ -30,7 +30,6 @@ export class AddRequestsComponent implements OnInit {
   assets: Asset[] = [];
   transactions: Transaction[] = [];
   selectedUsername: string = '';
-  
   // Form submission tracking
   formSubmitted = false;
   successMessage: string | null = null;
@@ -89,7 +88,7 @@ export class AddRequestsComponent implements OnInit {
   }
 
   loadTransactions(): void {
-    this.transactionService.getAllTransactions().subscribe({
+    this.transactionService.getTransactions().subscribe({
       next: (data) => this.transactions = data,
       error: (err) => {
         console.error('Failed to load transactions', err);

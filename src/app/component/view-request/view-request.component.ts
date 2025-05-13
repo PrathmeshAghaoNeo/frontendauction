@@ -89,7 +89,7 @@ export class ViewRequestComponent implements OnInit {
   }
 
   loadTransactions(): void {
-    this.transactionService.getAllTransactions().subscribe({
+    this.transactionService.getTransactions().subscribe({
       next: (data) => this.transactions = data,
       error: (err) => {
         console.error('Failed to load transactions', err);

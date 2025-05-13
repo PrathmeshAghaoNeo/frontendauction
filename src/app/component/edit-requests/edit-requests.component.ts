@@ -136,7 +136,7 @@ export class EditRequestsComponent implements OnInit {
   }
 
   loadTransactions(): void {
-    this.transactionService.getAllTransactions().subscribe({
+    this.transactionService.getTransactions().subscribe({
       next: (data) => {
         console.log('Transactions loaded:', data.length);
         this.transactions = data;
