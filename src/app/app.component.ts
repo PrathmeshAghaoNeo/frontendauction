@@ -8,6 +8,7 @@ import { SidebarComponent } from "./component/sidebar/sidebar.component";
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { BackButtonComponent } from './component/back-button/back-button.component';
+import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ import { BackButtonComponent } from './component/back-button/back-button.compone
     SidebarComponent,
     NgIf,
     BackButtonComponent,
+    SignalrTestComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
