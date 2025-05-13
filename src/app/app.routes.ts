@@ -49,6 +49,7 @@ import { AddRequestsComponent } from './component/add-requests/add-requests.comp
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { SignupComponent } from './component/signup/signup.component';
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
+import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -80,6 +81,7 @@ export const routes: Routes = [
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
+    {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
     {path: 'testing', component:ChartComponent}, 
     { path: '**', redirectTo: '/login' }
 ];

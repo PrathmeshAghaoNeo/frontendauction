@@ -4,6 +4,7 @@ import { AssetCategory } from '../../../modals/assetcategories';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../constants/enviroments';
 import { ApiEndpoints } from '../../../constants/api-endpoints';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-category-card',
   standalone: true,
@@ -18,7 +19,7 @@ export class CategoryCardComponent implements OnInit {
   selectedAssetCategory: AssetCategory | null = null;
   assetBaseUrl: string = `${environment.imgUrl}`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -38,6 +39,8 @@ export class CategoryCardComponent implements OnInit {
 
   onCardClick(categoryId: number): void {
     console.log('Category ID:', categoryId);
+    this.router.navigate(['/auction-assets', categoryId]);
+
     // You can implement additional logic here
   }
 
