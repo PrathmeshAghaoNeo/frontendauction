@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PromotionsComponent } from '../landing-page/promotions/promotions.component';
-import { DirectSaleComponent } from '../landing-page/direct-sale/direct-sale.component';
 import { CategoryCardComponent } from '../landing-page/category-card/category-card.component';
+import { DirectSaleComponent } from '../landing-page/direct-sale/direct-sale.component';
 
 @Component({
   selector: 'app-reg-user-landing-page',
