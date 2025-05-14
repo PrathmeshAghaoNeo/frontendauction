@@ -1,5 +1,4 @@
-
-export interface Asset {
+export interface AddAsset {
   assetId: number;
   title: string;
   categoryId?: number;
@@ -27,14 +26,10 @@ export interface Asset {
   mapLongitude?: number;
   adminFees?: number;
   auctionFees?: number;
-  requestForViewing: boolean;
-  requestForInquiry: boolean;
   buyerCommission?: number;
   winnerId?: number;
-  winnerName?: string;
   awardedPrice?: number;
   salesNotes?: string;
-  details: string | null;
   createdAt?: string;
   updatedAt?: string;
   assetNumber: string;
@@ -42,7 +37,6 @@ export interface Asset {
   galleries: AssetGalleryDto[];
   documents: AssetDocumentFormDto[];
   attributes: AssetDetailDto[];
-  auctionStatusId?: number;
 }
 
 export interface AssetGalleryDto {
@@ -63,7 +57,6 @@ export interface AssetDetailDto {
   attributeValue: string;
 }
 
-
 export interface DirectSaleAssetDto {
   assetId: number;
   title: string;
@@ -80,5 +73,3 @@ export interface DirectSaleAssetDto {
   galleries: AssetGalleryDto[]; // Optional if images are returned
 
 }
-
-  

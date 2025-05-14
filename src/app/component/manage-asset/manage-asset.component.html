@@ -2,17 +2,31 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="text-purple">Manage Assets</h2>
   <div>
-    <button class="btn btn-outline-secondary me-2">Filters</button>
-    <!-- <button class="btn custom-purple-btn me-2">Export</button> -->
-    <!-- <button class="btn custom-purple-btn me-2">Import</button> -->
-    <button class="btn custom-purple-btn" (click)="newAssestRoute()">New Asset</button>
+    <!-- <button class="btn btn-outline-secondary me-2">Filters</button> -->
+    <button
+      class="btn custom-purple-btn me-2"
+      (click)="exportToExcel()"
+      id="export"
+    >
+      <i class="bi bi-file-earmark-excel"></i> Export
+    </button>
+    <!-- <button class="btn bt_import me-2">Import</button> -->
+    <button class="btn custom-purple-btn" (click)="newAssestRoute()">
+      New Asset
+    </button>
   </div>
 </div>
 
 <!-- Search Bar -->
 <div class="row mb-3">
   <div class="col-md-4">
-    <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Search..." (ngModelChange)="onSearchChange()">
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      class="form-control"
+      placeholder="Search..."
+      (ngModelChange)="onSearchChange()"
+    />
   </div>
 </div>
 
@@ -22,71 +36,287 @@
     <thead class="table-purple text-white">
       <tr>
         <th>Image</th>
-        <th>Title</th>
-        <th>#Asset Number</th>
-        <th>Starting Price</th>
-        <th>Category</th>
-        <th>Auction Status</th>
-        <th>Asset Status</th>
-        <th>End Time</th>
+        <th (click)="sortAssets('title')" style="cursor: pointer">
+          Title
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-caret-up-fill':
+                sortColumn === 'title' && sortDirection === 'asc',
+              'bi-caret-down-fill':
+                sortColumn === 'title' && sortDirection === 'desc',
+              'bi-arrow-down-up': sortColumn !== 'title' || sortDirection === ''
+            }"
+            class="ms-1"
+          ></i>
+        </th>
+        <th (click)="sortAssets('assetNumber')" style="cursor: pointer">
+          #Asset Number
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-caret-up-fill':
+                sortColumn === 'assetNumber' && sortDirection === 'asc',
+              'bi-caret-down-fill':
+                sortColumn === 'assetNumber' && sortDirection === 'desc',
+              'bi-arrow-down-up':
+                sortColumn !== 'assetNumber' || sortDirection === ''
+            }"
+            class="ms-1"
+          ></i>
+        </th>
+        <th (click)="sortAssets('startingPrice')" style="cursor: pointer">
+          Starting Price
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-caret-up-fill':
+                sortColumn === 'startingPrice' && sortDirection === 'asc',
+              'bi-caret-down-fill':
+                sortColumn === 'startingPrice' && sortDirection === 'desc',
+              'bi-arrow-down-up':
+                sortColumn !== 'startingPrice' || sortDirection === ''
+            }"
+            class="ms-1"
+          ></i>
+        </th>
+        <th (click)="sortAssets('categoryName')" style="cursor: pointer">
+          Category
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-caret-up-fill':
+                sortColumn === 'categoryName' && sortDirection === 'asc',
+              'bi-caret-down-fill':
+                sortColumn === 'categoryName' && sortDirection === 'desc',
+              'bi-arrow-down-up':
+                sortColumn !== 'categoryName' || sortDirection === ''
+            }"
+            class="ms-1"
+          ></i>
+        </th>
+        <th (click)="sortAssets('auctionStatusId')" style="cursor: pointer">
+          Auction Status
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-caret-up-fill':
+                sortColumn === 'auctionStatusId' && sortDirection === 'asc',
+              'bi-caret-down-fill':
+                sortColumn === 'auctionStatusId' && sortDirection === 'desc',
+              'bi-arrow-down-up':
+                sortColumn !== 'auctionStatusId' || sortDirection === ''
+            }"
+            class="ms-1"
+          ></i>
+        </th>
+        <th (click)="sortAssets('statusName')" style="cursor: pointer">
+          Asset Status
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-caret-up-fill':
+                sortColumn === 'statusName' && sortDirection === 'asc',
+              'bi-caret-down-fill':
+                sortColumn === 'statusName' && sortDirection === 'desc',
+              'bi-arrow-down-up':
+                sortColumn !== 'statusName' || sortDirection === ''
+            }"
+            class="ms-1"
+          ></i>
+        </th>
+        <th
+          (click)="sortAssets('registrationDeadline')"
+          style="cursor: pointer"
+        >
+          End Time
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-caret-up-fill':
+                sortColumn === 'registrationDeadline' &&
+                sortDirection === 'asc',
+              'bi-caret-down-fill':
+                sortColumn === 'registrationDeadline' &&
+                sortDirection === 'desc',
+              'bi-arrow-down-up':
+                sortColumn !== 'registrationDeadline' || sortDirection === ''
+            }"
+            class="ms-1"
+          ></i>
+        </th>
         <th class="text-end">Actions</th>
       </tr>
     </thead>
+
     <tbody>
-      <tr *ngFor="let asset of assets | paginate: { id: 'asset', itemsPerPage: itemsPerPage, currentPage: page }">
+      <tr
+        *ngFor="
+          let asset of assets
+            | paginate
+              : { id: 'asset', itemsPerPage: itemsPerPage, currentPage: page }
+        "
+      >
         <td>
-          <img [src]="asset.galleries[0].fileUrl || 'https://via.placeholder.com/100'" class="img-thumbnail" width="60" />
+          <img
+            [src]="asset.galleries?.[0]?.fileUrl || 'https://via.placeholder.com/100'"
+            class="img-thumbnail"
+            width="80"
+            height="50"
+          />
         </td>
         <td>{{ asset.title }}</td>
         <td>#{{ asset.assetNumber }}</td>
         <td>BHD {{ asset.startingPrice | number }}</td>
         <td>{{ asset.categoryName }}</td>
-        <td>{{ getAuctionStatus(asset.assetId) }}</td>
-        <td>{{ asset.statusName }}</td>
+        <!-- <td>{{ getAuctionStatus(asset.auctionStatusId ?? 0) }}</td> -->
+
+        <td>
+          <span
+            class="asset-status"
+            [ngClass]="{
+              'bg-success': asset.auctionStatusId === 1,
+              'bg-warning': asset.auctionStatusId === 2,
+              'bg-danger': asset.auctionStatusId === 3,
+              'bg-info ': asset.auctionStatusId === 4,
+              'status-unknown': ![1, 2, 3, 4].includes(
+                asset.auctionStatusId ?? 0
+              )
+            }"
+            class="badge badge-fixed-width text-dark"
+          >
+            {{ getAuctionStatus(asset.auctionStatusId ?? 0) }}
+          </span>
+        </td>
+
+        <!-- <td>{{ asset.statusName }}</td> -->
+
+        <!-- <td>
+            <span
+              class="asset-status"
+              [ngClass]="{
+                'status-draft': asset.statusName === 'Draft',
+                'status-published': asset.statusName === 'Published',
+                'status-auctioned': asset.statusName === 'Auctioned',
+                'status-archived': asset.statusName === 'Archived',
+                'status-pending': asset.statusName === 'Pending',
+                'status-approved': asset.statusName === 'Approved',
+                'status-payment': asset.statusName === 'Payment',
+                'status-registration': asset.statusName === 'Registration',
+                'status-transferred': asset.statusName === 'Transferred',
+                'status-closed': asset.statusName === 'Closed'
+              }"  class="badge badge-fixed-width text-dark"
+            >
+              {{ asset.statusName }}
+            </span>
+          </td> -->
+
+        <td>
+          <span class="">
+            {{ asset.statusName }}
+          </span>
+        </td>
+
         <td>{{ asset.registrationDeadline }} days</td>
         <td class="text-end">
-          <button class="btn btn-sm btn-outline-primary me-1" (click)="viewAsset(asset.assetId)">
+          <button
+            class="btn btn-sm btn-outline-primary me-1"
+            (click)="viewAsset(asset.assetId)"
+          >
             <i class="bi bi-eye"></i>
           </button>
-          <button class="btn btn-sm btn-outline-success me-1" (click)="newAssestRoute()">
+          <button
+            class="btn btn-sm btn-outline-success me-1"
+            (click)="EditAssestRoute(asset.assetId)"
+          >
             <i class="bi bi-pencil-square"></i>
           </button>
-          <button class="btn btn-sm btn-outline-danger" (click)="deleteAsset(asset)">
+
+          <button
+            class="btn btn-sm btn-outline-danger"
+            (click)="deleteAsset(asset)"
+          >
             <i class="bi bi-trash"></i>
           </button>
         </td>
       </tr>
     </tbody>
   </table>
-  <pagination-controls id="asset" (pageChange)="page = $event"></pagination-controls>
+  <pagination-controls
+    id="asset"
+    (pageChange)="page = $event"
+  ></pagination-controls>
 </div>
 
 <div *ngIf="selectedAsset" class="modal-overlay">
   <!-- Modal Content -->
   <div class="modal-content">
     <!-- Close Button -->
-    <span class="close-btn" (click)="selectedAsset = null">&times;</span>
+    <!-- <span class="close-btn" (click)="selectedAsset = null">&times;</span> -->
+
+    <!-- <button  class="back-btn" (click)="selectedAsset = null">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button> -->
+
+    <div class="modal-header-purple">
+      <h5 class="modal-title text-white m-0">Asset Details</h5>
+      <button
+        type="button"
+        class="btn-close btn-close-white"
+        aria-label="Close"
+        (click)="selectedAsset = null"
+      ></button>
+    </div>
 
     <div class="modal-body">
       <!-- Gallery Section -->
       <div class="modal-gallery" *ngIf="selectedAsset.galleries.length > 0">
-        <div *ngFor="let gallery of selectedAsset.galleries" class="gallery-item">
-          <img [src]="gallery.fileUrl" alt="Gallery Image" />
+        <div
+          *ngFor="let gallery of selectedAsset.galleries"
+          class="gallery-item"
+        >
+          <!-- <img [src]="gallery.fileUrl" alt="Gallery Image" /> -->
+          <a [href]="gallery.fileUrl" target="_blank">
+            <img [src]="gallery.fileUrl" alt="Gallery Image" />
+          </a>
         </div>
       </div>
 
       <!-- Asset Details Section -->
       <div class="modal-details">
-        <h2>Asset Details</h2>
+        <!-- <h2 class="asset">Asset Details</h2> -->
         <div class="asset-info">
           <div><strong>Title:</strong> {{ selectedAsset.title }}</div>
-          <div><strong>Category:</strong> {{ selectedAsset.categoryName || 'Not Available' }}</div>
-          <div><strong>Asset Number:</strong> {{ selectedAsset.assetNumber }}</div>
-          <div><strong>Starting Price:</strong> BHD {{ selectedAsset.startingPrice | number }}</div>
+          <div>
+            <strong>Category:</strong>
+            {{ selectedAsset.categoryName || "Not Available" }}
+          </div>
+          <div>
+            <strong>Asset Number:</strong> {{ selectedAsset.assetNumber }}
+          </div>
+          <div>
+            <strong>Starting Price:</strong> BHD
+            {{ selectedAsset.startingPrice | number }}
+          </div>
           <div><strong>Status:</strong> {{ selectedAsset.statusName }}</div>
-          <div><strong>Auction Status:</strong> {{ getAuctionStatus(selectedAsset.assetId) }}</div>
-          <div><strong>Registration Deadline:</strong> {{ selectedAsset.registrationDeadline }} days</div>
-          <div><strong>Description:</strong> {{ selectedAsset.description }}</div>
+          <!-- <div>
+              <strong>Status:</strong>
+              <span class="status-badge status-success ms-2">
+                {{ selectedAsset.statusName }}
+              </span>
+            </div>             -->
+
+          <div>
+            <strong>Auction Status:</strong>
+            {{ getAuctionStatus(selectedAsset.auctionStatusId ?? 0) }}
+          </div>
+          <div>
+            <strong>Registration Deadline:</strong>
+            {{ selectedAsset.registrationDeadline }} days
+          </div>
+          <div>
+            <strong>Description:</strong> {{ selectedAsset.description }}
+          </div>
         </div>
 
         <!-- Asset Documents Section -->
@@ -94,12 +324,16 @@
           <h3>Asset Documents</h3>
           <ul>
             <li *ngFor="let document of selectedAsset.documents">
-              <a [href]="document.filePath" target="_blank">{{ document.documentType }}</a>
+              <a
+                [href]="environment.baseurl + document.filePath"
+                target="_blank"
+                >{{ document.documentType }}</a
+              >
             </li>
+            <!-- [href]="document.filePath" -->
           </ul>
         </div>
-      </div>    
+      </div>
     </div>
   </div>
 </div>
-

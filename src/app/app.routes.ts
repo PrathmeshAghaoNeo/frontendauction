@@ -42,6 +42,7 @@ import { UserProfileComponent } from './component/user-profile/user-profile.comp
 import { SignupComponent } from './component/signup/signup.component';
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
+import { DirectBidComponent } from './component/direct-bid/direct-bid.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -75,6 +76,7 @@ export const routes: Routes = [
     { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
     {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
     {path: 'testing', component:ChartComponent}, 
+    { path: 'direct-bid', component: DirectBidComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
     { path: '**', redirectTo: '/login' }
 ];
    
