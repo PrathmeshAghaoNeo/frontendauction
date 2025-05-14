@@ -43,7 +43,7 @@ import { UserProfileComponent } from './component/user-profile/user-profile.comp
 import { SignupComponent } from './component/signup/signup.component';
 import { UserSignupComponent } from './component/user-signup/user-signup.component';
 import { AssetDetailComponent } from './component/asset-details/asset-details.component';
-import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
+// import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 
 
 
@@ -88,7 +88,7 @@ export const routes: Routes = [
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details',component:AssetDetailComponent},
-    {path:'direct-sale-assetpage',component:DirectSaleComponent},
+    // {path:'direct-sale-assetpage',component:DirectSaleComponent},
     { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
     {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
     {path: 'testing', component:ChartComponent}, 

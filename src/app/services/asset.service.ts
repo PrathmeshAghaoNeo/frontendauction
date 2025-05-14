@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Asset, Gallery } from '../modals/manage-asset';
+import { Asset ,AssetGalleryDto} from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { DirectSaleAssetDto } from '../modals/add-asset';
  
@@ -48,9 +48,9 @@ export class ManageAssetService {
     return this.http.put(`${ApiEndpoints.ASSETS}/update-asset-all`, formData);
   }
   
-   getAssetGallery(assetId: number): Observable<Gallery[]> {
+   getAssetGallery(assetId: number): Observable<AssetGalleryDto[]> {
     const url = `${ApiEndpoints.ASSETGALLERY}/${assetId}`;
-    return this.http.get<Gallery[]>(url);
+    return this.http.get<AssetGalleryDto[]>(url);
   }
  
 }

@@ -131,60 +131,7 @@ export class ManageAssetComponent implements OnInit {
   getAuctionStatus(auctionStatusId: number): string {
     return this.statuses.find(s => s.statusId === auctionStatusId)?.statusName || 'Unknown';
   }
-
-  EditAssestRoute(assetId: number): void {
-    if (assetId && !isNaN(assetId)) {
-      this.router.navigate(['/udpate-asset', assetId]);
-    } else {
-      Swal.fire('Error', 'Invalid asset ID', 'error');
-    }
-  }
-
-  onSearchChange(): void {
-    if (!this.searchText.trim()) {
-      this.assets = [...this.originalAssets];
-      return;
-    }
-
-    this.assets = this.originalAssets.filter(asset =>
-      asset.title.toLowerCase().includes(this.searchText.toLowerCase())
-    );
-  }
-
-  sortAssets(column: string): void {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? '' : 'asc';
-    } else {
-      this.sortColumn = column;
-      this.sortDirection = 'asc';
-    }
-
-    if (this.sortDirection === '') {
-      this.assets = [...this.originalAssets];
-      this.onSearchChange();
-      return;
-    }
-
-    const dir = this.sortDirection === 'asc' ? 1 : -1;
-
-    this.assets.sort((a, b) => {
-      const valA = (a as any)[column];
-      const valB = (b as any)[column];
-
-      if (column.toLowerCase().includes('date')) {
-        return (new Date(valA).getTime() - new Date(valB).getTime()) * dir;
-      }
-
-      const strA = valA?.toString().toLowerCase();
-      const strB = valB?.toString().toLowerCase();
-
-      return strA.localeCompare(strB) * dir;
-    });
-  }
-
-  getAuctionStatus(auctionStatusId: number): string {
-    return this.statuses.find(s => s.statusId === auctionStatusId)?.statusName || 'Unknown';
-  }
+  
 
   deleteAsset(asset: Asset): void {
     Swal.fire({
