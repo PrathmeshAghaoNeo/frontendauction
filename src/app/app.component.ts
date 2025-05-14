@@ -8,6 +8,7 @@ import { SidebarComponent } from "./component/sidebar/sidebar.component";
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { BackButtonComponent } from './component/back-button/back-button.component';
+import { SignalRService } from './services/signal-r.service';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,6 @@ import { BackButtonComponent } from './component/back-button/back-button.compone
     FooterComponent,
     SidebarComponent,
     NgIf,
-    BackButtonComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -28,18 +28,21 @@ import { BackButtonComponent } from './component/back-button/back-button.compone
 export class AppComponent {
   currentRoute: string = '';
   
-  
-  ngOnInit(): void {
-   
-  }
-
-  constructor(private router: Router,private authService: AuthService) {
+  constructor(private router: Router,private authService: AuthService, private signalRService:SignalRService) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.currentRoute = event.urlAfterRedirects;
     });
   }
+  
+  ngOnInit(): void {
+    this.signalRService.startConnection();
+    this.signalRService.bidUpdates$.subscribe(data => {
+      console.log('Bid Update Received:', data);
+    });
+  }
+
  
   get isStartPage(): boolean {
     return this.currentRoute === '/';
@@ -50,7 +53,7 @@ export class AppComponent {
   }
 
   get needSideBar(): boolean {
-    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login']);
+    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login', '/user-signup', '/user-profile']);
   }
 
   get showSidebar(): boolean {

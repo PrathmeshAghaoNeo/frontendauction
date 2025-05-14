@@ -1,0 +1,175 @@
+.auction-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+/* License Plate Styling */
+.license-plate {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 2px solid #2d4059;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.flag-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.flag {
+  width: 30px;
+  height: 20px;
+  background-color: #ce1126; /* Bahrain flag color */
+  margin-bottom: 5px;
+}
+
+.country-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  color: #2d4059;
+}
+
+.arabic {
+  margin-bottom: 2px;
+}
+
+.plate-number {
+  flex-grow: 1;
+  font-size: 42px;
+  font-weight: bold;
+  color: #2d4059;
+  text-align: center;
+}
+
+/* Countdown Timer */
+.countdown-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 0;
+}
+
+.time-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 15px;
+}
+
+.time-value {
+  font-size: 42px;
+  font-weight: normal;
+  color: #333;
+}
+
+.time-label {
+  color: #999;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.separator {
+  font-size: 42px;
+  color: #ccc;
+  margin-top: -10px;
+}
+
+/* Bid Information */
+.bid-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+}
+
+.highest-bid, .bids-made {
+  flex: 1;
+  text-align: center;
+}
+
+.bid-amount, .bid-count {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.bid-label {
+  color: #999;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.bid-divider {
+  width: 1px;
+  height: 40px;
+  background-color: #eee;
+}
+
+/* View Info */
+.view-info {
+  display: flex;
+  justify-content: space-between;
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* Bid Button */
+.bid-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 15px;
+  background-color: #9b33d3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: lowercase;
+  transition: background-color 0.2s;
+}
+
+.bid-button:hover {
+  background-color: #7d15b5;
+}
+
+.bid-button i {
+  margin-right: 8px;
+}
+
+/* Original Navigation & Footer (Hidden) */
+.navigation, .footer {
+  display: none;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .plate-number {
+    font-size: 36px;
+  }
+  
+  .time-value {
+    font-size: 36px;
+  }
+  
+  .bid-amount, .bid-count {
+    font-size: 16px;
+  }
+}

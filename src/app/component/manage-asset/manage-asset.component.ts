@@ -67,21 +67,55 @@ export class ManageAssetComponent implements OnInit {
   loadAssets(): void {
     this.assetService.getAssets().subscribe((data) => {
       this.assets = data;
-      this.originalAssets = [...data];
-      console.log('Assets:', this.assets);
-    });
+      this.originalAssets = [...data]; // Assign random status ID
+      });
+    }
+  
+  getRandomStatusId(): number {
+    return Math.floor(Math.random() * 5) + 1;
   }
 
-  openViewAssetModal(asset: Asset): void {
-    this.selectedAsset = asset;
-    this.modalService.open(this.viewAssetModal, {
-      centered: true,
-      size: 'xl',
-      backdrop: 'static'
-    });
+  newAssestRoute(): void {
+    this.router.navigate(['/newAsset']);
   }
 
-  viewAsset(assetId: number): void {
+  EditAssestRoute(assetId: number): void {
+    if (assetId && !isNaN(assetId)) {
+      this.router.navigate(['/udpate-asset', assetId]);
+    } else {
+      Swal.fire('Error', 'Invalid asset ID', 'error');
+    }
+  }
+
+  onSearchChange(): void {
+    if (!this.searchText.trim()) {
+      this.assets = [...this.originalAssets];
+      return;
+    }
+
+    this.assets = this.originalAssets.filter(asset =>
+      asset.title.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
+
+  sortAssets(column: string): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? '' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    if (this.sortDirection === '') {
+      this.assets = [...this.originalAssets];
+      this.onSearchChange();
+      return;
+    }
+  }
+  
+
+  // View asset details
+    viewAsset(assetId: number): void {
     this.assetService.getAssetById(assetId).subscribe(
       (data) => {
         this.selectedAsset = data;
@@ -92,9 +126,10 @@ export class ManageAssetComponent implements OnInit {
       }
     );
   }
+  
 
-  newAssestRoute(): void {
-    this.router.navigate(['/newAsset']);
+  getAuctionStatus(auctionStatusId: number): string {
+    return this.statuses.find(s => s.statusId === auctionStatusId)?.statusName || 'Unknown';
   }
 
   EditAssestRoute(assetId: number): void {
