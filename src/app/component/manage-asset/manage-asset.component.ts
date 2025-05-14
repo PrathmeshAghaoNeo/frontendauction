@@ -37,7 +37,7 @@ export class ManageAssetComponent implements OnInit {
     private assetService: ManageAssetService,
     private router: Router,
     private location: Location,
-    private modalService: NgbModal // ✅ Inject modal service
+    private modalService: NgbModal 
   ) {}
 
   ngOnInit(): void {

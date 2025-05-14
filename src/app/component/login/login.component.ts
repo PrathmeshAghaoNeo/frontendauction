@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone:true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],  
+  imports: [FormsModule, ReactiveFormsModule, CommonModule,RouterModule],  
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -87,6 +87,9 @@ export class LoginComponent implements OnInit {
   }
   
   
+   newAssestRoute():void {
+    this.router.navigate(['/user-sign']);
+  }
 
   
 
