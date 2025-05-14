@@ -111,22 +111,25 @@
 
   
       <div class="row">
-        <div class="col-md-6 mb-3">
-            <label for="statusId" class="form-label required-label">Status</label>
-            
-            <select formControlName="statusId" id="statusId" class="form-select">
-                <option value="" disabled selected>Select Status</option>
-                <option *ngFor="let status of statuses" [value]="status.statusId">
-                    {{ status.statusName }}
-                </option>
-            </select>
-            <div *ngIf="assetCategoryForm.get('statusId')?.invalid && assetCategoryForm.get('statusId')?.touched" class="text-danger">
-                Status is required.
-            </div>
+                <div class="col-md-6 mb-3">
+          <label for="statusId" class="form-label required-label">Status</label>
+
+          <select formControlName="statusId" id="statusId" class="form-select">
+            <option value="" disabled hidden>Select Status</option>
+            <option *ngFor="let status of statuses" [value]="status.statusId">
+              {{ status.statusName }}
+            </option>
+          </select>
+
+          <div *ngIf="assetCategoryForm.get('statusId')?.invalid && assetCategoryForm.get('statusId')?.touched" class="text-danger">
+            Status is required.
+          </div>
         </div>
+
         <div class="col-md-6 mb-3">
           <label for="adminFees" class="form-label">Admin Fees</label>
-          <input type="number" formControlName="adminFees" id="adminFees" class="form-control" />
+          <input type="number" formControlName="adminFees" id="adminFees" class="form-control" maxlength="7"
+            (input)="enforceMaxLength($event)"/>
           <div *ngIf="assetCategoryForm.get('adminFees')?.invalid && assetCategoryForm.get('adminFees')?.touched" class="text-danger">
             Admin Fees are required and must be a number.
           </div>
@@ -134,7 +137,15 @@
   
         <div class="col-md-6 mb-3">
           <label for="auctionFees" class="form-label">Auction Fees</label>
-          <input type="number" formControlName="auctionFees" id="auctionFees" class="form-control" />
+                    <input
+            type="number"
+            formControlName="adminFees"
+            id="adminFees"
+            class="form-control"
+            maxlength="7"
+            (input)="enforceMaxLength($event)"
+          />
+
           <div *ngIf="assetCategoryForm.get('auctionFees')?.invalid && assetCategoryForm.get('auctionFees')?.touched" class="text-danger">
             Auction Fees are required and must be a number.
           </div>
@@ -142,39 +153,45 @@
   
         <div class="col-md-6 mb-3">
           <label for="buyersCommission" class="form-label">Buyers Commission</label>
-          <input type="number" formControlName="buyersCommission" id="buyersCommission" class="form-control" />
+          <input type="number" formControlName="buyersCommission" id="buyersCommission" class="form-control"
+          maxlength="7"
+            (input)="enforceMaxLength($event)"
+             />
           <div *ngIf="assetCategoryForm.get('buyersCommission')?.invalid && assetCategoryForm.get('buyersCommission')?.touched" class="text-danger">
             Buyers Commission is required and must be a number.
           </div>
         </div>
   
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="registrationDeadline" class="form-label">Registration Deadline</label>
-            <input type="date" formControlName="registrationDeadline" id="registrationDeadline" class="form-control" [min]="minDate" />
-            <div *ngIf="assetCategoryForm.get('registrationDeadline')?.invalid && assetCategoryForm.get('registrationDeadline')?.touched" class="text-danger">
-              Invalid Registration Deadline.
-            </div>
+        <div class="col-md-6 mb-3">
+          <label for="registrationDeadline" class="form-label">Registration Deadline</label>
+          <input type="date" formControlName="registrationDeadline" id="registrationDeadline" class="form-control" [min]="minDate" />
+          <div *ngIf="assetCategoryForm.get('registrationDeadline')?.invalid && assetCategoryForm.get('registrationDeadline')?.touched" class="text-danger">
+            Invalid Registration Deadline.
           </div>
         </div>
         
-  
         <div class="col-md-6 mb-3">
-          <label for="vat" class="form-label ">VAT ID</label>
-          <input type="text" formControlName="vat" id="vat" class="form-control" />
+          <label for="vat" class="form-label">VAT Type</label>
+          <select formControlName="vat" id="vat" class="form-select">
+            <option [value]="1">Exclusive</option>
+            <option [value]="2">Inclusive</option>
+            <option [value]="3">Not Applicable</option>
+          </select>
           <div *ngIf="assetCategoryForm.get('vat')?.invalid && assetCategoryForm.get('vat')?.touched" class="text-danger">
             VAT is required.
           </div>
         </div>
-  
+      </div>
+
         <div class="col-md-6 mb-3">
           <label for="vatPercentage" class="form-label">VAT %</label>
-          <input type="number" formControlName="vatPercentage" id="vatPercentage" class="form-control" />
+          <input type="number" formControlName="vatPercentage" id="vatPercentage" class="form-control" 
+            (input)="enforceMaxLength($event)" min="0"
+                max="100" />
           <div *ngIf="assetCategoryForm.get('vatPercentage')?.invalid && assetCategoryForm.get('vatPercentage')?.touched" class="text-danger">
-            VAT Percentage is required and must be a number.
+            VAT Percentage is required and must be between 0 to 100.
           </div>
         </div>
-      </div>
   
       <button class="btn btn-primary w-100 mt-3" type="submit">Create Asset Category</button>
     </form>

@@ -30,7 +30,6 @@ export class AddRequestsComponent implements OnInit {
   assets: Asset[] = [];
   transactions: Transaction[] = [];
   selectedUsername: string = '';
-  
   // Form submission tracking
   formSubmitted = false;
   successMessage: string | null = null;

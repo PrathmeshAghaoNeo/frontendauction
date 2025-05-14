@@ -1,0 +1,12 @@
+<p>auction-assets works!</p>
+<section class="asset-section mt-5">
+  <h2 class="text-center section-heading">Auction Assets</h2>
+
+  <div class="asset-grid">
+    <div class="asset-card" *ngFor="let asset of assets">
+      <img [src]="asset.imageUrl || 'assets/images/default-image.png'" alt="{{ asset.name }}" />
+      <h3>{{ asset.name }}</h3>
+      <p>{{ asset.description }}</p>
+    </div>
+  </div>
+</section>

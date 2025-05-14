@@ -83,50 +83,24 @@ pagination-controls {
   to { opacity: 0; transform: translateY(10px); }
 }
 
-/* Enhanced Status indicators - button-like appearance */
-.status-badge {
-  padding: 0.35em 0.65em;
-  font-size: 0.75em;
-  font-weight: 500;
-  border-radius: 20px; /* Fully rounded corners */
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  display: inline-block;
-  min-width: 80px; /* Consistent width */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Status-specific colors */
-/* Status 1 - Pending */
-.status-badge.bg-warning {
-  background-color: var(--warning-color) !important;
-  color: #212529 !important;
-  background-color:  #ffc107;
-}
-
 /* Status 2 - Done */
 .status-badge.bg-success {
   background-color: var(--success-color) !important;
-  color: white !important;
 }
 
 /* Status 3 - Approved */
 .status-badge.bg-orange {
-  background-color: #fd7e14 !important; /* Direct color value for better compatibility */
-  color: white !important;
+  background-color: #fd7e14 !important;
 }
 
 /* Define bg-orange class separately for broader compatibility */
 .bg-orange {
   background-color: #fd7e14 !important;
-  color: white !important;
 }
 
 /* Status 4 - Rejected */
 .status-badge.bg-danger {
   background-color: var(--danger-color) !important;
-  color: white !important;
 }
 
 /* Sort icons styling */
@@ -163,37 +137,35 @@ th:hover i.bi {
   .action-buttons .btn {
     margin-bottom: 5px;
   }
-  
+
   .d-flex {
     flex-direction: column;
   }
-  
+
   .d-flex > button {
     margin-bottom: 10px;
   }
-  
+
   .status-badge {
-    min-width: 70px; /* Slightly smaller on mobile */
+    min-width: 70px;
   }
 
+  .modal-body label {
+    font-size: 14px;
+    color: #555;
+  }
 
+  .modal-body p {
+    font-size: 16px;
+  }
 
-.modal-body label {
-  font-size: 14px;
-  color: #555;
+  .modal-body .bg-light {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    font-size: 15px;
+    min-height: 60px;
+  }
 }
-
-.modal-body p {
-  font-size: 16px;
-}
-
-.modal-body .bg-light {
-  background-color: #f8f9fa;
-  border-radius: 5px;
-  font-size: 15px;
-  min-height: 60px;
-}
-
 
 /* Text primary color matching your theme */
 .text-primary {
@@ -246,7 +218,7 @@ th:hover i.bi {
   }
 }
 
-/* Modal header purple (you already have, but include if missing) */
+/* Modal header purple */
 .modal-header-purple {
   background-color: #b99af3;
   color: white;
@@ -255,27 +227,6 @@ th:hover i.bi {
 bg-purple {
   background-color: #6f42c1 !important;
   color: #fff;
-}
-
-/* Reusable badge style */
-.badge {
-  display: inline-block;
-  padding: 0.5rem 1rem; 
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  border-radius: 999px; 
-  align-content: center;
-}
-
-/* Fixed-width badge (for consistent width) */
-.badge-fixed-width {
-  min-height: 35px; 
-  min-width: 90px; 
-  max-width: 120px; 
 }
 
 /* Auction-style form container */
@@ -289,7 +240,22 @@ bg-purple {
   margin-top: 10px;
 }
 
+/* Updated badge styles as requested */
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 999px;
+  align-content: center;
+}
 
-
-
+.badge-fixed-width {
+  min-height: 35px;
+  min-width: 90px;
+  max-width: 120px;
 }
