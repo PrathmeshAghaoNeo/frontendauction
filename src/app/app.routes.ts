@@ -75,7 +75,7 @@ export const routes: Routes = [
     { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
     {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
     {path: 'testing', component:ChartComponent}, 
-    { path: '**', redirectTo: '/login' }
+    { path: '**', redirectTo: '/assetcategories' }
 ];
    
 

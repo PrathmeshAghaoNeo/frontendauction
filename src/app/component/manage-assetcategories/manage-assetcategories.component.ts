@@ -15,6 +15,8 @@ import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { FormsModule } from '@angular/forms';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 import { environment } from '../../constants/enviroments';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-manage-assetcategories',
@@ -55,19 +57,28 @@ export class ManageAssetCategoriesComponent implements OnInit {
     private modalService: NgbModal,
     private router: Router,
     private assetCategoriesService: AssetCategoriesService,
-  ) {}
+  ) { }
+
 
   ngOnInit(): void {
     this.fetchAssetCategories();
   }
+
   getFullIconUrl(icon: string | null | undefined): string {
     if (!icon) return '';
     if (icon.startsWith('http') || icon.startsWith('data:image')) {
       return icon; // already full path or base64
     }
-    return `${ApiEndpoints.ASSETCATEGORIES}`; 
+    return `${ApiEndpoints.ASSETCATEGORIES}`;
   }
-
+  getVatTypeLabel(vatid: number | undefined): string {
+    switch (vatid) {
+      case 1: return 'Exclusive';
+      case 2: return 'Inclusive';
+      case 3: return 'Not Applicable';
+      default: return 'N/A';
+    }
+  }
   assetBaseUrl: string = `${environment.baseurl}`;
   fetchAssetCategories(): void {
     this.assetCategoriesService.getAll().subscribe({
@@ -81,8 +92,15 @@ export class ManageAssetCategoriesComponent implements OnInit {
       }
     });
   }
-    getRowIndex(index: number): number {
+  getRowIndex(index: number): number {
     return (this.page - 1) * this.itemsPerPage + index + 1;
+  }
+  getSortIcon(column: string): string {
+    if (this.sortColumn === column) {
+      return this.sortDirection === 'asc' ? '↑' : this.sortDirection === 'desc' ? '↓' : '⇅';
+    } else {
+      return '⇅';
+    }
   }
 
   applyFilters(): void {
@@ -129,7 +147,7 @@ export class ManageAssetCategoriesComponent implements OnInit {
     });
   }
 
-   getStatusName(statusId: number | null | undefined): string {
+  getStatusName(statusId: number | null | undefined): string {
     if (statusId === null || statusId === undefined) {
       return 'Unknown';
     }
@@ -180,5 +198,39 @@ export class ManageAssetCategoriesComponent implements OnInit {
         Swal.fire('Error!', 'Failed to delete category.', 'error');
       }
     });
+  }
+  exportToExcel(): void {
+    const exportData = this.allAssetCategories.map(assetcateg => ({
+      'Category Name': assetcateg.categoryName,
+      'Sub Category': assetcateg.subcategory,
+      'Deposit %': assetcateg.depositPercentage,
+      'Details': assetcateg.details,
+      'Status': assetcateg.statusName,
+      'Admin Fees': assetcateg.adminFees,
+      'Auction Fees': assetcateg.auctionFees,
+      "Buyer's Commission": assetcateg.buyerCommission,
+      'Registration Deadline': assetcateg.registrationDeadline,
+      'VAT Applicable': assetcateg.vatid,
+      'VAT %': assetcateg.vatpercentage,
+      'Payment Methods': assetcateg.paymentMethodIds?.join(', ') || '-'
+    }));
+
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'AssetCategories': worksheet },
+      SheetNames: ['AssetCategories']
+    };
+
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array'
+    });
+
+    const blob: Blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+    });
+
+    FileSaver.saveAs(blob, 'AssetCategories.xlsx');
   }
 }
