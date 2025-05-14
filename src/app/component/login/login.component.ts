@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     step = 1;
     error = '';
     otpLength = 6; // Set your OTP length (typically 4-6 digits)
-  otpArray: string[] = new Array(this.otpLength).fill('');
+    otpArray: string[] = new Array(this.otpLength).fill('');
 
     constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
 

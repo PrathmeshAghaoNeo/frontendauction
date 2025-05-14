@@ -21,7 +21,6 @@ import { SignalRService } from './services/signal-r.service';
     FooterComponent,
     SidebarComponent,
     NgIf,
-    BackButtonComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

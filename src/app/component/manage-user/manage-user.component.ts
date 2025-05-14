@@ -149,7 +149,6 @@ export class ManageUserComponent implements OnInit {
   
       return matchesSearch && matchesRole && matchesStatus;
     });
-    this.page = 1;
   }
    sortData(key: keyof UserView | 'roleName') {
     if (this.sortKey === key || this.sortKey === 'roleName') {
