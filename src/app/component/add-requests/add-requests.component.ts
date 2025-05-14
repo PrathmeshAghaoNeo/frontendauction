@@ -8,8 +8,9 @@ import { Asset } from '../../modals/manage-asset';
 import { RequestServices } from '../../services/requests.service';
 import { UserService } from '../../services/user.service';
 import { ManageAssetService } from '../../services/asset.service';
-import { TransactionService, Transaction } from '../../services/transaction.service';
+import { TransactionService } from '../../services/transaction.service';
 import { FormsModule, ReactiveFormsModule, NgForm } from '@angular/forms';
+import { Transaction } from '../../modals/manage-transaction';
 
 @Component({
   selector: 'app-add-request',
@@ -88,7 +89,7 @@ export class AddRequestsComponent implements OnInit {
   }
 
   loadTransactions(): void {
-    this.transactionService.getAllTransactions().subscribe({
+    this.transactionService.getTransactions().subscribe({
       next: (data) => this.transactions = data,
       error: (err) => {
         console.error('Failed to load transactions', err);

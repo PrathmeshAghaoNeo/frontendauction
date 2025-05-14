@@ -23,13 +23,18 @@ import { TestloginComponent } from './component/testlogin/testlogin.component';
 import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
 import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
 import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
-import { AddRequestComponent } from './component/add-requests/add-requests.component';
+import { AddRequestsComponent } from './component/add-requests/add-requests.component';
 import { AddTransactionComponent } from './component/add-transaction/add-transaction.component';
 import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
 import { ChartComponent } from './component/chart/chart.component';
-import { AddRequestsComponent } from './component/add-requests/add-requests.component';
+// import { AddRequestsComponent } from './component/add-requests/add-requests.component';
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { SignupComponent } from './component/signup/signup.component';
+import { UserSignupComponent } from './component/user-signup/user-signup.component';
+import { AssetDetailComponent } from './component/asset-details/asset-details.component';
+import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
+
+
 
 
 export const routes: Routes = [
@@ -51,7 +56,7 @@ export const routes: Routes = [
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'requestsnew', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
-    { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    // { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'transactions', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
@@ -65,7 +70,10 @@ export const routes: Routes = [
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'Admin' }},
-    {path:'signup',component:SignupComponent},
+    // {path:'signup',component:SignupComponent},
     {path: 'testing', component:ChartComponent},  
+    {path:'user-signup',component:UserSignupComponent},
+    {path:'asset-details',component:AssetDetailComponent},
+    {path:'direct-sale-assetpage',component:DirectSaleComponent},
     { path: '**', redirectTo: '/login' }
 ];

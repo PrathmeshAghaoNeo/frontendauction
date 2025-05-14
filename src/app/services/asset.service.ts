@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Asset } from '../modals/manage-asset';
+import { Asset, Gallery } from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
  
 @Injectable({
@@ -31,6 +31,11 @@ export class ManageAssetService {
   getAssetById(assetId: number): Observable<Asset> {
     const url = `${ApiEndpoints.ASSETS}/${assetId}`;
     return this.http.get<Asset>(url);
+  }
+
+   getAssetGallery(assetId: number): Observable<Gallery[]> {
+    const url = `${ApiEndpoints.ASSETGALLERY}/${assetId}`;
+    return this.http.get<Gallery[]>(url);
   }
  
 }

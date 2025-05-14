@@ -1,0 +1,95 @@
+<div class="auction-container">
+  <!-- License Plate Display -->
+  <div class="license-plate">
+    <div class="flag-section">
+      <!-- <img src="/api/placeholder/30/20" alt="Bahrain Flag" class="flag" /> -->
+      <div class="country-name">
+        <span class="arabic">البحرين</span>
+        <span class="english">BAHRAIN</span>
+      </div>
+    </div>
+    <div class="plate-number">{{ asset?.assetNumber || '676776' }}</div>
+  </div>
+
+  <!-- Countdown Timer -->
+  <div class="countdown-container">
+    <div class="time-unit">
+      <div class="time-value">{{ timeLeft.days }}</div>
+      <div class="time-label">days</div>
+    </div>
+    <div class="separator">:</div>
+    <div class="time-unit">
+      <div class="time-value">{{ timeLeft.hours < 10 ? '0' + timeLeft.hours : timeLeft.hours }}</div>
+      <div class="time-label">hours</div>
+    </div>
+    <div class="separator">:</div>
+    <div class="time-unit">
+      <div class="time-value">{{ timeLeft.minutes < 10 ? '0' + timeLeft.minutes : timeLeft.minutes }}</div>
+      <div class="time-label">minutes</div>
+    </div>
+  </div>
+
+  <!-- Bid Information -->
+  <div class="bid-info">
+    <div class="highest-bid">
+      <div class="bid-amount">bhd{{ highestBid?.toLocaleString() || '5,000' }}</div>
+      <div class="bid-label">highest_bid</div>
+    </div>
+    <div class="bid-divider"></div>
+    <div class="bids-made">
+      <div class="bid-count">{{ totalBids || 9 }}</div>
+      <div class="bid-label">bids_made</div>
+    </div>
+  </div>
+
+  <!-- View Count and Date -->
+  <div class="view-info">
+    <div class="view-count">
+      <i class="fa fa-eye"></i> {{ viewCount || 5044 }}
+    </div>
+    <div class="auction-date">
+      <i class="fa fa-calendar"></i> Wednesday 14/05/2025 at 6:30 PM
+    </div>
+  </div>
+
+  <!-- Bid Button -->
+  <button class="bid-button" (click)="placeBid()">
+    <i class="fa fa-gavel"></i> bid_now
+  </button>
+
+  <!-- Navigation (Hidden in image but keeping it for functionality) -->
+  <div class="navigation" style="display: none;">
+    <a href="javascript:history.back()" class="back-link">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <span class="breadcrumb">
+      auction > Car Plates > {{ asset?.assetNumber || '676776' }}
+    </span>
+    <div class="actions">
+      <button class="more">
+        <i class="fa fa-ellipsis-h"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer (Hidden in image but keeping it for functionality) -->
+  <div class="footer" style="display: none;">
+    <div class="footer-section">
+      <h3 class="footer-heading">help</h3>
+      <ul class="footer-links">
+        <li><a href="#">contact_support</a></li>
+        <li><a href="#">privacy_policy</a></li>
+        <li><a href="#">terms_of_services</a></li>
+        <li><a href="#">cookie_policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h3 class="footer-heading">resources</h3>
+      <ul class="footer-links">
+        <li><a href="#">faq</a></li>
+        <li><a href="#">guides</a></li>
+        <li><a href="#">status</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -6,12 +6,13 @@ import Swal from 'sweetalert2';
 import { EditRequests } from '../../modals/edit.requests';
 import { UserView } from '../../modals/user';
 import { Asset } from '../../modals/manage-asset';
-import { Transaction } from '../../services/transaction.service';
+
 
 import { RequestServices } from '../../services/requests.service';
 import { UserService } from '../../services/user.service';
 import { ManageAssetService } from '../../services/asset.service';
 import { TransactionService } from '../../services/transaction.service';
+import { Transaction } from '../../modals/manage-transaction';
 
 @Component({
   selector: 'app-edit-requests',
@@ -136,7 +137,7 @@ export class EditRequestsComponent implements OnInit {
   }
 
   loadTransactions(): void {
-    this.transactionService.getAllTransactions().subscribe({
+    this.transactionService.getTransactions().subscribe({
       next: (data) => {
         console.log('Transactions loaded:', data.length);
         this.transactions = data;

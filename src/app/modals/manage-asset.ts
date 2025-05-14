@@ -39,6 +39,7 @@ export interface Asset {
 }
 
 export interface Gallery {
+[x: string]: any;
   mediaType: string;
   filePath: string;
   sortOrder: number;
