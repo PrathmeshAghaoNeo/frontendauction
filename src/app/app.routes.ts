@@ -49,6 +49,7 @@ import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sa
 
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
+import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -90,6 +91,7 @@ export const routes: Routes = [
     { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
     {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
     {path: 'testing', component:ChartComponent}, 
+    {path: 'signal', component:SignalrTestComponent},
     { path: '**', redirectTo: '/login' }
 ];
    
