@@ -19,6 +19,7 @@ export const ApiEndpoints = {
   USER: `${BASE_URL}/User`,
   REQUEST: `${BASE_URL}/Request`,
   Auth: `${BASE_URL}/Auth`,
+  Bid : `${BASE_URL}/Bid`,
 
   
 };
