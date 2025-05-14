@@ -5,6 +5,9 @@
   font-family: Arial, sans-serif;
 }
 
+
+
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -64,6 +67,20 @@
   background-color: #fff;
 }
 
+.bt_import{
+ background-color: #eabc54;
+}
+
+.bt_filter{
+  background-color: #f4e8fc;
+ }
+
+ .bt_export{
+  background-color: #28a745;
+ }
+ .bt_newAsset{
+  background-color: #e38b0a;
+ }
 .image-title img {
   max-width: 50px;
   max-height: 50px;
@@ -162,7 +179,7 @@
 
 .modal-content {
   background-color: #fff;
-  padding: 20px;
+  /* padding: 20px; */
   border-radius: 5px;
   max-width: 500px;
   width: 80%;
@@ -202,9 +219,9 @@ animation: fadeIn 0.3s ease-in-out;
 background-color: white;
 color: #333;
 border-radius: var(--card-radius);
-padding: 2rem;
+/* padding: 2rem; */
 max-width: 1100px;
-width: 95%;
+width: 100%;
 max-height: 90vh;
 overflow-y: auto;
 box-shadow: var(--shadow-light);
@@ -268,6 +285,34 @@ transform: scale(1.05);
 flex: 2 1 500px;
 font-family: var(--font-family);
 }
+
+.asset-name {
+  width: 100%;
+  background-color: #f0f4f8; 
+  padding: 1rem;
+  margin: 0 0 1.5rem 0;
+  font-size: 28px;
+  color: var(--primary-color);
+  font-weight: 600;
+  border-radius: 6px; 
+  box-sizing: border-box;
+}
+
+.modal-header-purple {
+  width: 100%;
+  position: relative;
+  background-color: #b99af3;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 1.5rem;
+  /* border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem; */
+
+  margin-bottom: 10px;
+}
+
 
 .modal-details h2 {
 font-size: 28px;
@@ -342,53 +387,145 @@ to {
 }
 }
 
-
-/* 
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 800px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-}
-
-.close-btn {
+.back-btn {
   position: absolute;
-  top: 12px;
-  right: 18px;
-  font-size: 24px;
-  font-weight: bold;
+  left: 1rem;
+  top: 1rem;
+  background: none;
+  border: none;
+  color: #d4cdcd;
   cursor: pointer;
-}
-
-.gallery {
+  padding: 5px 10px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border: 2px solid white; 
+  z-index: 1; /* Ensure it's above background elements */
 }
 
-.gallery-image {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.back-btn:hover {
+  color: #6a1b9a;
+  transform: scale(1.1);
 }
- */
+
+.back-btn i {
+  font-size: 2rem;
+}
+
+/* .back-btn {
+  position: absolute; 
+  background: none;  
+  top: 1rem;
+  right: 1.5rem;
+  border: none;      
+  font-size: 1.5rem;
+  color: #333;       
+  cursor: pointer;
+  margin: 10px 0 0 10px;
+  padding: 5px;     
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 9999;     
+}
+
+.back-btn:hover {
+  color: purple;      
+  transform: scale(1.1); 
+}
+
+.back-btn i {
+  font-size: 2rem;     
+} */
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 999px; 
+  align-content: center;
+  color: #000;  /* Set the text color to dark */
+}
+
+.badge-fixed-width {
+  min-height: 35px; 
+  min-width: 90px; 
+  max-width: 120px; 
+}
+
+.asset-status {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+
+.status-draft {
+  background-color: #f0ad4e; /* Bootstrap 'warning' */
+  color: white;
+}
+
+.status-published {
+  background-color: #5bc0de; /* Bootstrap 'info' */
+  color: white;
+}
+
+.status-auctioned {
+  background-color: #d9534f; /* Bootstrap 'danger' */
+  color: white;
+}
+
+.status-archived {
+  background-color: #6c757d; /* Bootstrap 'secondary' */
+  color: white;
+}
+
+.status-pending {
+  background-color: #ffc107; /* Bootstrap 'warning' */
+  color: white;
+}
+
+.status-approved {
+  background-color: #28a745; /* Bootstrap 'success' */
+  color: white;
+}
+
+.status-payment {
+  background-color: #17a2b8; /* Bootstrap 'info' */
+  color: white;
+}
+
+.status-registration {
+  background-color: #007bff; /* Bootstrap 'primary' */
+  color: white;
+}
+
+.status-transferred {
+  background-color: #343a40; /* Bootstrap 'dark' */
+  color: white;
+}
+
+.status-closed {
+  background-color: #28a745; /* Bootstrap 'success' */
+  color: white;
+}
+
+.status-unknown {
+  background-color: #c9d6e2; /* Bootstrap 'secondary' */
+  color: white;
+}
+
+.status-active{
+  background-color: yellow; /* Bootstrap 'success' */
+  color: white;
+}

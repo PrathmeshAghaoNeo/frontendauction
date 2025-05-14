@@ -11,6 +11,11 @@ export class ManageAssetService {
   
   constructor(private http: HttpClient) { }
  
+
+
+  addAssetWithGallery(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${ApiEndpoints.ASSETS}/CreateWithGallery`, formData);
+  }
   // Fetch all assets
   getAssets(): Observable<Asset[]> {
     return this.http.get<Asset[]>(`${ApiEndpoints.ASSETS}/GetAll`); 
@@ -32,5 +37,8 @@ export class ManageAssetService {
     const url = `${ApiEndpoints.ASSETS}/${assetId}`;
     return this.http.get<Asset>(url);
   }
- 
+
+  updateAssetWithGallery(formData: FormData): Observable<any> {
+    return this.http.put(`${ApiEndpoints.ASSETS}/update-asset-all`, formData);
+  }
 }
