@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignalRTestComponent } from './signal-r-test.component';
+import { BidAddToCartComponent } from './bid-add-to-cart.component';
 
-describe('SignalRTestComponent', () => {
-  let component: SignalRTestComponent;
-  let fixture: ComponentFixture<SignalRTestComponent>;
+describe('BidAddToCartComponent', () => {
+  let component: BidAddToCartComponent;
+  let fixture: ComponentFixture<BidAddToCartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignalRTestComponent]
+      imports: [BidAddToCartComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SignalRTestComponent);
+    fixture = TestBed.createComponent(BidAddToCartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

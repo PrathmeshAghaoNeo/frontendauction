@@ -56,3 +56,22 @@ export interface AssetDetailDto {
   attributeName: string;
   attributeValue: string;
 }
+
+
+export interface DirectSaleAssetDto {
+  assetId: number;
+  title: string;
+  categoryId: number;
+  deposit: number;
+  minIncrement: number;
+  description: string;
+  isDeleted: boolean;
+  salesNotes: string;
+  price: number;
+  thumbnailUrl: string | null;
+  categoryName: string;
+  isAvailableForDirectSale: boolean;
+  galleries: AssetGalleryDto[]; 
+ 
+}
+ 

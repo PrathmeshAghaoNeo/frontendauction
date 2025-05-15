@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 import { ManageAssetService } from '../../services/asset.service';
-import { Asset, Gallery } from '../../modals/manage-asset';
+import { Asset } from '../../modals/manage-asset';
 import { CommonModule } from '@angular/common';
 // import { DirectSaleComponent } from './direct-sale-assetpage.component';
 
@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
 export class DirectSaleComponent implements OnInit {
   assetId = 0;
   asset: Asset | null = null;
-  gallery: Gallery[] = [];
+  // gallery: Gallery[] = [];
   isLoading = true;
   viewCount = 0;
   price = 0;
@@ -41,39 +41,39 @@ export class DirectSaleComponent implements OnInit {
   this.isLoading = true;
   
   // Get asset details first
-  this.assetService.getAssetById(this.assetId).subscribe({
-    next: (assetData) => {
-      this.asset = assetData;
-      this.plateNumber = assetData.assetNumber || '';
-      this.price = assetData.startingPrice ?? 0;
+  // this.assetService.getAssetById(this.assetId).subscribe({
+  //   next: (assetData) => {
+  //     this.asset = assetData;
+  //     this.plateNumber = assetData.assetNumber || '';
+  //     this.price = assetData.startingPrice ?? 0;
       
-      // Then get gallery images
-      this.assetService.getAssetGallery(this.assetId).subscribe({
-        next: (galleryData) => {
-          // Handle both array and single object responses
-          if (Array.isArray(galleryData)) {
-            this.gallery = galleryData;
-          } else if (galleryData && typeof galleryData === 'object') {
-            this.gallery = [galleryData as Gallery];
-          }
+  //     // Then get gallery images
+  //     this.assetService.getAssetGallery(this.assetId).subscribe({
+  //       next: (galleryData) => {
+  //         // Handle both array and single object responses
+  //         if (Array.isArray(galleryData)) {
+  //           this.gallery = galleryData;
+  //         } else if (galleryData && typeof galleryData === 'object') {
+  //           this.gallery = [galleryData as Gallery];
+  //         }
           
-          // Process each gallery item to ensure proper image URL
-          this.gallery = this.gallery.map(item => {
-            if (item.fileUrl) {
-              item.fileUrl = item.fileUrl;
-            } else if (item.filePath) {
-              item.fileUrl = item.filePath;
-            }
-            return item;
-          });
+  //         // Process each gallery item to ensure proper image URL
+  //         this.gallery = this.gallery.map(item => {
+  //           if (item.fileUrl) {
+  //             item.fileUrl = item.fileUrl;
+  //           } else if (item.filePath) {
+  //             item.fileUrl = item.filePath;
+  //           }
+  //           return item;
+  //         });
           
-          this.isLoading = false;
-        },
-        error: (err) => { /* Error handling */ }
-      });
-    },
-    error: (err) => { /* Error handling */ }
-  });
+  //         this.isLoading = false;
+  //       },
+  //       error: (err) => { /* Error handling */ }
+  //     });
+  //   },
+  //   error: (err) => { /* Error handling */ }
+  // });
 }
 
   handleImageError(event: Event): void {

@@ -53,7 +53,7 @@ export class AppComponent {
   }
 
   get needSideBar(): boolean {
-    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login', '/user-signup', '/user-profile']);
+    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login', '/user-signup', '/user-profile','/direct-bid','/bid-watchlist','/bid-add-to-cart','/direct-sale-assets/:categoryId']);
   }
 
   get showSidebar(): boolean {

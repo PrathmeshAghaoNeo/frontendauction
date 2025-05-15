@@ -1,0 +1,40 @@
+<div class="cart-grid">
+  <div class="cart-card" *ngFor="let asset of watchlistAssets">
+    <div class="cart-image-wrap">
+      <img
+        *ngIf="asset.galleries?.length"
+        [src]="asset.galleries[0]?.fileUrl"
+        alt="Asset Image"
+        class="cart-image"
+      />
+    </div>
+
+    <div class="cart-content">
+      <div class="cart-title">{{ asset.title }}</div>
+      <div class="cart-number">Asset #{{ asset.assetNumber }}</div>
+      <div class="cart-info">BAHRAIN</div>
+
+      <div class="cart-bottom-row">
+        <div class="price">BHD {{ asset.startingPrice }}</div>
+
+        <div class="cart-actions">
+          <button class="icon-btn" title="Remove from Cart">
+            <img src="trash.png" class="button-image1" />
+          </button>
+          <button class="icon-btn" title="Checkout">
+            <img src="addtocart.png" class="button-image2" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="cart-navigation-buttons">
+  <button class="nav-btn back-btn" (click)="goBack()">
+    Back
+  </button>
+  <button class="nav-btn cart-btn" (click)="goToCart()">
+    Go to Cart
+  </button>

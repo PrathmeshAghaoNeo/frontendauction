@@ -74,8 +74,9 @@
 
 .plates-container.grid-view {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+   padding: 2rem;
 }
 
 
@@ -128,8 +129,10 @@
 
 .plates-container.row-view .price {
   white-space: nowrap;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 600;
   padding: 0px 2px;
+  color: #27ae60;
 }
 
 .plates-container.row-view .icons {
@@ -287,13 +290,14 @@
   width: 25px;
   height: 25px;
   object-fit: contain;
-}
+} 
 .price1 {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--primary-dark);
   text-align: left;
   padding: 0px 4px;
+  color: #27ae60;
 }
 
 
