@@ -223,7 +223,6 @@ export class ManageAuctionComponent implements OnInit {
     });
   }
   exportToExcel(): void {
-    // Format the data
     const exportData = this.allAuctions.map(auc => ({
       'Auction Title': auc.title,
       'Auction Type': auc.type,
@@ -238,8 +237,8 @@ export class ManageAuctionComponent implements OnInit {
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     const workbook: XLSX.WorkBook = {
-      Sheets: { 'Transactions': worksheet },
-      SheetNames: ['Transactions']
+      Sheets: { 'ListofAllAuctions': worksheet },
+      SheetNames: ['ListofAllAuctions']
     };
 
     const excelBuffer: any = XLSX.write(workbook, {
