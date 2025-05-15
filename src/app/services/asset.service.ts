@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Asset, Gallery } from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
  
@@ -37,5 +37,5 @@ export class ManageAssetService {
     const url = `${ApiEndpoints.ASSETGALLERY}/${assetId}`;
     return this.http.get<Gallery[]>(url);
   }
- 
+
 }

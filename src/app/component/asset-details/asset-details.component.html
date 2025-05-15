@@ -1,112 +1,238 @@
-<div class="auction-container">
-  <!-- License Plate Display -->
-  <div class="license-plate">
-    <div class="flag-section">
-      <!-- <img src="/api/placeholder/30/20" alt="Bahrain Flag" class="flag" /> -->
-      <div class="country-name">
-        <span class="arabic">البحرين</span>
-        <span class="english">BAHRAIN</span>
+<div class="container-fluid px-3 py-3" *ngIf="isLoading">
+  <div class="row">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <div class="plate-number">{{ asset?.assetNumber || '676776' }}</div>
   </div>
+</div>
 
-  <!-- Countdown Timer -->
-  <div class="countdown-container" [ngClass]="{'warning': timeLeft.total <= 5 * 60 * 1000}">
-    <div class="time-unit">
-      <div class="time-value">{{ timeLeft.days }}</div>
-      <div class="time-label">days</div>
-    </div>
-    <div class="separator">:</div>
-    <div class="time-unit">
-      <div class="time-value">{{ timeLeft.hours < 10 ? '0' + timeLeft.hours : timeLeft.hours }}</div>
-      <div class="time-label">hours</div>
-    </div>
-    <div class="separator">:</div>
-    <div class="time-unit">
-      <div class="time-value">{{ timeLeft.minutes < 10 ? '0' + timeLeft.minutes : timeLeft.minutes }}</div>
-      <div class="time-label">minutes</div>
-    </div>
-  </div>
-
-  <!-- Bid Information -->
-  <div class="bid-info">
-    <div class="highest-bid">
-      <div class="bid-amount">bhd {{ bidData.highestBid }}</div>
-      <div class="bid-label">highest bid</div>
-    </div>
-    <div class="bid-divider"></div>
-    <div class="bids-made">
-      <div class="bid-count">{{ bidData.bidCount }}</div>
-      <div class="bid-label">bids made</div>
-    </div>
-  </div>
-  <div class="place-bid-section">
-    <label for="placeBid">Your Bid</label>
-    <div class="bid-input-group">
-      <button class="btn-decrement" (click)="decrementBid()">−</button>
-      <input
-        type="number"
-        id="placeBid"
-        [(ngModel)]="placeBid.bidAmount"
-        [min]="bidData.highestBid"
-        [step]="asset?.minIncrement ?? 10"
-        required
-        #bidAmount="ngModel"
-        pattern="^\\d{1,10}(\\.\\d{1,2})?$"
-      />
-      <button class="btn-increment" (click)="incrementBid()">+</button>
-    </div>
-    <div *ngIf="bidAmount.invalid && bidAmount.touched">
-      <div *ngIf="bidAmount.errors?.['required']" class="text-danger">
-        Bid amount is required.
+<div class="container-fluid px-3 py-2" *ngIf="!isLoading">
+  <!-- Navigation -->
+  <div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div>
+        <a href="auction" class="text-decoration-none text-dark">
+          <i class="bi bi-arrow-left"></i>
+          <span class="ms-2">auction > {{asset?.categoryName || 'Vehicles'}}</span>
+        </a>
       </div>
-      <div *ngIf="!bidAmount.errors?.['required'] && bidAmount.errors?.['min']" class="text-danger">
-        Bid must be at least {{ bidData.highestBid }}.
+      <div>
+        <button class="btn btn-link text-dark">
+          <i class="bi bi-bookmark"></i>
+        </button>
+        <!-- <button class="btn btn-link text-dark">
+          <i class="bi bi-three-dots-vertical"></i>
+        </button> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Gallery/Slider -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="image-gallery mb-4">
+        <div id="assetCarousel" class="carousel slide" data-bs-ride="false">
+          <div class="carousel-inner">
+            <div class="carousel-item" *ngFor="let image of asset?.galleries; let i = index"
+              [ngClass]="{'active': i === currentSlideIndex}">
+              <img [src]="image.fileUrl" class="d-block w-100" [alt]="'Asset image ' + (i+1)">
+            </div>
+          </div>
+
+          <button class="carousel-control-prev" type="button" (click)="prevSlide()" *ngIf="hasMultipleImages()">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" (click)="nextSlide()" *ngIf="hasMultipleImages()">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+
+        <!-- Carousel indicators for multiple images -->
+        <div class="carousel-indicators position-relative mt-2" *ngIf="hasMultipleImages()">
+          <button type="button" *ngFor="let image of asset?.galleries; let i = index"
+            [ngClass]="{'active': i === currentSlideIndex}" (click)="setCurrentSlide(i)" aria-current="true"
+            [attr.aria-label]="'Slide ' + (i+1)"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Thumbnails Row -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex overflow-auto pb-2">
+        <div class="thumbnail-item me-2" *ngFor="let image of asset?.galleries; let i = index"
+          [ngClass]="{'active': i === currentSlideIndex}" (click)="setCurrentSlide(i)">
+          <img [src]="image.fileUrl" class="img-thumbnail" [alt]="'Thumbnail ' + (i+1)">
+        </div>
       </div>
     </div>
     
   </div>
 
-  <button 
-  class="bid-button" 
-  (click)="onPlaceBid()" 
-  [disabled]="timeLeft.total <= 0">
-  <i class="fa fa-gavel"></i> bid now
-</button>
+  <!-- Two-column layout for details and timer -->
+  <div class="row">
+    <!-- Vehicle Details Card (Left side) -->
+    <div class="col-md-6 mb-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-0">
+          <!-- Tab Navigation - No styles borders -->
+          <div class="tabs-container">
+            <button [ngClass]="{'tab-active': activeTab === 'details'}" (click)="setActiveTab('details')"
+              class="tab-btn">
+              details
+            </button>
+            <button [ngClass]="{'tab-active': activeTab === 'description'}" (click)="setActiveTab('description')"
+              class="tab-btn">
+              description
+            </button>
+          </div>
+
+          <!-- Vehicle Details Content - Dynamically populated from asset data -->
+          <div class="p-3" *ngIf="activeTab === 'details'">
+            <!-- Display title dynamically -->
+            <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Name</div>
+              <div class="detail-value fw-bold">{{asset?.title || 'N/A'}}</div>
+            </div>
+
+            <!-- Additional key asset details -->
+            <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Model</div>
+              <div class="detail-value fw-bold">{{asset?.assetNumber || 'N/A'}}</div>
+            </div>
+
+            <!-- Display pricing information -->
+            <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Starting Price</div>
+              <div class="detail-value fw-bold">{{asset?.startingPrice | currency}}</div>
+            </div>
+
+            <!-- Display auction information -->
+            <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Reserve Amount</div>
+              <div class="detail-value fw-bold">{{asset?.reserveAmount | currency}}</div>
+            </div>
+
+            <!-- Display status -->
+            <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Status</div>
+              <div class="detail-value fw-bold">{{asset?.statusName || 'N/A'}}</div>
+            </div>
+          </div>
+
+          <!-- Description Content -->
+          <div class="p-3" *ngIf="activeTab === 'description'">
+            <p>{{asset?.description || 'No description available'}}</p>
+
+            <!-- Additional sales notes if available -->
+            <div *ngIf="asset?.salesNotes">
+              <h6 class="mt-3 mb-2">Sales Notes:</h6>
+              <p>{{asset?.salesNotes}}</p>
+            </div>
+
+            <!-- Display court case number if available -->
+            <div *ngIf="asset?.courtCaseNumber" class="mt-3">
+              <strong>Court Case Number:</strong> {{asset?.courtCaseNumber}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auction Timer and Bidding Card (Right side) -->
+    <div class="col-md-6 mb-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-4">
+          <!-- Countdown Timer -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="d-flex justify-content-center align-items-center countdown-container"
+                [ngClass]="{'warning': timeLeft.total <= 5 * 60 * 1000}">
+                <div class="time-unit">
+                  <div class="time-value">{{ timeLeft.days }}</div>
+                  <div class="time-label">Days</div>
+                </div>
+                <div class="time-separator">:</div>
+                <div class="time-unit">
+                  <div class="time-value">{{ timeLeft.hours < 10 ? '0' + timeLeft.hours : timeLeft.hours }}</div>
+                      <div class="time-label">Hours</div>
+                  </div>
+                  <div class="time-separator">:</div>
+                  <div class="time-unit">
+                    <div class="time-value">{{ timeLeft.minutes < 10 ? '0' + timeLeft.minutes : timeLeft.minutes
+                        }}</div>
+                        <div class="time-label">Minutes</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bid Information -->
+              <div class="row mb-4">
+                <div class="col-6 text-center border-end">
+                  <div class="bid-amount">{{ bidData.highestBid > 0 ? bidData.highestBid : asset?.startingPrice }}</div>
+                  <div class="bid-label text-muted"> {{ bidData.highestBid > 0 ? 'highest bid' : 'starting price' }}</div>
+                </div>  
+                <div class="col-6 text-center">
+                  <div class="bid-amount">{{ bidData.bidCount }}</div>
+                  <div class="bid-label text-muted">bids made</div>
+                </div>
+              </div>
+
+              <!-- Vehicle Info and Auction Date -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <div class="vehicle-info p-3 bg-light rounded-4">
+                    <h5 class="mb-1">{{asset?.title || 'Asset'}}</h5>
+                    <!-- <div class="d-flex align-items-center mb-2">
+                  <i class="bi bi-eye me-2"></i>
+                  <span class="text-muted small">{{ viewCount }}</span>
+                </div> -->
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-calendar me-2"></i>
+                      <span class="text-muted small">{{asset?.createdAt}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="place-bid-section">
+                <label for="placeBid">Your Bid</label>
+                <div class="bid-input-group">
+                  <button class="btn-decrement" (click)="decrementBid()">−</button>
+                  <input type="number" id="placeBid" [(ngModel)]="placeBid.bidAmount" [min]="bidData.highestBid"
+                    [step]="asset?.minIncrement ?? 10" required #bidAmount="ngModel"
+                    pattern="^\\d{1,10}(\\.\\d{1,2})?$" />
+                  <button class="btn-increment" (click)="incrementBid()">+</button>
+                </div>
+                <div *ngIf="bidAmount.invalid && bidAmount.touched">
+                  <div *ngIf="bidAmount.errors?.['required']" class="text-danger">
+                    Bid amount is required.
+                  </div>
+                  <div *ngIf="!bidAmount.errors?.['required'] && bidAmount.errors?.['min']" class="text-danger">
+                    Bid must be at least {{ bidData.highestBid }}.
+                  </div>
+                </div>
+
+              </div>
 
 
-  <div class="navigation" style="display: none;">
-    <a href="javascript:history.back()" class="back-link">
-      <i class="fa fa-arrow-left"></i>
-    </a>
-    <span class="breadcrumb">
-      auction > Car Plates > {{ asset?.assetNumber || '676776' }}
-    </span>
-    <div class="actions">
-      <button class="more">
-        <i class="fa fa-ellipsis-h"></i>
-      </button>
-    </div>
-  </div>
+              <!-- Bid Now Button -->
+              <div class="row">
+                <div class="col-12">
+                  <button class="bid-button" (click)="onPlaceBid()" [disabled]="timeLeft.total <= 0">
+                    <i class="fa fa-gavel"></i> bid now
+                  </button>
 
-  <div class="footer" style="display: none;">
-    <div class="footer-section">
-      <h3 class="footer-heading">help</h3>
-      <ul class="footer-links">
-        <li><a href="#">contact_support</a></li>
-        <li><a href="#">privacy_policy</a></li>
-        <li><a href="#">terms_of_services</a></li>
-        <li><a href="#">cookie_policy</a></li>
-      </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="footer-section">
-      <h3 class="footer-heading">resources</h3>
-      <ul class="footer-links">
-        <li><a href="#">faq</a></li>
-        <li><a href="#">guides</a></li>
-        <li><a href="#">status</a></li>
-      </ul>
-    </div>
-  </div>
-</div>

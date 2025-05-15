@@ -49,7 +49,7 @@ export class AppComponent {
   }
 
   get needSideBar(): boolean {
-    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login', '/user-signup', '/user-profile']);
+    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login', '/user-signup', '/user-profile','/asset-details']);
   }
 
   get showSidebar(): boolean {
