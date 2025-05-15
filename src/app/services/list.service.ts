@@ -41,9 +41,14 @@ export class ListService {
     return this.http.get(`${this.baseUrl}/Wishlist/${userId}`);
   }
 
-  removeFromWishlist(userId: number, assetId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/Wishlist/remove?userId=${userId}&assetId=${assetId}`);
-  }
+ removeFromWishlist(payload: { userId: number; assetId: number }): Observable<any> {
+  return this.http.request('DELETE', `${this.baseUrl}/Wishlist/remove`, {
+    headers: { 'Content-Type': 'application/json' },
+    body: payload
+  });
+}
+
+
 
   refreshComponent(): void {
   const currentUrl = this.router.url;

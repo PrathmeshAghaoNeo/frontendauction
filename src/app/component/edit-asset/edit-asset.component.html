@@ -409,7 +409,7 @@
               [(ngModel)]="asset.vatid"
               name="vatType"
             >
-            <option value="" disabled selected>Select status</option>
+              <option value="" disabled selected>Select status</option>
               <option *ngFor="let option of vatOptions" [value]="option.id">
                 {{ option.name }}
               </option>
@@ -603,22 +603,24 @@
                       height="100"
                     />
                   </a>
-                  <!-- <button
+                  <button
                     type="button"
                     class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
-                    (click)="removeGalleryItem(gallery.id)">  
-                  </button> -->
+                    (click)="removeExistingGalleryImage(gallery)"
+                  >
+                    ×
+                  </button>
                 </div>
               </ng-container>
 
-              <!-- NEWLY ADDED IMAGES -->
               <ng-container *ngFor="let img of imagePreviews; let i = index">
                 <div class="border p-2 position-relative">
                   <img
                     [src]="img"
                     alt="Asset"
-                    class="image-thumb"
+                    class="img-thumbnail image-thumb"
                     width="100"
+                    height="100"
                   />
                   <button
                     type="button"
@@ -630,7 +632,7 @@
                 </div>
               </ng-container>
 
-              <!-- UPLOAD AREA -->
+              <!-- Upload Area -->
               <div
                 class="border rounded p-3 text-center bg-light"
                 style="min-width: 200px; cursor: pointer"
@@ -714,21 +716,47 @@
           </div>
         </div>
 
-        <div class="card p-3 shadow-sm mb-4">
-          <h5>
-            <label class="required-label"> Documents </label>
-          </h5>
-          <div class="d-flex flex-wrap gap-2">
-            <div *ngFor="let doc of asset.documents" class="position-relative">
-              <a
-                [href]="environment.baseurl + doc.filePath"
-                target="_blank"
-                class="btn btn-sm btn-outline-primary"
-              >
-                <i class="bi bi-file-earmark-pdf"></i> View Document
-              </a>
-            </div>
+        <!-- Upload New Documents -->
+        <div>
+          <label for="documentUpload">Upload Documents (Max 500KB each)</label>
+          <input
+            type="file"
+            multiple
+            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+            (change)="onDocumentSelected($event)"
+            id="documentUpload"
+          />
+          <div *ngIf="documentUploadError" class="error">
+            {{ documentUploadError }}
           </div>
+        </div>
+
+        <!-- Preview New Documents -->
+        <div *ngIf="newDocumentFiles.length > 0">
+          <h4>New Documents to Upload:</h4>
+          <ul>
+            <li *ngFor="let file of newDocumentFiles; let i = index">
+              {{ file.name }} ({{ (file.size / 1024).toFixed(1) }} KB)
+              <button type="button" (click)="removeNewDocument(i)">
+                Remove
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Existing Documents -->
+        <div *ngIf="existingDocuments.length > 0">
+          <h4>Existing Documents:</h4>
+          <ul>
+            <li *ngFor="let doc of existingDocuments">
+              <a [href]="environment.baseurl + '/' + doc" target="_blank">{{
+                doc.split("/").pop()
+              }}</a>
+              <button type="button" (click)="removeExistingDocument(doc)">
+                Remove
+              </button>
+            </li>
+          </ul>
         </div>
 
         <div class="card p-3 shadow-sm mb-4">

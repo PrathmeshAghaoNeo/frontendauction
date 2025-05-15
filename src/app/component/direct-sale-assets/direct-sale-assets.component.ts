@@ -19,6 +19,12 @@ export class DirectSaleAssetsComponent implements OnInit {
   layoutType: 'grid' | 'row' = 'grid';
   userId: number = 1;
   environment = environment;
+  wishlistAssetIds: number[] = [];  
+
+
+
+
+
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
@@ -31,8 +37,9 @@ export class DirectSaleAssetsComponent implements OnInit {
       this.assetService.getDirectAssets(categoryId).subscribe({
         next: (data) => {
           this.assets = data;
-          this.originalAssets = [...data]; // Keep a copy for filtering/sortin
+          this.originalAssets = [...data];
           console.log('Assets:', this.assets);
+          this.loadWishlist();
         },
 
         error: (err) => {
@@ -47,6 +54,59 @@ export class DirectSaleAssetsComponent implements OnInit {
     }
   }
 
+
+  loadWishlist(): void {
+  this.listService.getWishlist(this.userId).subscribe({
+    next: (data) => {
+      this.wishlistAssetIds = data.map((item: any) => item.assetId);
+      console.log('Wishlist Asset IDs:', this.wishlistAssetIds);
+    },
+    error: (err) => {
+      console.error('Error loading wishlist:', err);
+    },
+  });
+}
+
+
+isInWishlist(assetId: number): boolean {
+  return this.wishlistAssetIds.includes(assetId);
+}
+  
+
+
+toggleWishlist(assetId: number): void {
+
+  
+  if (this.isInWishlist(assetId)) {
+    
+    const payload = { userId: this.userId, assetId: assetId };
+    this.listService.removeFromWishlist(payload).subscribe({
+      next: () => {
+        console.log('Toggle Wishlist: in this togglelist', assetId);
+        this.wishlistAssetIds = this.wishlistAssetIds.filter(id => id !== assetId);
+        Swal.fire('Removed', 'Removed from wishlist', 'success');
+      },
+      error: (err) => {
+        Swal.fire('Error', err.error.message || 'Error removing from wishlist', 'error');
+      },
+    });
+  } else {
+    const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
+    this.listService.addToWishlist(payload).subscribe({
+      next: () => {
+        this.wishlistAssetIds.push(assetId);
+        Swal.fire('Added', 'Added to wishlist', 'success');
+      },
+      error: (err) => {
+        Swal.fire('Error', err.error.message || 'Error adding to wishlist', 'error');
+      },
+    });
+  }
+}
+
+
+
+
   toggleLayout() {
     this.layoutType = this.layoutType === 'grid' ? 'row' : 'grid';
   }
@@ -55,37 +115,40 @@ export class DirectSaleAssetsComponent implements OnInit {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
   }
 
-  addToWishlist(assetId: number): void {
-    const payload = {
-      userId: this.userId,
-      assetId: assetId,
-      quantity: 1,
-    };
+  // addToWishlist(assetId: number): void {
+  //   const payload = {
+  //     userId: this.userId,
+  //     assetId: assetId,
+  //     quantity: 1,
+  //   };
 
-    console.log(assetId);
+  //   console.log(assetId);
 
-    this.listService.addToWishlist(payload).subscribe({
-      next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Added to Wishlist',
-          text: 'This asset has been added to your wishlist.',
-          confirmButtonText: 'OK',
-        });
-      },
-      error: (err) => {
-        console.log({ err });
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text:
-            err.error.message ||
-            'Something went wrong while adding to wishlist.',
-          confirmButtonText: 'OK',
-        });
-      },
-    });
-  }
+  //   this.listService.addToWishlist(payload).subscribe({
+  //     next: () => {
+  //       Swal.fire({
+  //         icon: 'success',
+  //         title: 'Added to Wishlist',
+  //         text: 'This asset has been added to your wishlist.',
+  //         confirmButtonText: 'OK',
+  //       });
+  //     },
+  //     error: (err) => {
+  //       console.log({ err });
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error!',
+  //         text:
+  //           err.error.message ||
+  //           'Something went wrong while adding to wishlist.',
+  //         confirmButtonText: 'OK',
+  //       });
+  //     },
+  //   });
+  // }
+
+
+
 
   addToCart(assetId: number): void {
     const payload = {

@@ -53,8 +53,29 @@ export class AppComponent {
   }
 
   get needSideBar(): boolean {
-    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login', '/user-signup', '/user-profile','/direct-bid','/bid-watchlist','/bid-add-to-cart','/direct-sale-assets/:categoryId']);
+  const exactRoutes = [
+    '/landing-page',
+    '/reguserlandingpage',
+    '/login',
+    '/user-signup',
+    '/user-profile',
+    '/direct-bid',
+    '/bid-watchlist',
+    '/bid-add-to-cart'
+  ];
+
+  const dynamicPatterns = [
+    '/direct-sale-assets/',
+    '/auction-assets/'
+  ];
+
+  if (exactRoutes.includes(this.currentRoute)) {
+    return true;
   }
+
+  return dynamicPatterns.some(pattern => this.currentRoute.startsWith(pattern));
+}
+
 
   get showSidebar(): boolean {
     return !this.isStartPage && !this.needSideBar;

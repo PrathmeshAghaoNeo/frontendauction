@@ -46,6 +46,7 @@ export interface Asset {
 }
 
 export interface AssetGalleryDto {
+  galleryId: number;
   mediaType?: string;
   filePath?: string;
   fileUrl: string;

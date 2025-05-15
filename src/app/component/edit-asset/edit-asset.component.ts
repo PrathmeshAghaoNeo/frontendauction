@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
 import { AddAsset } from '../../modals/add-asset';
-import { Asset } from '../../modals/manage-asset';
+import { Asset, AssetGalleryDto } from '../../modals/manage-asset';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
@@ -31,9 +31,10 @@ export class EditAssetComponent implements OnInit {
   longitudeError: string | null = null;
   auctionIds: number[] = [];
   selectedAuctions: Auction[] = [];
-
-
+  
+  
   imagePreviews: string[] = [];
+  existingDocuments: string[] = [];
   
   auctions: Auction[] = [];
 
@@ -92,9 +93,12 @@ export class EditAssetComponent implements OnInit {
   // Add these to your component class
   newGalleryFiles: File[] = [];
   newDocumentFiles: File[] = [];
+
   documentUploadError: string | null = null;
   imageUploadError: string | null = null;
 
+
+  
   // Dropdown options
   makeOfferOptions = ['Yes', 'No'];
   featuredOptions = ['Yes', 'No'];
@@ -224,7 +228,7 @@ getRequestLabel(value: Number | undefined) {
         this.fetchAuctions();
 
         // this.convertGalleryUrlsToFiles();
-        this.handleGalleryConversion();
+       
         
       },
       error: (err) => {
@@ -258,81 +262,7 @@ getRequestLabel(value: Number | undefined) {
 
 //////////////////////////////////=================================////////////////////////
 
-async handleGalleryConversion(): Promise<void> {
-  // await this.convertGalleryUrlsToFiles();
-}
 
-// async convertGalleryUrlsToFiles(): Promise<void> {
-//   this.convertedGalleryFiles = [];
-
-//   for (let i = 0; i < this.asset.galleries.length; i++) {
-//     const gallery = this.asset.galleries[i];
-//     const fullUrl = `${environment.baseurl}${gallery.filePath}`;
-//     console.log("Full image URL:", fullUrl);
-
-//     // Extract extension from filePath
-//     const extMatch = gallery.filePath?.match(/\.(jpg|jpeg|png)$/i);
-//     const extension = extMatch ? extMatch[1].toLowerCase() : 'jpg';
-//     const mimeType = this.getMimeType(extension);
-//     const filename = `gallery-${i}.${extension}`;
-
-//     try {
-//       const file = await this.imageUrlToFile(fullUrl, filename, mimeType);
-//       this.convertedGalleryFiles.push(file);
-
-//       console.log(`File ${i}:`, file);
-//     } catch (error) {
-//       console.error(`Error converting gallery image ${i}:`, error);
-//     }
-//   }
-
-//   console.log("All converted gallery files:", this.convertedGalleryFiles);
-// }
-
-// imageUrlToFile(url: string, filename: string, mimeType: string): Promise<File> {
-//   return new Promise((resolve, reject) => {
-//     const img = new Image();
-//     img.crossOrigin = 'anonymous'; // Needed to avoid CORS issues
-
-//     img.onload = () => {
-//       const canvas = document.createElement('canvas');
-//       canvas.width = img.width;
-//       canvas.height = img.height;
-
-//       const ctx = canvas.getContext('2d');
-//       if (!ctx) return reject(new Error("Failed to get canvas context."));
-
-//       ctx.drawImage(img, 0, 0);
-
-//       canvas.toBlob(blob => {
-//         if (blob) {
-//           const file = new File([blob], filename, { type: mimeType });
-//           resolve(file);
-//         } else {
-//           reject(new Error("Failed to convert image to blob."));
-//         }
-//       }, mimeType);
-//     };
-
-//     img.onerror = () => reject(new Error(`Image failed to load: ${url}`));
-//     img.src = url;
-//   });
-// }
-
-// getMimeType(extension: string): string {
-//   switch (extension.toLowerCase()) {
-//     case 'png':
-//       return 'image/png';
-//     case 'jpeg':
-//     case 'jpg':
-//       return 'image/jpeg';
-//     default:
-//       return 'image/jpeg'; // Default fallback
-//   }
-// }
-
-
-////////////////////////==============///////////////////
 galleryError: string = '';
   updateAsset(form: NgForm): void {
     
@@ -509,6 +439,40 @@ galleryError: string = '';
 }
 
 
+removeExistingGalleryImage(gallery: AssetGalleryDto): void {
+  console.log('Gallery to delete:', gallery); 
+  console.log('Gallery ID to delete:', gallery.galleryId); 
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to delete this image?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.assetService.deleteAssetGallery(gallery.galleryId.toString()).subscribe({
+        next: () => {
+          console.log("we are in gallery delete logic");
+          // Filter out the deleted gallery by id
+          this.asset.galleries = this.asset.galleries.filter(
+            (g) => g.galleryId !== gallery.galleryId
+          );
+          Swal.fire('Deleted!', 'Image has been deleted.', 'success');
+        },
+        error: (err) => {
+          console.error('Error deleting image:', err);
+          Swal.fire('Error!', 'Failed to delete image.', 'error');
+        },
+      });
+    }
+  });
+}
+
+
+
+
+
   // Handle image drop
 onImageDrop(event: DragEvent): void {
   event.preventDefault();
@@ -538,17 +502,17 @@ onImageDrop(event: DragEvent): void {
 
       this.newGalleryFiles.push(file);
 
-      // Create preview
+    
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        if (!this.asset.galleries) {
-          this.asset.galleries = [];
-        }
-        this.asset.galleries.push({
-          fileUrl: e.target.result,
-          filePath: file.name,
-        });
-      };
+      // reader.onload = (e: any) => {
+      //   if (!this.asset.galleries) {
+      //     this.asset.galleries = [];
+      //   }
+      //   this.asset.galleries.push({
+      //     fileUrl: e.target.result,
+      //     filePath: file.name,
+      //   });
+      // };
       reader.readAsDataURL(file);
     }
   }
@@ -587,15 +551,6 @@ onImageDrop(event: DragEvent): void {
       }
       
       this.newDocumentFiles.push(file);
-
-      // Add to documents array for preview
-      if (!this.asset.documents) {
-        this.asset.documents = [];
-      }
-      this.asset.documents.push({
-        documentId: 0, // Temporary, will be assigned by backend
-        filePath: file.name,
-      });
     }
   }
 
@@ -610,16 +565,37 @@ onImageDrop(event: DragEvent): void {
     }
   }
 
-  // Remove document
-  removeDocument(index: number): void {
-    if (this.asset.documents) {
-      this.asset.documents.splice(index, 1);
-    }
-    // Also remove from newDocumentFiles if it's there
-    if (index < this.newDocumentFiles.length) {
-      this.newDocumentFiles.splice(index, 1);
-    }
-  }
+
+  removeNewDocument(index: number): void {
+  this.newDocumentFiles.splice(index, 1);
+}
+ 
+
+
+
+removeExistingDocument(docPath: string): void {
+  this.existingDocuments = this.existingDocuments.filter(doc => doc !== docPath);
+}
+
+
+
+
+
+
+
+
+
+  // removeDocument(index: number): void {
+  //   if (this.asset.documents) {
+  //     this.asset.documents.splice(index, 1);
+  //   }
+  //   if (index < this.newDocumentFiles.length) {
+  //     this.newDocumentFiles.splice(index, 1);
+  //   }
+  // }
+
+
+
   onImageDragOver(event: DragEvent): void {
     event.preventDefault();
   }

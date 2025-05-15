@@ -286,6 +286,13 @@
   height: 20px;
   object-fit: contain;
 }
+
+.button-image1.active-wishlist {
+  background-color: #ffcccc;
+  border-radius: 4px;
+}
+
+
 .button-image2 {
   width: 25px;
   height: 25px;

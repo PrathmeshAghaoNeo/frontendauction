@@ -43,14 +43,20 @@
             <button
               class="icon-btn"
               title="Save"
-              (click)="addToWishlist(asset.assetId)"
+              (click)="toggleWishlist(asset.assetId)"
             >
               <img
-                src="wishlist.png"
-                alt="Add to Wishlist"
+                [src]="
+                  isInWishlist(asset.assetId)
+                    ? 'bookmark.png'
+                    : 'wishlist.png'
+                "
+                alt="Wishlist Toggle"
                 class="button-image1"
+                [ngClass]="{ 'active-wishlist': isInWishlist(asset.assetId) }"
               />
             </button>
+
             <button
               class="icon-btn"
               title="Add"
@@ -67,17 +73,22 @@
           <span class="plate-name-text">{{ asset.title }}</span>
         </div>
         <div class="icons">
-          <button
-            class="icon-btn"
-            title="Save"
-            (click)="addToWishlist(asset.assetId)"
-          >
-            <img
-              src="wishlist.png"
-              alt="Add to Wishlist"
-              class="button-image1"
-            />
-          </button>
+           <button
+              class="icon-btn"
+              title="Save"
+              (click)="toggleWishlist(asset.assetId)"
+            >
+              <img
+                [src]="
+                  isInWishlist(asset.assetId)
+                    ? 'bookmark.png'
+                    : 'wishlist.png'
+                "
+                alt="Wishlist Toggle"
+                class="button-image1"
+                [ngClass]="{ 'active-wishlist': isInWishlist(asset.assetId) }"
+              />
+            </button>
           <button
             class="icon-btn"
             title="Add"

@@ -40,6 +40,16 @@ export class ManageAssetService {
     const url = `${ApiEndpoints.ASSETS}/${assetId}`;
     return this.http.get<Asset>(url);
   }
+ 
+
+  deleteAssetGallery(galleryId: string): Observable<void> {
+  const url = `${ApiEndpoints.ASSETGALLERY}/delete/${galleryId}`;
+  return this.http.delete<void>(url);
+}
+
+
+
+
 
   updateAssetWithGallery(formData: FormData): Observable<any> {
     return this.http.put(`${ApiEndpoints.ASSETS}/update-asset-all`, formData);
@@ -56,4 +66,6 @@ export class ManageAssetService {
       `${ApiEndpoints.ASSETS}/auctionasset?categoryId=${categoryId}`
     );
   }
+
 }
+
