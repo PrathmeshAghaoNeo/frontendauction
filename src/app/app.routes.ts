@@ -70,9 +70,9 @@ export const routes: Routes = [
     {path:'newAuction', component:AddAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'update-auction/:id', component:UpdateAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     // Asset Management
-  { path: 'assets', component: ManageAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'newAsset', component: AddAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'udpate-asset/:assetId', component: EditAssetComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'assets', component: ManageAssetComponent },
+  { path: 'newAsset', component: AddAssetComponent },
+  { path: 'update-asset/:assetId', component: EditAssetComponent},
   
   
   

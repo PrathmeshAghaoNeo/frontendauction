@@ -48,6 +48,11 @@ export class ManageAssetService {
 }
 
 
+  deleteAssetDocument(documentId: string): Observable<void> {
+    const url = `${ApiEndpoints.ASSESTDOCUMENT}/delete/${documentId}`;
+    return this.http.delete<void>(url);
+  }
+
 
 
 

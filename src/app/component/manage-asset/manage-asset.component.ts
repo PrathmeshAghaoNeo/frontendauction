@@ -99,7 +99,7 @@ export class ManageAssetComponent implements OnInit {
 
   EditAssestRoute(assetId: number): void {
     if (assetId && !isNaN(assetId)) {
-      this.router.navigate(['/udpate-asset', assetId]);
+      this.router.navigate(['/update-asset', assetId]);
     } else {
       Swal.fire('Error', 'Invalid asset ID', 'error');
     }

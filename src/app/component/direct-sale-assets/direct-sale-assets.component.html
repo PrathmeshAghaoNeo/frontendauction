@@ -6,13 +6,13 @@
     </button>
   </div>
 
-  <div class="toolbar-center">
+  <!-- <div class="toolbar-center">
     <img class="search" src="search.png" alt="" />
     <input type="text" class="search-input" placeholder="Search" />
-  </div>
+  </div> -->
 
   <div class="toolbar-right">
-    <img src="sort.png" alt="Filter" class="toolbar-icon sort" />
+    <!-- <img src="sort.png" alt="Filter" class="toolbar-icon sort" /> -->
     <img
       [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
       alt="Toggle View"
@@ -28,11 +28,15 @@
   <div class="plate-card" *ngFor="let asset of assets">
     <div class="plate-display">
       <img
-        *ngIf="asset.galleries?.length"
-        [src]="environment.baseurl + asset.galleries[0]?.filePath"
+        [src]="
+          asset.galleries?.length
+            ? environment.baseurl + asset.galleries[0]?.filePath
+            : 'default.jpg'
+        "
         alt="Asset Image"
         class="plate-main-image"
       />
+
       <ng-container *ngIf="layoutType === 'row'; else gridView">
         <div class="plate-name">
           <span class="plate-name-text">{{ asset.title }}</span>
@@ -47,9 +51,7 @@
             >
               <img
                 [src]="
-                  isInWishlist(asset.assetId)
-                    ? 'bookmark.png'
-                    : 'wishlist.png'
+                  isInWishlist(asset.assetId) ? 'bookmark.png' : 'wishlist.png'
                 "
                 alt="Wishlist Toggle"
                 class="button-image1"
@@ -73,22 +75,20 @@
           <span class="plate-name-text">{{ asset.title }}</span>
         </div>
         <div class="icons">
-           <button
-              class="icon-btn"
-              title="Save"
-              (click)="toggleWishlist(asset.assetId)"
-            >
-              <img
-                [src]="
-                  isInWishlist(asset.assetId)
-                    ? 'bookmark.png'
-                    : 'wishlist.png'
-                "
-                alt="Wishlist Toggle"
-                class="button-image1"
-                [ngClass]="{ 'active-wishlist': isInWishlist(asset.assetId) }"
-              />
-            </button>
+          <button
+            class="icon-btn"
+            title="Save"
+            (click)="toggleWishlist(asset.assetId)"
+          >
+            <img
+              [src]="
+                isInWishlist(asset.assetId) ? 'bookmark.png' : 'wishlist.png'
+              "
+              alt="Wishlist Toggle"
+              class="button-image1"
+              [ngClass]="{ 'active-wishlist': isInWishlist(asset.assetId) }"
+            />
+          </button>
           <button
             class="icon-btn"
             title="Add"

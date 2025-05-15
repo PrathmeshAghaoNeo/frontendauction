@@ -115,39 +115,13 @@ toggleWishlist(assetId: number): void {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
   }
 
-  // addToWishlist(assetId: number): void {
-  //   const payload = {
-  //     userId: this.userId,
-  //     assetId: assetId,
-  //     quantity: 1,
-  //   };
+  searchText: string = '';
 
-  //   console.log(assetId);
-
-  //   this.listService.addToWishlist(payload).subscribe({
-  //     next: () => {
-  //       Swal.fire({
-  //         icon: 'success',
-  //         title: 'Added to Wishlist',
-  //         text: 'This asset has been added to your wishlist.',
-  //         confirmButtonText: 'OK',
-  //       });
-  //     },
-  //     error: (err) => {
-  //       console.log({ err });
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Error!',
-  //         text:
-  //           err.error.message ||
-  //           'Something went wrong while adding to wishlist.',
-  //         confirmButtonText: 'OK',
-  //       });
-  //     },
-  //   });
-  // }
-
-
+  filteredAssets() {
+    return this.assets.filter(asset =>
+      asset.title?.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
 
 
   addToCart(assetId: number): void {

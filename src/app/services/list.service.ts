@@ -25,11 +25,14 @@ export class ListService {
   }
 
   getCart(userId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/Cart/get?userId=${userId}`);
+    return this.http.get(`${this.baseUrl}/Cart/${userId}`);
   }
 
-  removeFromCart(userId: number, assetId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/Cart/remove?userId=${userId}&assetId=${assetId}`);
+  removeFromCart(payload: { userId: number; assetId: number }): Observable<any> {
+    return this.http.request('DELETE', `${this.baseUrl}/Cart/remove`, {
+      headers: { 'Content-Type': 'application/json' },
+      body: payload,
+    });
   }
 
   // Wishlist methods

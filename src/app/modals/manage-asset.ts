@@ -83,6 +83,7 @@ export interface AssetDetailDto {
 
 export interface DirectSaleAssetDto {
   assetId: number;
+  assetNumber: string;
   title: string;
   categoryId: number;
   deposit: number;
