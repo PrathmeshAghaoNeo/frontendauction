@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Asset } from '../../modals/manage-asset';
 import { ManageAssetService } from '../../services/asset.service';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { SignalRService } from '../../services/signal-r.service';
 import { BidService } from '../../services/bid.service';
 import { AuctionService } from '../../services/auction.service';
 import { FormsModule, NgModel } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-asset-details',
@@ -45,16 +46,17 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     total: 0,
     days: 0,
     hours: 0,
-    minutes: 0  
+    minutes: 0,
+    sec:0
   };
 
 
   currentSlideIndex: number = 0;
   activeTab: string = 'details';
+  auctionEnded = false;
 
   constructor(
-    private signalR: SignalRService, private bidService: BidService, private auctionService: AuctionService,
-    private route: ActivatedRoute,
+    private signalR: SignalRService, private bidService: BidService, private auctionService: AuctionService,private router: Router,
     private assetService: ManageAssetService
   ) { }
 
@@ -75,8 +77,8 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         this.loadBid();
       }
     })
-    this.loadBid();
     this.loadAssetDetails();
+    this.loadBid();
   }
 
   ngOnDestroy(): void {
@@ -91,7 +93,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     this.assetService.getAssetById(this.assetId).subscribe({
       next: (asset) => {
         this.asset = asset;
-        
+        console.log(this.asset);
         this.isLoading = false;
       },
       error: (error) => {
@@ -144,9 +146,12 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   }
   decrementBid() {
     if (this.asset?.minIncrement) {
+      const minAllowedBid =  this.bidData?.highestBid > 0 ? this.bidData.highestBid  : (this.asset.startingPrice ?? 0) + (this.asset.minIncrement ?? 0);
       const nextValue = this.placeBid.bidAmount - this.asset.minIncrement;
-      if (nextValue >= this.bidData?.highestBid) {
+      if (nextValue >= minAllowedBid) {
         this.placeBid.bidAmount = nextValue;
+      } else {
+        this.placeBid.bidAmount = minAllowedBid;
       }
     }
   }
@@ -174,7 +179,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
  
       if (totalTimeRemains <= 0) {
         this.countdown = 'Auction ended';
-        this.timeLeft = {total:0, days: 0, hours: 0, minutes: 0 };
+        this.timeLeft = {total:0, days: 0, hours: 0, minutes: 0, sec:0};
         clearInterval(this.countdownInterval);
         return;
       }
@@ -182,29 +187,47 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
       const auctionDays = Math.floor(totalTimeRemains / (1000 * 60 * 60 * 24));
       const auctionHours = Math.floor((totalTimeRemains / (1000 * 60 * 60)) % 24);
       const auctionMinutes = Math.floor((totalTimeRemains / (1000 * 60)) % 60);
- 
+      const auctionSeconds = Math.floor((totalTimeRemains/(1000)) % 60);
       this.timeLeft = {
         total: totalTimeRemains,
         days: auctionDays,
         hours: auctionHours,
-        minutes: auctionMinutes
+        minutes: auctionMinutes,
+        sec: auctionSeconds
       };
- 
-      this.countdown = `${auctionDays}d ${this.pad(auctionHours)}h ${this.pad(auctionMinutes)}m`;
+      if (this.timeLeft.total <= 0 && !this.auctionEnded) {
+        this.auctionEnded = true;
+        this.showAuctionEndedPopup();
+      }
+      this.countdown = `${auctionDays}d ${this.pad(auctionHours)}h ${this.pad(auctionMinutes)}m ${this.pad(auctionSeconds)}`;
     }, 1000);
   }
   onPlaceBid() {
+    
     this.bidService.placeBid(this.placeBid).subscribe({
       next: (response) => {
         console.log('Bid placed with ID:', response.bidId);
-        alert(`Your bid was placed successfully! Bid ID: ${response.bidId}`);
- 
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Bid Placed!',
+          text: `Your bid was placed successfully! Bid ID:`,
+          timer: 2000,
+          showConfirmButton: false
+        });
       },
       error: (error) => {
         console.error('Failed to place bid:', error);
-        alert('Failed to place bid. Please try again or check your input.');
+  
+        Swal.fire({
+          icon: 'error',
+          title: 'Bid Failed',
+          text: 'Failed to place bid. Please try again or check your input.',
+          timer: 2000,
+          showConfirmButton: false
+        });
       }
-    })
+    });
   }
 
 
@@ -212,11 +235,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     this.bidService.getBidStatsById(this.assetId).subscribe({
       next: (data) => {
         this.bidData = data;
-       this.placeBid.bidAmount = 
-  (this.bidData.highestBid > 0 
-    ? this.bidData.highestBid 
-    : this.asset?.startingPrice || 0
-  ) + (this.asset?.minIncrement ?? 100);
+       this.placeBid.bidAmount = (this.bidData.highestBid > 0 ? this.bidData.highestBid : this.asset?.startingPrice || 0) + (this.asset?.minIncrement ?? 100);
         console.log(this.bidData);
       },
       error: (err) => {
@@ -237,5 +256,18 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         console.error('Auction Details load', err);
       }
     })
+  }
+
+  showAuctionEndedPopup() {
+    Swal.fire({
+      icon: 'info',
+      title: 'Auction Ended',
+      text: 'This auction has ended. You can no longer place bids.',
+      confirmButtonText: 'OK'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

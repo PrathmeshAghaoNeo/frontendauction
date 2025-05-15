@@ -120,8 +120,8 @@
 
             <!-- Display status -->
             <div class="detail-row d-flex justify-content-between py-2">
-              <div class="detail-label">Status</div>
-              <div class="detail-value fw-bold">{{asset?.statusName || 'N/A'}}</div>
+              <!-- <div class="detail-label">Status</div>
+              <div class="detail-value fw-bold">{{asset?.statusName || 'N/A'}}</div> -->
             </div>
           </div>
 
@@ -168,6 +168,11 @@
                         }}</div>
                         <div class="time-label">Minutes</div>
                     </div>
+                    <div class="time-separator">:</div>
+                  <div class="time-unit">
+                    <div class="time-value">{{ timeLeft.sec < 10 ? '0' + timeLeft.sec : timeLeft.sec}}</div>
+                        <div class="time-label">Seconds</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -195,17 +200,17 @@
                 </div> -->
                     <div class="d-flex align-items-center">
                       <i class="bi bi-calendar me-2"></i>
-                      <span class="text-muted small">{{asset?.createdAt}}</span>
+                      <span class="text-muted small">Asset Listed At : {{asset?.createdAt | date: 'dd-MM-yyyy'}}</span>
                     </div>
                   </div>
                 </div>
               </div>
-
+              
               <div class="place-bid-section">
                 <label for="placeBid">Your Bid</label>
                 <div class="bid-input-group">
                   <button class="btn-decrement" (click)="decrementBid()">−</button>
-                  <input type="number" id="placeBid" [(ngModel)]="placeBid.bidAmount" [min]="bidData.highestBid"
+                  <input type="number" id="placeBid" [(ngModel)]="placeBid.bidAmount" [min]="bidData.highestBid > 0 ? bidData.highestBid : asset?.startingPrice ?? 0"
                     [step]="asset?.minIncrement ?? 10" required #bidAmount="ngModel"
                     pattern="^\\d{1,10}(\\.\\d{1,2})?$" />
                   <button class="btn-increment" (click)="incrementBid()">+</button>
@@ -215,14 +220,13 @@
                     Bid amount is required.
                   </div>
                   <div *ngIf="!bidAmount.errors?.['required'] && bidAmount.errors?.['min']" class="text-danger">
-                    Bid must be at least {{ bidData.highestBid }}.
+                    Bid must be at least {{ bidData.highestBid > 0 ? bidData.highestBid : (asset?.startingPrice ?? 0) + (asset?.minIncrement ?? 0)}}.
                   </div>
                 </div>
 
               </div>
 
 
-              <!-- Bid Now Button -->
               <div class="row">
                 <div class="col-12">
                   <button class="bid-button" (click)="onPlaceBid()" [disabled]="timeLeft.total <= 0">
