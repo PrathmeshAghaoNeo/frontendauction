@@ -173,3 +173,98 @@
     font-size: 16px;
   }
 }
+
+
+
+
+
+
+/*  bidding button */
+
+.place-bid-section {
+  margin-top: 20px;
+  padding: 16px;
+ 
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.place-bid-section label {
+  display: block;
+  font-size: 14px;
+  color: #2d4059;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.bid-input-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 10px;
+}
+
+.bid-input-group input[type="number"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  border: 1px solid hwb(0 80% 20%);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2d4059;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.2s;
+}
+
+.bid-input-group input[type="number"]:focus {
+  border-color: #9b33d3;
+}
+
+.btn-increment,
+.btn-decrement {
+  padding: 10px 16px;
+  font-size: 20px;
+  width: 80px;
+  font-weight: bold;
+  color: white;
+  background-color: #9b33d3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-increment:hover,
+.btn-decrement:hover {
+  background-color: #7d15b5;
+}
+
+.btn-increment:disabled,
+.btn-decrement:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .bid-input-group input[type="number"] {
+    font-size: 16px;
+  }
+
+  .btn-increment,
+  .btn-decrement {
+    padding: 8px 12px;
+    font-size: 18px;
+  }
+}
+.warning .time-value {
+  color: red; 
+}
+.bid-button:disabled {
+  background-color: #dea0ff;
+  cursor: not-allowed;
+  color: hsl(0, 0%, 40%);
+  opacity: 0.7;
+}

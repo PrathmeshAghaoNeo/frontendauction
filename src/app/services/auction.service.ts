@@ -21,5 +21,7 @@ export class AuctionService {
   deleteAuction(id: number) {
     return this.http.delete(`${ApiEndpoints.AUCTION}/${id}`);
   }
-  
+  getAuctionById(id:number): Observable<Auction> {
+    return this.http.get<Auction>(`${ApiEndpoints.AUCTION}/${id}`)
+  }
 }
