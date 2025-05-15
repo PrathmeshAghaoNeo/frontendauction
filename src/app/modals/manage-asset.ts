@@ -51,6 +51,21 @@ export interface AssetGalleryDto {
   filePath?: string;
   fileUrl: string;
   sortOrder?: number;
+  createdAt: string;        
+  updatedAt: string;       
+  galleries: Gallery[] ;
+  documents: Document[];
+
+ 
+}
+
+export interface Gallery {
+[x: string]: any;
+  mediaType: string;
+  filePath: string;
+  sortOrder: number;
+  fileUrl : string;
+   imageUrl: string;
 }
 
 export interface AssetDocumentFormDto {

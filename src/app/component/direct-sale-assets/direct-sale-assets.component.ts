@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
-import { DirectSaleAssetDto } from '../../modals/manage-asset';
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
+import { DirectSaleAssetDto } from '../../modals/add-asset';
 @Component({
   selector: 'app-direct-sale-assets',
   standalone: true,

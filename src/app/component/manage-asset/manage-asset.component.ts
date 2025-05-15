@@ -11,7 +11,7 @@ import { environment } from "../../constants/enviroments";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // ✅ Import NgbModal
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
 
 @Component({
   selector: 'app-manage-asset',

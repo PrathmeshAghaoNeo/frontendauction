@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Asset } from '../modals/manage-asset';
+import { catchError, Observable, throwError } from 'rxjs';
+import { Asset, Gallery } from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { DirectSaleAssetDto } from '../modals/add-asset';
 
@@ -60,6 +60,10 @@ export class ManageAssetService {
       `${ApiEndpoints.ASSETS}/directsaleasset?categoryId=${categoryId}`
     );
   }
+   getAssetGallery(assetId: number): Observable<Gallery[]> {
+    const url = `${ApiEndpoints.ASSETGALLERY}/${assetId}`;
+    return this.http.get<Gallery[]>(url);
+  }
 
   getAuctionAssets(categoryId: number): Observable<DirectSaleAssetDto[]> {
     return this.http.get<DirectSaleAssetDto[]>(
@@ -68,4 +72,3 @@ export class ManageAssetService {
   }
 
 }
-

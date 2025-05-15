@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Asset, DirectSaleAssetDto } from '../../modals/manage-asset';
+import { Asset } from '../../modals/manage-asset';
 import { HttpClient } from '@angular/common/http';
 import { ManageAssetService } from '../../services/asset.service';
 import { CommonModule } from '@angular/common';
@@ -7,6 +7,7 @@ import { environment } from '../../constants/enviroments';
 import { ActivatedRoute } from '@angular/router';
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
+import { DirectSaleAssetDto } from '../../modals/add-asset';
 
 @Component({
   selector: 'app-direct-bid',

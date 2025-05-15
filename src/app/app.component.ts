@@ -37,10 +37,6 @@ export class AppComponent {
   }
   
   ngOnInit(): void {
-    this.signalRService.startConnection();
-    this.signalRService.bidUpdates$.subscribe(data => {
-      console.log('Bid Update Received:', data);
-    });
   }
 
  

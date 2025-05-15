@@ -1,134 +1,365 @@
-.auction-container {
-  max-width: 500px;
+/* General Styles */
+.container-fluid {
+  max-width: 1024px;
   margin: 0 auto;
-  padding: 16px;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
 }
 
-/* License Plate Styling */
-.license-plate {
-  display: flex;
-  align-items: center;
-  background-color: white;
-  border: 2px solid #2d4059;
-  border-radius: 8px;
-  padding: 10px 15px;
+/* Card styling */
+.card {
+  background-color: #fff;
+  border-radius: 12px !important;
+  height: 100%;
+}
+
+/* Image Gallery styling */
+.image-gallery {
   margin-bottom: 20px;
+}
+
+.carousel {
+  border-radius: 8px;
+  overflow: hidden;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.flag-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 15px;
+.carousel-item img {
+  height: 300px;
+  object-fit: cover;
+  width: 100%;
 }
 
-.flag {
-  width: 30px;
+/* Line indicators instead of dots */
+.carousel-indicators {
+  margin-bottom: -15px;
+}
+
+.carousel-indicators button {
+  width: 25px;
+  height: 3px;
+  border-radius: 0;
+  background-color: #ccc;
+  margin: 0 3px;
+  opacity: 0.7;
+}
+
+.carousel-indicators button.active {
+  background-color: #8335dc;
+  opacity: 1;
+}
+
+/* Carousel controls */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0 15px;
+  opacity: 0.8;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  opacity: 1;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px;
   height: 20px;
-  background-color: #ce1126; /* Bahrain flag color */
-  margin-bottom: 5px;
 }
 
-.country-name {
+/* Thumbnails styling */
+.thumbnail-item {
+  min-width: 70px; 
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  margin-right: 10px;
+}
+
+.thumbnail-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-item.active {
+  border: 2px solid #8335dc;
+}
+
+/* Navigation styles */
+.text-decoration-none.text-dark {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Tab Navigation - completely new styling with no borders */
+.tabs-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 10px;
-  color: #2d4059;
+  width: 100%;
+  background: transparent;
 }
 
-.arabic {
-  margin-bottom: 2px;
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #6c757d;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 12px 15px;
+  cursor: pointer;
+  text-transform: lowercase;
 }
 
-.plate-number {
-  flex-grow: 1;
-  font-size: 42px;
-  font-weight: bold;
-  color: #2d4059;
-  text-align: center;
+.tab-active {
+  color: #000;
+  font-weight: 600;
+  border-bottom: 2px solid #8335dc;
+}
+
+/* Detail rows styling */
+.detail-row {
+  padding: 12px 0;
+}
+
+.detail-row:not(:last-child) {
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.detail-label {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.detail-value {
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 /* Countdown Timer */
 .countdown-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 25px 0;
+  padding: 15px 0;
+  margin-top: 10px;
 }
 
 .time-unit {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 15px;
+  padding: 0 15px;
 }
 
 .time-value {
-  font-size: 42px;
-  font-weight: normal;
-  color: #333;
+  font-size: 2.5rem;
+  font-weight: 300;
+  line-height: 1;
+  color: #212529;
 }
 
 .time-label {
-  color: #999;
-  font-size: 14px;
+  font-size: 0.8rem;
+  color: #6c757d;
   margin-top: 5px;
+  text-transform: lowercase;
 }
 
-.separator {
-  font-size: 42px;
-  color: #ccc;
-  margin-top: -10px;
+.time-separator {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #adb5bd;
+  padding: 0 5px;
+  margin-top: -5px;
 }
 
-/* Bid Information */
-.bid-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 15px;
-}
-
-.highest-bid, .bids-made {
-  flex: 1;
-  text-align: center;
-}
-
-.bid-amount, .bid-count {
-  font-size: 18px;
-  font-weight: bold;
+/* Bid information */
+.bid-amount {
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin-bottom: 5px;
   color: #333;
 }
 
 .bid-label {
-  color: #999;
-  font-size: 12px;
-  margin-top: 5px;
+  font-size: 0.85rem;
+  text-transform: lowercase;
 }
 
-.bid-divider {
-  width: 1px;
-  height: 40px;
-  background-color: #eee;
+/* Border between bid info */
+.border-end {
+  border-right: 1px solid #f0f0f0 !important;
 }
 
-/* View Info */
-.view-info {
-  display: flex;
-  justify-content: space-between;
-  color: #777;
+/* Vehicle info section */
+.vehicle-info {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 15px !important;
+}
+
+.vehicle-info h5 {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.vehicle-info .small {
+  font-size: 0.85rem;
+}
+
+/* Bid button */
+.btn-danger {
+  background-color: #8335dc;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: lowercase;
+  box-shadow: 0 4px 10px rgba(131, 53, 220, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #722bbf;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(131, 53, 220, 0.4);
+}
+
+.btn-danger:active {
+  transform: translateY(0);
+}
+
+/* Icons styling */
+.bi {
+  font-size: 1.1rem;
+}
+
+/* Spinner styling for loading state */
+.spinner-border.text-primary {
+  color: #8335dc !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .time-value {
+    font-size: 2rem;
+  }
+  
+  .bid-amount {
+    font-size: 1.4rem;
+  }
+  
+  .carousel-item img {
+    height: 220px;
+  }
+  
+  .thumbnail-item {
+    min-width: 60px;
+    height: 60px;
+  }
+}
+
+/* Bootstrap Icons */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css");
+
+
+
+/*  bidding button */
+ 
+.place-bid-section {
+  margin-top: 20px;
+  padding: 16px;
+ 
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+ 
+.place-bid-section label {
+  display: block;
   font-size: 14px;
-  margin-bottom: 15px;
+  color: #2d4059;
+  margin-bottom: 8px;
+  font-weight: bold;
 }
-
-/* Bid Button */
+ 
+.bid-input-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 10px;
+}
+ 
+.bid-input-group input[type="number"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  border: 1px solid hwb(0 80% 20%);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2d4059;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.2s;
+}
+ 
+.bid-input-group input[type="number"]:focus {
+  border-color: #9b33d3;
+}
+ 
+.btn-increment,
+.btn-decrement {
+  padding: 10px 16px;
+  font-size: 20px;
+  width: 80px;
+  font-weight: bold;
+  color: white;
+  background-color: #9b33d3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+ 
+.btn-increment:hover,
+.btn-decrement:hover {
+  background-color: #7d15b5;
+}
+ 
+.btn-increment:disabled,
+.btn-decrement:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+ 
+@media (max-width: 480px) {
+  .bid-input-group input[type="number"] {
+    font-size: 16px;
+  }
+ 
+  .btn-increment,
+  .btn-decrement {
+    padding: 8px 12px;
+    font-size: 18px;
+  }
+}
+.warning .time-value {
+  color: red;
+}
+.bid-button:disabled {
+  background-color: #dea0ff;
+  cursor: not-allowed;
+  color: hsl(0, 0%, 40%);
+  opacity: 0.7;
+}
+ 
+/* button */
 .bid-button {
   display: flex;
   align-items: center;
@@ -145,11 +376,11 @@
   text-transform: lowercase;
   transition: background-color 0.2s;
 }
-
+ 
 .bid-button:hover {
   background-color: #7d15b5;
 }
-
+ 
 .bid-button i {
   margin-right: 8px;
 }
