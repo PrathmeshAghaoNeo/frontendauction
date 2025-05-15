@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
 export class DirectSaleComponent implements OnInit {
   assetId: number | null = null;
   asset: Asset | null = null;
-  gallery: Gallery[] = [];
+   gallery: Gallery[] = [];
   isLoading = true;
   viewCount = 0;
   price = 0;
@@ -102,6 +102,45 @@ export class DirectSaleComponent implements OnInit {
       }
     });
   }
+//  private loadData(): void {
+//   this.isLoading = true;
+  
+  // Get asset details first
+  // this.assetService.getAssetById(this.assetId).subscribe({
+  //   next: (assetData) => {
+  //     this.asset = assetData;
+  //     this.plateNumber = assetData.assetNumber || '';
+  //     this.price = assetData.startingPrice ?? 0;
+      
+  //     // Then get gallery images
+  //     this.assetService.getAssetGallery(this.assetId).subscribe({
+  //       next: (galleryData) => {
+  //         // Handle both array and single object responses
+  //         if (Array.isArray(galleryData)) {
+  //           this.gallery = galleryData;
+  //         } else if (galleryData && typeof galleryData === 'object') {
+  //           this.gallery = [galleryData as Gallery];
+  //         }
+          
+  //         // Process each gallery item to ensure proper image URL
+  //         this.gallery = this.gallery.map(item => {
+  //           if (item.fileUrl) {
+  //             item.fileUrl = item.fileUrl;
+  //           } else if (item.filePath) {
+  //             item.fileUrl = item.filePath;
+  //           }
+  //           return item;
+  //         });
+          
+  //         this.isLoading = false;
+  //       },
+  //       error: (err) => { /* Error handling */ }
+  //     });
+  //   },
+  //   error: (err) => { /* Error handling */ }
+  // });
+// }
+
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
     imgElement.style.display = 'none';

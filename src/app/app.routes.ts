@@ -49,7 +49,11 @@ import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sa
 
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
+import { EditAssetComponent } from './component/edit-asset/edit-asset.component';
+import { DirectBidComponent } from './component/direct-bid/direct-bid.component';
 import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
+import { BidWatchlistComponent } from './component/bid-watchlist/bid-watchlist.component';
+import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-cart.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -65,7 +69,14 @@ export const routes: Routes = [
     {path:'newUser', component:AddUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'newAuction', component:AddAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'update-auction/:id', component:UpdateAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
-    {path:'newAsset', component:AddAssetComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    // Asset Management
+  { path: 'assets', component: ManageAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'newAsset', component: AddAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'udpate-asset/:assetId', component: EditAssetComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
+  
+  
+  
+
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
@@ -87,12 +98,22 @@ export const routes: Routes = [
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details',component:AssetDetailComponent},
-    {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
-    { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
+    {path:'direct-sale-assetpage',component:DirectSaleComponent},
+
+    {path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
+    
     {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
+    
     {path: 'testing', component:ChartComponent}, 
     {path: 'signal', component:SignalrTestComponent},
-    { path: '**', redirectTo: '/login' }
+    
+    { path: 'direct-bid', component: DirectBidComponent},
+    { path: 'bid-watchlist', component: BidWatchlistComponent},
+    { path: 'bid-add-to-cart', component: BidAddToCartComponent},
+
+    
+    
+    
 ];
    
 
