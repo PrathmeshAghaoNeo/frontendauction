@@ -105,23 +105,32 @@
               <div class="detail-value fw-bold">{{asset?.assetNumber || 'N/A'}}</div>
             </div>
 
+
+             
+
             <!-- Display pricing information -->
             <div class="detail-row d-flex justify-content-between py-2">
               <div class="detail-label">Starting Price</div>
               <div class="detail-value fw-bold">{{asset?.startingPrice | currency}}</div>
             </div>
 
-            <!-- Display auction information -->
-            <div class="detail-row d-flex justify-content-between py-2">
-              <div class="detail-label">Reserve Amount</div>
-              <div class="detail-value fw-bold">{{asset?.reserveAmount | currency}}</div>
-            </div>
 
+            <!-- Display auction information -->
+              <!-- <div class="detail-row d-flex justify-content-between py-2">
+                <div class="detail-label">Reserve Amount</div>
+                <div class="detail-value fw-bold">{{asset?.reserveAmount | currency}}</div>
+              </div> -->
+
+                 <!-- Simply loop through and display all attributes -->
+                <div class="detail-row d-flex justify-content-between py-2" *ngFor="let attr of asset?.attributes">
+                  <div class="detail-label">{{attr.attributeName}}</div>
+                  <div class="detail-value fw-bold">{{attr.attributeValue || 'N/A'}}</div>
+                </div>
             <!-- Display status -->
-            <div class="detail-row d-flex justify-content-between py-2">
+            <!-- <div class="detail-row d-flex justify-content-between py-2">
               <div class="detail-label">Status</div>
               <div class="detail-value fw-bold">{{asset?.statusName || 'N/A'}}</div>
-            </div>
+            </div> -->
           </div>
 
           <!-- Description Content -->

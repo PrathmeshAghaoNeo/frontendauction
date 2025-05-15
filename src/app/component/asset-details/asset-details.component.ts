@@ -19,7 +19,7 @@ import { FormsModule, NgModel } from '@angular/forms';
 })
 export class AssetDetailComponent implements OnInit, OnDestroy {
   // assetId: number = 0;
-   assetId: number = 96;
+   assetId: number = 6;
     auctionId: number = 99;
     userId: number = 1;
   asset: Asset | null = null;
@@ -91,7 +91,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     this.assetService.getAssetById(this.assetId).subscribe({
       next: (asset) => {
         this.asset = asset;
-        
+        console.log('Asset loaded:', this.asset);
         this.isLoading = false;
       },
       error: (error) => {

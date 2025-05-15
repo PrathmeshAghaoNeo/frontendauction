@@ -1,27 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { forkJoin, of, catchError } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 import { ManageAssetService } from '../../services/asset.service';
 import { Asset, Gallery } from '../../modals/manage-asset';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-direct-sale-assetpage',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [CommonModule],
   templateUrl: './direct-sale-assetpage.component.html',
   styleUrls: ['./direct-sale-assetpage.component.scss']
 })
 export class DirectSaleComponent implements OnInit {
   assetId: number | null = null;
   asset: Asset | null = null;
-  gallery: Gallery[] = [];
   isLoading = true;
-  viewCount = 0;
+  // viewCount = 0;
   price = 0;
   currency = 'BHD';
   plateNumber = '';
+  
+  // Slider and tab functionality variables
+  currentSlideIndex: number = 0;
+  activeTab: string = 'details';
 
   constructor(
     private route: ActivatedRoute,
@@ -55,53 +58,107 @@ export class DirectSaleComponent implements OnInit {
     this.isLoading = true;
     console.log('Fetching data for asset ID:', this.assetId);
 
-    forkJoin({
-      asset: this.assetService.getAssetById(this.assetId).pipe(
-        catchError(err => {
-          console.error(`Error fetching asset ${this.assetId}:`, err);
-          return of(null);
-        })
-      ),
-      gallery: this.assetService.getAssetGallery(this.assetId).pipe(
-        catchError(err => {
-          console.error(`Error fetching gallery for asset ${this.assetId}:`, err);
-          return of([]);
-        })
-      )
-    }).subscribe({
-      next: ({ asset, gallery }) => {
-        // — Asset —
+    // Get asset details
+    this.assetService.getAssetById(this.assetId).pipe(
+      catchError(err => {
+        console.error(`Error fetching asset ${this.assetId}:`, err);
+        return of(null);
+      })
+    ).subscribe({
+      next: (asset) => {
         if (asset) {
-          this.asset        = asset;
-          this.plateNumber  = asset.assetNumber || '';
-          this.price        = asset.startingPrice ?? 0;
-          // description is bound via `asset?.description` in your template
+          this.asset = asset;
+          this.plateNumber = asset.assetNumber || '';
+          this.price = asset.startingPrice ?? 0;
+          // this.viewCount = Math.floor(Math.random() * 100); // Simulated view count
+          
+          // If galleries aren't populated yet, get them
+          if (!this.asset.galleries || this.asset.galleries.length === 0) {
+            this.loadGallery();
+          } else {
+            this.isLoading = false;
+          }
         } else {
           console.warn('No asset data returned');
+          this.isLoading = false;
         }
+      },
+      error: (err) => {
+        console.error('Error loading asset:', err);
+        this.isLoading = false;
+      }
+    });
+  }
 
-        // — Gallery —
+  private loadGallery(): void {
+    if (!this.assetId) return;
+    
+    this.assetService.getAssetGallery(this.assetId).pipe(
+      catchError(err => {
+        console.error(`Error fetching gallery for asset ${this.assetId}:`, err);
+        return of([]);
+      })
+    ).subscribe({
+      next: (gallery) => {
         let items: Gallery[] = [];
         if (gallery) {
           items = Array.isArray(gallery) ? gallery : [gallery];
         }
-        // ensure fileUrl
-        this.gallery = items.map(item => {
+        
+        // Ensure fileUrl exists on each gallery item
+        items = items.map(item => {
           if (!item.fileUrl && item.imageUrl) {
             item.fileUrl = item.imageUrl;
           }
           return item;
         });
-        console.log('Gallery loaded:', this.gallery.length);
-
+        
+        // If asset exists, attach the gallery to it
+        if (this.asset) {
+          this.asset.galleries = items;
+        }
+        
         this.isLoading = false;
+        console.log('Gallery loaded:', items.length);
       },
-      error: err => {
-        console.error('Error in forkJoin:', err);
+      error: (err) => {
+        console.error('Error loading gallery:', err);
         this.isLoading = false;
       }
     });
   }
+
+  // Image slider functionality
+  nextSlide(): void {
+    if (this.asset && this.asset.galleries && this.asset.galleries.length > 0) {
+      this.currentSlideIndex = (this.currentSlideIndex + 1) % this.asset.galleries.length;
+    }
+  }
+
+  prevSlide(): void {
+    if (this.asset && this.asset.galleries && this.asset.galleries.length > 0) {
+      this.currentSlideIndex = (this.currentSlideIndex - 1 + this.asset.galleries.length) % this.asset.galleries.length;
+    }
+  }
+
+  setCurrentSlide(index: number): void {
+    this.currentSlideIndex = index;
+  }
+
+  hasMultipleImages(): boolean {
+    return !!this.asset && !!this.asset.galleries && this.asset.galleries.length > 1;
+  }
+
+  hasImages(): boolean {
+    return !!this.asset && !!this.asset.galleries && this.asset.galleries.length > 0;
+  }
+
+  // Tab functionality
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+  }
+
+  // Fallback if image loading fails
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
     imgElement.style.display = 'none';
@@ -127,16 +184,12 @@ export class DirectSaleComponent implements OnInit {
       console.error('Cannot add to cart: Invalid asset ID');
       return;
     }
-    console.log('Adding to cart...', this.assetId);
+    // alert(`Added plate ${this.plateNumber} to cart!`);
+    // console.log('Adding to cart...', this.assetId);
     // Implement cart functionality here
   }
 
   goBack(): void {
     window.history.back();
-  }
-
-  viewMoreDescription(): void {
-    console.log('Viewing more description...');
-    // Implement expanded description view
   }
 }
