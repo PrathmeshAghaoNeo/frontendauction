@@ -17,6 +17,8 @@ import {
   futureDateValidator,
   endDateAfterStartDateValidator
 } from '../../utils/date-time.utils'; // Adjust path if needed
+import { AssetCategory } from '../../modals/assetcategories';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
 
 @Component({
   selector: 'app-update-auction',
@@ -37,32 +39,31 @@ export class UpdateAuctionComponent implements OnInit {
     { statusId: 4, statusName: 'Cancelled' }
   ];
 
-  categories = [
-    { id: 1, name: 'Electronics' },
-    { id: 2, name: 'Vehicles' },
-    { id: 3, name: 'Furniture' },
-    { id: 4, name: 'Collectibles' },
-    { id: 5, name: 'Real Estate' },
-    { id: 6, name: 'Fashion' },
-    { id: 7, name: 'Industrial Equipment' },
-    { id: 8, name: 'Books & Media' },
-    { id: 9, name: 'Sports & Outdoors' },
-    { id: 10, name: 'Toys & Games' }
-  ];
+  categories: AssetCategory[] = [];
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router,  
-    private location: Location
-  ) {}
+    private router: Router,
+    private location: Location,
+    private assetCategoriesService: AssetCategoriesService,
+  ) { }
 
   ngOnInit(): void {
     this.auctionId = Number(this.route.snapshot.paramMap.get('id'));
     this.currentDateTime = formatToDateTimeLocalFormat(new Date());
     this.initForm();
     this.loadAuction();
+
+    this.assetCategoriesService.getAll().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (err) => {
+        console.error('Failed to load categories', err);
+      }
+    });
   }
 
   initForm() {
@@ -71,8 +72,8 @@ export class UpdateAuctionComponent implements OnInit {
         auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
         title: ['', [Validators.required, Validators.maxLength(20)]],
         type: ['', Validators.required],
-        startDateTime: ['',Validators.required, ],
-        endDateTime: ['',Validators.required],
+        startDateTime: ['', Validators.required,],
+        endDateTime: ['', Validators.required],
         statusId: ['', Validators.required],
         incrementalTime: ['', Validators.required],
         categoryId: ['', Validators.required]
@@ -86,7 +87,7 @@ export class UpdateAuctionComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
-  
+
   loadAuction() {
     this.http.get<any>(`${ApiEndpoints.AUCTION}/${this.auctionId}`).subscribe({
       next: (data) => {
@@ -122,7 +123,7 @@ export class UpdateAuctionComponent implements OnInit {
       auctionNumber: formValue.auctionNumber,
       title: formValue.title,
       type: formValue.type,
-      startDateTime: normalizeDateTime(formValue.startDateTime), 
+      startDateTime: normalizeDateTime(formValue.startDateTime),
       endDateTime: normalizeDateTime(formValue.endDateTime),
       statusId: +formValue.statusId,
       incrementalTime: +formValue.incrementalTime,

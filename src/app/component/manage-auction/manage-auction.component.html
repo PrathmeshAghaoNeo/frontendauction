@@ -26,7 +26,9 @@
  <div class="col-md-3">
   <select class="form-select" [(ngModel)]="fetchCategories" (change)="applyFilters()">
     <option [value]="0">All Categories</option>
-    <option *ngFor="let cat of categories" [value]="cat.categoryId">{{ cat.categoryName }}</option>
+    <option *ngFor="let cat of categories" [value]="cat.categoryId">
+            {{ cat.categoryName }}
+          </option>
   </select>
 </div>
 

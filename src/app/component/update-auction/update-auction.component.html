@@ -59,9 +59,9 @@
         <div class="col-md-4 mb-3">
           <label for="categoryId" id="categoryId" class="form-label required-label">Category</label>
           <select formControlName="categoryId"  class="form-select">
-            <option value="" disabled>Select Category</option>
-            <option *ngFor="let cat of categories" [value]="cat.id">
-              {{ cat.name }}
+            <!-- <option value="" disabled>Select Category</option> -->
+            <option *ngFor="let cat of categories" [value]="cat.categoryId">
+              {{ cat.categoryName }}
             </option>
           </select>
           <div *ngIf="auctionForm.get('categoryId')?.touched && auctionForm.get('categoryId')?.invalid" class="text-danger">

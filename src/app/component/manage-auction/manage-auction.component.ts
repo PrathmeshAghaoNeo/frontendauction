@@ -59,6 +59,14 @@ export class ManageAuctionComponent implements OnInit {
   ngOnInit(): void {
     this.initializeAuctionForm();
     this.fetchAuctions();
+    this.assetCategoriesService.getAll().subscribe({
+    next: (data) => {
+      this.categories = data;
+    },
+    error: (err) => {
+      console.error('Failed to load categories', err);
+    }
+  });
   }
 
   // -------------------------------
