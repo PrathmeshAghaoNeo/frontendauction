@@ -13,7 +13,7 @@ export interface Asset {
   minIncrement?: number;
   makeOffer?: boolean;
   featured?: boolean;
-  awardingId?: number;
+  awardingId?: number;   
   awardingMethod?: string;
   statusId?: number;
   statusName?: string;

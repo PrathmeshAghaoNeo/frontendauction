@@ -19,9 +19,9 @@ import { FormsModule, NgModel } from '@angular/forms';
 })
 export class AssetDetailComponent implements OnInit, OnDestroy {
   // assetId: number = 0;
-   assetId: number = 96;
-    auctionId: number = 99;
-    userId: number = 1;
+   assetId: number = 106;
+    auctionId: number = 100;
+    userId: number = 87;
   asset: Asset | null = null;
   auction!: Auction;
 

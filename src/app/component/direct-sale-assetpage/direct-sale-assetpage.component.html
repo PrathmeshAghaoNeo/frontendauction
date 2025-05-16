@@ -1,79 +1,204 @@
-<div class="container">
+<div class="container-fluid px-3 py-3" *ngIf="isLoading">
+  <div class="row">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid px-3 py-2" *ngIf="!isLoading">
   <!-- Navigation -->
-  <div class="navigation">
-    <a href="#" class="back-button" (click)="goBack()">←</a>
-    <div class="breadcrumb">
-      Direct Sale > Car Plates > {{ plateNumber }}
+  <div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div>
+        <a href="javascript:void(0)" (click)="goBack()" class="text-decoration-none text-dark">
+          <i class="bi bi-arrow-left"></i>
+          <span class="ms-2">direct sale > {{asset?.categoryName || 'Car Plates'}}</span>
+        </a>
+      </div>
+      <div>
+        <button class="btn btn-link text-dark">
+          <i class="bi bi-bookmark"></i>
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Error state handling -->
-  <div *ngIf="!isLoading && !asset" class="error-container">
-    <div class="error-message">
-      Asset not found or there was an error loading the asset data.
-      <button class="retry-button" (click)="loadData()">Retry</button>
-    </div>
-  </div>
+  <!-- Image Gallery/Slider -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="image-gallery mb-4">
+        <div id="assetCarousel" class="carousel slide" data-bs-ride="false">
+          <div class="carousel-inner">
+            <div class="carousel-item" *ngFor="let image of asset?.galleries; let i = index"
+              [ngClass]="{'active': i === currentSlideIndex}">
+              <img [src]="image.fileUrl" class="d-block w-100" [alt]="'Asset image ' + (i+1)">
+            </div>
+            <!-- Fallback if no images -->
+            <div class="carousel-item active" *ngIf="!hasImages()">
+              <div class="plate-display">
+                <div class="license-plate-carousel">
+                  <div class="flag"></div>
+                  <div class="plate-info">
+                    <div class="arabic">البحرين</div>
+                    <div class="english">BAHRAIN</div>
+                  </div>
+                  <div class="plate-number-display">
+                    <span>{{ plateNumber }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-  <!-- Content area -->
-  <div *ngIf="!isLoading && asset">
-    <!-- License Plate Card -->
-    <div class="card plate-card">
-      <div class="license-plate">
-        <div class="flag"></div>
-        <div class="plate-info">
-          <div class="arabic">البحرين</div>
-          <div class="english">BAHRAIN</div>
+          <button class="carousel-control-prev" type="button" (click)="prevSlide()" *ngIf="hasMultipleImages()">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" (click)="nextSlide()" *ngIf="hasMultipleImages()">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
         </div>
 
-        <!-- Image Section -->
-        <div class="plate-number">
-          <ng-container *ngIf="gallery && gallery.length > 0; else noImage">
-            <img [src]="gallery[0].fileUrl || gallery[0].imageUrl"
-                alt="License Plate Image"
-                (error)="handleImageError($event)"
-                class="plate-image">
-          </ng-container>
-          <ng-template #noImage>
-            <span class="plate-text">{{ plateNumber }}</span>
-          </ng-template>
+        <!-- Carousel indicators for multiple images -->
+        <div class="carousel-indicators position-relative mt-2" *ngIf="hasMultipleImages()">
+          <button type="button" *ngFor="let image of asset?.galleries; let i = index"
+            [ngClass]="{'active': i === currentSlideIndex}" (click)="setCurrentSlide(i)" aria-current="true"
+            [attr.aria-label]="'Slide ' + (i+1)"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Thumbnails Row -->
+  <div class="row mb-4" *ngIf="hasMultipleImages()">
+    <div class="col-12">
+      <div class="d-flex overflow-auto pb-2">
+        <div class="thumbnail-item me-2" *ngFor="let image of asset?.galleries; let i = index"
+          [ngClass]="{'active': i === currentSlideIndex}" (click)="setCurrentSlide(i)">
+          <img [src]="image.fileUrl" class="img-thumbnail" [alt]="'Thumbnail ' + (i+1)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-column layout for details and purchase -->
+  <div class="row">
+    <!-- Details Card (Left side) -->
+    <div class="col-md-6 mb-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-0">
+          <!-- Tab Navigation - No styles borders -->
+          <div class="tabs-container">
+            <button [ngClass]="{'tab-active': activeTab === 'details'}" (click)="setActiveTab('details')"
+              class="tab-btn">
+              details
+            </button>
+            <button [ngClass]="{'tab-active': activeTab === 'description'}" (click)="setActiveTab('description')"
+              class="tab-btn">
+              description
+            </button>
+          </div>
+
+          <!-- Details Content -->
+          <div class="p-3" *ngIf="activeTab === 'details'">
+            <!-- Display title dynamically -->
+            <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Name</div>
+              <div class="detail-value fw-bold">{{asset?.title || 'N/A'}}</div>
+            </div>
+
+            <!-- Plate Number -->
+            <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Plate Number</div>
+              <div class="detail-value fw-bold">{{plateNumber || 'N/A'}}</div>
+            </div>
+
+            <!-- Display pricing information -->
+            <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Price</div>
+              <div class="detail-value fw-bold">{{currency}} {{price | number:'1.2-2'}}</div>
+            </div>
+
+            <!-- Simply loop through and display all attributes -->
+            <div class="detail-row d-flex justify-content-between py-2" *ngFor="let attr of asset?.attributes">
+              <div class="detail-label">{{attr.attributeName}}</div>
+              <div class="detail-value fw-bold">{{attr.attributeValue || 'N/A'}}</div>
+            </div>
+          </div>
+
+          <!-- Description Content -->
+          <div class="p-3" *ngIf="activeTab === 'description'">
+            <p>{{asset?.description || 'No description available'}}</p>
+
+            <!-- Additional sales notes if available -->
+            <div *ngIf="asset?.salesNotes">
+              <h6 class="mt-3 mb-2">Sales Notes:</h6>
+              <p>{{asset?.salesNotes}}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Price Card -->
-    <div class="card price-card">
-      <div class="price">{{ currency }} {{ price }}</div>
-    </div>
+    <!-- Purchase Card (Right side) -->
+    <div class="col-md-6 mb-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-4">
+          <!-- Price Display -->
+          <div class="row mb-4">
+            <div class="col-12 text-center">
+              <div class="price-display">
+                <div class="currency-label">{{currency}}</div>
+                <div class="price-amount">{{price | number:'1.0-0'}}</div>
+              </div>
+            </div>
+          </div>
 
-    <!-- Views Card -->
-    <div class="card views-card">
-      <div class="views-icon">○</div>
-      <div class="views-count">{{ viewCount }}</div>
-    </div>
+          <!-- Plate Display for Desktop View -->
+          <div class="row mb-4 d-none d-md-block">
+            <div class="col-12">
+              <div class="license-plate-container">
+                <div class="license-plate-card">
+                  <div class="flag"></div>
+                  <div class="plate-info">
+                    <div class="arabic">البحرين</div>
+                    <div class="english">BAHRAIN</div>
+                  </div>
+                  <div class="plate-number-display">
+                    <span>{{ plateNumber }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <!-- Cart Button Card -->
-    <div class="card cart-card">
-      <button class="add-to-cart-button" (click)="addToCart()">
-        <span class="cart-icon">🛒</span>
-        Add to Cart
-      </button>
-    </div>
+          <!-- Vehicle Info and Creation Date -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="vehicle-info p-3 bg-light rounded-4">
+                <h5 class="mb-1">{{asset?.title || 'Car Plate'}}</h5>
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-calendar me-2"></i>
+                  <span class="text-muted small">{{asset?.createdAt | date:'mediumDate'}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <!-- Description Section -->
-    <div class="card description-card">
-      <div class="description-header">Description</div>
-      <div class="description-content">
-        <div class="description-text">
-          {{ asset.description || 'No description available' }}
+          <!-- Add to Cart Button -->
+          <div class="row">
+            <div class="col-12">
+              <button class="add-to-cart-button" (click)="addToCart()">
+                <i class="bi bi-cart-plus me-2"></i> Add to Cart
+              </button>
+            </div>
+          </div>
         </div>
-        <!-- <div *ngIf="asset?.description" class="view-more" (click)="viewMoreDescription()">
-          View more
-        </div> -->
       </div>
     </div>
-
-    <!-- Debug info for development only - remove in production -->
-    <div *ngIf="isLoading" class="loading">Loading...</div>
   </div>
 </div>
