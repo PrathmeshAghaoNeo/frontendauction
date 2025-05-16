@@ -1,0 +1,46 @@
+<p>signalr-test works!</p>
+
+
+<div class="bid-container">
+    <h2>Live Bidding Stats</h2>
+  
+    <div class="bid-stats">
+      <p><strong>Asset ID:</strong> {{ assetId }}</p>
+      <p><strong>Highest Bid:</strong> ₹{{ bidData.highestBid }}</p>
+      <p><strong>Number of Bids:</strong> {{ bidData.bidCount }}</p>
+    </div>
+  
+    <div class="live-status">
+      <p *ngIf="bidData.bidCount === 0">No bids placed yet.</p>
+    </div>
+  </div>
+  
+  <form (ngSubmit)="onPlaceBid()" #bidForm="ngForm">
+    <div class="form-group">
+      <label for="bidAmount">Bid Amount</label>
+      <input
+        type="number"
+        id="bidAmount"
+        name="bidAmount"
+        class="form-control"
+        [(ngModel)]="placeBid.bidAmount"
+        required
+        min="0"
+      />
+    </div>
+  
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="bidForm.invalid"
+    >
+      Place Bid
+    </button>
+    <div class="auction-info">
+      <h3>Auction Ends In:</h3>
+      <p>{{ countdown }}</p>
+    </div>
+    
+    <!-- <button type="button" (click)="endTime()">button</button> -->
+  </form>
+  

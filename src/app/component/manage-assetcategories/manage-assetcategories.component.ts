@@ -191,7 +191,14 @@ export class ManageAssetCategoriesComponent implements OnInit {
       next: () => {
         this.assetCategories = this.assetCategories.filter(c => c.categoryId !== this.selectedAssetCategory?.categoryId);
         this.selectedAssetCategory = null;
-        Swal.fire('Deleted!', 'Category has been deleted.', 'success');
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Category has been deleted.',
+          timer: 400,
+          showConfirmButton: false
+        });
+
       },
       error: err => {
         console.error('Error deleting category', err);

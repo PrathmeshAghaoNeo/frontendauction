@@ -23,6 +23,7 @@ import { AddAssetComponent } from './component/add-asset/add-asset.component';
 import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
 import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
 import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
+import { AddRequestsComponent } from './component/add-requests/add-requests.component';
 
 import { ManageAuctionComponent } from './component/manage-auction/manage-auction.component';
 import { AddAuctionComponent } from './component/add-auction/add-auction.component';
@@ -37,11 +38,18 @@ import { AddTransactionComponent } from './component/add-transaction/add-transac
 import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
 
 import { ChartComponent } from './component/chart/chart.component';
-import { AddRequestsComponent } from './component/add-requests/add-requests.component';
+// import { AddRequestsComponent } from './component/add-requests/add-requests.component';
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { SignupComponent } from './component/signup/signup.component';
+import { UserSignupComponent } from './component/user-signup/user-signup.component';
+import { AssetDetailComponent } from './component/asset-details/asset-details.component';
+import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
+
+
+
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
+import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -72,9 +80,16 @@ export const routes: Routes = [
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'User' }},
+    {path: 'testing', component:ChartComponent},  
+    {path:'user-signup',component:UserSignupComponent},
+    {path:'asset-details',component:AssetDetailComponent},
+    {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
     { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
     {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
     {path: 'testing', component:ChartComponent}, 
+    {path: 'signal', component:SignalrTestComponent},
     { path: '**', redirectTo: '/login' }
 ];
    

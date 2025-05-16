@@ -81,6 +81,7 @@ export class ManageAssetComponent implements OnInit {
       }
     );
   }
+  
   newAssestRoute():void {
     this.router.navigate(['/newAsset']);
   }

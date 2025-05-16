@@ -36,13 +36,17 @@ export interface Asset {
   updatedAt: string;       
   galleries: Gallery[] ;
   documents: Document[];
+
+ 
 }
 
 export interface Gallery {
+[x: string]: any;
   mediaType: string;
   filePath: string;
   sortOrder: number;
   fileUrl : string;
+   imageUrl: string;
 }
 
 export interface Document {

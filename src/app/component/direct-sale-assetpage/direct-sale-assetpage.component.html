@@ -1,0 +1,79 @@
+<div class="container">
+  <!-- Navigation -->
+  <div class="navigation">
+    <a href="#" class="back-button" (click)="goBack()">←</a>
+    <div class="breadcrumb">
+      Direct Sale > Car Plates > {{ plateNumber }}
+    </div>
+  </div>
+
+  <!-- Error state handling -->
+  <div *ngIf="!isLoading && !asset" class="error-container">
+    <div class="error-message">
+      Asset not found or there was an error loading the asset data.
+      <button class="retry-button" (click)="loadData()">Retry</button>
+    </div>
+  </div>
+
+  <!-- Content area -->
+  <div *ngIf="!isLoading && asset">
+    <!-- License Plate Card -->
+    <div class="card plate-card">
+      <div class="license-plate">
+        <div class="flag"></div>
+        <div class="plate-info">
+          <div class="arabic">البحرين</div>
+          <div class="english">BAHRAIN</div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="plate-number">
+          <ng-container *ngIf="gallery && gallery.length > 0; else noImage">
+            <img [src]="gallery[0].fileUrl || gallery[0].imageUrl"
+                alt="License Plate Image"
+                (error)="handleImageError($event)"
+                class="plate-image">
+          </ng-container>
+          <ng-template #noImage>
+            <span class="plate-text">{{ plateNumber }}</span>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price Card -->
+    <div class="card price-card">
+      <div class="price">{{ currency }} {{ price }}</div>
+    </div>
+
+    <!-- Views Card -->
+    <div class="card views-card">
+      <div class="views-icon">○</div>
+      <div class="views-count">{{ viewCount }}</div>
+    </div>
+
+    <!-- Cart Button Card -->
+    <div class="card cart-card">
+      <button class="add-to-cart-button" (click)="addToCart()">
+        <span class="cart-icon">🛒</span>
+        Add to Cart
+      </button>
+    </div>
+
+    <!-- Description Section -->
+    <div class="card description-card">
+      <div class="description-header">Description</div>
+      <div class="description-content">
+        <div class="description-text">
+          {{ asset.description || 'No description available' }}
+        </div>
+        <!-- <div *ngIf="asset?.description" class="view-more" (click)="viewMoreDescription()">
+          View more
+        </div> -->
+      </div>
+    </div>
+
+    <!-- Debug info for development only - remove in production -->
+    <div *ngIf="isLoading" class="loading">Loading...</div>
+  </div>
+</div>

@@ -1,9 +1,8 @@
 <div class="form-page-container">
-  
+
   <div class="loading-overlay" *ngIf="isLoading">
     <div class="loader">
       <img src=" assets/legal.png" alt="Loading..." />
-      <p>Sending OTP to your email...</p>
     </div>
   </div>
 
@@ -12,34 +11,54 @@
       <h2 class="form-title m-0">LOGIN</h2>
     </div>
 
-    <!-- Step 1: Enter Email -->
-    <form #emailForm="ngForm" *ngIf="step === 1" (ngSubmit)="sendOtp(emailForm)">
-      <div class="form-group">
-        <input type="email" name="email" [(ngModel)]="email" class="form-control" #emailref="ngModel" required
-          min="3" maxlength="40" pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" placeholder="Enter email" />
-        <div *ngIf="emailref.invalid && (emailref.dirty || emailref.touched)" class="text-danger">
-          <div *ngIf="emailref.errors?.['required']">Email is required.</div>
-          <div *ngIf="emailref.errors?.['email'] || emailref.errors?.['pattern']">Please enter a valid email.</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary" [disabled]="emailForm.invalid">Send OTP</button>
-      </div>
+<!-- Step 1: Enter Email -->
+<form #emailForm="ngForm" *ngIf="step === 1" (ngSubmit)="sendOtp(emailForm)">
+  <div class="form-group">
+    <input type="email" name="email" [(ngModel)]="email" class="form-control" #emailref="ngModel" required
+      min="3" maxlength="40" pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" placeholder="Enter email" />
+    <div *ngIf="emailref.invalid && (emailref.dirty || emailref.touched)" class="text-danger">
+      <div *ngIf="emailref.errors?.['required']">Email is required.</div>
+      <div *ngIf="emailref.errors?.['email'] || emailref.errors?.['pattern']">Please enter a valid email.</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary" [disabled]="emailForm.invalid">Send OTP</button>
+  </div>
+
+  
+  <div class="text-center mt-3">
+<p class="m-0">Not a user? 
+  <a (click)="newAssestRoute()" class="text-primary" style="cursor: pointer">Sign up</a>
+</p>
+
+
+  </div>
     </form>
 
-    <!-- Step 2: Enter OTP -->
-    <form #otpForm="ngForm" *ngIf="step === 2" (ngSubmit)="verifyOtp(otpForm)">
-      <div class="form-group text-center">
-        <div class="d-flex justify-content-center gap-2 otp-input-wrapper">
-          <input *ngFor="let otpInput of otpArray; let i = index"
-            maxlength="1" type="text" [attr.data-index]="i" (keyup)="handleOtp($event, i)" (paste)="handlePaste($event)"
-            #otpInputRef [ngModel]="otpInput" />
-        </div>
-      </div>
 
-      <div class="form-group mt-3 text-center">
-        <button type="submit" class="btn btn-primary" [disabled]="otpArray.includes('')">Verify OTP</button>
-      </div>
-    </form>
+<!-- Step 2: Enter OTP -->
+<form #otpForm="ngForm" *ngIf="step === 2" (ngSubmit)="verifyOtp(otpForm)">
+  <div class="form-group text-center">
+    <div class="d-flex justify-content-center gap-2 otp-input-wrapper">
+      <input *ngFor="let otpInput of otpArray; let i = index"
+        maxlength="1" type="text" [attr.data-index]="i" (keyup)="handleOtp($event, i)" (paste)="handlePaste($event)"
+        #otpInputRef [ngModel]="otpInput" />
+    </div>
+  </div>
+
+  <div class="form-group mt-3 text-center">
+    <button type="submit" class="btn btn-primary" [disabled]="otpArray.includes('')">Verify OTP</button>
+   <div>
+  <button type="button" class="btn btn-link p-0"
+          (click)="resendOtp()"
+          [disabled]="isResending || resendTimer > 0">
+    Resend OTP<span *ngIf="resendTimer > 0"> in {{ resendTimer }}s</span>
+  </button>
+</div>
+
+  </div>
+</form>
+
+
   </div>
 </div>

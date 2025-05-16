@@ -28,7 +28,6 @@
   flex-wrap: wrap;
 }
 
-/* Bigger Purple Button */
 .btn-purple {
   background-color: #6f42c1;
   color: white;
@@ -40,12 +39,10 @@
   cursor: pointer;
 }
 
-/* Purple hover effect */
 .btn-purple:hover {
   background-color: #5936a8;
 }
 
-/* Bigger outline light button */
 .btn-outline-light {
   padding: 18px 36px;
   border-radius: 10px;
