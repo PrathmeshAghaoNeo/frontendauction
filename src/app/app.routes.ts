@@ -98,7 +98,7 @@ export const routes: Routes = [
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details',component:AssetDetailComponent},
-    {path:'direct-sale-assetpage',component:DirectSaleComponent},
+    {path:'direct-sale-assetpage/:id',component:DirectSaleComponent},
 
     {path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
     

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { forkJoin, of, catchError } from 'rxjs';
+import { catchError, of } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 import { ManageAssetService } from '../../services/asset.service';
 import { Asset, Gallery } from '../../modals/manage-asset';
@@ -13,23 +14,14 @@ import { Asset, Gallery } from '../../modals/manage-asset';
   styleUrls: ['./direct-sale-assetpage.component.scss']
 })
 export class DirectSaleComponent implements OnInit {
-  assetId: number = 6;
+  assetId: number | null = null;
   asset: Asset | null = null;
-  gallery: Gallery[] = [];
   isLoading = true;
-  viewCount = 0;
   price = 0;
   currency = 'BHD';
   plateNumber = '';
   
   // Slider and tab functionality variables
-  currentSlideIndex: number = 0;
-  activeTab: string = 'details';
-
-
-  
-
-
   currentSlideIndex: number = 0;
   activeTab: string = 'details';
 
@@ -40,6 +32,7 @@ export class DirectSaleComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
+      // Try both keys in case your route is /:id or /:assetId
       const idStr = params.get('id') ?? params.get('assetId');
       const idNum = idStr !== null ? Number(idStr) : NaN;
 
@@ -47,7 +40,6 @@ export class DirectSaleComponent implements OnInit {
         this.assetId = idNum;
         console.log('Asset ID from route:', this.assetId);
         this.loadAssetDetails();
-        this.loadGallery();
       } else {
         console.error('Invalid asset ID in route params:', idStr);
         this.isLoading = false;
@@ -57,7 +49,7 @@ export class DirectSaleComponent implements OnInit {
 
   loadAssetDetails(): void {
     if (this.assetId === null || isNaN(this.assetId)) {
-      console.error('Invalid assetId:', this.assetId);
+      console.error('Attempted to load data with invalid assetId:', this.assetId);
       this.isLoading = false;
       return;
     }
@@ -65,40 +57,45 @@ export class DirectSaleComponent implements OnInit {
     this.isLoading = true;
     console.log('Fetching data for asset ID:', this.assetId);
 
-    forkJoin({
-      asset: this.assetService.getAssetById(this.assetId).pipe(
-        catchError(err => {
-          console.error(`Error fetching asset ${this.assetId}:`, err);
-          return of(null);
-        })
-      ),
-      gallery: this.assetService.getAssetGallery(this.assetId).pipe(
-        catchError(err => {
-          console.error(`Error fetching gallery for asset ${this.assetId}:`, err);
-          return of([]);
-        })
-      )
-    }).subscribe({
-      next: ({ asset, gallery }) => {
-        // — Asset —
+    // Get asset details
+    this.assetService.getAssetById(this.assetId).subscribe({
+      next: (asset) => {
         if (asset) {
-          this.asset        = asset;
-          this.plateNumber  = asset.assetNumber || '';
-          this.price        = asset.startingPrice ?? 0;
-          // description is bound via `asset?.description` in your template
+          this.asset = asset;
+          this.plateNumber = asset.assetNumber || '';
+          this.price = asset.startingPrice ?? 0;
+          
+          // If galleries aren't populated yet, get them
+          if (!this.asset.galleries || this.asset.galleries.length === 0) {
+            this.loadGallery();
+          } else {
+            this.isLoading = false;
+          }
+          console.log('Asset loaded:', this.asset);
         } else {
           console.warn('No asset data returned');
           this.isLoading = false;
         }
+      },
+      error: (err) => {
+        console.error('Error loading asset:', err);
+        this.isLoading = false;
+      }
+    });
+  }
 
-        // — Gallery —
-        let items: Gallery[] = [];
+  loadGallery(): void {
+    if (!this.assetId) return;
+    
+    this.assetService.getAssetGallery(this.assetId).subscribe({
+      next: (gallery) => {
+        let galleryItems: Gallery[] = [];
         if (gallery) {
-          items = Array.isArray(gallery) ? gallery : [gallery];
+          galleryItems = Array.isArray(gallery) ? gallery : [gallery];
         }
         
         // Ensure fileUrl exists on each gallery item
-        items = items.map(item => {
+        galleryItems = galleryItems.map(item => {
           if (!item.fileUrl && item.imageUrl) {
             item.fileUrl = item.imageUrl;
           }
@@ -106,19 +103,51 @@ export class DirectSaleComponent implements OnInit {
         });
         
         // If asset exists, attach the gallery to it
-        if (this.asset) {
-          this.asset.galleries = items;
-        }
+        // if (this.asset) {
+        //   this.asset.galleries = galleryItems;
+        // }
         
         this.isLoading = false;
-        console.log('Gallery loaded:', items.length);
+        console.log('Gallery loaded:', galleryItems.length);
       },
-      error: err => {
-        console.error('Error in forkJoin:', err);
+      error: (err) => {
+        console.error('Error loading gallery:', err);
         this.isLoading = false;
       }
     });
   }
+
+  // Image slider functionality
+  nextSlide(): void {
+    if (this.asset && this.asset.galleries && this.asset.galleries.length > 0) {
+      this.currentSlideIndex = (this.currentSlideIndex + 1) % this.asset.galleries.length;
+    }
+  }
+
+  prevSlide(): void {
+    if (this.asset && this.asset.galleries && this.asset.galleries.length > 0) {
+      this.currentSlideIndex = (this.currentSlideIndex - 1 + this.asset.galleries.length) % this.asset.galleries.length;
+    }
+  }
+
+  setCurrentSlide(index: number): void {
+    this.currentSlideIndex = index;
+  }
+
+  hasMultipleImages(): boolean {
+    return !!this.asset && !!this.asset.galleries && this.asset.galleries.length > 1;
+  }
+
+  hasImages(): boolean {
+    return !!this.asset && !!this.asset.galleries && this.asset.galleries.length > 0;
+  }
+
+  // Tab functionality
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+  }
+
+  // Handle image errors
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
     imgElement.style.display = 'none';
@@ -144,6 +173,7 @@ export class DirectSaleComponent implements OnInit {
       console.error('Cannot add to cart: Invalid asset ID');
       return;
     }
+    alert(`Added plate ${this.plateNumber} to cart!`);
     console.log('Adding to cart...', this.assetId);
     // Implement cart functionality here
   }

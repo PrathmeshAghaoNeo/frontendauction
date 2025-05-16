@@ -123,21 +123,11 @@
               <div class="detail-value fw-bold">{{currency}} {{price | number:'1.2-2'}}</div>
             </div>
 
-            <!-- Display status -->
-            <!-- <div class="detail-row d-flex justify-content-between py-2">
-              <div class="detail-label">Status</div>
-              <div class="detail-value fw-bold">{{asset?.statusName || 'Available'}}</div>
-            </div> -->
-            
-            
-
-            <!-- Views count -->
-            <!-- <div class="detail-row d-flex justify-content-between py-2">
-              <div class="detail-label">Views</div>
-              <div class="detail-value fw-bold">
-                <i class="bi bi-eye me-1"></i>{{viewCount}}
-              </div>
-            </div> -->
+            <!-- Simply loop through and display all attributes -->
+            <div class="detail-row d-flex justify-content-between py-2" *ngFor="let attr of asset?.attributes">
+              <div class="detail-label">{{attr.attributeName}}</div>
+              <div class="detail-value fw-bold">{{attr.attributeValue || 'N/A'}}</div>
+            </div>
           </div>
 
           <!-- Description Content -->

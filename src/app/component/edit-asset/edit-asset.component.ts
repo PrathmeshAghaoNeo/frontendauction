@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
 import { AddAsset } from '../../modals/add-asset';
-import { Asset, AssetGalleryDto } from '../../modals/manage-asset';
+import { Asset, AssetDocumentFormDto, AssetGalleryDto } from '../../modals/manage-asset';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
@@ -20,7 +20,7 @@ import { environment } from '../../constants/enviroments';
 })
 export class EditAssetComponent implements OnInit {
   convertedGalleryFiles: File[] = [];
-
+  
   environment = environment;
   assetIdparam!: number;
   existingGalleryImages: string[] = []; // From DB
@@ -37,9 +37,9 @@ export class EditAssetComponent implements OnInit {
   existingDocuments: string[] = [];
   
   auctions: Auction[] = [];
-
+  
   filteredAuctions: Auction[] = [];
-
+  
   attributeList: { attributeName: string; attributeValue: string }[] = [];
   asset: Asset = {
     assetId: this.assetIdparam,
@@ -89,14 +89,18 @@ export class EditAssetComponent implements OnInit {
   isLoading: boolean = false;
   error: string | null = null;
   isModalOpen: boolean = false;
-
+  
   // Add these to your component class
   newGalleryFiles: File[] = [];
   newDocumentFiles: File[] = [];
+  
 
+
+  // for the new documents
+  newDocument: File[] = [];
   documentUploadError: string | null = null;
   imageUploadError: string | null = null;
-
+  
 
   
   // Dropdown options
@@ -264,7 +268,15 @@ getRequestLabel(value: Number | undefined) {
 
 
 galleryError: string = '';
+documentError : string = '';
+
   updateAsset(form: NgForm): void {
+
+    if(this.asset.attributes.length === 0){
+      this.attributeError = 'Please add at least one attribute.'; 
+      form.control.markAllAsTouched(); 
+      return;
+    }
     
     if(this.asset.mapLatitude === 0 || this.asset.mapLatitude === null){
       this.lattitudeError = 'Please add latitude.'; 
@@ -273,6 +285,17 @@ galleryError: string = '';
     }
     if(this.asset.mapLongitude === 0 || this.asset.mapLongitude === null){
       this.longitudeError = 'Please add longitude.'; 
+      form.control.markAllAsTouched(); 
+      return;
+    }
+    if(this.asset.documents.length === 0 && this.newDocumentFiles.length === 0){
+      this.documentError = 'Please add at least one document.'; 
+      form.control.markAllAsTouched(); 
+      return;
+    }
+
+    if(this.asset.galleries.length === 0 && this.newGalleryFiles.length === 0){ 
+      this.galleryError = 'Please add at least one image.'; 
       form.control.markAllAsTouched(); 
       return;
     }
@@ -472,6 +495,41 @@ removeExistingGalleryImage(gallery: AssetGalleryDto): void {
 
 
 
+removeExistingDocumentUsingDto(doc: AssetDocumentFormDto): void {
+  console.log('Document to delete:', doc); 
+  console.log('Document ID to delete:', doc.documentId  );
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to delete this document?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.assetService.deleteAssetDocument(doc.documentId.toString()).subscribe({
+        next: () => {
+          console.log("Document deleted successfully");
+          this.asset.documents = this.asset.documents.filter(
+            (d) => d.documentId !== doc.documentId
+          );
+          Swal.fire('Deleted!', 'Document has been deleted.', 'success');
+        },
+        error: (err) => {
+          console.error('Error deleting document:', err);
+          Swal.fire('Error!', 'Failed to delete document.', 'error');
+        },
+      });
+    }
+  });
+}
+
+
+
+
+
+
+
 
   // Handle image drop
 onImageDrop(event: DragEvent): void {
@@ -504,55 +562,56 @@ onImageDrop(event: DragEvent): void {
 
     
       const reader = new FileReader();
-      // reader.onload = (e: any) => {
-      //   if (!this.asset.galleries) {
-      //     this.asset.galleries = [];
-      //   }
-      //   this.asset.galleries.push({
-      //     fileUrl: e.target.result,
-      //     filePath: file.name,
-      //   });
-      // };
       reader.readAsDataURL(file);
     }
   }
 
   // Handle document selection
-  onDocumentSelected(event: any): void {
-    const files: FileList = event.target.files;
-    this.handleDocumentFiles(files);
-  }
 
-  // Handle PDF drop
-  onDropPdf(event: DragEvent): void {
-    event.preventDefault();
-    if (event.dataTransfer?.files) {
-      this.handleDocumentFiles(event.dataTransfer.files);
-    }
-  }
+onDropPdf(event: DragEvent): void {
+  event.preventDefault();
+  const files = event.dataTransfer?.files;
 
-  // Helper method to handle document files
-  private handleDocumentFiles(files: FileList): void {
-    this.documentUploadError = null;
-
+  if (files) {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-
-      // Validate file type
-      if (file.type !== 'application/pdf') {
-        this.documentUploadError = 'Only PDF files are allowed';
-        continue;
+      if (file.type === 'application/pdf' && file.size <= 500 * 1024) {
+        this.newDocumentFiles.push(file);
       }
-
-      // Validate file size (example: 10MB limit)
-      if (file.size > 10 * 1024 * 1024) {
-        this.documentUploadError = 'PDF must be less than 10MB';
-        continue;
-      }
-      
-      this.newDocumentFiles.push(file);
     }
   }
+
+}
+
+
+onDocumentSelected(event: any): void {
+  const files: FileList = event.target.files;
+  console.log('Files selected:', files);
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+
+    if (file.type !== 'application/pdf') {
+      this.documentUploadError = 'Only PDF files are allowed.';
+      return;
+    }
+
+    if (file.size > 500 * 1024) {
+      this.documentUploadError = 'File size should be less than 500KB.';
+      return;
+    }
+
+    this.newDocumentFiles.push(file);
+    console.log('Added file:', file);
+  }
+
+    console.log('Selected documents:', this.newDocumentFiles);
+  // Reset error if valid
+  this.documentUploadError = null;
+}
+
+
+
 
   // Remove gallery item
   removeGalleryItem(index: number): void {
@@ -584,15 +643,26 @@ removeExistingDocument(docPath: string): void {
 
 
 
+onDocumentFilesSelected(event: any): void {
+  const files: FileList = event.target.files;
+  this.documentUploadError = '';
 
-  // removeDocument(index: number): void {
-  //   if (this.asset.documents) {
-  //     this.asset.documents.splice(index, 1);
-  //   }
-  //   if (index < this.newDocumentFiles.length) {
-  //     this.newDocumentFiles.splice(index, 1);
-  //   }
-  // }
+  if (files && files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const allowedTypes = ['application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        this.documentUploadError = 'Only PDF files are allowed.';
+        continue;
+      }
+      if (file.size > 500 * 1024) {
+        this.documentUploadError = 'Each document must be less than 500KB.';
+        continue;
+      }
+      this.newDocumentFiles.push(file);
+    }
+  }
+}
 
 
 
@@ -610,6 +680,5 @@ removeExistingDocument(docPath: string): void {
 }
   
 }
-
 
 
