@@ -26,7 +26,7 @@ export class ListService {
 
   getCart(userId: number): Observable<any> {
 
-    return this.http.get(`${this.baseUrl}/Cart/get?userId=${userId}`);
+    return this.http.get(`${this.baseUrl}/Cart/${userId}`);
   }
 
 
