@@ -87,7 +87,6 @@ export class ManageUserComponent implements OnInit {
       console.error('Invalid userId');
     }
   }
-
   viewUser(user: UserView): void {
     if (user?.userId) {
       const encodedUserId = btoa(user.userId.toString());
