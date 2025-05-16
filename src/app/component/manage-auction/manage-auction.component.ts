@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
+import { AssetCategory } from '../../modals/assetcategories';
 
 @Component({
   selector: 'app-manage-auction',
@@ -33,19 +35,9 @@ export class ManageAuctionComponent implements OnInit {
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' | '' = '';
   defaultAuctions: Auction[] = [];
+  categories: AssetCategory[] = [];
+  
 
-  categories = [
-    { categoryId: 1, categoryName: 'Electronics' },
-    { categoryId: 2, categoryName: 'Vehicles' },
-    { categoryId: 3, categoryName: 'Furniture' },
-    { categoryId: 4, categoryName: 'Collectibles' },
-    { categoryId: 5, categoryName: 'Real Estate' },
-    { categoryId: 6, categoryName: 'Fashion' },
-    { categoryId: 7, categoryName: 'Industrial Equipment' },
-    { categoryId: 8, categoryName: 'Books & Media' },
-    { categoryId: 9, categoryName: 'Sports & Outdoors' },
-    { categoryId: 10, categoryName: 'Toys & Games' }
-  ];
 
   statuses = [
     { statusId: 1, statusName: 'Pending' },
@@ -60,7 +52,8 @@ export class ManageAuctionComponent implements OnInit {
     private auctionService: AuctionService,
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private assetCategoriesService: AssetCategoriesService,
   ) { }
 
   ngOnInit(): void {
@@ -101,6 +94,17 @@ export class ManageAuctionComponent implements OnInit {
       }
     });
   }
+  fetchCategories(): void {
+  this.assetCategoriesService.getAll().subscribe({
+    next: (data) => {
+      this.categories = data;
+    },
+    error: (err) => {
+      console.error('Error fetching categories', err);
+      Swal.fire('Error!', 'Failed to load categories.', 'error');
+    }
+  });
+}
 
   sortAuctions(column: string): void {
     console.log("functioncalled");

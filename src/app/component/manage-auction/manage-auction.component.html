@@ -23,12 +23,13 @@
   <div class="col-md-4">
     <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Search Auctions…(Title)" (input)="applyFilters()" />
   </div>
-  <div class="col-md-3">
-    <select class="form-select" [(ngModel)]="filterCategory" (change)="applyFilters()">
-      <option [value]="0">All Categories</option>
-      <option *ngFor="let cat of categories" [value]="cat.categoryId">{{ cat.categoryName }}</option>
-    </select>
-  </div>
+ <div class="col-md-3">
+  <select class="form-select" [(ngModel)]="fetchCategories" (change)="applyFilters()">
+    <option [value]="0">All Categories</option>
+    <option *ngFor="let cat of categories" [value]="cat.categoryId">{{ cat.categoryName }}</option>
+  </select>
+</div>
+
   <div class="col-md-3">
     <select class="form-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
       <option [value]="0">All Statuses</option>
