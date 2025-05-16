@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignalRTestComponent } from './signal-r-test.component';
+import { EditAssetComponent } from './edit-asset.component';
 
-describe('SignalRTestComponent', () => {
-  let component: SignalRTestComponent;
-  let fixture: ComponentFixture<SignalRTestComponent>;
+describe('EditAssetComponent', () => {
+  let component: EditAssetComponent;
+  let fixture: ComponentFixture<EditAssetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignalRTestComponent]
+      imports: [EditAssetComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SignalRTestComponent);
+    fixture = TestBed.createComponent(EditAssetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

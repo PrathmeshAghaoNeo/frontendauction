@@ -37,10 +37,6 @@ export class AppComponent {
   }
   
   ngOnInit(): void {
-    this.signalRService.startConnection();
-    this.signalRService.bidUpdates$.subscribe(data => {
-      console.log('Bid Update Received:', data);
-    });
   }
 
  
@@ -53,8 +49,30 @@ export class AppComponent {
   }
 
   get needSideBar(): boolean {
-    return this.isCurrentRoute(['/landing-page', '/reguserlandingpage', '/login', '/user-signup', '/user-profile','/asset-details']);
+  const exactRoutes = [
+    '/landing-page',
+    '/reguserlandingpage',
+    '/login',
+    '/user-signup',
+    '/user-profile',
+    '/direct-bid',
+    '/bid-watchlist',
+    '/bid-add-to-cart',
+    '/asset-details',
+  ];
+
+  const dynamicPatterns = [
+    '/direct-sale-assets/',
+    '/auction-assets/'
+  ];
+
+  if (exactRoutes.includes(this.currentRoute)) {
+    return true;
   }
+
+  return dynamicPatterns.some(pattern => this.currentRoute.startsWith(pattern));
+}
+
 
   get showSidebar(): boolean {
     return !this.isStartPage && !this.needSideBar;

@@ -1,5 +1,4 @@
-
-export interface Asset {
+export interface AddAsset {
   assetId: number;
   title: string;
   categoryId?: number;
@@ -27,14 +26,10 @@ export interface Asset {
   mapLongitude?: number;
   adminFees?: number;
   auctionFees?: number;
-  requestForViewing: boolean;
-  requestForInquiry: boolean;
   buyerCommission?: number;
   winnerId?: number;
-  winnerName?: string;
   awardedPrice?: number;
   salesNotes?: string;
-  details: string | null;
   createdAt?: string;
   updatedAt?: string;
   assetNumber: string;
@@ -42,40 +37,14 @@ export interface Asset {
   galleries: AssetGalleryDto[];
   documents: AssetDocumentFormDto[];
   attributes: AssetDetailDto[];
-  auctionStatusId?: number;
 }
 
 export interface AssetGalleryDto {
-  galleryId: number;
+  galleryId:number;
   mediaType?: string;
   filePath?: string;
   fileUrl: string;
   sortOrder?: number;
-  createdAt: string;        
-  updatedAt: string;       
-  galleries: Gallery[] ;
-  documents: Document[];
-  
-//added now
- attributes: AssetAttribute[];
- 
-}
-
-
-// Add this interface for the attributes
-export interface AssetAttribute {
-  attributeName: string;
-  attributeValue: string;
-}
-
-
-export interface Gallery {
-[x: string]: any;
-  mediaType: string;
-  filePath: string;
-  sortOrder: number;
-  fileUrl : string;
-   imageUrl: string;
 }
 
 export interface AssetDocumentFormDto {
@@ -88,7 +57,6 @@ export interface AssetDetailDto {
   attributeName: string;
   attributeValue: string;
 }
-  
 
 
 export interface DirectSaleAssetDto {
@@ -104,7 +72,7 @@ export interface DirectSaleAssetDto {
   thumbnailUrl: string | null;
   categoryName: string;
   isAvailableForDirectSale: boolean;
-  galleries: AssetGalleryDto[];
+  galleries: AssetGalleryDto[]; 
  
 }
  

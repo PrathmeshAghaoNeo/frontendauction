@@ -384,4 +384,23 @@
 .bid-button i {
   margin-right: 8px;
 }
- 
+
+/* Original Navigation & Footer (Hidden) */
+.navigation, .footer {
+  display: none;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .plate-number {
+    font-size: 36px;
+  }
+  
+  .time-value {
+    font-size: 36px;
+  }
+  
+  .bid-amount, .bid-count {
+    font-size: 16px;
+  }
+}

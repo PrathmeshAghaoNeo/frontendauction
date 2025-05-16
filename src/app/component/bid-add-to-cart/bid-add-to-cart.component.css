@@ -1,0 +1,135 @@
+.cart-page {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f7f8fa;
+}
+
+.cart-items {
+  flex: 2;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.cart-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.cart-image img {
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 1rem;
+  border: 1px solid #ccc;
+}
+
+.cart-info {
+  flex-grow: 1;
+}
+
+.asset-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.asset-number {
+  color: #777;
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+
+.asset-price {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #27ae60;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.remove-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.remove-icon:hover {
+  opacity: 1;
+}
+
+.empty-cart-msg {
+  font-size: 1.1rem;
+  color: #888;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.cart-summary {
+  flex: 1;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  height: fit-content;
+}
+
+.cart-summary h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.summary-total {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.checkout-btn:hover {
+  background-color: #0056b3;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.back-btn-image {
+  width: 32px;
+  height: 32px;
+}

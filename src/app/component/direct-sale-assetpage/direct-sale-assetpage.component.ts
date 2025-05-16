@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { forkJoin, of, catchError } from 'rxjs';
-import { CommonModule } from '@angular/common';
 
 import { ManageAssetService } from '../../services/asset.service';
 import { Asset, Gallery } from '../../modals/manage-asset';
@@ -14,15 +13,23 @@ import { Asset, Gallery } from '../../modals/manage-asset';
   styleUrls: ['./direct-sale-assetpage.component.scss']
 })
 export class DirectSaleComponent implements OnInit {
-  assetId: number | null = null;
+  assetId: number = 6;
   asset: Asset | null = null;
+  gallery: Gallery[] = [];
   isLoading = true;
-  // viewCount = 0;
+  viewCount = 0;
   price = 0;
   currency = 'BHD';
   plateNumber = '';
   
   // Slider and tab functionality variables
+  currentSlideIndex: number = 0;
+  activeTab: string = 'details';
+
+
+  
+
+
   currentSlideIndex: number = 0;
   activeTab: string = 'details';
 
@@ -33,14 +40,14 @@ export class DirectSaleComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      // try both keys in case your route is /:id or /:assetId
       const idStr = params.get('id') ?? params.get('assetId');
       const idNum = idStr !== null ? Number(idStr) : NaN;
 
       if (!isNaN(idNum)) {
         this.assetId = idNum;
         console.log('Asset ID from route:', this.assetId);
-        this.loadData();
+        this.loadAssetDetails();
+        this.loadGallery();
       } else {
         console.error('Invalid asset ID in route params:', idStr);
         this.isLoading = false;
@@ -48,9 +55,9 @@ export class DirectSaleComponent implements OnInit {
     });
   }
 
-  public loadData(): void {
+  loadAssetDetails(): void {
     if (this.assetId === null || isNaN(this.assetId)) {
-      console.error('Attempted to load data with invalid assetId:', this.assetId);
+      console.error('Invalid assetId:', this.assetId);
       this.isLoading = false;
       return;
     }
@@ -58,48 +65,33 @@ export class DirectSaleComponent implements OnInit {
     this.isLoading = true;
     console.log('Fetching data for asset ID:', this.assetId);
 
-    // Get asset details
-    this.assetService.getAssetById(this.assetId).pipe(
-      catchError(err => {
-        console.error(`Error fetching asset ${this.assetId}:`, err);
-        return of(null);
-      })
-    ).subscribe({
-      next: (asset) => {
+    forkJoin({
+      asset: this.assetService.getAssetById(this.assetId).pipe(
+        catchError(err => {
+          console.error(`Error fetching asset ${this.assetId}:`, err);
+          return of(null);
+        })
+      ),
+      gallery: this.assetService.getAssetGallery(this.assetId).pipe(
+        catchError(err => {
+          console.error(`Error fetching gallery for asset ${this.assetId}:`, err);
+          return of([]);
+        })
+      )
+    }).subscribe({
+      next: ({ asset, gallery }) => {
+        // — Asset —
         if (asset) {
-          this.asset = asset;
-          this.plateNumber = asset.assetNumber || '';
-          this.price = asset.startingPrice ?? 0;
-          // this.viewCount = Math.floor(Math.random() * 100); // Simulated view count
-          
-          // If galleries aren't populated yet, get them
-          if (!this.asset.galleries || this.asset.galleries.length === 0) {
-            this.loadGallery();
-          } else {
-            this.isLoading = false;
-          }
+          this.asset        = asset;
+          this.plateNumber  = asset.assetNumber || '';
+          this.price        = asset.startingPrice ?? 0;
+          // description is bound via `asset?.description` in your template
         } else {
           console.warn('No asset data returned');
           this.isLoading = false;
         }
-      },
-      error: (err) => {
-        console.error('Error loading asset:', err);
-        this.isLoading = false;
-      }
-    });
-  }
 
-  private loadGallery(): void {
-    if (!this.assetId) return;
-    
-    this.assetService.getAssetGallery(this.assetId).pipe(
-      catchError(err => {
-        console.error(`Error fetching gallery for asset ${this.assetId}:`, err);
-        return of([]);
-      })
-    ).subscribe({
-      next: (gallery) => {
+        // — Gallery —
         let items: Gallery[] = [];
         if (gallery) {
           items = Array.isArray(gallery) ? gallery : [gallery];
@@ -121,44 +113,12 @@ export class DirectSaleComponent implements OnInit {
         this.isLoading = false;
         console.log('Gallery loaded:', items.length);
       },
-      error: (err) => {
-        console.error('Error loading gallery:', err);
+      error: err => {
+        console.error('Error in forkJoin:', err);
         this.isLoading = false;
       }
     });
   }
-
-  // Image slider functionality
-  nextSlide(): void {
-    if (this.asset && this.asset.galleries && this.asset.galleries.length > 0) {
-      this.currentSlideIndex = (this.currentSlideIndex + 1) % this.asset.galleries.length;
-    }
-  }
-
-  prevSlide(): void {
-    if (this.asset && this.asset.galleries && this.asset.galleries.length > 0) {
-      this.currentSlideIndex = (this.currentSlideIndex - 1 + this.asset.galleries.length) % this.asset.galleries.length;
-    }
-  }
-
-  setCurrentSlide(index: number): void {
-    this.currentSlideIndex = index;
-  }
-
-  hasMultipleImages(): boolean {
-    return !!this.asset && !!this.asset.galleries && this.asset.galleries.length > 1;
-  }
-
-  hasImages(): boolean {
-    return !!this.asset && !!this.asset.galleries && this.asset.galleries.length > 0;
-  }
-
-  // Tab functionality
-  setActiveTab(tab: string): void {
-    this.activeTab = tab;
-  }
-
-  // Fallback if image loading fails
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
     imgElement.style.display = 'none';
@@ -184,8 +144,7 @@ export class DirectSaleComponent implements OnInit {
       console.error('Cannot add to cart: Invalid asset ID');
       return;
     }
-    // alert(`Added plate ${this.plateNumber} to cart!`);
-    // console.log('Adding to cart...', this.assetId);
+    console.log('Adding to cart...', this.assetId);
     // Implement cart functionality here
   }
 
