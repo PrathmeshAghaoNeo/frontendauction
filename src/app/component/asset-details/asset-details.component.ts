@@ -20,8 +20,8 @@ import Swal from 'sweetalert2';
 })
 export class AssetDetailComponent implements OnInit, OnDestroy {
   // assetId: number = 0;
-   assetId: number = 96;
-    auctionId: number = 99;
+   assetId: number = 107;
+    auctionId: number = 0;
     userId: number = 1;
   asset: Asset | null = null;
   auction!: Auction;
@@ -31,7 +31,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   isLoading: boolean = true;
 
   placeBid: BidDto = {
-      auctionId: this.auctionId,
+      auctionId: 0,
       assetId: this.assetId,
       userId: this.userId,
       bidAmount: 0,
@@ -69,7 +69,6 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
 
     // // Start countdown immediately to ensure UI is updated immediately
     // this.startCountdown();
-    this.loadAuctionDetails();
     this.signalR.startConnection();
     this.signalR.bidUpdates$.subscribe(data => {
       console.log(data);
@@ -78,6 +77,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
       }
     })
     this.loadAssetDetails();
+    
     this.loadBid();
   }
 
@@ -93,7 +93,10 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     this.assetService.getAssetById(this.assetId).subscribe({
       next: (asset) => {
         this.asset = asset;
+        this.auctionId = this.asset?.auctionIds[0];
+        this.placeBid.auctionId = this.asset.auctionIds[0];
         console.log(this.asset);
+        this.loadAuctionDetails();
         this.isLoading = false;
       },
       error: (error) => {
@@ -167,11 +170,11 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
       clearInterval(this.countdownInterval);
     }
     console.log('Now      :', new Date().toString());
-    console.log('End Time :', new Date(this.auction.endDateTime).toString());
+    console.log('End Time :', new Date(this.auction.endDateTime + 'z').toString());
     console.log('Now (ms) :', new Date().getTime());
-    console.log('End (ms) :', new Date(this.auction.endDateTime).getTime());
+    console.log('End (ms) :', new Date(this.auction.endDateTime + 'Z').getTime());
  
-    const endTime = new Date(this.auction.endDateTime).getTime();
+    const endTime = new Date(this.auction.endDateTime + 'Z').getTime();
     console.log("endtime", endTime);
     this.countdownInterval = setInterval(() => {
       const now = new Date().getTime();
@@ -203,7 +206,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     }, 1000);
   }
   onPlaceBid() {
-    
+    console.log(this.placeBid)
     this.bidService.placeBid(this.placeBid).subscribe({
       next: (response) => {
         console.log('Bid placed with ID:', response.bidId);
@@ -244,8 +247,8 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     })
   }
 
-
   loadAuctionDetails() {
+    
     this.auctionService.getAuctionById(this.auctionId).subscribe({
       next: (response) => {
         this.auction = response;
