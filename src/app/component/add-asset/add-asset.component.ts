@@ -7,6 +7,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ManageAssetService } from '../../services/asset.service';
+import { Location } from '@angular/common';
+
+import { from } from 'rxjs';
+import Swal from 'sweetalert2';
+import { Auction } from '../../modals/auctions';
+import { AuctionService } from '../../services/auction.service';
+import { AssetCategory } from '../../modals/assetcategories';
 
 @Component({
   selector: 'app-add-asset',
@@ -16,6 +24,38 @@ import { Router } from '@angular/router';
   styleUrl: './add-asset.component.css',
 })
 export class AddAssetComponent {
+  auctions: Auction[] = [];
+  assetForm: FormGroup;
+  documentUrls: string[] = [];
+  imageUploadError: string = '';
+  documentUploadError: string = '';
+  formSubmitted = false;
+  category : AssetCategory[] = [];
+
+  imagePreviews: string[] = [];
+
+
+  categories = [
+    { id: 1, name: 'Auction' },
+    { id: 2, name: 'Fixed Price' },
+    { id: 3, name: 'Instant Buy' },
+  ];
+
+  // Optional mapping for cleaner field names
+  fieldLabels: { [key: string]: string } = {
+    title: 'Asset Title',
+    price: 'Starting Price',
+    sellerId: 'Seller',
+    description: 'Description',
+    salesNotes: 'Sales Notes',
+    // Add all fields you care about
+  };
+
+  getFieldLabel(key: string): string {
+    return this.fieldLabels[key] || key;
+  }
+
+  
 
   asset = {
     assetNumber: '',

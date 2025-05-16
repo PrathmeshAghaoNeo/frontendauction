@@ -99,11 +99,7 @@ export class ViewRequestComponent implements OnInit {
 
   getAssetName(assetId: number): string {
     const a = this.assets.find(x => x.assetId === assetId);
-<<<<<<< HEAD
-    return a ? (a.title || a.categoryName||'unknown') : 'Unknown';
-=======
     return a ? (a.title || a.categoryName || 'Unknown') : 'Unknown';
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   }
 
   getTypeName(id: number): string {

@@ -25,22 +25,17 @@ export class ListService {
   }
 
   getCart(userId: number): Observable<any> {
-<<<<<<< HEAD
+
     return this.http.get(`${this.baseUrl}/Cart/get?userId=${userId}`);
   }
 
-  removeFromCart(userId: number, assetId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/Cart/remove?userId=${userId}&assetId=${assetId}`);
-=======
-    return this.http.get(`${this.baseUrl}/Cart/${userId}`);
-  }
 
   removeFromCart(payload: { userId: number; assetId: number }): Observable<any> {
     return this.http.request('DELETE', `${this.baseUrl}/Cart/remove`, {
       headers: { 'Content-Type': 'application/json' },
       body: payload,
     });
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
+
   }
 
   // Wishlist methods
@@ -52,11 +47,9 @@ export class ListService {
     return this.http.get(`${this.baseUrl}/Wishlist/${userId}`);
   }
 
-<<<<<<< HEAD
-  removeFromWishlist(userId: number, assetId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/Wishlist/remove?userId=${userId}&assetId=${assetId}`);
-  }
-=======
+
+  
+
  removeFromWishlist(payload: { userId: number; assetId: number }): Observable<any> {
   return this.http.request('DELETE', `${this.baseUrl}/Wishlist/remove`, {
     headers: { 'Content-Type': 'application/json' },
@@ -65,7 +58,7 @@ export class ListService {
 }
 
 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
+
 
   refreshComponent(): void {
   const currentUrl = this.router.url;

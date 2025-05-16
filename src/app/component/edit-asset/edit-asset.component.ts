@@ -4,11 +4,7 @@ import { FormBuilder, FormsModule, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
 import { AddAsset } from '../../modals/add-asset';
-<<<<<<< HEAD
-import { Asset } from '../../modals/manage-asset';
-=======
 import { Asset, AssetDocumentFormDto, AssetGalleryDto } from '../../modals/manage-asset';
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
@@ -24,11 +20,7 @@ import { environment } from '../../constants/enviroments';
 })
 export class EditAssetComponent implements OnInit {
   convertedGalleryFiles: File[] = [];
-<<<<<<< HEAD
-
-=======
   
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   environment = environment;
   assetIdparam!: number;
   existingGalleryImages: string[] = []; // From DB
@@ -39,16 +31,6 @@ export class EditAssetComponent implements OnInit {
   longitudeError: string | null = null;
   auctionIds: number[] = [];
   selectedAuctions: Auction[] = [];
-<<<<<<< HEAD
-
-
-  imagePreviews: string[] = [];
-  
-  auctions: Auction[] = [];
-
-  filteredAuctions: Auction[] = [];
-
-=======
   
   
   imagePreviews: string[] = [];
@@ -58,7 +40,6 @@ export class EditAssetComponent implements OnInit {
   
   filteredAuctions: Auction[] = [];
   
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   attributeList: { attributeName: string; attributeValue: string }[] = [];
   asset: Asset = {
     assetId: this.assetIdparam,
@@ -108,15 +89,6 @@ export class EditAssetComponent implements OnInit {
   isLoading: boolean = false;
   error: string | null = null;
   isModalOpen: boolean = false;
-<<<<<<< HEAD
-
-  // Add these to your component class
-  newGalleryFiles: File[] = [];
-  newDocumentFiles: File[] = [];
-  documentUploadError: string | null = null;
-  imageUploadError: string | null = null;
-
-=======
   
   // Add these to your component class
   newGalleryFiles: File[] = [];
@@ -131,7 +103,6 @@ export class EditAssetComponent implements OnInit {
   
 
   
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   // Dropdown options
   makeOfferOptions = ['Yes', 'No'];
   featuredOptions = ['Yes', 'No'];
@@ -261,11 +232,7 @@ getRequestLabel(value: Number | undefined) {
         this.fetchAuctions();
 
         // this.convertGalleryUrlsToFiles();
-<<<<<<< HEAD
-        this.handleGalleryConversion();
-=======
        
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
         
       },
       error: (err) => {
@@ -299,85 +266,6 @@ getRequestLabel(value: Number | undefined) {
 
 //////////////////////////////////=================================////////////////////////
 
-<<<<<<< HEAD
-async handleGalleryConversion(): Promise<void> {
-  // await this.convertGalleryUrlsToFiles();
-}
-
-// async convertGalleryUrlsToFiles(): Promise<void> {
-//   this.convertedGalleryFiles = [];
-
-//   for (let i = 0; i < this.asset.galleries.length; i++) {
-//     const gallery = this.asset.galleries[i];
-//     const fullUrl = `${environment.baseurl}${gallery.filePath}`;
-//     console.log("Full image URL:", fullUrl);
-
-//     // Extract extension from filePath
-//     const extMatch = gallery.filePath?.match(/\.(jpg|jpeg|png)$/i);
-//     const extension = extMatch ? extMatch[1].toLowerCase() : 'jpg';
-//     const mimeType = this.getMimeType(extension);
-//     const filename = `gallery-${i}.${extension}`;
-
-//     try {
-//       const file = await this.imageUrlToFile(fullUrl, filename, mimeType);
-//       this.convertedGalleryFiles.push(file);
-
-//       console.log(`File ${i}:`, file);
-//     } catch (error) {
-//       console.error(`Error converting gallery image ${i}:`, error);
-//     }
-//   }
-
-//   console.log("All converted gallery files:", this.convertedGalleryFiles);
-// }
-
-// imageUrlToFile(url: string, filename: string, mimeType: string): Promise<File> {
-//   return new Promise((resolve, reject) => {
-//     const img = new Image();
-//     img.crossOrigin = 'anonymous'; // Needed to avoid CORS issues
-
-//     img.onload = () => {
-//       const canvas = document.createElement('canvas');
-//       canvas.width = img.width;
-//       canvas.height = img.height;
-
-//       const ctx = canvas.getContext('2d');
-//       if (!ctx) return reject(new Error("Failed to get canvas context."));
-
-//       ctx.drawImage(img, 0, 0);
-
-//       canvas.toBlob(blob => {
-//         if (blob) {
-//           const file = new File([blob], filename, { type: mimeType });
-//           resolve(file);
-//         } else {
-//           reject(new Error("Failed to convert image to blob."));
-//         }
-//       }, mimeType);
-//     };
-
-//     img.onerror = () => reject(new Error(`Image failed to load: ${url}`));
-//     img.src = url;
-//   });
-// }
-
-// getMimeType(extension: string): string {
-//   switch (extension.toLowerCase()) {
-//     case 'png':
-//       return 'image/png';
-//     case 'jpeg':
-//     case 'jpg':
-//       return 'image/jpeg';
-//     default:
-//       return 'image/jpeg'; // Default fallback
-//   }
-// }
-
-
-////////////////////////==============///////////////////
-galleryError: string = '';
-  updateAsset(form: NgForm): void {
-=======
 
 galleryError: string = '';
 documentError : string = '';
@@ -389,7 +277,6 @@ documentError : string = '';
       form.control.markAllAsTouched(); 
       return;
     }
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
     
     if(this.asset.mapLatitude === 0 || this.asset.mapLatitude === null){
       this.lattitudeError = 'Please add latitude.'; 
@@ -401,8 +288,6 @@ documentError : string = '';
       form.control.markAllAsTouched(); 
       return;
     }
-<<<<<<< HEAD
-=======
     if(this.asset.documents.length === 0 && this.newDocumentFiles.length === 0){
       this.documentError = 'Please add at least one document.'; 
       form.control.markAllAsTouched(); 
@@ -414,7 +299,6 @@ documentError : string = '';
       form.control.markAllAsTouched(); 
       return;
     }
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 
     if(form.invalid || this.asset.attributes.length === 0 ) {
       this.attributeError = 'Please add at least one attribute.'; 
@@ -578,8 +462,6 @@ documentError : string = '';
 }
 
 
-<<<<<<< HEAD
-=======
 removeExistingGalleryImage(gallery: AssetGalleryDto): void {
   console.log('Gallery to delete:', gallery); 
   console.log('Gallery ID to delete:', gallery.galleryId); 
@@ -649,7 +531,6 @@ removeExistingDocumentUsingDto(doc: AssetDocumentFormDto): void {
 
 
 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   // Handle image drop
 onImageDrop(event: DragEvent): void {
   event.preventDefault();
@@ -679,74 +560,13 @@ onImageDrop(event: DragEvent): void {
 
       this.newGalleryFiles.push(file);
 
-<<<<<<< HEAD
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        if (!this.asset.galleries) {
-          this.asset.galleries = [];
-        }
-        this.asset.galleries.push({
-          fileUrl: e.target.result,
-          filePath: file.name,
-        });
-      };
-=======
     
       const reader = new FileReader();
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
       reader.readAsDataURL(file);
     }
   }
 
   // Handle document selection
-<<<<<<< HEAD
-  onDocumentSelected(event: any): void {
-    const files: FileList = event.target.files;
-    this.handleDocumentFiles(files);
-  }
-
-  // Handle PDF drop
-  onDropPdf(event: DragEvent): void {
-    event.preventDefault();
-    if (event.dataTransfer?.files) {
-      this.handleDocumentFiles(event.dataTransfer.files);
-    }
-  }
-
-  // Helper method to handle document files
-  private handleDocumentFiles(files: FileList): void {
-    this.documentUploadError = null;
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-      // Validate file type
-      if (file.type !== 'application/pdf') {
-        this.documentUploadError = 'Only PDF files are allowed';
-        continue;
-      }
-
-      // Validate file size (example: 10MB limit)
-      if (file.size > 10 * 1024 * 1024) {
-        this.documentUploadError = 'PDF must be less than 10MB';
-        continue;
-      }
-      
-      this.newDocumentFiles.push(file);
-
-      // Add to documents array for preview
-      if (!this.asset.documents) {
-        this.asset.documents = [];
-      }
-      this.asset.documents.push({
-        documentId: 0, // Temporary, will be assigned by backend
-        filePath: file.name,
-      });
-    }
-  }
-
-=======
 
 onDropPdf(event: DragEvent): void {
   event.preventDefault();
@@ -793,7 +613,6 @@ onDocumentSelected(event: any): void {
 
 
 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   // Remove gallery item
   removeGalleryItem(index: number): void {
     if (this.asset.galleries) {
@@ -805,18 +624,6 @@ onDocumentSelected(event: any): void {
     }
   }
 
-<<<<<<< HEAD
-  // Remove document
-  removeDocument(index: number): void {
-    if (this.asset.documents) {
-      this.asset.documents.splice(index, 1);
-    }
-    // Also remove from newDocumentFiles if it's there
-    if (index < this.newDocumentFiles.length) {
-      this.newDocumentFiles.splice(index, 1);
-    }
-  }
-=======
 
   removeNewDocument(index: number): void {
   this.newDocumentFiles.splice(index, 1);
@@ -859,7 +666,6 @@ onDocumentFilesSelected(event: any): void {
 
 
 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   onImageDragOver(event: DragEvent): void {
     event.preventDefault();
   }
@@ -874,6 +680,5 @@ onDocumentFilesSelected(event: any): void {
 }
   
 }
-
 
 

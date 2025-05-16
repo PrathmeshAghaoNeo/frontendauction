@@ -40,10 +40,7 @@ export interface AddAsset {
 }
 
 export interface AssetGalleryDto {
-<<<<<<< HEAD
-=======
   galleryId:number;
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   mediaType?: string;
   filePath?: string;
   fileUrl: string;
@@ -61,10 +58,7 @@ export interface AssetDetailDto {
   attributeValue: string;
 }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 export interface DirectSaleAssetDto {
   assetId: number;
   title: string;
@@ -78,13 +72,7 @@ export interface DirectSaleAssetDto {
   thumbnailUrl: string | null;
   categoryName: string;
   isAvailableForDirectSale: boolean;
-<<<<<<< HEAD
-  galleries: AssetGalleryDto[]; // Optional if images are returned
-
-}
-=======
   galleries: AssetGalleryDto[]; 
  
 }
  
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb

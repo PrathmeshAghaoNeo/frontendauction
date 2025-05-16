@@ -51,7 +51,6 @@ import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
 import { EditAssetComponent } from './component/edit-asset/edit-asset.component';
 import { DirectBidComponent } from './component/direct-bid/direct-bid.component';
-import { DirectBidComponent } from './component/direct-bid/direct-bid.component';
 import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
 import { BidWatchlistComponent } from './component/bid-watchlist/bid-watchlist.component';
 import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-cart.component';

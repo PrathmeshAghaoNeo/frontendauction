@@ -2,17 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
-<<<<<<< HEAD
-import { DirectSaleAssetDto } from '../../modals/manage-asset';
-import { ListService } from '../../services/list.service';
-import Swal from 'sweetalert2';
-import { environment } from '../../constants/enviroments';
-=======
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 @Component({
   selector: 'app-direct-sale-assets',
   standalone: true,
@@ -26,15 +19,12 @@ export class DirectSaleAssetsComponent implements OnInit {
   layoutType: 'grid' | 'row' = 'grid';
   userId: number = 1;
   environment = environment;
-<<<<<<< HEAD
-=======
   wishlistAssetIds: number[] = [];  
 
 
 
 
 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
@@ -47,14 +37,9 @@ export class DirectSaleAssetsComponent implements OnInit {
       this.assetService.getDirectAssets(categoryId).subscribe({
         next: (data) => {
           this.assets = data;
-<<<<<<< HEAD
-          this.originalAssets = [...data]; // Keep a copy for filtering/sortin
-          console.log('Assets:', this.assets);
-=======
           this.originalAssets = [...data];
           console.log('Assets:', this.assets);
           this.loadWishlist();
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
         },
 
         error: (err) => {
@@ -69,8 +54,6 @@ export class DirectSaleAssetsComponent implements OnInit {
     }
   }
 
-<<<<<<< HEAD
-=======
 
   loadWishlist(): void {
   this.listService.getWishlist(this.userId).subscribe({
@@ -124,7 +107,6 @@ toggleWishlist(assetId: number): void {
 
 
 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   toggleLayout() {
     this.layoutType = this.layoutType === 'grid' ? 'row' : 'grid';
   }
@@ -133,40 +115,6 @@ toggleWishlist(assetId: number): void {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
   }
 
-<<<<<<< HEAD
-  addToWishlist(assetId: number): void {
-    const payload = {
-      userId: this.userId,
-      assetId: assetId,
-      quantity: 1,
-    };
-
-    console.log(assetId);
-
-    this.listService.addToWishlist(payload).subscribe({
-      next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Added to Wishlist',
-          text: 'This asset has been added to your wishlist.',
-          confirmButtonText: 'OK',
-        });
-      },
-      error: (err) => {
-        console.log({ err });
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text:
-            err.error.message ||
-            'Something went wrong while adding to wishlist.',
-          confirmButtonText: 'OK',
-        });
-      },
-    });
-  }
-
-=======
   searchText: string = '';
 
   filteredAssets() {
@@ -176,7 +124,6 @@ toggleWishlist(assetId: number): void {
   }
 
 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   addToCart(assetId: number): void {
     const payload = {
       userId: this.userId,

@@ -11,11 +11,7 @@ import { environment } from "../../constants/enviroments";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 
-<<<<<<< HEAD
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // ✅ Import NgbModal
-=======
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 
 @Component({
   selector: 'app-manage-asset',
@@ -41,11 +37,7 @@ export class ManageAssetComponent implements OnInit {
     private assetService: ManageAssetService,
     private router: Router,
     private location: Location,
-<<<<<<< HEAD
-    private modalService: NgbModal // ✅ Inject modal service
-=======
     private modalService: NgbModal 
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   ) {}
 
   ngOnInit(): void {
@@ -80,49 +72,6 @@ export class ManageAssetComponent implements OnInit {
     });
   }
 
-<<<<<<< HEAD
-  newAssestRoute(): void {
-    this.router.navigate(['/newAsset']);
-  }
-
-  EditAssestRoute(assetId: number): void {
-    if (assetId && !isNaN(assetId)) {
-      this.router.navigate(['/udpate-asset', assetId]);
-    } else {
-      Swal.fire('Error', 'Invalid asset ID', 'error');
-    }
-  }
-
-  onSearchChange(): void {
-    if (!this.searchText.trim()) {
-      this.assets = [...this.originalAssets];
-      return;
-    }
-
-    this.assets = this.originalAssets.filter(asset =>
-      asset.title.toLowerCase().includes(this.searchText.toLowerCase())
-    );
-  }
-
-  sortAssets(column: string): void {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? '' : 'asc';
-    } else {
-      this.sortColumn = column;
-      this.sortDirection = 'asc';
-    }
-
-    if (this.sortDirection === '') {
-      this.assets = [...this.originalAssets];
-      this.onSearchChange();
-      return;
-    }
-  }
-  
-
-  // View asset details
-    viewAsset(assetId: number): void {
-=======
   openViewAssetModal(asset: Asset): void {
     this.selectedAsset = asset;
     this.modalService.open(this.viewAssetModal, {
@@ -133,7 +82,6 @@ export class ManageAssetComponent implements OnInit {
   }
 
   viewAsset(assetId: number): void {
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
     this.assetService.getAssetById(assetId).subscribe(
       (data) => {
         this.selectedAsset = data;
@@ -144,16 +92,9 @@ export class ManageAssetComponent implements OnInit {
       }
     );
   }
-<<<<<<< HEAD
-  
-
-  getAuctionStatus(auctionStatusId: number): string {
-    return this.statuses.find(s => s.statusId === auctionStatusId)?.statusName || 'Unknown';
-=======
 
   newAssestRoute(): void {
     this.router.navigate(['/newAsset']);
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   }
 
   EditAssestRoute(assetId: number): void {
