@@ -14,6 +14,7 @@ import { from } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
 import { AuctionService } from '../../services/auction.service';
+import { AssetCategory } from '../../modals/assetcategories';
 
 @Component({
   selector: 'app-add-asset',
@@ -29,6 +30,7 @@ export class AddAssetComponent {
   imageUploadError: string = '';
   documentUploadError: string = '';
   formSubmitted = false;
+  category : AssetCategory[] = [];
 
   imagePreviews: string[] = [];
 
@@ -52,6 +54,8 @@ export class AddAssetComponent {
   getFieldLabel(key: string): string {
     return this.fieldLabels[key] || key;
   }
+
+  
 
   asset = {
     assetNumber: '',

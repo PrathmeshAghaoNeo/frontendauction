@@ -1,6 +1,36 @@
-/* ==================== ADD-ASSET FORM STYLES ==================== */
+.back-btn {
+    background: none; /* Removes background */
+    border: none;     /* Removes border */
+    font-size: 1.5rem;
+    color: #333;      /* Dark gray color (adjust as needed) */
+    cursor: pointer;
+    margin: 10px 0 0 10px;
+    padding: 5px;     /* Reduced padding since no background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+ 
+  .back-btn:hover {
+    color: purple; /* Changes color on hover (optional) */
+    transform: scale(1.1); /* Slightly enlarges on hover */
+  }
+ 
+  .back-btn i {
+    font-size: 2rem; /* Makes the arrow icon larger */
+  }
 
-/* Add Asset Form Container */
+.auction-form-title {
+  color: #6a1b9a;
+  font-weight: 600;
+  font-size: 29px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  margin-top: 15px;
+  text-align: center;
+}
+
+
 .add-asset-container {
     background-color: white;
     padding: var(--form-padding);
