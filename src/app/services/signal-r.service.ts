@@ -16,8 +16,10 @@ export class SignalRService {
     bidAmount: number;
     bidTime: string;
   }>();
+  private winnerSubject = new Subject<any[]>();
   
   bidUpdates$ = this.bidSubject.asObservable();
+  winnerUpdates$ = this.winnerSubject.asObservable();
 
   constructor() { }
   startConnection(): void {
@@ -44,7 +46,10 @@ export class SignalRService {
           bidTime: bidData.bidTime
         });
       });
-      
+      this.hubConnection.on('WinnersList', (winners: any[]) => {
+        console.log('Winners received:', winners);
+        this.winnerSubject.next(winners);
+      });
       // this.hubConnection.on('ReceiveNewBid', (data) => {
       //   console.log('New bid received:', data);
       //   // You can also bind to view here
