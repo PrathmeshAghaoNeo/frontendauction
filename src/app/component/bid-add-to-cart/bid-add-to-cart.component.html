@@ -1,0 +1,35 @@
+<div class="cart-page">
+  <!-- Left side: Cart items -->
+  <div class="cart-items">
+    <button class="back-btn" routerLink="/directbid">
+  <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+</button>
+
+    <h2 class="cart-title">Your Cart</h2>
+
+    <div class="cart-item" *ngFor="let asset of cartAssets; let i = index">
+      <div class="cart-image">
+        <img *ngIf="asset.galleries?.length" [src]="asset.galleries[0]?.fileUrl" alt="Asset" />
+      </div>
+
+      <div class="cart-info">
+        <div class="asset-title">{{ asset.title }}</div>
+        <div class="asset-number">Asset #: {{ asset.assetNumber }}</div>
+        <div class="asset-price">BHD {{ asset.startingPrice }}</div>
+      </div>
+
+      <button class="remove-btn" (click)="removeFromCart(i)" title="Remove">
+        <img src="trash.png" alt="Remove" class="remove-icon" />
+      </button>
+    </div>
+
+    <div *ngIf="!cartAssets.length" class="empty-cart-msg">Your cart is empty 🛒</div>
+  </div>
+
+  <!-- Right side: Summary panel -->
+  <div class="cart-summary" *ngIf="cartAssets.length">
+    <h3>Subtotal ({{ cartAssets.length }} items):</h3>
+    <div class="summary-total">BHD {{ getSubtotal() }}</div>
+    <button class="checkout-btn">Proceed to Checkout →</button>
+  </div>
+</div>
