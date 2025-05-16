@@ -7,17 +7,18 @@
   overflow-y: auto;
   animation: slideIn 0.4s ease-out;
 }
-
+#export{
+ margin-right: 10px;
+}s
 .search-input {
   padding: 8px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ddd;
 }
-/* Add this to your styles */
 .custom-wide-modal .modal-dialog {
-  width: 90%; /* or use a custom width like 900px */
-  max-width: 1000px; /* Ensure it doesn't exceed a certain size */
+  width: 90%; 
+  max-width: 1000px; 
 }
 
 .custom-wide-modal .modal-content {

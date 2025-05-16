@@ -49,8 +49,12 @@ import { AssetDetailComponent } from './component/asset-details/asset-details.co
 
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
+import { EditAssetComponent } from './component/edit-asset/edit-asset.component';
+import { DirectBidComponent } from './component/direct-bid/direct-bid.component';
 import { DirectBidComponent } from './component/direct-bid/direct-bid.component';
 import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
+import { BidWatchlistComponent } from './component/bid-watchlist/bid-watchlist.component';
+import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-cart.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -66,12 +70,18 @@ export const routes: Routes = [
     {path:'newUser', component:AddUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'newAuction', component:AddAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'update-auction/:id', component:UpdateAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
-    {path:'newAsset', component:AddAssetComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    // Asset Management
+  { path: 'assets', component: ManageAssetComponent },
+  { path: 'newAsset', component: AddAssetComponent },
+  { path: 'update-asset/:assetId', component: EditAssetComponent},
+  
+  
+  
+
     { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'requestsnew', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
-    // { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'addassetcategories', component:AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
@@ -84,17 +94,27 @@ export const routes: Routes = [
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'User' }},
-    // {path:'signup',component:SignupComponent},
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details',component:AssetDetailComponent},
-    // {path:'direct-sale-assetpage',component:DirectSaleComponent},
-    { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
+    // {path:'direct-sale-assetpage/:id',component:DirectSaleComponent},
+ 
+
+    {path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
+    
     {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
+    
     {path: 'testing', component:ChartComponent}, 
     { path: 'direct-bid', component: DirectBidComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
     {path: 'signal', component:SignalrTestComponent},
-    { path: '**', redirectTo: '/login' }
+    
+    { path: 'direct-bid', component: DirectBidComponent},
+    { path: 'bid-watchlist', component: BidWatchlistComponent},
+    { path: 'bid-add-to-cart', component: BidAddToCartComponent},
+
+    
+    
+    
 ];
    
 

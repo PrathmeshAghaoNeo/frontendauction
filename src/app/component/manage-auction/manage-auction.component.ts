@@ -7,6 +7,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-manage-auction',
@@ -31,7 +33,7 @@ export class ManageAuctionComponent implements OnInit {
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' | '' = '';
   defaultAuctions: Auction[] = [];
-  
+
   categories = [
     { categoryId: 1, categoryName: 'Electronics' },
     { categoryId: 2, categoryName: 'Vehicles' },
@@ -59,7 +61,7 @@ export class ManageAuctionComponent implements OnInit {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeAuctionForm();
@@ -85,66 +87,66 @@ export class ManageAuctionComponent implements OnInit {
 
   loading = false;
 
-fetchAuctions(): void {
-  this.loading = true;
-  this.auctionService.getAllAuctions().subscribe({
-    next: (data) => {
-      this.allAuctions = data;
-      this.auctions = data.sort((a, b) => b.auctionId - a.auctionId);
-      this.loading = false;
-    },
-    error: (err) => {
-      this.loading = false;
-      Swal.fire('Error!', 'Failed to load auctions.', 'error');
-    }
-  });
-}
+  fetchAuctions(): void {
+    this.loading = true;
+    this.auctionService.getAllAuctions().subscribe({
+      next: (data) => {
+        this.allAuctions = data;
+        this.auctions = data.sort((a, b) => b.auctionId - a.auctionId);
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        Swal.fire('Error!', 'Failed to load auctions.', 'error');
+      }
+    });
+  }
 
-sortAuctions(column: string): void {
-  console.log("functioncalled");
-  
-  if (this.sortColumn === column) {
-    if (this.sortDirection === 'asc') {
-      this.sortDirection = 'desc';
-    } else if (this.sortDirection === 'desc') {
-      this.sortDirection = '';
+  sortAuctions(column: string): void {
+    console.log("functioncalled");
+
+    if (this.sortColumn === column) {
+      if (this.sortDirection === 'asc') {
+        this.sortDirection = 'desc';
+      } else if (this.sortDirection === 'desc') {
+        this.sortDirection = '';
+      } else {
+        this.sortDirection = 'asc';
+      }
     } else {
+      this.sortColumn = column;
       this.sortDirection = 'asc';
     }
-  } else {
-    this.sortColumn = column;
-    this.sortDirection = 'asc';
-  }
 
-  if (this.sortDirection === '') {
-    this.auctions = [...this.defaultAuctions];
-    this.applyFilters();
-    return;
-  }
-
-  const dir = this.sortDirection === 'asc' ? 1 : -1;
-  
-  this.auctions.sort((a, b) => {
-    const valA = (a as any)[column];
-    const valB = (b as any)[column];
-
-    if (column.includes('Date') || column.includes('date')) {
-      const dateA = new Date(valA).getTime();
-      const dateB = new Date(valB).getTime();
-      
-      if (dateA < dateB) return -1 * dir;
-      if (dateA > dateB) return 1 * dir;
-      return 0;
+    if (this.sortDirection === '') {
+      this.auctions = [...this.defaultAuctions];
+      this.applyFilters();
+      return;
     }
 
-    const strA = valA?.toString().toLowerCase();
-    const strB = valB?.toString().toLowerCase();
+    const dir = this.sortDirection === 'asc' ? 1 : -1;
 
-    if (strA < strB) return -1 * dir;
-    if (strA > strB) return 1 * dir;
-    return 0;
-  });
-}
+    this.auctions.sort((a, b) => {
+      const valA = (a as any)[column];
+      const valB = (b as any)[column];
+
+      if (column.includes('Date') || column.includes('date')) {
+        const dateA = new Date(valA).getTime();
+        const dateB = new Date(valB).getTime();
+
+        if (dateA < dateB) return -1 * dir;
+        if (dateA > dateB) return 1 * dir;
+        return 0;
+      }
+
+      const strA = valA?.toString().toLowerCase();
+      const strB = valB?.toString().toLowerCase();
+
+      if (strA < strB) return -1 * dir;
+      if (strA > strB) return 1 * dir;
+      return 0;
+    });
+  }
 
 
 
@@ -165,11 +167,11 @@ sortAuctions(column: string): void {
     });
   }
 
- 
+
   getStatusName(statusId: number): string {
     return this.statuses.find(s => s.statusId === statusId)?.statusName || 'Unknown';
   }
-  
+
 
   // -------------------------------
   // Modal Actions
@@ -182,7 +184,7 @@ sortAuctions(column: string): void {
   navigateToEdit(auction: Auction): void {
     this.router.navigate(['/update-auction', auction.auctionId]);
   }
-  
+
   openDeleteModal(auction: Auction): void {
     this.selectedAuction = auction;
 
@@ -206,7 +208,7 @@ sortAuctions(column: string): void {
       Swal.fire('Error', 'No auction selected.', 'error');
       return;
     }
-    
+
 
     this.auctionService.deleteAuction(this.selectedAuction.auctionId).subscribe({
       next: () => {
@@ -219,5 +221,35 @@ sortAuctions(column: string): void {
         Swal.fire('Error!', 'Failed to delete auction.', 'error');
       }
     });
+  }
+  exportToExcel(): void {
+    const exportData = this.allAuctions.map(auc => ({
+      'Auction Title': auc.title,
+      'Auction Type': auc.type,
+      'Status': auc.statusName,
+      'Category': auc.categoryName,
+      'Start Date/Time': new Date(auc.startDateTime).toLocaleString(),
+      'End Date/Time': new Date(auc.endDateTime).toLocaleString(),
+      'Incremental Time': auc.incrementalTime + ' sec',
+
+
+    }));
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'ListofAllAuctions': worksheet },
+      SheetNames: ['ListofAllAuctions']
+    };
+
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array'
+    });
+
+    const blob: Blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+    });
+
+    FileSaver.saveAs(blob, 'ListofAllAuctions.xlsx');
   }
 }

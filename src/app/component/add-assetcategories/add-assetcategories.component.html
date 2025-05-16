@@ -68,7 +68,7 @@
             class="form-control" 
             formControlName="iconFile" 
             (change)="onFileChange($event, 'iconFile')" 
-            accept="image/png,image/jpeg,image/jpg"
+            accept="image/png,image/jpeg,image/jpg,image/webp"
           />
           <div *ngIf="assetCategoryForm.get('iconFile')?.invalid && assetCategoryForm.get('iconFile')?.touched" class="text-danger">
             Valid Icon is required (JPG, JPEG, PNG).
@@ -95,19 +95,19 @@
     
           
         
-       </div>
-            <label for="paymentMethod" class="form-label required-label">Payment Method</label>
-        <div class="payment-method-list">
-        <div *ngFor="let method of paymentMethods" class="payment-checkbox">
-            <input
-            type="checkbox"
-            [value]="method.methodName"
-            (change)="onCheckboxChange($event)"
-            [checked]="assetCategoryForm.get('paymentMethods')?.value.includes(method.methodName)"
-            />
-            {{ method.methodName }}
-        </div>
-        </div>
+       <label for="paymentMethod" class="form-label required-label">Payment Method</label>
+<div class="payment-method-list">
+  <div *ngFor="let method of paymentMethods" class="payment-checkbox">
+    <input
+      type="checkbox"
+      [value]="method.paymentMethodIds"
+      (change)="onCheckboxChange($event)"
+      [checked]="assetCategoryForm.get('paymentMethodIds')?.value.includes(method.paymentMethodIds)"
+      id="method-{{ method.paymentMethodIds }}"
+    />
+    <label [for]="'method-' + method.paymentMethodIds">{{ method.methodName }}</label>
+  </div>
+</div>
 
   
       <div class="row">
@@ -139,8 +139,8 @@
           <label for="auctionFees" class="form-label">Auction Fees</label>
                     <input
             type="number"
-            formControlName="adminFees"
-            id="adminFees"
+            formControlName="auctionFees"
+            id="auctionFees"
             class="form-control"
             maxlength="7"
             (input)="enforceMaxLength($event)"
@@ -157,8 +157,8 @@
           maxlength="7"
             (input)="enforceMaxLength($event)"
              />
-          <div *ngIf="assetCategoryForm.get('buyersCommission')?.invalid && assetCategoryForm.get('buyersCommission')?.touched" class="text-danger">
-            Buyers Commission is required and must be a number.
+          <div *ngIf="assetCategoryForm.get('buyersCommission')?.invalid && assetCategoryForm.get('buyersCommission')?.touched">
+            Buyers Commission must be a number.
           </div>
         </div>
   
@@ -194,6 +194,7 @@
         </div>
   
       <button class="btn btn-primary w-100 mt-3" type="submit">Create Asset Category</button>
+      </div>
     </form>
   </div>
   

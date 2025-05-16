@@ -2,10 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
+<<<<<<< HEAD
 import { DirectSaleAssetDto } from '../../modals/manage-asset';
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
+=======
+import { ListService } from '../../services/list.service';
+import Swal from 'sweetalert2';
+import { environment } from '../../constants/enviroments';
+import { DirectSaleAssetDto } from '../../modals/add-asset';
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 @Component({
   selector: 'app-direct-sale-assets',
   standalone: true,
@@ -19,6 +26,15 @@ export class DirectSaleAssetsComponent implements OnInit {
   layoutType: 'grid' | 'row' = 'grid';
   userId: number = 1;
   environment = environment;
+<<<<<<< HEAD
+=======
+  wishlistAssetIds: number[] = [];  
+
+
+
+
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
@@ -31,8 +47,14 @@ export class DirectSaleAssetsComponent implements OnInit {
       this.assetService.getDirectAssets(categoryId).subscribe({
         next: (data) => {
           this.assets = data;
+<<<<<<< HEAD
           this.originalAssets = [...data]; // Keep a copy for filtering/sortin
           console.log('Assets:', this.assets);
+=======
+          this.originalAssets = [...data];
+          console.log('Assets:', this.assets);
+          this.loadWishlist();
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
         },
 
         error: (err) => {
@@ -47,6 +69,62 @@ export class DirectSaleAssetsComponent implements OnInit {
     }
   }
 
+<<<<<<< HEAD
+=======
+
+  loadWishlist(): void {
+  this.listService.getWishlist(this.userId).subscribe({
+    next: (data) => {
+      this.wishlistAssetIds = data.map((item: any) => item.assetId);
+      console.log('Wishlist Asset IDs:', this.wishlistAssetIds);
+    },
+    error: (err) => {
+      console.error('Error loading wishlist:', err);
+    },
+  });
+}
+
+
+isInWishlist(assetId: number): boolean {
+  return this.wishlistAssetIds.includes(assetId);
+}
+  
+
+
+toggleWishlist(assetId: number): void {
+
+  
+  if (this.isInWishlist(assetId)) {
+    
+    const payload = { userId: this.userId, assetId: assetId };
+    this.listService.removeFromWishlist(payload).subscribe({
+      next: () => {
+        console.log('Toggle Wishlist: in this togglelist', assetId);
+        this.wishlistAssetIds = this.wishlistAssetIds.filter(id => id !== assetId);
+        Swal.fire('Removed', 'Removed from wishlist', 'success');
+      },
+      error: (err) => {
+        Swal.fire('Error', err.error.message || 'Error removing from wishlist', 'error');
+      },
+    });
+  } else {
+    const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
+    this.listService.addToWishlist(payload).subscribe({
+      next: () => {
+        this.wishlistAssetIds.push(assetId);
+        Swal.fire('Added', 'Added to wishlist', 'success');
+      },
+      error: (err) => {
+        Swal.fire('Error', err.error.message || 'Error adding to wishlist', 'error');
+      },
+    });
+  }
+}
+
+
+
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   toggleLayout() {
     this.layoutType = this.layoutType === 'grid' ? 'row' : 'grid';
   }
@@ -55,6 +133,7 @@ export class DirectSaleAssetsComponent implements OnInit {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
   }
 
+<<<<<<< HEAD
   addToWishlist(assetId: number): void {
     const payload = {
       userId: this.userId,
@@ -87,6 +166,17 @@ export class DirectSaleAssetsComponent implements OnInit {
     });
   }
 
+=======
+  searchText: string = '';
+
+  filteredAssets() {
+    return this.assets.filter(asset =>
+      asset.title?.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
+
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   addToCart(assetId: number): void {
     const payload = {
       userId: this.userId,

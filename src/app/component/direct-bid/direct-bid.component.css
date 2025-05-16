@@ -8,6 +8,18 @@
   margin-bottom: 20px;
 }
 
+<<<<<<< HEAD
+=======
+.icon-main{
+  width: 50px;
+  height: 40px;
+  object-fit: cover;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 .toolbar-left,
 .toolbar-center,
 .toolbar-right {
@@ -65,8 +77,14 @@
 
 .plates-container.grid-view {
   display: grid;
+<<<<<<< HEAD
   grid-template-columns: repeat(6, 1fr);
   gap: 20px;
+=======
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+   padding: 2rem;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 }
 
 
@@ -119,8 +137,15 @@
 
 .plates-container.row-view .price {
   white-space: nowrap;
+<<<<<<< HEAD
   font-weight: bold;
   padding: 0px 2px;
+=======
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0px 2px;
+  color: #27ae60;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 }
 
 .plates-container.row-view .icons {
@@ -278,13 +303,23 @@
   width: 25px;
   height: 25px;
   object-fit: contain;
+<<<<<<< HEAD
 }
 .price1 {
   font-size: 16px;
+=======
+} 
+.price1 {
+  font-size: 1rem;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   font-weight: 600;
   color: var(--primary-dark);
   text-align: left;
   padding: 0px 4px;
+<<<<<<< HEAD
+=======
+  color: #27ae60;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 }
 
 

@@ -1,21 +1,38 @@
 <div class="container-fluid text-[11px] font-sans">
+  <!-- Top Header -->
   <form (ngSubmit)="updateAsset(assetForm)" #assetForm="ngForm">
-    <!-- Top Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <nav aria-label="breadcrumb">
+    <div
+      class="d-flex align-items-center justify-content-center flex-wrap gap-2"
+    >
+      <button type="button" class="back-btn" (click)="goBack1()">
+        <i class="bi bi-arrow-left-circle"></i>
+      </button>
+      <div class="text-center flex-grow-1 mb-3">
+        <h3 class="auction-form-title mb-2"  >Add Asset</h3>
+        <p class="auction-form-subtitle mb-0">
+          <span class="text-danger">*</span> indicates a required field
+        </p>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end align-items-center mb-4">
+      <!-- <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
           <li class="breadcrumb-item"><a href="#">Assets</a></li>
           <li class="breadcrumb-item active">#{{ asset.assetNumber }}</li>
         </ol>
-      </nav>
+      </nav> -->
+      <!-- <button class="btn btn-secondary me-2" type="button" (click)="goBack1()">
+        Back
+      </button>
       <button
         class="btn btn-primary"
         type="submit"
         >
         Save
-        <!-- [disabled]="assetForm.invalid" -->
-      </button>
+      </button> -->
+      <!-- [disabled]="assetForm.invalid" -->
     </div>
     <!-- This closes the d-flex justify-content-between -->
 
@@ -105,7 +122,9 @@
               </option>
             </select>
 
-            <div *ngIf="categoryError" class="text-danger">{{ categoryError }}</div>
+            <div *ngIf="categoryError" class="text-danger">
+              {{ categoryError }}
+            </div>
 
             <div
               *ngIf="
@@ -116,6 +135,7 @@
               Category is required.
             </div>
           </div>
+
           <div class="mb-2">
             <label class="form-label required-label">Deposit %</label>
             <input
@@ -129,7 +149,9 @@
               #deposit="ngModel"
               (input)="limitToThreeDigits($event)"
             />
-            <div *ngIf="depositError" class="text-danger">{{ depositError }}</div>
+            <div *ngIf="depositError" class="text-danger">
+              {{ depositError }}
+            </div>
             <div
               *ngIf="
                 deposit.invalid && (deposit.touched || assetForm.submitted)
@@ -154,10 +176,10 @@
               name="seller"
               maxlength="10"
               #seller="ngModel"
-              />
-              <div *ngIf="sellerError" class="text-danger">{{ sellerError }}</div>
+            />
+            <div *ngIf="sellerError" class="text-danger">{{ sellerError }}</div>
 
-              <!-- required -->
+            <!-- required -->
             <div
               *ngIf="seller.invalid && (seller.touched || assetForm.submitted)"
               class="text-danger"
@@ -181,7 +203,9 @@
               max="100"
               #commission="ngModel"
             />
-            <div *ngIf="commissionError" class="text-danger">{{ commissionError }}</div>
+            <div *ngIf="commissionError" class="text-danger">
+              {{ commissionError }}
+            </div>
 
             <div
               *ngIf="
@@ -274,7 +298,9 @@
               #incrementalTime="ngModel"
               placeholder="In Mins"
             />
-            <div *ngIf="incrementalTimeError" class="text-danger">{{ incrementalTimeError }}</div>
+            <div *ngIf="incrementalTimeError" class="text-danger">
+              {{ incrementalTimeError }}
+            </div>
             <div
               *ngIf="
                 incrementalTime.invalid &&
@@ -304,7 +330,9 @@
               maxlength="5"
               #minIncrement="ngModel"
             />
-            <div *ngIf="minIncrementError" class="text-danger">{{ minIncrementError }}</div>
+            <div *ngIf="minIncrementError" class="text-danger">
+              {{ minIncrementError }}
+            </div>
             <div
               *ngIf="
                 minIncrement.invalid &&
@@ -429,24 +457,32 @@
 
           <!-- Status -->
           <div class="mb-2">
-            <label class="font-semibold text-[11px] required-label">Status</label>
+            <label class="font-semibold text-[11px] required-label"
+              >Status</label
+            >
             <select
               class="form-select border border-[#ccc] rounded-md text-[11px] px-2 py-1 w-full"
               [(ngModel)]="asset.statusId"
               name="statusId"
               #statusId="ngModel"
               required
-            > 
+            >
               <option value="">Select</option>
-              <option *ngFor="let option of statusOptions" [value]="getStatusId(option)">
+              <option
+                *ngFor="let option of statusOptions"
+                [value]="getStatusId(option)"
+              >
                 {{ option }}
               </option>
             </select>
-            <div *ngIf="statusId.invalid && statusId.touched" class="text-danger text-[11px]">
+            <div
+              *ngIf="statusId.invalid && statusId.touched"
+              class="text-danger text-[11px]"
+            >
               This field is required.
             </div>
           </div>
-          
+
           <!-- VAT -->
           <div class="mb-2">
             <label class="font-semibold text-[11px] required-label">VAT</label>
@@ -519,7 +555,9 @@
               pattern="\d{7}"
             />
 
-            <div *ngIf="courtCaseNumberError" class="text-danger">{{ courtCaseNumberError }}</div>
+            <div *ngIf="courtCaseNumberError" class="text-danger">
+              {{ courtCaseNumberError }}
+            </div>
 
             <div
               *ngIf="courtCode.invalid && courtCode.touched"
@@ -550,7 +588,9 @@
               #registerDeadline="ngModel"
               (input)="limitToFourDigits($event)"
             />
-            <div *ngIf="registrationDeadlineError" class="text-danger">{{ registrationDeadlineError }}</div>
+            <div *ngIf="registrationDeadlineError" class="text-danger">
+              {{ registrationDeadlineError }}
+            </div>
             <div
               *ngIf="registerDeadline.invalid && registerDeadline.touched"
               class="text-danger text-[11px]"
@@ -647,7 +687,9 @@
               #description="ngModel"
             ></textarea>
 
-            <div *ngIf="descriptionError" class="text-danger mt-1">{{ descriptionError }}</div>
+            <div *ngIf="descriptionError" class="text-danger mt-1">
+              {{ descriptionError }}
+            </div>
 
             <div
               *ngIf="description.invalid && description.touched"
@@ -695,7 +737,7 @@
                   </button>
                 </div>
               </ng-container>
-              
+
               <div
                 class="border rounded p-3 text-center bg-light"
                 style="min-width: 200px; cursor: pointer"
@@ -722,7 +764,9 @@
                 </div>
               </div>
 
-              <div *ngIf="galleryError" class="text-danger">{{ galleryError }}</div>          
+              <div *ngIf="galleryError" class="text-danger">
+                {{ galleryError }}
+              </div>
             </div>
           </div>
         </div>
@@ -735,7 +779,7 @@
           <div *ngIf="attributeError" class="text-danger">
             {{ attributeError }}
           </div>
-        
+
           <div
             *ngFor="let detail of asset.detailsJson; let i = index"
             class="row g-2 align-items-end mb-2"
@@ -796,7 +840,6 @@
             </div>
             <div class="col-2">
               <button
-              
                 type="button"
                 class="btn btn-danger btn-sm"
                 (click)="removeDetail(i)"
@@ -867,7 +910,9 @@
               </div>
             </div>
 
-            <div *ngIf="galleryError" class="text-danger">{{ documentError }}</div>
+            <div *ngIf="galleryError" class="text-danger">
+              {{ documentError }}
+            </div>
           </div>
         </div>
 
@@ -912,8 +957,6 @@
               <div *ngIf="adminFeesRef.errors?.['max']">
                 Must be less than 999999.
               </div>
-
-
             </div>
           </div>
           <div class="mb-2">
@@ -1006,23 +1049,26 @@
         <div class="card p-3 shadow-sm mb-4">
           <h5>Auctions</h5>
           <select
-          name="auctionIds"
-          id="auctionSelect"
-          class="form-select"
-          multiple
-          [(ngModel)]="asset.auctionIds"
-          (ngModelChange)="onAuctionSelectionChange($event)"
-        >
-          <option *ngFor="let auction of auctions" [value]="auction.auctionId">
-            {{ auction.title }} #{{ auction.auctionNumber }} - {{ auction.startDateTime | date: 'dd/MM/yyyy' }}
-          </option>
-        </select>
+            name="auctionIds"
+            id="auctionSelect"
+            class="form-select"
+            multiple
+            [(ngModel)]="asset.auctionIds"
+            (ngModelChange)="onAuctionSelectionChange($event)"
+          >
+            <option
+              *ngFor="let auction of auctions"
+              [value]="auction.auctionId"
+            >
+              {{ auction.title }} #{{ auction.auctionNumber }} -
+              {{ auction.startDateTime | date : "dd/MM/yyyy" }}
+            </option>
+          </select>
 
-        <div *ngIf="auctionError" class="text-danger mt-1">
-          {{ auctionError }}
+          <div *ngIf="auctionError" class="text-danger mt-1">
+            {{ auctionError }}
+          </div>
         </div>
-        </div>
-     
 
         <!-- <div class="card p-3 shadow-sm mb-4">
           <h5>Results</h5>
@@ -1063,7 +1109,9 @@
             rows="3"
             #salesNotes="ngModel"
           ></textarea>
-          <div *ngIf="salesNotesError" class="text-danger mt-1">{{ salesNotesError }}</div>
+          <div *ngIf="salesNotesError" class="text-danger mt-1">
+            {{ salesNotesError }}
+          </div>
           <div
             *ngIf="
               salesNotes.invalid && (salesNotes.touched || assetForm.submitted)
@@ -1133,19 +1181,18 @@
     <div
       class="d-flex justify-content-end align-items-center mt-4 position-relative"
     >
-      <button class="btn btn-secondary me-2" type="button" (click)="goBack1()">
+      <button
+        class="btn btn-secondary btn-lg me-2 px-4 py-2"
+        type="button"
+        (click)="goBack1()"
+      >
         Back
       </button>
-      
-      <button
-        class="btn btn-primary"
-        type="submit"
-        >
-        Save
-         <!-- [disabled]="assetForm.invalid" -->
-      </button>
 
-    
+      <button class="btn btn-primary btn-lg px-4 py-2" type="submit">
+        Save
+        <!-- [disabled]="assetForm.invalid" -->
+      </button>
     </div>
   </form>
 </div>

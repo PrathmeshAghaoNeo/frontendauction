@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 import { CommonModule, Location } from '@angular/common';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
+import { formatToDateTimeLocalFormat } from '../../utils/date-time.utils';
+import { environment } from '../../constants/enviroments';
 
 @Component({
   selector: 'app-update-assetcategories',
@@ -24,12 +26,14 @@ export class UpdateAssetCategoriesComponent implements OnInit {
   ];
 
   paymentMethods = [
-    { methodId: 1, methodName: 'Bank Transfer' },
-    { methodId: 2, methodName: 'Debit Card' },
-    { methodId: 3, methodName: 'Apply Pay' },
-    { methodId: 4, methodName: 'Google Pay' },
-    { methodId: 5, methodName: 'Cheque' }
-  ];
+  { paymentMethodIds: 1, methodName: 'Bank Transfer' },
+  { paymentMethodIds: 2, methodName: 'Cheque' },
+  { paymentMethodIds: 3, methodName: 'Credit Card' },
+  { paymentMethodIds: 4, methodName: 'Apple Pay' },
+  { paymentMethodIds: 5, methodName: 'Debit Card' },
+  { paymentMethodIds: 6, methodName: 'Google Pay' },
+  { paymentMethodIds: 7, methodName: 'PayPal' },
+];
 
   previewUrls: { [key: string]: string } = {
     iconFile: '',
@@ -49,8 +53,9 @@ export class UpdateAssetCategoriesComponent implements OnInit {
       subCategory: ['', Validators.maxLength(30)],
       depositPercentage: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       details: ['', [Validators.required, Validators.maxLength(50)]],
-      iconFile: [null],
-      document: [null],
+      iconFile: [null, Validators.required], 
+      document: [null, Validators.required],  
+      icon: [null],
       statusId: ['', Validators.required],
       paymentMethods: this.fb.array([]),
       adminFees: [null, [Validators.pattern('^[0-9]*$')]],
@@ -61,7 +66,7 @@ export class UpdateAssetCategoriesComponent implements OnInit {
       vatPercentage: [null, [Validators.pattern('^[0-9]*$')]]
     });
   }
-
+  assetBaseUrl: string = `${environment.baseurl}`;
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.assetCategoryId = params.get('id') || '';
@@ -69,7 +74,7 @@ export class UpdateAssetCategoriesComponent implements OnInit {
     });
   }
 
-  loadAssetCategoryData(): void {
+ loadAssetCategoryData(): void {
   if (this.assetCategoryId) {
     this.http.get(`${ApiEndpoints.ASSETCATEGORIES}/${this.assetCategoryId}`).subscribe({
       next: (data: any) => {
@@ -82,30 +87,39 @@ export class UpdateAssetCategoriesComponent implements OnInit {
           adminFees: data.adminFees,
           auctionFees: data.auctionFees,
           buyersCommission: data.buyerCommission,
-          registrationDeadline: data.registrationDeadline,
+          registrationDeadline: formatToDateTimeLocalFormat(data.registrationDeadline),
           vat: data.vatid,
           vatPercentage: data.vatpercentage,
+          icon: data.icon, // e.g., "CategoryIcons/23f2c368-fa58-4d09-ad1f-addab5a4270d.png"
         });
 
-        // Preview URLs
-        this.previewUrls['iconFile'] = data.icon;
-        this.previewUrls['document'] = data.document;
+        // FIX: Preview icon using correct key
+        this.previewUrls['icon'] = data.icon ? 
+          (data.icon.startsWith('http') ? data.icon : this.assetBaseUrl + data.icon) : null;
 
-        // Optional: Clear and repopulate payment methods if applicable
+        // Document preview (if needed)
+       this.previewUrls['document'] = data.document
+  ? (data.document.startsWith('http') ? data.document : this.assetBaseUrl + data.document)
+  : null;
+
+        console.log('Preview URL for document:', this.previewUrls['document']);
+
+        // Payment methods (if applicable)
         const formArray = this.assetCategoryForm.get('paymentMethods') as FormArray;
-        formArray.clear(); // Clear existing
+        formArray.clear();
         if (data.paymentMethods && Array.isArray(data.paymentMethods)) {
           data.paymentMethods.forEach((method: string) => {
             formArray.push(new FormControl(method));
           });
         }
       },
-      error: (err) => {
+      error: () => {
         Swal.fire('Error', 'Failed to load asset category data', 'error');
       }
     });
   }
 }
+
 
 
 
@@ -125,7 +139,12 @@ export class UpdateAssetCategoriesComponent implements OnInit {
       reader.readAsDataURL(file);
     }
   }
-
+  dateValidator(control: any) {
+    if (control.value && isNaN(Date.parse(control.value))) {
+      return { invalidDate: true };
+    }
+    return null;
+  }
   onCheckboxChange(event: any) {
     const formArray = this.assetCategoryForm.get('paymentMethods') as FormArray;
     if (event.target.checked) {
@@ -147,7 +166,6 @@ export class UpdateAssetCategoriesComponent implements OnInit {
     const formValue = this.assetCategoryForm.getRawValue();
     const formData = new FormData();
 
-    // Append always-present values
     formData.append('CategoryName', formValue.categoryName);
     formData.append('Subcategory', formValue.subCategory || '');
     formData.append('DepositPercentage', formValue.depositPercentage);
@@ -160,7 +178,6 @@ export class UpdateAssetCategoriesComponent implements OnInit {
       }
     }
 
-    // Using safeAppend for additional fields
     safeAppend(formData, 'Vatid', formValue.vat);
     safeAppend(formData, 'AdminFees', formValue.adminFees);
     safeAppend(formData, 'AuctionFees', formValue.auctionFees);

@@ -1,8 +1,14 @@
 <div class="top-toolbar">
   <div class="toolbar-left">
+<<<<<<< HEAD
     <button class="icon-btn">
       <img src="car-icon.png" alt="Car Plates" />
       <span>Plates</span>
+=======
+    <button class="icon-main">
+      <img src="cars.png" alt="Car Plates" />
+      <!-- <span>Plates</span> -->
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
     </button>
   </div>
 
@@ -38,12 +44,24 @@
         [src]="asset.galleries[0]?.fileUrl"
         alt="Asset Image"
         class="plate-main-image"
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
       />
 
 
       <ng-container *ngIf="layoutType === 'row'; else gridView">
+<<<<<<< HEAD
         <div class="plate-footer">
           <div class="price">BHD {{ asset.startingPrice }}</div>
+=======
+        <div class="plate-name">
+          <span class="plate-name-text">{{ asset.title }}</span>
+          </div>
+        <div class="plate-footer">
+          <div class="price">BHD {{ asset.price }}</div>
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
           <div class="icons">
             <button class="icon-btn" title="Save">
               <img src="wishlist.png" alt="Save Icon" class="button-image1" />
@@ -65,7 +83,11 @@
             <img src="sell.png" alt="Buy Icon" class="button-image2" />
           </button>
         </div>
+<<<<<<< HEAD
         <div class="price1">BHD {{ asset.startingPrice }}</div>
+=======
+        <div class="price1">BHD {{ asset.price }}</div>
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
       </ng-template>
 
     </div>

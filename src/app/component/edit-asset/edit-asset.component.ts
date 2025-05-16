@@ -4,7 +4,11 @@ import { FormBuilder, FormsModule, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
 import { AddAsset } from '../../modals/add-asset';
+<<<<<<< HEAD
 import { Asset } from '../../modals/manage-asset';
+=======
+import { Asset, AssetDocumentFormDto, AssetGalleryDto } from '../../modals/manage-asset';
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
@@ -20,7 +24,11 @@ import { environment } from '../../constants/enviroments';
 })
 export class EditAssetComponent implements OnInit {
   convertedGalleryFiles: File[] = [];
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   environment = environment;
   assetIdparam!: number;
   existingGalleryImages: string[] = []; // From DB
@@ -31,6 +39,7 @@ export class EditAssetComponent implements OnInit {
   longitudeError: string | null = null;
   auctionIds: number[] = [];
   selectedAuctions: Auction[] = [];
+<<<<<<< HEAD
 
 
   imagePreviews: string[] = [];
@@ -39,6 +48,17 @@ export class EditAssetComponent implements OnInit {
 
   filteredAuctions: Auction[] = [];
 
+=======
+  
+  
+  imagePreviews: string[] = [];
+  existingDocuments: string[] = [];
+  
+  auctions: Auction[] = [];
+  
+  filteredAuctions: Auction[] = [];
+  
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   attributeList: { attributeName: string; attributeValue: string }[] = [];
   asset: Asset = {
     assetId: this.assetIdparam,
@@ -88,6 +108,7 @@ export class EditAssetComponent implements OnInit {
   isLoading: boolean = false;
   error: string | null = null;
   isModalOpen: boolean = false;
+<<<<<<< HEAD
 
   // Add these to your component class
   newGalleryFiles: File[] = [];
@@ -95,6 +116,22 @@ export class EditAssetComponent implements OnInit {
   documentUploadError: string | null = null;
   imageUploadError: string | null = null;
 
+=======
+  
+  // Add these to your component class
+  newGalleryFiles: File[] = [];
+  newDocumentFiles: File[] = [];
+  
+
+
+  // for the new documents
+  newDocument: File[] = [];
+  documentUploadError: string | null = null;
+  imageUploadError: string | null = null;
+  
+
+  
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   // Dropdown options
   makeOfferOptions = ['Yes', 'No'];
   featuredOptions = ['Yes', 'No'];
@@ -224,7 +261,11 @@ getRequestLabel(value: Number | undefined) {
         this.fetchAuctions();
 
         // this.convertGalleryUrlsToFiles();
+<<<<<<< HEAD
         this.handleGalleryConversion();
+=======
+       
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
         
       },
       error: (err) => {
@@ -258,6 +299,7 @@ getRequestLabel(value: Number | undefined) {
 
 //////////////////////////////////=================================////////////////////////
 
+<<<<<<< HEAD
 async handleGalleryConversion(): Promise<void> {
   // await this.convertGalleryUrlsToFiles();
 }
@@ -335,6 +377,19 @@ async handleGalleryConversion(): Promise<void> {
 ////////////////////////==============///////////////////
 galleryError: string = '';
   updateAsset(form: NgForm): void {
+=======
+
+galleryError: string = '';
+documentError : string = '';
+
+  updateAsset(form: NgForm): void {
+
+    if(this.asset.attributes.length === 0){
+      this.attributeError = 'Please add at least one attribute.'; 
+      form.control.markAllAsTouched(); 
+      return;
+    }
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
     
     if(this.asset.mapLatitude === 0 || this.asset.mapLatitude === null){
       this.lattitudeError = 'Please add latitude.'; 
@@ -346,6 +401,20 @@ galleryError: string = '';
       form.control.markAllAsTouched(); 
       return;
     }
+<<<<<<< HEAD
+=======
+    if(this.asset.documents.length === 0 && this.newDocumentFiles.length === 0){
+      this.documentError = 'Please add at least one document.'; 
+      form.control.markAllAsTouched(); 
+      return;
+    }
+
+    if(this.asset.galleries.length === 0 && this.newGalleryFiles.length === 0){ 
+      this.galleryError = 'Please add at least one image.'; 
+      form.control.markAllAsTouched(); 
+      return;
+    }
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 
     if(form.invalid || this.asset.attributes.length === 0 ) {
       this.attributeError = 'Please add at least one attribute.'; 
@@ -509,6 +578,78 @@ galleryError: string = '';
 }
 
 
+<<<<<<< HEAD
+=======
+removeExistingGalleryImage(gallery: AssetGalleryDto): void {
+  console.log('Gallery to delete:', gallery); 
+  console.log('Gallery ID to delete:', gallery.galleryId); 
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to delete this image?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.assetService.deleteAssetGallery(gallery.galleryId.toString()).subscribe({
+        next: () => {
+          console.log("we are in gallery delete logic");
+          // Filter out the deleted gallery by id
+          this.asset.galleries = this.asset.galleries.filter(
+            (g) => g.galleryId !== gallery.galleryId
+          );
+          Swal.fire('Deleted!', 'Image has been deleted.', 'success');
+        },
+        error: (err) => {
+          console.error('Error deleting image:', err);
+          Swal.fire('Error!', 'Failed to delete image.', 'error');
+        },
+      });
+    }
+  });
+}
+
+
+
+
+removeExistingDocumentUsingDto(doc: AssetDocumentFormDto): void {
+  console.log('Document to delete:', doc); 
+  console.log('Document ID to delete:', doc.documentId  );
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to delete this document?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.assetService.deleteAssetDocument(doc.documentId.toString()).subscribe({
+        next: () => {
+          console.log("Document deleted successfully");
+          this.asset.documents = this.asset.documents.filter(
+            (d) => d.documentId !== doc.documentId
+          );
+          Swal.fire('Deleted!', 'Document has been deleted.', 'success');
+        },
+        error: (err) => {
+          console.error('Error deleting document:', err);
+          Swal.fire('Error!', 'Failed to delete document.', 'error');
+        },
+      });
+    }
+  });
+}
+
+
+
+
+
+
+
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   // Handle image drop
 onImageDrop(event: DragEvent): void {
   event.preventDefault();
@@ -538,6 +679,7 @@ onImageDrop(event: DragEvent): void {
 
       this.newGalleryFiles.push(file);
 
+<<<<<<< HEAD
       // Create preview
       const reader = new FileReader();
       reader.onload = (e: any) => {
@@ -549,11 +691,16 @@ onImageDrop(event: DragEvent): void {
           filePath: file.name,
         });
       };
+=======
+    
+      const reader = new FileReader();
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
       reader.readAsDataURL(file);
     }
   }
 
   // Handle document selection
+<<<<<<< HEAD
   onDocumentSelected(event: any): void {
     const files: FileList = event.target.files;
     this.handleDocumentFiles(files);
@@ -599,6 +746,54 @@ onImageDrop(event: DragEvent): void {
     }
   }
 
+=======
+
+onDropPdf(event: DragEvent): void {
+  event.preventDefault();
+  const files = event.dataTransfer?.files;
+
+  if (files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type === 'application/pdf' && file.size <= 500 * 1024) {
+        this.newDocumentFiles.push(file);
+      }
+    }
+  }
+
+}
+
+
+onDocumentSelected(event: any): void {
+  const files: FileList = event.target.files;
+  console.log('Files selected:', files);
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+
+    if (file.type !== 'application/pdf') {
+      this.documentUploadError = 'Only PDF files are allowed.';
+      return;
+    }
+
+    if (file.size > 500 * 1024) {
+      this.documentUploadError = 'File size should be less than 500KB.';
+      return;
+    }
+
+    this.newDocumentFiles.push(file);
+    console.log('Added file:', file);
+  }
+
+    console.log('Selected documents:', this.newDocumentFiles);
+  // Reset error if valid
+  this.documentUploadError = null;
+}
+
+
+
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   // Remove gallery item
   removeGalleryItem(index: number): void {
     if (this.asset.galleries) {
@@ -610,6 +805,7 @@ onImageDrop(event: DragEvent): void {
     }
   }
 
+<<<<<<< HEAD
   // Remove document
   removeDocument(index: number): void {
     if (this.asset.documents) {
@@ -620,6 +816,50 @@ onImageDrop(event: DragEvent): void {
       this.newDocumentFiles.splice(index, 1);
     }
   }
+=======
+
+  removeNewDocument(index: number): void {
+  this.newDocumentFiles.splice(index, 1);
+}
+ 
+
+
+
+removeExistingDocument(docPath: string): void {
+  this.existingDocuments = this.existingDocuments.filter(doc => doc !== docPath);
+}
+
+
+
+
+
+
+
+
+onDocumentFilesSelected(event: any): void {
+  const files: FileList = event.target.files;
+  this.documentUploadError = '';
+
+  if (files && files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const allowedTypes = ['application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        this.documentUploadError = 'Only PDF files are allowed.';
+        continue;
+      }
+      if (file.size > 500 * 1024) {
+        this.documentUploadError = 'Each document must be less than 500KB.';
+        continue;
+      }
+      this.newDocumentFiles.push(file);
+    }
+  }
+}
+
+
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   onImageDragOver(event: DragEvent): void {
     event.preventDefault();
   }

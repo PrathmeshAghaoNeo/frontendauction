@@ -605,7 +605,7 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
       
       // Generate file name with date
       const now = new Date();
-      const fileName = `Requests_Export_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}.xlsx`;
+      const fileName = `ListofAllRequests.xlsx`;
       
       // Save file
       XLSX.writeFile(workbook, fileName);

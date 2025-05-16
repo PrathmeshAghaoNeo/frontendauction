@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-// Import child components
 import { PromotionsComponent } from './promotions/promotions.component';
 import { CategoryCardComponent } from './category-card/category-card.component';
 import { DirectSaleComponent } from './direct-sale/direct-sale.component';

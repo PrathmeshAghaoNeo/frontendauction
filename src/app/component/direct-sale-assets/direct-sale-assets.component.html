@@ -1,5 +1,6 @@
 <div class="top-toolbar">
   <div class="toolbar-left">
+<<<<<<< HEAD
     <!-- <button class="icon-btn">
       <img src="cars.png" alt="Car Plates" />
       <span>Plates</span>
@@ -17,6 +18,110 @@
       (click)="toggleLayout()" />
     <img src="pin.png" alt="Location" class="toolbar-icon pin" />
   </div>
+=======
+    <button class="icon-main">
+      <img src="cars.png" alt="Car Plates" />
+      <!-- <span>Plates</span> -->
+    </button>
+  </div>
+
+  <!-- <div class="toolbar-center">
+    <img class="search" src="search.png" alt="" />
+    <input type="text" class="search-input" placeholder="Search" />
+  </div> -->
+
+  <div class="toolbar-right">
+    <!-- <img src="sort.png" alt="Filter" class="toolbar-icon sort" /> -->
+    <img
+      [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
+      alt="Toggle View"
+      class="toolbar-icon grid"
+      (click)="toggleLayout()"
+    />
+
+    <img src="pin.png" alt="Location" class="toolbar-icon pin" />
+  </div>
+</div>
+
+<div class="plates-container" [ngClass]="layoutType + '-view'">
+  <div class="plate-card" *ngFor="let asset of assets">
+    <div class="plate-display">
+      <img
+        [src]="
+          asset.galleries?.length
+            ? environment.baseurl + asset.galleries[0]?.filePath
+            : 'default.jpg'
+        "
+        alt="Asset Image"
+        class="plate-main-image"
+      />  
+
+      <ng-container *ngIf="layoutType === 'row'; else gridView">
+        <div class="plate-name">
+          <span class="plate-name-text">{{ asset.title }}</span>
+        </div>
+        <div class="plate-footer">
+          <div class="price">BHD {{ asset.price }}</div>
+          <div class="icons">
+            <button
+              class="icon-btn"
+              title="Save"
+              (click)="toggleWishlist(asset.assetId)"
+            >
+              <img
+                [src]="
+                  isInWishlist(asset.assetId) ? 'bookmark.png' : 'wishlist.png'
+                "
+                alt="Wishlist Toggle"
+                class="button-image1"
+                [ngClass]="{ 'active-wishlist': isInWishlist(asset.assetId) }"
+              />
+            </button>
+
+            <button
+              class="icon-btn"
+              title="Add"
+              (click)="addToCart(asset.assetId)"
+            >
+              <img src="sell.png" alt="Buy Now" class="button-image2" />
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #gridView>
+        <div class="plate-name">
+          <span class="plate-name-text">{{ asset.title }}</span>
+        </div>
+        <div class="icons">
+          <button
+            class="icon-btn"
+            title="Save"
+            (click)="toggleWishlist(asset.assetId)"
+          >
+            <img
+              [src]="
+                isInWishlist(asset.assetId) ? 'bookmark.png' : 'wishlist.png'
+              "
+              alt="Wishlist Toggle"
+              class="button-image1"
+              [ngClass]="{ 'active-wishlist': isInWishlist(asset.assetId) }"
+            />
+          </button>
+          <button
+            class="icon-btn"
+            title="Add"
+            (click)="addToCart(asset.assetId)"
+          >
+            <img src="sell.png" alt="Buy Now" class="button-image2" />
+          </button>
+        </div>
+
+        <div class="price1">BHD {{ asset.price }}</div>
+      </ng-template>
+    </div>
+  </div>
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 </div>
 
 <!-- Check if assets list is empty -->

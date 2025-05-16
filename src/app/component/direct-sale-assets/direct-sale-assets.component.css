@@ -8,6 +8,18 @@
   margin-bottom: 20px;
 }
 
+<<<<<<< HEAD
+=======
+.icon-main{
+  width: 50px;
+  height: 40px;
+  object-fit: cover;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 .toolbar-left,
 .toolbar-center,
 .toolbar-right {
@@ -65,8 +77,14 @@
 
 .plates-container.grid-view {
   display: grid;
+<<<<<<< HEAD
   grid-template-columns: repeat(6, 1fr);
   gap: 20px;
+=======
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+   padding: 2rem;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 }
 
 
@@ -101,7 +119,11 @@
 /* Image stays left */
 .plates-container.row-view .plate-main-image {
   width: 100%;
+<<<<<<< HEAD
   height: 80px;
+=======
+  height: 160px;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   object-fit: cover;
   border-radius: var(--card-radius);
   margin-bottom: 0;
@@ -112,15 +134,26 @@
   flex-direction: column;
   justify-content: center;
   /* flex: 1; */
+<<<<<<< HEAD
   gap: 12px;
+=======
+  gap: 2px;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   flex-wrap: nowrap;
 }
 
 
 .plates-container.row-view .price {
   white-space: nowrap;
+<<<<<<< HEAD
   font-weight: bold;
   padding: 0px 2px;
+=======
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0px 2px;
+  color: #27ae60;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 }
 
 .plates-container.row-view .icons {
@@ -202,7 +235,11 @@
 
 .plate-main-image {
   width: 100%;
+<<<<<<< HEAD
   height: 100px;
+=======
+  height: 200px;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   object-fit: cover;
   border-radius: var(--card-radius);
   margin-bottom: px;
@@ -274,17 +311,37 @@
   height: 20px;
   object-fit: contain;
 }
+<<<<<<< HEAD
+=======
+
+.button-image1.active-wishlist {
+  background-color: #ffcccc;
+  border-radius: 4px;
+}
+
+
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 .button-image2 {
   width: 25px;
   height: 25px;
   object-fit: contain;
+<<<<<<< HEAD
 }
 .price1 {
   font-size: 16px;
+=======
+} 
+.price1 {
+  font-size: 1rem;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   font-weight: 600;
   color: var(--primary-dark);
   text-align: left;
   padding: 0px 4px;
+<<<<<<< HEAD
+=======
+  color: #27ae60;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 }
 
 

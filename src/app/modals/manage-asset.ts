@@ -13,7 +13,11 @@ export interface Asset {
   minIncrement?: number;
   makeOffer?: boolean;
   featured?: boolean;
+<<<<<<< HEAD
   awardingId?: number;
+=======
+  awardingId?: number;   
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   awardingMethod?: string;
   statusId?: number;
   statusName?: string;
@@ -43,6 +47,7 @@ export interface Asset {
   documents: AssetDocumentFormDto[];
   attributes: AssetDetailDto[];
   auctionStatusId?: number;
+<<<<<<< HEAD
 }
 
 export interface AssetGalleryDto {
@@ -50,6 +55,31 @@ export interface AssetGalleryDto {
   filePath?: string;
   fileUrl: string;
   sortOrder?: number;
+=======
+}
+
+export interface AssetGalleryDto {
+  galleryId: number;
+  mediaType?: string;
+  filePath?: string;
+  fileUrl: string;
+  sortOrder?: number;
+  createdAt: string;        
+  updatedAt: string;       
+  galleries: Gallery[] ;
+  documents: Document[];
+
+ 
+}
+
+export interface Gallery {
+[x: string]: any;
+  mediaType: string;
+  filePath: string;
+  sortOrder: number;
+  fileUrl : string;
+   imageUrl: string;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 }
 
 export interface AssetDocumentFormDto {
@@ -62,10 +92,18 @@ export interface AssetDetailDto {
   attributeName: string;
   attributeValue: string;
 }
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 
 
 export interface DirectSaleAssetDto {
   assetId: number;
+<<<<<<< HEAD
+=======
+  assetNumber: string;
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   title: string;
   categoryId: number;
   deposit: number;
@@ -77,6 +115,7 @@ export interface DirectSaleAssetDto {
   thumbnailUrl: string | null;
   categoryName: string;
   isAvailableForDirectSale: boolean;
+<<<<<<< HEAD
   galleries: AssetGalleryDto[]; // Optional if images are returned
 
 }
@@ -84,3 +123,9 @@ export interface DirectSaleAssetDto {
 
 
   
+=======
+  galleries: AssetGalleryDto[];
+ 
+}
+ 
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb

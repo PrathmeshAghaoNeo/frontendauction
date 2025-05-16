@@ -11,7 +11,11 @@ import { environment } from "../../constants/enviroments";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 
+<<<<<<< HEAD
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // ✅ Import NgbModal
+=======
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 
 @Component({
   selector: 'app-manage-asset',
@@ -37,7 +41,11 @@ export class ManageAssetComponent implements OnInit {
     private assetService: ManageAssetService,
     private router: Router,
     private location: Location,
+<<<<<<< HEAD
     private modalService: NgbModal // ✅ Inject modal service
+=======
+    private modalService: NgbModal 
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   ) {}
 
   ngOnInit(): void {
@@ -67,14 +75,12 @@ export class ManageAssetComponent implements OnInit {
   loadAssets(): void {
     this.assetService.getAssets().subscribe((data) => {
       this.assets = data;
-      this.originalAssets = [...data]; // Assign random status ID
-      });
-    }
-  
-  getRandomStatusId(): number {
-    return Math.floor(Math.random() * 5) + 1;
+      this.originalAssets = [...data];
+      console.log('Assets:', this.assets);
+    });
   }
 
+<<<<<<< HEAD
   newAssestRoute(): void {
     this.router.navigate(['/newAsset']);
   }
@@ -116,6 +122,18 @@ export class ManageAssetComponent implements OnInit {
 
   // View asset details
     viewAsset(assetId: number): void {
+=======
+  openViewAssetModal(asset: Asset): void {
+    this.selectedAsset = asset;
+    this.modalService.open(this.viewAssetModal, {
+      centered: true,
+      size: 'xl',
+      backdrop: 'static'
+    });
+  }
+
+  viewAsset(assetId: number): void {
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
     this.assetService.getAssetById(assetId).subscribe(
       (data) => {
         this.selectedAsset = data;
@@ -126,12 +144,71 @@ export class ManageAssetComponent implements OnInit {
       }
     );
   }
+<<<<<<< HEAD
   
 
   getAuctionStatus(auctionStatusId: number): string {
     return this.statuses.find(s => s.statusId === auctionStatusId)?.statusName || 'Unknown';
+=======
+
+  newAssestRoute(): void {
+    this.router.navigate(['/newAsset']);
+>>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
   }
-  
+
+  EditAssestRoute(assetId: number): void {
+    if (assetId && !isNaN(assetId)) {
+      this.router.navigate(['/update-asset', assetId]);
+    } else {
+      Swal.fire('Error', 'Invalid asset ID', 'error');
+    }
+  }
+
+  onSearchChange(): void {
+    if (!this.searchText.trim()) {
+      this.assets = [...this.originalAssets];
+      return;
+    }
+
+    this.assets = this.originalAssets.filter(asset =>
+      asset.title.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
+
+  sortAssets(column: string): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? '' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    if (this.sortDirection === '') {
+      this.assets = [...this.originalAssets];
+      this.onSearchChange();
+      return;
+    }
+
+    const dir = this.sortDirection === 'asc' ? 1 : -1;
+
+    this.assets.sort((a, b) => {
+      const valA = (a as any)[column];
+      const valB = (b as any)[column];
+
+      if (column.toLowerCase().includes('date')) {
+        return (new Date(valA).getTime() - new Date(valB).getTime()) * dir;
+      }
+
+      const strA = valA?.toString().toLowerCase();
+      const strB = valB?.toString().toLowerCase();
+
+      return strA.localeCompare(strB) * dir;
+    });
+  }
+
+  getAuctionStatus(auctionStatusId: number): string {
+    return this.statuses.find(s => s.statusId === auctionStatusId)?.statusName || 'Unknown';
+  }
 
   deleteAsset(asset: Asset): void {
     Swal.fire({
