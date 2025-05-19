@@ -1,52 +1,121 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserView } from '../../modals/user';
-import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
+import { UserView } from '../../modals/user';
 import { Asset } from '../../modals/manage-asset';
-import { ManageAssetService } from '../../services/asset.service';
 import { ManageRequest } from '../../modals/manage-requests';
+import { UserService } from '../../services/user.service';
+import { ManageAssetService } from '../../services/asset.service';
 import { RequestServices } from '../../services/requests.service';
+import { AuctionService } from '../../services/auction.service';
+import { LegendPosition, NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { interval } from 'rxjs/internal/observable/interval';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgxChartsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
-   requestList: ManageRequest[] = [];
-   users: UserView[] = [];
-   assets: Asset[] = [];
-   
-   constructor(private userService: UserService, private requestService: RequestServices, private assetService: ManageAssetService,private router: Router,) { }
-   
-     ngOnInit(): void {
-       this.loadUsers();
-       this. loadAssets();
-       this.loadAllRequest();
-      //  this.loadRoles();
-      //  this.loadStatuses();
-     }
+export class DashboardComponent implements OnInit, OnDestroy {
+  requestList: ManageRequest[] = [];
+  users: UserView[] = [];
+  assets: Asset[] = [];
+  allAuctions: any[] = [];
+  private auctionCycleSub: Subscription | null = null;
+  
+chartData = [
+  { name: 'Active', value: 120 },
+  { name: 'Pending', value: 80 },
+  { name: 'Closed', value: 60 },
+  { name: 'Completed', value: 40 }
+];
 
-   loadUsers(): void {
-    this.userService.getAllUser().subscribe(data => {
-      this.users = data
-      
-    });
+  statuses = [
+    { statusId: 1, statusName: 'Pending' },
+    { statusId: 2, statusName: 'Active' },
+    { statusId: 3, statusName: 'Closed' },
+    { statusId: 4, statusName: 'Completed' }
+  ];
+
+  colorScheme = {
+    name: 'customScheme',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: ['#7C4DFF', '#00C853', '#FF5252', '#3E2723'] 
+  };
+  // legendPos: LegendPosition = 'left';
+    // legendPosition: LegendPosition = LegendPosition.Left;
+  constructor(
+    private userService: UserService,
+    private requestService: RequestServices,
+    private assetService: ManageAssetService,
+    private auctionService: AuctionService,
+    private router: Router
+    
+  ) { }
+
+  ngOnInit(): void {
+    this.loadUsers();
+    this.loadAssets();
+    this.loadAllRequests();
+    this.loadAuctions();
+    console.log('Prepared chart data:', this.chartData);
+
   }
-  loadAssets() {
-    this.assetService.getAssets().subscribe((data) => {
-      this.assets = data;
-      });
+
+  loadUsers(): void {
+    this.userService.getAllUser().subscribe(data => this.users = data);
   }
-  loadAllRequest() {
+
+  loadAssets(): void {
+    this.assetService.getAssets().subscribe(data => this.assets = data);
+  }
+
+  loadAllRequests(): void { 
     this.requestService.getAllRequests().subscribe({
-        next: data => this.requestList = data,
-        error: err => console.error('Error fetching requests', err)
+      next: data => this.requestList = data,
+      error: err => console.error('Error fetching requests', err)
     });
   }
+  loadAuctions(): void {
+  this.auctionService.getAllAuctions().subscribe(res => {
+    this.allAuctions = res || [];
+
+    if (this.allAuctions.length > 0) {
+      this.generateChartData();
+    }
+  });
+}
+
+generateChartData(): void {
+  const statusCountMap: { [key: string]: number } = {};
+
+  this.allAuctions.forEach(auction => {
+    const statusName = this.getStatusName(auction.statusId);
+
+    if (statusCountMap[statusName]) {
+      statusCountMap[statusName]++;
+    } else {
+      statusCountMap[statusName] = 1;
+    }
+  });
+
+  this.chartData = Object.entries(statusCountMap).map(([status, count]) => ({
+    name: status,
+    value: count
+  }));
+}
+
+  ngOnDestroy(): void {
+    if (this.auctionCycleSub) {
+      this.auctionCycleSub.unsubscribe();
+    }
+  }
+
+
   getTypeName(typeId: number): string {
     switch (typeId) {
       case 1: return 'Transfer of Ownership';
@@ -56,43 +125,26 @@ export class DashboardComponent {
       default: return 'Unknown';
     }
   }
+
   getStatusName(statusId: number): string {
     switch (statusId) {
       case 1: return 'Pending';
-      case 2: return 'Done';
-      case 3: return 'Approved';
-      case 4: return 'Rejected';
+      case 2: return 'Active';
+      case 3: return 'Closed';
+      case 4: return 'Completed';
       default: return 'Unknown';
     }
   }
-  
+
   goToUsers() {
     this.router.navigate(['/users']);
   }
-  goToAssest() {
-    this.router.navigate(['/assests']);
-  }goToRequest() {
-    this.router.navigate(['/requets']);
+
+  goToAssets() {
+    this.router.navigate(['/assets']);
   }
-  // Stat card data (can be made dynamic later)
-  totalRevenue = '250,000 BHD';
-  totalAuctions = 12540;
-  thisMonthRevenue = '25,000 BHD';
 
-  // Recent activities
-  recentActivities = [
-    { message: 'Auction "Rolex Watch" created.', type: 'purple' },
-    { message: 'Payment of 3,000 BHD received.', type: 'green' },
-    { message: 'Auction "Land in Manama" completed.', type: 'blue' },
-  ];
-
-  // Top categories (static list for now)
-  topCategories = ['Electronics', 'Cars', 'Watches', 'Real Estate'];
-
-  // Auction highlights (can be fetched from an API later)
-  auctionHighlights = [
-    { name: 'Luxury Villa', status: 'Active', bids: 54, revenue: '85,000 BHD' },
-    { name: 'Vintage Car', status: 'Ended', bids: 39, revenue: '40,000 BHD' },
-    { name: 'Smartphone Bundle', status: 'Upcoming', bids: '-', revenue: '-' },
-  ];
+  goToRequests() {
+    this.router.navigate(['/requests']);
+  }
 }

@@ -1,178 +1,184 @@
 <div class="container-fluid dashboard">
-    <!-- <main class="main-content"> -->
-      <h2 class="mb-4 text-purple">Auction Management Dashboard</h2>
-  
-      <div class="row mb-4">
-        <div class="col-md-4">
-          <div class="card stat-card text-center">
-            <div class="card-body">
-              <h3 class="text-purple">250,000 BHD</h3>
-              <p>Total Revenue</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card stat-card text-center">
-            <div class="card-body">
-              <h3 class="text-success">12,540</h3>
-              <p>Total Auctions</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card stat-card text-center">
-            <div class="card-body">
-              <h3 class="text-info">25,000 BHD</h3>
-              <p>This Month</p>
-            </div>
-          </div>
-        </div>
-      </div>
+  <h2 class="mb-4 text-purple">Auction Dashboard</h2>
 
-  
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card section-card">
-            <div class="card-body">
-              <h5 class="card-title text-purple mb-3">Auction Highlights</h5>
-              <table class="table table-borderless mb-0">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Status</th>
-                    <th>Bid Count</th>
-                    <th>Revenue</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Luxury Villa</td>
-                    <td><span class="badge bg-success">Active</span></td>
-                    <td>54</td>
-                    <td>85,000 BHD</td>
-                  </tr>
-                  <tr>
-                    <td>Vintage Car</td>
-                    <td><span class="badge bg-secondary">Ended</span></td>
-                    <td>39</td>
-                    <td>40,000 BHD</td>
-                  </tr>
-                  <tr>
-                    <td>Smartphone Bundle</td>
-                    <td><span class="badge bg-warning text-dark">Upcoming</span></td>
-                    <td>-</td>
-                    <td>-</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  <!-- Statistic Cards -->
+  <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+    <div class="col">
+      <div class="card shadow-sm text-center p-3 h-100">
+        <div class="card-body">
+          <i class="bi bi-currency-exchange fs-2 text-purple mb-2"></i>
+          <h4 class="text-purple">250,000 BHD</h4>
+          <p class="text-muted mb-0">Total Revenue</p>
         </div>
       </div>
-    <!-- </main> -->
- 
+    </div>
+    <div class="col">
+      <div class="card shadow-sm text-center p-3 h-100">
+        <div class="card-body">
+          <i class="bi bi-bar-chart-line fs-2 text-success mb-2"></i>
+          <h4 class="text-success">12,540</h4>
+          <p class="text-muted mb-0">Total Auctions</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow-sm text-center p-3 h-100">
+        <div class="card-body">
+          <i class="bi bi-calendar-event fs-2 text-info mb-2"></i>
+          <h4 class="text-info">25,000 BHD</h4>
+          <p class="text-muted mb-0">This Month</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="container-fluid">
-    <div class="row mt-4 mx-1">
-      <!-- Table 1 -->
-      <div class="col-12 col-md-6 col-lg-4 mb-1">
-        <div class="card shadow-sm scaled-table-container" style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
-          <div class="card-body views p-3">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-              <h4 class="mb-0 text-primary fw-semibold">Users</h4>
-              <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
-                View More
-              </button>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-sm table-bordered table-hover mb-0">
-                <thead class="table-purple">
-                  <tr>
-                    <th>UserId</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Gender</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let user of users | slice:0:5; let i = index">
-                    <td>{{ user.uid }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.gender }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <!-- Ongoing Auctions & Status -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="card section-card p-3 h-100  ">
+        <div class="card-body">
+          <h5 class="card-title text-black mb-4 text-center fs-4">
+            <i class="fas fa-gavel text-purple me-2"></i>List of All Auctions
+          </h5>
+          <div class="auction-ticker-wrapper">
+            <ul class="auction-ticker-list">
+              <li *ngFor="let auction of allAuctions" class="text-center">
+                <div class="auction-item">
+                  <i class="fas fa-gavel text-purple me-1"></i>
+                  <span class="text-purple fw-semibold">Auction #{{ auction.auctionNumber }}</span>
+                  <div class="text-muted">{{ auction.title }}</div>
+                </div>
+
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-    
-      <!-- Repeat for Table 2 and Table 3 -->
-      <div class="col-12 col-md-6 col-lg-4 mb-1">
-        <div class="card shadow-sm scaled-table-container" style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
-          <div class="card-body views p-3">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-              <h4 class="mb-0 text-primary fw-semibold">Requests</h4>
-              <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
-                View More
-              </button>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-sm table-bordered table-hover mb-0">
-                <thead class="table-purple">
-                  <tr>
-                    <th>Sr.No.</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let request of requestList | slice:0:5; let i = index">
-                    <td>{{ i+1 }}</td>
-                    <td>{{ getTypeName(request.requestTypeId) }}</td>
-                    <td>{{ getStatusName(request.requestStatusId) }}</td>
-                    <td>{{ request.requestDateTime}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    </div>
+
+
+    <div class="col-lg-6">
+      <div class="card h-100 p-3">
+        <div class="card-body">
+          <h5 class="card-title text-purple mb-4">Auction Status Overview</h5>
+          <div *ngIf="chartData.length > 0; else noChartData">
+            <ngx-charts-pie-chart [view]="[590,430]" [scheme]="colorScheme" [results]="chartData" [legend]="true"
+              [labels]="true"   [doughnut]="false"
+              [gradient]="true" [explodeSlices]="false" [animations]="true">>
+            </ngx-charts-pie-chart>
+          </div>
+          <ng-template #noChartData>
+            <p class="text-muted text-center">Auction status chart will appear once data is available.</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tables: Users, Requests, Assets -->
+  <div class="row mt-4 mx-1">
+    <!-- Table 1 -->
+    <div class="col-12 col-md-6 col-lg-4 mb-1">
+      <div class="card shadow-sm scaled-table-container"
+        style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
+        <div class="card-body views p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <h4 class="mb-0 text-primary fw-semibold">Users</h4>
+            <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
+              View More
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered table-hover mb-0">
+              <thead class="table-purple">
+                <tr>
+                  <th>UserId</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Gender</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users | slice:0:5; let i = index">
+                  <td>{{ user.uid }}</td>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.gender }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    
-      <div class="col-12 col-md-6 col-lg-4 mb-1">
-        <div class="card shadow-sm scaled-table-container" style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
-          <div class="card-body views p-3">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-              <h4 class="mb-0 text-primary fw-semibold">Assets</h4>
-              <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
-                View More
-              </button>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-sm table-bordered table-hover mb-0">
-                <thead class="table-purple">
-                  <tr>
-                    <th>Sr No.</th>
-                    <th>Title</th>
-                    <th>starting Price</th>
-                    <th>End Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let asset of assets| slice:0:5; let i = index">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ asset.title }}</td>
-                    <td>{{ asset.startingPrice }}</td>
-                    <td>{{ asset.registrationDeadline }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    </div>
+
+    <!-- Repeat for Table 2 and Table 3 -->
+    <div class="col-12 col-md-6 col-lg-4 mb-1">
+      <div class="card shadow-sm scaled-table-container"
+        style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
+        <div class="card-body views p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <h4 class="mb-0 text-primary fw-semibold">Requests</h4>
+            <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
+              View More
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered table-hover mb-0">
+              <thead class="table-purple">
+                <tr>
+                  <th>Sr.No.</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let request of requestList | slice:0:5; let i = index">
+                  <td>{{ i+1 }}</td>
+                  <td>{{ getTypeName(request.requestTypeId) }}</td>
+                  <td>{{ getStatusName(request.requestStatusId) }}</td>
+                  <td>{{ request.requestDateTime}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-4 mb-1">
+      <div class="card shadow-sm scaled-table-container"
+        style="border-radius: var(--card-radius); box-shadow: var(--shadow-light);">
+        <div class="card-body views p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <h4 class="mb-0 text-primary fw-semibold">Assets</h4>
+            <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium" (click)="goToUsers()">
+              View More
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered table-hover mb-0">
+              <thead class="table-purple">
+                <tr>
+                  <th>Sr No.</th>
+                  <th>Title</th>
+                  <th>starting Price</th>
+                  <th>End Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let asset of assets| slice:0:5; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ asset.title }}</td>
+                  <td>{{ asset.startingPrice }}</td>
+                  <td>{{ asset.registrationDeadline }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
