@@ -2,8 +2,8 @@
   <div class="cart-card" *ngFor="let asset of watchlistAssets">
     <div class="cart-image-wrap">
       <img
-        *ngIf="asset.galleries?.length"
-        [src]="asset.galleries[0]?.fileUrl"
+        *ngIf="asset.thumbnailUrl?.length"
+        [src]=" asset.thumbnailUrl"
         alt="Asset Image"
         class="cart-image"
       />
@@ -15,13 +15,13 @@
       <div class="cart-info">BAHRAIN</div>
 
       <div class="cart-bottom-row">
-        <div class="price">BHD {{ asset.startingPrice }}</div>
+        <div class="price">BHD {{ asset.price }}</div>
 
         <div class="cart-actions">
-          <button class="icon-btn" title="Remove from Cart">
-            <img src="trash.png" class="button-image1" />
+          <button class="icon-btn" title="Remove from wishlist" (click)="removeFromWatchlist(asset)">
+            <img src="trash.png" class="button-image1"  />
           </button>
-          <button class="icon-btn" title="Checkout">
+          <button class="icon-btn" title="Checkout" (click)="addToCart(asset.assetId)">
             <img src="addtocart.png" class="button-image2" />
           </button>
         </div>

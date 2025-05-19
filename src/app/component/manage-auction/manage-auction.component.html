@@ -7,9 +7,16 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="text-purple">Manage Auctions</h2>
-  <button class="btn custom-purple-btn" [routerLink]="'/newAuction'" routerLinkActive="active">
-    Add Auction
-  </button>
+
+  <div class="col-md-3 text-end">
+
+    <button class="btn custom-purple-btn" (click)="exportToExcel()" id="export">
+      <i class="bi bi-file-earmark-excel"></i> Export
+    </button>
+    <button class="btn custom-purple-btn" [routerLink]="'/newAuction'" routerLinkActive="active">
+      Add Auction
+    </button>
+  </div>
 </div>
 
 <div class="row mb-3">
@@ -30,9 +37,6 @@
   </div>
 </div>
 
-
-
-
 <!-- Table -->
 <div class="table-responsive">
   <table class="table table-hover shadow-sm border-0 rounded">
@@ -43,6 +47,7 @@
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'auctionNumber' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'auctionNumber' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionNumber'
           }" class="ms-1"></i>
         </th>
         <th (click)="sortAuctions('title')" style="cursor:pointer">
@@ -50,6 +55,7 @@
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'title' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'title' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'title'
           }" class="ms-1"></i>
         </th>
         <th (click)="sortAuctions('type')" style="cursor:pointer">
@@ -57,6 +63,7 @@
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'type' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'type' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'type'
           }" class="ms-1"></i>
         </th>
         <th (click)="sortAuctions('auctionStart')" style="cursor:pointer">
@@ -64,6 +71,7 @@
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'auctionStart' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'auctionStart' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionStart'
           }" class="ms-1"></i>
         </th>
         <th (click)="sortAuctions('auctionEnd')" style="cursor:pointer">
@@ -71,6 +79,7 @@
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'auctionEnd' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'auctionEnd' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'auctionEnd'
           }" class="ms-1"></i>
         </th>
         
@@ -79,14 +88,16 @@
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'statusId' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'statusId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'statusId'
           }" class="ms-1"></i>
         </th>
         
         <th (click)="sortAuctions('incrementalTime')" style="cursor:pointer">
-          Increment Time 
+          Incremental Time 
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'incrementalTime' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'incrementalTime' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'incrementalTime'
           }" class="ms-1"></i>
         </th>
         <th (click)="sortAuctions('categoryName')" style="cursor:pointer">
@@ -94,6 +105,7 @@
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'categoryName' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'categoryName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'categoryName'
           }" class="ms-1"></i>
         </th>
         

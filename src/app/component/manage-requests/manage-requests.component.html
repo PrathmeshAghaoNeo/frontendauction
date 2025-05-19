@@ -8,7 +8,7 @@
     <button type="button" class="btn btn-outline-secondary me-2" (click)="toggleFilters()" aria-label="Toggle filters" hidden>
       <i class="bi bi-funnel me-1"></i>Filters
     </button>
-    <button type="button" class="btn custom-purple-btn me-2" (click)="exportToExcel()" [disabled]="isExporting" aria-label="Export to Excel" hidden>
+    <button type="button" class="btn custom-purple-btn me-2" (click)="exportToExcel()" [disabled]="isExporting" aria-label="Export to Excel" >
       <i class="bi" [ngClass]="isExporting ? 'bi-hourglass-split' : 'bi-file-earmark-excel'"></i>
       {{ isExporting ? 'Exporting...' : 'Export' }}
     </button>

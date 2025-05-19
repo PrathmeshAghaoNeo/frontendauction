@@ -54,6 +54,8 @@ import { DirectBidComponent } from './component/direct-bid/direct-bid.component'
 import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
 import { BidWatchlistComponent } from './component/bid-watchlist/bid-watchlist.component';
 import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-cart.component';
+import { PageNotFoundComponent } from './component/page-not-found/page-not-found.component';
+import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -70,9 +72,9 @@ export const routes: Routes = [
     {path:'newAuction', component:AddAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'update-auction/:id', component:UpdateAuctionComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     // Asset Management
-  { path: 'assets', component: ManageAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'newAsset', component: AddAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'udpate-asset/:assetId', component: EditAssetComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'assets', component: ManageAssetComponent },
+  { path: 'newAsset', component: AddAssetComponent },
+  { path: 'update-asset/:assetId', component: EditAssetComponent},
   
   
   
@@ -81,7 +83,6 @@ export const routes: Routes = [
     {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'requestsnew', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
-    // { path: 'requests/new', component: AddRequestComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'addassetcategories', component:AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
@@ -94,7 +95,6 @@ export const routes: Routes = [
     {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'User' }},
-    // {path:'signup',component:SignupComponent},
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details',component:AssetDetailComponent},
@@ -110,6 +110,9 @@ export const routes: Routes = [
     { path: 'direct-bid', component: DirectBidComponent},
     { path: 'bid-watchlist', component: BidWatchlistComponent},
     { path: 'bid-add-to-cart', component: BidAddToCartComponent},
+
+    {path:'page-not-found',component:PageNotFoundComponent},
+    {path:'chat-bot', component:ChatBotComponent},
 
     
     

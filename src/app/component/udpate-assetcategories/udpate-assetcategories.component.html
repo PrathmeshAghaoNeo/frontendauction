@@ -15,7 +15,8 @@
       <div class="col-md-6 mb-3">
         <label for="categoryName" class="form-label required-label">Title</label>
         <input type="text" formControlName="categoryName" id="categoryName" class="form-control" maxlength="20" />
-        <div *ngIf="assetCategoryForm.get('categoryName')?.invalid && assetCategoryForm.get('categoryName')?.touched" class="text-danger">
+        <div *ngIf="assetCategoryForm.get('categoryName')?.invalid && assetCategoryForm.get('categoryName')?.touched"
+          class="text-danger">
           Title is required.
         </div>
       </div>
@@ -24,7 +25,8 @@
       <div class="col-md-6 mb-3">
         <label for="subCategory" class="form-label">Sub Category</label>
         <input type="text" id="subCategory" class="form-control" formControlName="subCategory" maxlength="30" />
-        <div *ngIf="assetCategoryForm.get('subCategory')?.touched && assetCategoryForm.get('subCategory')?.invalid" class="text-danger">
+        <div *ngIf="assetCategoryForm.get('subCategory')?.touched && assetCategoryForm.get('subCategory')?.invalid"
+          class="text-danger">
           <div *ngIf="assetCategoryForm.get('subCategory')?.errors?.['required']">
             Sub Category is required.
           </div>
@@ -38,7 +40,9 @@
       <div class="col-md-6 mb-3">
         <label for="depositPercentage" class="form-label required-label">Deposit Percentage</label>
         <input type="number" formControlName="depositPercentage" id="depositPercentage" class="form-control" />
-        <div *ngIf="assetCategoryForm.get('depositPercentage')?.invalid && assetCategoryForm.get('depositPercentage')?.touched" class="text-danger">
+        <div
+          *ngIf="assetCategoryForm.get('depositPercentage')?.invalid && assetCategoryForm.get('depositPercentage')?.touched"
+          class="text-danger">
           Deposit Percentage is required and must be numeric.
         </div>
       </div>
@@ -47,132 +51,162 @@
       <div class="col-md-6 mb-3">
         <label for="details" class="form-label required-label">Details</label>
         <input type="text" formControlName="details" id="details" class="form-control" />
-        <div *ngIf="assetCategoryForm.get('details')?.invalid && assetCategoryForm.get('details')?.touched" class="text-danger">
+        <div *ngIf="assetCategoryForm.get('details')?.invalid && assetCategoryForm.get('details')?.touched"
+          class="text-danger">
           Details are required.
         </div>
       </div>
 
-      <!-- Icon File -->
+      <!-- Icon File Input Section -->
       <div class="col-md-6 mb-3">
-        <label for="iconFile" class="form-label required-label">Icon</label>
-        <input
-          type="file"
-          (change)="onFileChange($event, 'iconFile')"
-          [ngClass]="{'is-invalid': assetCategoryForm.get('iconFile')?.invalid && assetCategoryForm.get('iconFile')?.touched}"
-        />
-        <div *ngIf="assetCategoryForm.get('iconFile')?.invalid && assetCategoryForm.get('iconFile')?.touched" class="text-danger">
-          Icon is required (JPG, JPEG, PNG).
+        <label for="iconFile" class="form-label fw-bold">Icon <span class="text-danger">*</span></label>
+
+        <!-- Display the image preview if available -->
+        <div *ngIf="previewUrls['icon']">
+          <img [src]="previewUrls['icon']" alt="Icon Preview" class="img-thumbnail" width="100">
+          <p><a [href]="previewUrls['icon']" target="_blank">View image</a></p>
         </div>
-        <div *ngIf="previewUrls['iconFile']" class="mt-2">
-          <img [src]="previewUrls['iconFile']" alt="Icon Preview" style="max-width: 100px; max-height: 100px;" />
+
+        <!-- If there is no preview, show the selected asset's icon -->
+        <div *ngIf="!previewUrls['icon'] && assetCategoryForm?.get('icon')?.value;">
+          <img
+            [src]="assetCategoryForm.get('icon')?.value?.startsWith('http') ? assetCategoryForm.get('icon')?.value : assetBaseUrl + assetCategoryForm.get('icon')?.value"
+            alt="Category Icon" class="img-thumbnail"
+            style="position: absolute; top: 16px; right: 10px; width: 100px; height: 100px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);" />
+          <p><a
+              [href]="assetCategoryForm.get('icon')?.value?.startsWith('http') ? assetCategoryForm.get('icon')?.value : assetBaseUrl + assetCategoryForm.get('icon')?.value"
+              target="_blank">View image</a></p>
+        </div>
+
+        <!-- File input for icon -->
+        <input type="file" id="iconFile" class="form-control" formControlName="iconFile"
+          (change)="onFileChange($event, 'iconFile')" accept="image/png,image/jpeg,image/jpg,image/webp" />
+
+        <div *ngIf="assetCategoryForm.get('iconFile')?.invalid && assetCategoryForm.get('iconFile')?.touched"
+          class="text-danger">
+          Valid Icon is required (JPG, JPEG, PNG).
         </div>
       </div>
 
-      <!-- Document File -->
+      <!-- Document File Input Section -->
       <div class="col-md-6 mb-3">
         <label for="document" class="form-label required-label">Document</label>
-        <input
-          type="file"
-          (change)="onFileChange($event, 'document')"
+
+        <!-- If document preview is available, show it -->
+        <div class="mt-2" *ngIf="previewUrls['document']">
+          <a [href]="previewUrls['document']" target="_blank" rel="noopener noreferrer"
+            style="display: block; color: blue; text-decoration: underline;">
+            View Document
+          </a>
+        </div>
+
+
+        <!-- File input for document -->
+        <input type="file" id="document" formControlName="document" (change)="onFileChange($event, 'document')"
           [ngClass]="{'is-invalid': assetCategoryForm.get('document')?.invalid && assetCategoryForm.get('document')?.touched}"
-        />
-        <div *ngIf="assetCategoryForm.get('document')?.invalid && assetCategoryForm.get('document')?.touched" class="text-danger">
+          accept="application/pdf" />
+
+        <div *ngIf="assetCategoryForm.get('document')?.invalid && assetCategoryForm.get('document')?.touched"
+          class="text-danger">
           Document is required (PDF).
         </div>
-        <div *ngIf="previewUrls['document']" class="mt-2">
-          <a [href]="previewUrls['document']" target="_blank">View Document</a>
-        </div>
       </div>
-    </div>
 
-    <!-- Payment Methods -->
-    <label for="paymentMethod" class="form-label required-label">Payment Method</label>
-    <div class="payment-method-list">
-      <div *ngFor="let method of paymentMethods" class="payment-checkbox">
-        <input
-          type="checkbox"
-          [value]="method.methodName"
-          (change)="onCheckboxChange($event)"
-          [checked]="assetCategoryForm.get('paymentMethods')?.value.includes(method.methodName)"
-        />
-        {{ method.methodName }}
-      </div>
-    </div>
 
-    <div class="row">
-      <!-- Status -->
-            <div class="col-md-6 mb-3">
-        <label for="statusId" class="form-label required-label">Status</label>
-        <select formControlName="statusId" id="statusId" class="form-select">
-          <option value="" disabled selected hidden>Select Status</option>
-          <option *ngFor="let status of statuses" [value]="status.statusId">
-            {{ status.statusName }}
-          </option>
-        </select>
-        <div *ngIf="assetCategoryForm.get('statusId')?.invalid && assetCategoryForm.get('statusId')?.touched" class="text-danger">
-          Status is required.
+      <!-- Payment Methods -->
+      <label for="paymentMethod" class="form-label required-label">Payment Method</label>
+      <div class="payment-method-list">
+        <div *ngFor="let method of paymentMethods" class="payment-checkbox">
+          <input type="checkbox" [value]="method.methodName" (change)="onCheckboxChange($event)"
+            [checked]="assetCategoryForm.get('paymentMethods')?.value.includes(method.methodName)" />
+          {{ method.methodName }}
         </div>
       </div>
 
-      <!-- Admin Fees -->
-      <div class="col-md-6 mb-3">
-        <label for="adminFees" class="form-label">Admin Fees</label>
-        <input type="number" formControlName="adminFees" id="adminFees" class="form-control" />
-        <div *ngIf="assetCategoryForm.get('adminFees')?.invalid && assetCategoryForm.get('adminFees')?.touched" class="text-danger">
-          Admin Fees are required and must be a number.
+      <div class="row">
+        <!-- Status -->
+        <div class="col-md-6 mb-3">
+          <label for="statusId" class="form-label required-label">Status</label>
+          <select formControlName="statusId" id="statusId" class="form-select">
+            <option value="" disabled selected hidden>Select Status</option>
+            <option *ngFor="let status of statuses" [value]="status.statusId">
+              {{ status.statusName }}
+            </option>
+          </select>
+          <div *ngIf="assetCategoryForm.get('statusId')?.invalid && assetCategoryForm.get('statusId')?.touched"
+            class="text-danger">
+            Status is required.
+          </div>
         </div>
-      </div>
 
-      <!-- Auction Fees -->
-      <div class="col-md-6 mb-3">
-        <label for="auctionFees" class="form-label">Auction Fees</label>
-        <input type="number" formControlName="auctionFees" id="auctionFees" class="form-control" />
-        <div *ngIf="assetCategoryForm.get('auctionFees')?.invalid && assetCategoryForm.get('auctionFees')?.touched" class="text-danger">
-          Auction Fees are required and must be a number.
+        <!-- Admin Fees -->
+        <div class="col-md-6 mb-3">
+          <label for="adminFees" class="form-label">Admin Fees</label>
+          <input type="number" formControlName="adminFees" id="adminFees" class="form-control" />
+          <div *ngIf="assetCategoryForm.get('adminFees')?.invalid && assetCategoryForm.get('adminFees')?.touched"
+            class="text-danger">
+            Admin Fees are required and must be a number.
+          </div>
         </div>
-      </div>
 
-      <!-- Buyers Commission -->
-      <div class="col-md-6 mb-3">
-        <label for="buyersCommission" class="form-label">Buyers Commission</label>
-        <input type="number" formControlName="buyersCommission" id="buyersCommission" class="form-control" />
-        <div *ngIf="assetCategoryForm.get('buyersCommission')?.invalid && assetCategoryForm.get('buyersCommission')?.touched" class="text-danger">
-          Buyers Commission is required and must be a number.
+        <!-- Auction Fees -->
+        <div class="col-md-6 mb-3">
+          <label for="auctionFees" class="form-label">Auction Fees</label>
+          <input type="number" formControlName="auctionFees" id="auctionFees" class="form-control" />
+          <div *ngIf="assetCategoryForm.get('auctionFees')?.invalid && assetCategoryForm.get('auctionFees')?.touched"
+            class="text-danger">
+            Auction Fees are required and must be a number.
+          </div>
         </div>
-      </div>
 
-      <!-- Registration Deadline -->
-      <div class="col-md-6 mb-3">
-        <label for="registrationDeadline" class="form-label">Registration Deadline</label>
-        <input type="number" formControlName="registrationDeadline" id="registrationDeadline" class="form-control" />
-        <div *ngIf="assetCategoryForm.get('registrationDeadline')?.invalid && assetCategoryForm.get('registrationDeadline')?.touched" class="text-danger">
-          Registration Deadline is required and must be a number.
+        <!-- Buyers Commission -->
+        <div class="col-md-6 mb-3">
+          <label for="buyersCommission" class="form-label">Buyers Commission</label>
+          <input type="number" formControlName="buyersCommission" id="buyersCommission" class="form-control" />
+          <div
+            *ngIf="assetCategoryForm.get('buyersCommission')?.invalid && assetCategoryForm.get('buyersCommission')?.touched">
+            Buyers Commission must be a number.
+          </div>
         </div>
-      </div>
 
-      <!-- VAT ID -->
-       <div class="col-md-6 mb-3">
+        <!-- Registration Deadline -->
+        <div class="col-md-6 mb-3">
+          <label for="registrationDeadline" class="form-label">Registration Deadline</label>
+          <input type="datetime-local" formControlName="registrationDeadline" id="registrationDeadline"
+            class="form-control" />
+          <div
+            *ngIf="assetCategoryForm.get('registrationDeadline')?.invalid && assetCategoryForm.get('registrationDeadline')?.touched"
+            class="text-danger">
+            Registration Deadline is required and must be a number.
+          </div>
+        </div>
+
+        <!-- VAT ID -->
+        <div class="col-md-6 mb-3">
           <label for="vat" class="form-label">VAT Type</label>
           <select formControlName="vat" id="vat" class="form-select">
             <option [value]="1">Exclusive</option>
             <option [value]="2">Inclusive</option>
             <option [value]="3">Not Applicable</option>
           </select>
-          <div *ngIf="assetCategoryForm.get('vat')?.invalid && assetCategoryForm.get('vat')?.touched" class="text-danger">
+          <div *ngIf="assetCategoryForm.get('vat')?.invalid && assetCategoryForm.get('vat')?.touched"
+            class="text-danger">
             VAT is required.
           </div>
         </div>
 
-      <!-- VAT Percentage -->
-      <div class="col-md-6 mb-3">
-        <label for="vatPercentage" class="form-label">VAT %</label>
-        <input type="number" formControlName="vatPercentage" id="vatPercentage" class="form-control" />
-        <div *ngIf="assetCategoryForm.get('vatPercentage')?.invalid && assetCategoryForm.get('vatPercentage')?.touched" class="text-danger">
-          VAT Percentage is required and must be a number.
+        <!-- VAT Percentage -->
+        <div class="col-md-6 mb-3">
+          <label for="vatPercentage" class="form-label">VAT %</label>
+          <input type="number" formControlName="vatPercentage" id="vatPercentage" class="form-control" />
+          <div
+            *ngIf="assetCategoryForm.get('vatPercentage')?.invalid && assetCategoryForm.get('vatPercentage')?.touched">
+            VAT Percentage must be a number.
+          </div>
         </div>
       </div>
-    </div>
 
-    <button class="btn btn-primary w-100 mt-3" type="submit">Update Asset Category</button>
+      <button class="btn btn-primary w-100 mt-3" type="submit">Update Asset Category</button>
+    </div>
   </form>
 </div>

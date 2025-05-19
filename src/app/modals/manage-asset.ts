@@ -13,7 +13,7 @@ export interface Asset {
   minIncrement?: number;
   makeOffer?: boolean;
   featured?: boolean;
-  awardingId?: number;
+  awardingId?: number;   
   awardingMethod?: string;
   statusId?: number;
   statusName?: string;
@@ -93,6 +93,7 @@ export interface AssetDetailDto {
 
 export interface DirectSaleAssetDto {
   assetId: number;
+  assetNumber: string;
   title: string;
   categoryId: number;
   deposit: number;

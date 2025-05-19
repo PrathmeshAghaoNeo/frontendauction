@@ -79,7 +79,7 @@ export class AppComponent {
   }
 
   get showHeaderAndFooter(): boolean {
-    return !this.isStartPage;
+    return !this.isCurrentRoute(['/login','/']);
   }
   get showBackButton(): boolean {
     return !this.isCurrentRoute(['/login', '/start-page','/landing-page', '/reguserlandingpage','/']);

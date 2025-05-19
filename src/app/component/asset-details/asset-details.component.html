@@ -1,3 +1,4 @@
+<body>
 <div class="container-fluid px-3 py-3" *ngIf="isLoading">
   <div class="row">
     <div class="col-12 text-center py-5">
@@ -35,9 +36,9 @@
       <div class="image-gallery mb-4">
         <div id="assetCarousel" class="carousel slide" data-bs-ride="false">
           <div class="carousel-inner">
-            <div class="carousel-item" *ngFor="let image of asset?.galleries; let i = index"
+            <div class="carousel-item slider-bg" *ngFor="let image of asset?.galleries; let i = index"
               [ngClass]="{'active': i === currentSlideIndex}">
-              <img [src]="image.fileUrl" class="d-block w-100" [alt]="'Asset image ' + (i+1)">
+              <img [src]="image.fileUrl" class="d-block object-fit-contain w-100" [alt]="'Asset image ' + (i+1)">
             </div>
           </div>
 
@@ -245,3 +246,5 @@
         </div>
       </div>
     </div>
+
+</body>
