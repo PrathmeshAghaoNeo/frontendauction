@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 
 import { ManageAssetService } from '../../services/asset.service';
 import { Asset, Gallery } from '../../modals/manage-asset';
+import { ListService } from '../../services/list.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-direct-sale-assetpage',
@@ -19,6 +21,7 @@ export class DirectSaleComponent implements OnInit {
   isLoading = true;
   price = 0;
   currency = 'BHD';
+   userId: number = 1;
   plateNumber = '';
   
   // Slider and tab functionality variables
@@ -27,7 +30,8 @@ export class DirectSaleComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private assetService: ManageAssetService
+    private assetService: ManageAssetService,
+    private listService: ListService,
   ) {}
 
   ngOnInit(): void {
@@ -168,15 +172,40 @@ export class DirectSaleComponent implements OnInit {
     }
   }
 
-  addToCart(): void {
-    if (!this.assetId) {
-      console.error('Cannot add to cart: Invalid asset ID');
-      return;
+  addToCart(assetId: number): void {
+    console.log("Adding to cart:", assetId);
+    
+      const payload = {
+        userId: this.userId,
+        assetId: assetId,
+        quantity: 1,
+      };
+  
+      console.log(assetId);
+  
+      this.listService.addToCart(payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Added to Cart',
+            text: 'This asset has been added to your cart.',
+            confirmButtonText: 'OK',
+          }).then(() => {
+            this.listService.refreshComponent(); // Trigger component refresh
+          });
+        },
+        error: (err) => {
+          console.log({err});
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text:
+              err.error.message || 'Something went wrong while adding to cart.',
+            confirmButtonText: 'OK',
+          });
+        },
+      });
     }
-    alert(`Added plate ${this.plateNumber} to cart!`);
-    console.log('Adding to cart...', this.assetId);
-    // Implement cart functionality here
-  }
 
   goBack(): void {
     window.history.back();

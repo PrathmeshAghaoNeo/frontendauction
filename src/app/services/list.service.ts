@@ -19,6 +19,10 @@ export class ListService {
 
   constructor(private http: HttpClient,private router:Router) {}
 
+  checkoutCart(payload: { userId: number; assetIds: number[] }) {
+  return this.http.post('/api/cart/checkout', payload); // replace with actual API
+}
+
   // Cart methods
   addToCart(payload: CartRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/Cart/add`, payload);
@@ -50,8 +54,6 @@ export class ListService {
     body: payload
   });
 }
-
-
 
   refreshComponent(): void {
   const currentUrl = this.router.url;

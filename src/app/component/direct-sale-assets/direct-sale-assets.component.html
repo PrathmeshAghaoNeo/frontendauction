@@ -1,10 +1,16 @@
 <div class="top-toolbar">
   <div class="toolbar-left">
-    <button class="icon-main">
+    <!-- <button class="">
       <img src="cars.png" alt="Car Plates" />
-      <!-- <span>Plates</span> -->
-    </button>
+    </button> -->
+    <img
+      [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
+      alt="Toggle View"
+      class="toolbar-icon grid"
+      (click)="toggleLayout()"
+    />
   </div>
+  <!-- <span>Plates</span> -->
 
   <!-- <div class="toolbar-center">
     <img class="search" src="search.png" alt="" />
@@ -13,14 +19,22 @@
 
   <div class="toolbar-right">
     <!-- <img src="sort.png" alt="Filter" class="toolbar-icon sort" /> -->
-    <img
-      [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
-      alt="Toggle View"
-      class="toolbar-icon grid"
-      (click)="toggleLayout()"
-    />
 
-    <img src="pin.png" alt="Location" class="toolbar-icon pin" />
+    <button
+      class="btn btn-outline-success me-2"
+      type="button"
+      (click)="toCart()"
+    >
+      <i class="bi bi-cart"></i> Cart
+    </button>
+
+    <button
+      class="btn btn-outline-primary me-2"
+      type="button"
+      (click)="toWatchlist()"
+    >
+      <i class="bi bi-bookmark-heart"></i> Watchlist
+    </button>
   </div>
 </div>
 
@@ -35,7 +49,8 @@
         "
         alt="Asset Image"
         class="plate-main-image"
-      />  
+        (click)="goToAssetDetail(asset.assetId)"
+      />
 
       <ng-container *ngIf="layoutType === 'row'; else gridView">
         <div class="plate-name">
@@ -46,7 +61,8 @@
           <div class="icons">
             <button
               class="icon-btn"
-              title="Save"
+              [title]="isInWishlist(asset.assetId) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+
               (click)="toggleWishlist(asset.assetId)"
             >
               <img
@@ -61,10 +77,15 @@
 
             <button
               class="icon-btn"
-              title="Add"
+              [title]="isInCart(asset.assetId) ? 'Already in Cart' : 'Add to Cart'"
+               [disabled]="isInCart(asset.assetId)"
               (click)="addToCart(asset.assetId)"
             >
-              <img src="sell.png" alt="Buy Now" class="button-image2" />
+              <img
+                [src]="isInCart(asset.assetId) ? 'cart-added.png' : 'sell.png'"
+                alt="Cart Toggle"
+                class="button-image2"
+              />
             </button>
           </div>
         </div>
@@ -77,7 +98,7 @@
         <div class="icons">
           <button
             class="icon-btn"
-            title="Save"
+             [title]="isInWishlist(asset.assetId) ? 'Remove from Wishlist' : 'Add to Wishlist'"
             (click)="toggleWishlist(asset.assetId)"
           >
             <img
@@ -92,9 +113,14 @@
           <button
             class="icon-btn"
             title="Add"
+             [disabled]="isInCart(asset.assetId)"
             (click)="addToCart(asset.assetId)"
           >
-            <img src="sell.png" alt="Buy Now" class="button-image2" />
+          <img
+                [src]="isInCart(asset.assetId) ? 'cart-added.png' : 'sell.png'"
+                alt="Cart Toggle"
+                class="button-image2"
+              />
           </button>
         </div>
 
@@ -103,3 +129,20 @@
     </div>
   </div>
 </div>
+
+
+<!-- Toast container -->
+<div class="toast-container  p-3" style="z-index: 9999;">
+  <div #liveToast class="toast " role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+    <div class="toast-header bg-info text-white">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">Just now</small>
+      <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      This is a toast message.
+    </div>
+  </div>
+</div>
+
+

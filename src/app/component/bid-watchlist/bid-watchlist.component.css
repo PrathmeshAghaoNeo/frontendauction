@@ -1,4 +1,6 @@
 .cart-grid {
+  width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
@@ -17,6 +19,11 @@
   transition: transform 0.2s;
 }
 
+
+.icon-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 .cart-card:hover {
   transform: translateY(-4px);
 }
@@ -49,6 +56,14 @@
   font-weight: 600;
   margin-bottom: 0.25rem;
   color: #2c3e50;
+}
+
+
+.toast-container{
+  position: fixed;
+  bottom: 45px;
+  right: 20px;
+  z-index: 9999;
 }
 
 .cart-number {
@@ -107,6 +122,8 @@
   padding: 2rem;
   background-color: #f4f6f9;
 }
+
+
 
 .nav-btn {
   padding: 0.6rem 1.2rem;

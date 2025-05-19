@@ -34,6 +34,43 @@
   <div class="cart-summary" *ngIf="cartAssets.length">
     <h3>Subtotal ({{ cartAssets.length }} items):</h3>
     <div class="summary-total">BHD {{ getSubtotal() }}</div>
-    <button class="checkout-btn">Proceed to Checkout →</button>
+    <button class="checkout-btn"  data-bs-dismiss="modal" (click)="openCheckoutModal()">Proceed to Checkout →</button>
+
+  </div>
+</div>
+
+
+<!-- Toast container -->
+<div class="toast-container  p-3" style="z-index: 9999;">
+  <div #liveToast class="toast " role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+    <div class="toast-header bg-info text-white">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">Just now</small>
+      <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      This is a toast message.
+    </div>
+  </div>
+</div>
+
+
+<!-- Confirm Checkout Modal -->
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmCheckoutModal" tabindex="-1" aria-labelledby="confirmCheckoutLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmCheckoutLabel">Confirm Checkout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to proceed to checkout?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary"  data-bs-dismiss="modal" (click)="confirmCheckout()">Yes</button>
+      </div>
+    </div>
   </div>
 </div>

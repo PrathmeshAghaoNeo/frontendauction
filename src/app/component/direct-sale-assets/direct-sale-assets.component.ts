@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit , ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
@@ -6,6 +6,9 @@ import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
+
+declare var bootstrap: any; 
+
 @Component({
   selector: 'app-direct-sale-assets',
   standalone: true,
@@ -13,14 +16,21 @@ import { DirectSaleAssetDto } from '../../modals/add-asset';
   templateUrl: './direct-sale-assets.component.html',
   styleUrl: './direct-sale-assets.component.css',
 })
-export class DirectSaleAssetsComponent implements OnInit {
-  assets: DirectSaleAssetDto[] = [];
+
+
+export class DirectSaleAssetsComponent implements OnInit , AfterViewInit {
+  
+  @ViewChild('liveToast') liveToast!: ElementRef;
+   toastInstance: any;
+  
+   assets: DirectSaleAssetDto[] = [];
   originalAssets: DirectSaleAssetDto[] = [];
   layoutType: 'grid' | 'row' = 'grid';
   userId: number = 1;
   environment = environment;
   wishlistAssetIds: number[] = [];  
 
+  cartAssetIds: number[] = [];
 
 
 
@@ -28,8 +38,38 @@ export class DirectSaleAssetsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
-    private listService: ListService
+    private listService: ListService,
+    private router: Router,
   ) {}
+  
+  ngAfterViewInit() {
+    this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
+  }
+
+  showToast(message: string, header = 'Notification', type: 'success' | 'error' | 'info' = 'info') {
+   
+    const toastEl = this.liveToast.nativeElement;
+    
+  
+    toastEl.querySelector('.toast-header ').textContent = header;
+
+    // Change toast body message
+    toastEl.querySelector('.toast-body').textContent = message;
+
+    // Change header bg color depending on type
+    const headerEl = toastEl.querySelector('.toast-header');
+    
+    headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-white');
+    if (type === 'success') {
+      headerEl.classList.add('bg-success', 'text-white');
+    } else if (type === 'error') {
+      headerEl.classList.add('bg-danger', 'text-white');
+    } else {
+      headerEl.classList.add('bg-danger', 'text-white');
+    }
+
+    this.toastInstance.show();
+  }
 
   ngOnInit(): void {
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
@@ -40,6 +80,8 @@ export class DirectSaleAssetsComponent implements OnInit {
           this.originalAssets = [...data];
           console.log('Assets:', this.assets);
           this.loadWishlist();
+          this.loadCartItems();
+
         },
 
         error: (err) => {
@@ -67,45 +109,61 @@ export class DirectSaleAssetsComponent implements OnInit {
   });
 }
 
+loadCartItems(): void {
+  this.listService.getCart(this.userId).subscribe({
+    next: (data) => {
+      this.cartAssetIds = data.map((item: any) => item.assetId); 
+      console.log('Cart Asset IDs:', this.cartAssetIds);
+    },
+    error: (err) => {
+      console.error('Error loading cart items:', err);
+    },
+  });
+}
+
+
 
 isInWishlist(assetId: number): boolean {
   return this.wishlistAssetIds.includes(assetId);
-}
+} 
   
-
+isInCart(assetId: number): boolean {
+  return this.cartAssetIds.includes(assetId);
+} 
 
 toggleWishlist(assetId: number): void {
-
-  
-  if (this.isInWishlist(assetId)) {
-    
-    const payload = { userId: this.userId, assetId: assetId };
-    this.listService.removeFromWishlist(payload).subscribe({
-      next: () => {
-        console.log('Toggle Wishlist: in this togglelist', assetId);
-        this.wishlistAssetIds = this.wishlistAssetIds.filter(id => id !== assetId);
-        Swal.fire('Removed', 'Removed from wishlist', 'success');
-      },
-      error: (err) => {
-        Swal.fire('Error', err.error.message || 'Error removing from wishlist', 'error');
-      },
-    });
-  } else {
-    const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
-    this.listService.addToWishlist(payload).subscribe({
-      next: () => {
-        this.wishlistAssetIds.push(assetId);
-        Swal.fire('Added', 'Added to wishlist', 'success');
-      },
-      error: (err) => {
-        Swal.fire('Error', err.error.message || 'Error adding to wishlist', 'error');
-      },
-    });
+    if (this.isInWishlist(assetId)) {
+      const payload = { userId: this.userId, assetId: assetId };
+      this.listService.removeFromWishlist(payload).subscribe({
+        next: () => {
+          this.wishlistAssetIds = this.wishlistAssetIds.filter(id => id !== assetId);
+          this.showToast(`Removed from wishlist.`, 'Removed!', 'info');
+        },
+        error: (err) => {
+          this.showToast(err.error.message || 'Error removing from wishlist.', 'Error!', 'error');
+        },
+      });
+    } else {
+      const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
+      this.listService.addToWishlist(payload).subscribe({
+        next: () => {
+          this.wishlistAssetIds.push(assetId);
+          this.showToast('Added to wishlist.', 'Added!', 'success');
+        },
+        error: (err) => {
+          this.showToast(err.error.message || 'Error adding to wishlist.', 'Error!', 'error');
+        },
+      });
+    }
   }
+
+toCart(){
+  this.router.navigate(['/bid-add-to-cart']);
 }
 
-
-
+toWatchlist(){
+  this.router.navigate(['/bid-watchlist']);
+}
 
   toggleLayout() {
     this.layoutType = this.layoutType === 'grid' ? 'row' : 'grid';
@@ -124,36 +182,29 @@ toggleWishlist(assetId: number): void {
   }
 
 
+
+  goToAssetDetail(assetId: number) {
+  this.router.navigate(['/direct-sale-assetpage/', assetId]);
+}
+
   addToCart(assetId: number): void {
     const payload = {
       userId: this.userId,
       assetId: assetId,
       quantity: 1,
     };
-
-    console.log(assetId);
-
+  
     this.listService.addToCart(payload).subscribe({
       next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Added to Cart',
-          text: 'This asset has been added to your cart.',
-          confirmButtonText: 'OK',
-        }).then(() => {
-          this.listService.refreshComponent(); // Trigger component refresh
-        });
+        this.showToast('This asset has been added to your cart.', 'Success!', 'success');
+        // this.listService.refreshComponent();
+        this.cartAssetIds.push(assetId);
       },
       error: (err) => {
-        console.log({err});
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text:
-            err.error.message || 'Something went wrong while adding to cart.',
-          confirmButtonText: 'OK',
-        });
+        this.showToast(err.error.message || 'Something went wrong while adding to cart.', 'Error!', 'error');
       },
     });
   }
 }
+
+
