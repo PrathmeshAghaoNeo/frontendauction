@@ -62,7 +62,7 @@
         <div class="card-body">
           <h5 class="card-title text-purple mb-4">Auction Status Overview</h5>
           <div *ngIf="chartData.length > 0; else noChartData">
-            <ngx-charts-pie-chart [view]="[590,430]" [scheme]="colorScheme" [results]="chartData" [legend]="true"
+            <ngx-charts-pie-chart [view]="[590,430]" [scheme]="colorScheme" [results]="chartData" [legend]="false"
               [labels]="true"   [doughnut]="false"
               [gradient]="true" [explodeSlices]="false" [animations]="true">>
             </ngx-charts-pie-chart>

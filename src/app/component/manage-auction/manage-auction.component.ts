@@ -42,8 +42,8 @@ export class ManageAuctionComponent implements OnInit {
   statuses = [
     { statusId: 1, statusName: 'Pending' },
     { statusId: 2, statusName: 'Active' },
-    { statusId: 3, statusName: 'Closed' },
-    { statusId: 4, statusName: 'Completed' }
+    { statusId: 3, statusName: 'Completed' },
+    { statusId: 4, statusName: 'Cancelled' }
   ];
 
   @ViewChild('viewAuctionModal') viewAuctionModal!: TemplateRef<any>;

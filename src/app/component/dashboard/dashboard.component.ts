@@ -29,15 +29,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 chartData = [
   { name: 'Active', value: 120 },
   { name: 'Pending', value: 80 },
-  { name: 'Closed', value: 60 },
-  { name: 'Completed', value: 40 }
+  { name: 'Completed', value: 60 },
+  { name: 'Cancelled', value: 40 }
 ];
 
   statuses = [
     { statusId: 1, statusName: 'Pending' },
     { statusId: 2, statusName: 'Active' },
-    { statusId: 3, statusName: 'Closed' },
-    { statusId: 4, statusName: 'Completed' }
+    { statusId: 3, statusName: 'Completed' },
+    { statusId: 4, statusName: 'Cancelled' }
   ];
 
   colorScheme = {
@@ -130,8 +130,8 @@ generateChartData(): void {
     switch (statusId) {
       case 1: return 'Pending';
       case 2: return 'Active';
-      case 3: return 'Closed';
-      case 4: return 'Completed';
+      case 3: return 'Completed';
+      case 4: return 'Cancelled';
       default: return 'Unknown';
     }
   }
