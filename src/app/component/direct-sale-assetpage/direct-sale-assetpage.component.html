@@ -1,4 +1,5 @@
-<div class="container-fluid px-3 py-3" *ngIf="isLoading">
+<body>
+  <div class="container-fluid px-3 py-3" *ngIf="isLoading">
   <div class="row">
     <div class="col-12 text-center py-5">
       <div class="spinner-border text-primary" role="status">
@@ -30,11 +31,11 @@
   <div class="row mb-3">
     <div class="col-12">
       <div class="image-gallery mb-4">
-        <div id="assetCarousel" class="carousel slide" data-bs-ride="false">
+        <div id="assetCarousel" class="carousel slide" data-bs-ride="true">
           <div class="carousel-inner">
-            <div class="carousel-item" *ngFor="let image of asset?.galleries; let i = index"
+            <div class="carousel-item slider-bg " *ngFor="let image of asset?.galleries; let i = index"
               [ngClass]="{'active': i === currentSlideIndex}">
-              <img [src]="image.fileUrl" class="d-block w-100" [alt]="'Asset image ' + (i+1)">
+              <img loading="lazy" [src]="image.fileUrl" class="d-block object-fit-contain w-100" [alt]="'Asset image ' + (i+1)">
             </div>
             <!-- Fallback if no images -->
             <div class="carousel-item active" *ngIf="!hasImages()">
@@ -202,3 +203,4 @@
     </div>
   </div>
 </div>
+</body>
