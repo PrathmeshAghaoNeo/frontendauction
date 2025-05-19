@@ -10,6 +10,8 @@ import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
 import { AuctionService } from '../../services/auction.service';
 import { environment } from '../../constants/enviroments';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
+import { AssetCategory } from '../../modals/assetcategories';
 
 @Component({
   selector: 'app-edit-asset',
@@ -128,11 +130,7 @@ export class EditAssetComponent implements OnInit {
     { id: 3, name: 'None' }
   ];
   
-  categories = [
-    { id: 1, name: 'Auction' },
-    { id: 2, name: 'Fixed Price' },
-    { id: 3, name: 'Instant Buy' },
-  ];
+ categories: AssetCategory[] = [];
 
 requestForViewingOptions = [
   { id: 1, name: 'Yes' },
@@ -145,9 +143,7 @@ requestForInquiryOptions = [
 ];
 
 
-// // Method to display 'Yes' for true and 'No' for false
 getRequestLabel(value: Number | undefined) {
-  // Default to false if value is undefined
   if(value== 0){
     this.asset.requestForViewing = false;
   }else{
@@ -160,7 +156,8 @@ getRequestLabel(value: Number | undefined) {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-     private auctionService: AuctionService
+    private auctionService: AuctionService,
+    private assetCategoriesService: AssetCategoriesService,
   ) {
   }
   
@@ -180,14 +177,20 @@ getRequestLabel(value: Number | undefined) {
     this.getAssetIdFromRoute();
     
     console.log('Asset on page load:', this.asset);
-
+    this.assetCategoriesService.getAll().subscribe({
+    next: (data) => {
+      this.categories = data;
+    },
+    error: (err) => {
+      console.error('Failed to load categories', err);
+    }
+  });
   }
 
   private getAssetIdFromRoute(): void {
     this.route.paramMap.subscribe({
       next: (params) => {
         const assetIdParam = params.get('assetId');
-        // this.attributeList = [...(this.asset.attributes || [])];
 
         if (assetIdParam) {
           this.assetIdparam = +assetIdParam;

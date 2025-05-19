@@ -24,4 +24,6 @@ export class AuctionService {
   getAuctionById(id:number): Observable<Auction> {
     return this.http.get<Auction>(`${ApiEndpoints.AUCTION}/${id}`)
   }
+  
+
 }

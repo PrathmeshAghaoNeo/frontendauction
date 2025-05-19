@@ -14,6 +14,8 @@ import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 import { formatToDateTimeLocalFormat, normalizeDateTime, futureDateValidator, endDateAfterStartDateValidator } from '../../utils/date-time.utils';  // Adjust the path if necessary
 import { Location } from '@angular/common';
+import { AssetCategory } from '../../modals/assetcategories';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
 
 @Component({
   selector: 'app-add-auction',
@@ -33,23 +35,13 @@ export class AddAuctionComponent implements OnInit {
     { statusId: 4, statusName: 'Cancelled' }
   ];
 
-  categories = [
-    { id: 1, name: 'Electronics' },
-    { id: 2, name: 'Vehicles' },
-    { id: 3, name: 'Furniture' },
-    { id: 4, name: 'Collectibles' },
-    { id: 5, name: 'Real Estate' },
-    { id: 6, name: 'Fashion' },
-    { id: 7, name: 'Industrial Equipment' },
-    { id: 8, name: 'Books & Media' },
-    { id: 9, name: 'Sports & Outdoors' },
-    { id: 10, name: 'Toys & Games' }
-  ];
+    categories: AssetCategory[] = [];
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
+    private assetCategoriesService: AssetCategoriesService,
     private location: Location  ) {
     this.currentDateTime = formatToDateTimeLocalFormat(new Date()); 
 
@@ -75,6 +67,15 @@ export class AddAuctionComponent implements OnInit {
     startDateTime: formattedNow,
     endDateTime: formattedNow
 });
+this.assetCategoriesService.getAll().subscribe({
+    next: (data) => {
+      this.categories = data;
+    },
+    error: (err) => {
+      console.error('Failed to load categories', err);
+    }
+  });
+
     console.log('Init datetime:', this.auctionForm.getRawValue());
 
   }
