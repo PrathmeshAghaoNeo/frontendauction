@@ -1,7 +1,6 @@
 /* ==================== VARIABLES ==================== */
 
 :root {
-    /* Colors */
     --primary-color: #6a1b9a;
     --primary-dark: #5a148a;
     --secondary-color: #f4e8fc;
@@ -10,10 +9,8 @@
     --danger-color: #dc3545;
     --light-bg: #f4f3fa;
     
-    /* Font */
     --font-family: 'Poppins', 'Segoe UI', sans-serif;
   
-    /* Spacing */
     --form-padding: 30px;
     --card-radius: 12px;
     --input-radius: 8px;
@@ -56,7 +53,6 @@
     border-color: var(--primary-dark);
   }
   
-  /* Outline Buttons */
   .btn-outline-primary {
     color: var(--primary-color);
     border-color: var(--primary-color);
@@ -101,7 +97,6 @@
     border-color: var(--primary-dark);
   }
   
-  /* Action Buttons */
   .action-buttons .btn {
     margin-right: 0.25rem;
   }
@@ -153,8 +148,8 @@
     align-items: flex-start;
     padding: 20px;
     background-color: var(--light-bg);
-    min-height: auto; /* Adjust to content height */
-    height: auto; /* Remove fixed height */
+    min-height: auto; 
+    height: auto; 
     box-sizing: border-box;
   }
   
@@ -200,8 +195,12 @@
     border-color: var(--primary-color);
   }
   .default-placeholder {
-    color: #6c757d; /* Light text color */
+    color: #6c757d; 
   }
+
+
+
+  
   
   /* ==================== END GLOBAL ==================== */
   

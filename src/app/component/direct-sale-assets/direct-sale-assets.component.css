@@ -4,7 +4,7 @@
   align-items: center;
   padding: 16px 30px 0; 
   background-color: white;
-  border-bottom: 1px solid #e0e0e0;
+  /* border-bottom: 1px solid #e0e0e0; */
   margin-bottom: 20px;
 }
 
@@ -39,8 +39,9 @@
 }
 
 .toolbar-left img {
-  width: 24px;
-  height: 24px;
+  width: 43px;
+    height: 34px;
+    margin-top: 10px;
   object-fit: contain;
   margin-right: 6px;
 }
@@ -56,8 +57,8 @@
 }
 
 .toolbar-icon {
-  width: 25px;
-  height: 25px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
   cursor: pointer;
   opacity: 0.6;
@@ -152,6 +153,7 @@
   font-size: 1rem;
   font-weight: 600;
   padding: 0px 2px;
+  color: #9b59b6;
   color: #27ae60;
 >>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 }
@@ -207,7 +209,8 @@
 /*  */
 
 .plate-card {
-  background-color: #eadef2;
+  
+  background-color: #f7f2fb;
   border-radius: var(--card-radius);
   box-shadow: var(--shadow-light);
   padding: 9px;
@@ -218,16 +221,16 @@
 }
 
 .plate-card:hover {
+  background-color: #eadef2;
   transform: translateY(-4px);
   box-shadow: 0 4px 16px rgba(106, 27, 154, 0.15);
 }
+
 
 .plate-display {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  /* margin-bottom: 12px; */
   flex-wrap: wrap;
 }
 
@@ -243,10 +246,32 @@
   object-fit: cover;
   border-radius: var(--card-radius);
   margin-bottom: px;
+  cursor: pointer;
+}
+
+.plate-name{
+  width: 100%;
+  font-family: "Oswald", sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.icon-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 
 
+
+.toast-container{
+  position: fixed;
+  bottom: 45px;
+  right: 20px;
+  z-index: 9999;
+}
 .flag-icon {
   width: 32px;
   height: 20px;
@@ -315,7 +340,6 @@
 =======
 
 .button-image1.active-wishlist {
-  background-color: #ffcccc;
   border-radius: 4px;
 }
 
@@ -338,10 +362,7 @@
   color: var(--primary-dark);
   text-align: left;
   padding: 0px 4px;
-<<<<<<< HEAD
-=======
-  color: #27ae60;
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
+  color: #9b59b6;
 }
 
 

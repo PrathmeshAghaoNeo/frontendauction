@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
 import { AuctionService } from '../../services/auction.service';
 import { AssetCategory } from '../../modals/assetcategories';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
 
 @Component({
   selector: 'app-add-asset',
@@ -35,11 +36,7 @@ export class AddAssetComponent {
   imagePreviews: string[] = [];
 
 
-  categories = [
-    { id: 1, name: 'Auction' },
-    { id: 2, name: 'Fixed Price' },
-    { id: 3, name: 'Instant Buy' },
-  ];
+  categories: AssetCategory[] = [];
 
   // Optional mapping for cleaner field names
   fieldLabels: { [key: string]: string } = {
@@ -144,13 +141,14 @@ export class AddAssetComponent {
     private router: Router,
     private assetService: ManageAssetService,
     private location: Location,
+    private assetCategoriesService: AssetCategoriesService,
     private auctionService: AuctionService
   ) {
     this.assetForm = this.fb.group({
-      assetNumber: [
-        '',
-        [Validators.required, Validators.pattern(/^[0-9]{7}$/)],
-      ],
+      // assetNumber: [
+      //   '',
+      //   [Validators.required, Validators.pattern(/^[0-9]{7}$/)],
+      // ],
       title: ['', [Validators.required, Validators.maxLength(255)]],
       categoryId: [0, [Validators.required, Validators.maxLength(10)]],
       deposit: [
@@ -219,6 +217,16 @@ export class AddAssetComponent {
     // Log asset object on page load
     this.fetchAuctions();
     console.log('Asset on page load:', this.asset);
+    this.assetCategoriesService.getAll().subscribe({
+  next: (data) => {
+    this.categories = data;
+    console.log('Categories:', this.categories);
+  },
+  error: (err) => {
+    console.error('Error fetching categories', err);
+    Swal.fire('Error!', 'Failed to load categories.', 'error');
+  },
+});
 
     
     // Listen to value changes of the form
@@ -414,7 +422,7 @@ export class AddAssetComponent {
     const formData = new FormData();
 
     // Append asset properties
-    formData.append('AssetNumber', this.asset.assetNumber);
+    // formData.append('AssetNumber', this.asset.assetNumber);
     formData.append('Title', this.asset.title);
     formData.append('CategoryId', this.asset.categoryId.toString());
     formData.append('Deposit', this.asset.deposit.toString());
@@ -719,16 +727,7 @@ export class AddAssetComponent {
         this.auctionError = '';
       }
 
-      // if (this.asset.detailsJson.some(detail =>
-      //     !detail.attributeName || detail.attributeName.trim() === '' ||
-      //     !detail.attributeValue || detail.attributeValue.trim() === ''
-      //   )
-      // ) {
-      //   this.attributeError = 'All attribute names and values must be filled.';
-      // }else{
-      //   this.attributeError = '';
-      // }
-
+  
       if (this.asset.detailsJson.length === 0 || this.asset.detailsJson == null) {
         this.attributeError = 'At least one detail is required.';
       } else if (this.asset.detailsJson.some(detail => 
@@ -837,11 +836,22 @@ export class AddAssetComponent {
     }
     event.target.value = '';
   }
-
+  
   removeGalleryItem(index: number): void {
     this.asset.galleryFiles.splice(index, 1);
     this.imagePreviews.splice(index, 1); // Remove the corresponding preview
   }
+  fetchCategories(): void {
+  this.assetCategoriesService.getAll().subscribe({
+    next: (data) => {
+      this.categories = data;
+    },
+    error: (err) => {
+      console.error('Error fetching categories', err);
+      Swal.fire('Error!', 'Failed to load categories.', 'error');
+    }
+  });
+}
 
   onImageDrop(event: DragEvent): void {
     event.preventDefault();
