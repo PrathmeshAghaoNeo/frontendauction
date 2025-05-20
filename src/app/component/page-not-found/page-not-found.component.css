@@ -1,0 +1,165 @@
+/* page-not-found.component.css */
+
+.error-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f0f9;
+}
+
+.error-content {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(176, 108, 176, 0.2);
+  border: 1px solid rgba(176, 108, 176, 0.1);
+  padding: 3rem;
+  max-width: 1000px;
+  height: 500px;
+  width: 100%;
+}
+
+/* flex row inside the same card */
+.error-inner-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+/* <-- NEW: constrain left block to ~60% width so it shifts toward center --> */
+.error-text {
+  flex: 0 0 60%;
+}
+
+/* Text styles (unchanged) */
+.error-number {
+  font-size: 5rem;
+  font-weight: 700;
+  color: #ea3636;
+  margin-bottom: 0.5rem;
+}
+
+.error-title {
+  font-size: 3rem;
+  color: #9248b9;
+  margin-bottom: 1.5rem;
+}
+
+.error-message {
+  color: #6c757d;
+  margin-bottom: 2.5rem;
+  font-size: 1.25rem;
+}
+
+/* Quick links (unchanged) */
+.quick-links {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed #d5a6d5;
+}
+
+.quick-links h5 {
+  color: #7a4069;
+  margin-bottom: 1rem;
+}
+
+.links-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.quick-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #f9f0f9;
+  border-radius: 30px;
+  color: #904990;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.quick-link:hover {
+  background-color: #b06cb0;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(144, 73, 144, 0.2);
+}
+
+/* Buttons (unchanged) */
+.btn-primary {
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  background-color: #8e44b6;
+  border-color: #bf71e9;
+}
+
+.btn-primary:hover {
+  background-color: #ba66e7;
+  border-color: #bf71e9;
+}
+
+.btn-outline-primary {
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  color: #9248b9;
+  border-color: #bf71e9;
+}
+
+.btn-outline-primary:hover {
+  background-color: #bf67ee;
+  color: #fcf8fc;
+  border-color: #af59dd;
+}
+
+/* Animation container on right (inside card) */
+.auction-animation {
+  flex-shrink: 0;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+
+/* Rotating item */
+.auction-item {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  animation: rotateImage 4s linear infinite;
+}
+
+@keyframes rotateImage {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 768px) {
+  .error-inner-wrapper {
+    flex-direction: column-reverse;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .error-content {
+    padding: 2rem;
+  }
+  
+  .auction-animation {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .error-number { font-size: 3rem; }
+  .error-title { font-size: 1.8rem; }
+  .error-message { font-size: 1rem; }
+  .auction-item {
+    width: 120px;
+    height: 120px;
+  }
+}

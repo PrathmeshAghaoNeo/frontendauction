@@ -55,9 +55,19 @@ export interface AssetGalleryDto {
   updatedAt: string;       
   galleries: Gallery[] ;
   documents: Document[];
-
+  
+//added now
+ attributes: AssetAttribute[];
  
 }
+
+
+// Add this interface for the attributes
+export interface AssetAttribute {
+  attributeName: string;
+  attributeValue: string;
+}
+
 
 export interface Gallery {
 [x: string]: any;
