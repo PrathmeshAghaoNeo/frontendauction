@@ -54,6 +54,7 @@ import { DirectBidComponent } from './component/direct-bid/direct-bid.component'
 import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
 import { BidWatchlistComponent } from './component/bid-watchlist/bid-watchlist.component';
 import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-cart.component';
+import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -95,7 +96,7 @@ export const routes: Routes = [
     {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'User' }},
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
-    {path:'asset-details',component:AssetDetailComponent},
+    {path:'asset-details/:assetId',component:AssetDetailComponent},
     {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
  
 
@@ -109,6 +110,7 @@ export const routes: Routes = [
     { path: 'direct-bid', component: DirectBidComponent},
     { path: 'bid-watchlist', component: BidWatchlistComponent},
     { path: 'bid-add-to-cart', component: BidAddToCartComponent},
+    {path: 'orders', component:GetOrdersComponentComponent}
 
     
     

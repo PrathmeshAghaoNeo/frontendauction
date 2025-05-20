@@ -19,9 +19,13 @@ declare var bootstrap: any;
 
 
 export class DirectSaleAssetsComponent implements OnInit , AfterViewInit {
-  
-  @ViewChild('liveToast') liveToast!: ElementRef;
+
+    @ViewChild('liveToast') liveToast!: ElementRef;
    toastInstance: any;
+  
+  toOrders() {
+  this.router.navigate(['/orders']);
+  }
   
    assets: DirectSaleAssetDto[] = [];
   originalAssets: DirectSaleAssetDto[] = [];
