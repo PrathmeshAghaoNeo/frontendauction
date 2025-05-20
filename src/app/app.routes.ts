@@ -56,6 +56,7 @@ import { BidWatchlistComponent } from './component/bid-watchlist/bid-watchlist.c
 import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-cart.component';
 import { PageNotFoundComponent } from './component/page-not-found/page-not-found.component';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
+import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -97,8 +98,9 @@ export const routes: Routes = [
     {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'User' }},
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
-    {path:'asset-details',component:AssetDetailComponent},
-    {path:'direct-sale-assetpage/:id',component:DirectSaleComponent},
+    {path:'asset-details/:assetId',component:AssetDetailComponent},
+    {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
+ 
 
     {path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
     
@@ -113,6 +115,7 @@ export const routes: Routes = [
 
     {path:'page-not-found',component:PageNotFoundComponent},
     {path:'chat-bot', component:ChatBotComponent},
+    {path: 'orders', component:GetOrdersComponentComponent}
 
     
     

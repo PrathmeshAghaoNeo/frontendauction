@@ -15,6 +15,13 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
+.toast-container{
+  position: fixed;
+  bottom: 45px;
+  right: 20px;
+  z-index: 9999;
+}
+
 .cart-title {
   font-size: 1.8rem;
   font-weight: 600;

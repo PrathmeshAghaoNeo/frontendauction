@@ -3,7 +3,7 @@
     <div class="cart-image-wrap">
       <img
         *ngIf="asset.thumbnailUrl?.length"
-        [src]=" asset.thumbnailUrl"
+        [src]="asset.thumbnailUrl"
         alt="Asset Image"
         class="cart-image"
       />
@@ -12,17 +12,31 @@
     <div class="cart-content">
       <div class="cart-title">{{ asset.title }}</div>
       <div class="cart-number">Asset #{{ asset.assetNumber }}</div>
-      <div class="cart-info">BAHRAIN</div>
+      <!-- <div class="cart-info">BAHRAIN</div> -->
 
       <div class="cart-bottom-row">
         <div class="price">BHD {{ asset.price }}</div>
 
         <div class="cart-actions">
-          <button class="icon-btn" title="Remove from wishlist" (click)="removeFromWatchlist(asset)">
-            <img src="trash.png" class="button-image1"  />
+          <button
+            class="icon-btn"
+            title="Remove from wishlist"
+            (click)="removeFromWatchlist(asset)"
+          >
+            <img src="trash.png" class="button-image1" />
           </button>
-          <button class="icon-btn" title="Checkout" (click)="addToCart(asset.assetId)">
-            <img src="addtocart.png" class="button-image2" />
+          <button
+            class="icon-btn"
+            [title]="isInCart(asset.assetId) ? 'Already in Cart' : 'Add to Cart'"  
+            (click)="addToCart(asset.assetId)"
+            [disabled]="isInCart(asset.assetId)"
+          >
+            <img
+              [src]="isInCart(asset.assetId) ? 'cart-added.png' : 'sell.png'"
+              alt="Cart Toggle"
+              class="button-image2"
+            />
+            <!-- <img src="addtocart.png" class="button-image2" /> -->
           </button>
         </div>
       </div>
@@ -30,11 +44,23 @@
   </div>
 </div>
 
-
 <div class="cart-navigation-buttons">
-  <button class="nav-btn back-btn" (click)="goBack()">
-    Back
-  </button>
-  <button class="nav-btn cart-btn" (click)="goToCart()">
-    Go to Cart
-  </button>
+  <button class="nav-btn back-btn" (click)="goBack()">Back</button>
+  <button class="nav-btn cart-btn" (click)="goToCart()">Go to Cart</button>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container p-3" style="z-index: 9999;">
+  <div #liveToast class="toast " role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+    <div class="toast-header bg-info text-white">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">Just now</small>
+      <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      This is a toast message.
+    </div>
+  </div>
+</div>
+
+

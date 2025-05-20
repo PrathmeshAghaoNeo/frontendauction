@@ -115,6 +115,11 @@
   object-fit: cover;
   border-radius: var(--card-radius);
   margin-bottom: 0;
+  
+}
+
+.plate-main-image{
+  cursor: pointer;
 }
 /* ------------------------------------ */
 .plates-container.row-view .plate-display {
@@ -279,6 +284,13 @@
 
 .icon-btn:hover {
   background-color: rgba(0, 0, 0, 0.05);  
+}
+
+.toast-container{
+  position: fixed;
+  bottom: 45px;
+  right: 20px;
+  z-index: 9999;
 }
 
 .button-image1 {

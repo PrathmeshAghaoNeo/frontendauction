@@ -191,9 +191,9 @@
           </div>
 
           <!-- Add to Cart Button -->
-          <div class="row">
+          <div class="row" *ngIf="asset">
             <div class="col-12">
-              <button class="add-to-cart-button" (click)="addToCart()">
+              <button class="add-to-cart-button" (click)="addToCart(asset.assetId)">
                 <i class="bi bi-cart-plus me-2"></i> Add to Cart
               </button>
             </div>

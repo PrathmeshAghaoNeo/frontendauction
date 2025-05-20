@@ -61,6 +61,7 @@ export class AppComponent {
     '/bid-watchlist',
     '/bid-add-to-cart',
     '/asset-details',
+    '/orders',
   ];
 
   const dynamicPatterns = [
