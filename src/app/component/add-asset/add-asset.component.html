@@ -83,9 +83,9 @@
           <div class="mb-2">
             <label class="form-label required-label">Category</label>
             <select class="form-select" [(ngModel)]="asset.categoryId" name="category" required #category="ngModel">
-             <option *ngFor="let cat of categories" [value]="cat.categoryId">
-            {{ cat.categoryName }}
-          </option>
+              <option *ngFor="let cat of categories" [value]="cat.categoryId">
+                {{ cat.categoryName }}
+              </option>
 
             </select>
 
@@ -442,7 +442,7 @@
           <div class="mb-2">
             <label class="form-label required-label">Gallery</label>
             <div class="d-flex flex-wrap gap-2 align-items-start">
-             
+
 
               <ng-container *ngFor="let img of imagePreviews; let i = index">
                 <div class="border p-2 position-relative">
@@ -652,21 +652,30 @@
           </div> -->
 
         <div class="card p-3 shadow-sm mb-4">
-          <h5>Auctions</h5>
-          <select name="auctionIds" id="auctionSelect" class="form-select" multiple [(ngModel)]="asset.auctionIds"
-            (ngModelChange)="onAuctionSelectionChange($event)">
-            <option *ngFor="let auction of auctions" [value]="auction.auctionId">
-              {{ auction.title }} #{{ auction.auctionNumber }} -
-              {{ auction.startDateTime | date : "dd/MM/yyyy" }}
-            </option>
-          </select>
+          <h5 class="text-purple">Auctions</h5>
+
+          <div class="dropdown">
+            <button class="form-select text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ getSelectedAuctionText() || 'Select Auctions' }}
+            </button>
+            <ul class="dropdown-menu w-100" style="max-height: 300px; overflow-y: auto;">
+              <li *ngFor="let auction of auctions">
+                <div class="form-check px-3">
+                  <input class="form-check-input" type="checkbox" [value]="auction.auctionId"
+                    [checked]="asset.auctionIds.includes(auction.auctionId)"
+                    (change)="toggleAuctionSelection(auction.auctionId)">
+                  <label class="form-check-label">
+                    {{ auction.title }} #{{ auction.auctionNumber }} - {{ auction.startDateTime | date : 'dd/MM/yyyy' }}
+                  </label>
+                </div>
+              </li>
+            </ul>
+          </div>
 
           <div *ngIf="auctionError" class="text-danger mt-1">
             {{ auctionError }}
           </div>
         </div>
-
-       
 
         <div class="card p-3 shadow-sm mb-4">
           <h5>
