@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
 import { AuctionService } from '../../services/auction.service';
 import { AssetCategory } from '../../modals/assetcategories';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
 
 @Component({
   selector: 'app-add-asset',
@@ -35,11 +36,7 @@ export class AddAssetComponent {
   imagePreviews: string[] = [];
 
 
-  categories = [
-    { id: 1, name: 'Auction' },
-    { id: 2, name: 'Fixed Price' },
-    { id: 3, name: 'Instant Buy' },
-  ];
+  categories: AssetCategory[] = [];
 
   // Optional mapping for cleaner field names
   fieldLabels: { [key: string]: string } = {
@@ -144,6 +141,7 @@ export class AddAssetComponent {
     private router: Router,
     private assetService: ManageAssetService,
     private location: Location,
+    private assetCategoriesService: AssetCategoriesService,
     private auctionService: AuctionService
   ) {
     this.assetForm = this.fb.group({
@@ -219,6 +217,16 @@ export class AddAssetComponent {
     // Log asset object on page load
     this.fetchAuctions();
     console.log('Asset on page load:', this.asset);
+    this.assetCategoriesService.getAll().subscribe({
+  next: (data) => {
+    this.categories = data;
+    console.log('Categories:', this.categories);
+  },
+  error: (err) => {
+    console.error('Error fetching categories', err);
+    Swal.fire('Error!', 'Failed to load categories.', 'error');
+  },
+});
 
     
     // Listen to value changes of the form
@@ -828,11 +836,22 @@ export class AddAssetComponent {
     }
     event.target.value = '';
   }
-
+  
   removeGalleryItem(index: number): void {
     this.asset.galleryFiles.splice(index, 1);
     this.imagePreviews.splice(index, 1); // Remove the corresponding preview
   }
+  fetchCategories(): void {
+  this.assetCategoriesService.getAll().subscribe({
+    next: (data) => {
+      this.categories = data;
+    },
+    error: (err) => {
+      console.error('Error fetching categories', err);
+      Swal.fire('Error!', 'Failed to load categories.', 'error');
+    }
+  });
+}
 
   onImageDrop(event: DragEvent): void {
     event.preventDefault();

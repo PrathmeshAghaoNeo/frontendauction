@@ -73,12 +73,10 @@
               "
             >
               <option value="" disabled selected>Select a category</option>
-              <option
-                *ngFor="let category of categories"
-                [ngValue]="category.id"
-              >
-                {{ category.name }}
-              </option>
+              <option *ngFor="let cat of categories" [value]="cat.categoryId">
+            {{ cat.categoryName }}
+          </option>
+
             </select>
 
             <div
