@@ -95,14 +95,14 @@
           }" class="ms-1"></i>
         </th>
         
-        <th (click)="sortAuctions('incrementalTime')" style="cursor:pointer">
+        <!-- <th (click)="sortAuctions('incrementalTime')" style="cursor:pointer">
           Incremental Time 
           <i class="bi" [ngClass]="{
             'bi-caret-up-fill': sortColumn === 'incrementalTime' && sortDirection === 'asc',
             'bi-caret-down-fill': sortColumn === 'incrementalTime' && sortDirection === 'desc',
             'bi-arrow-down-up': sortColumn !== 'incrementalTime'
           }" class="ms-1"></i>
-        </th>
+        </th> -->
         <th (click)="sortAuctions('categoryName')" style="cursor:pointer">
           Category
           <i class="bi" [ngClass]="{
@@ -141,7 +141,7 @@
 
         </td>
           
-        <td>{{ auction.incrementalTime }} mins</td>
+        <!-- <td>{{ auction.incrementalTime }} mins</td> -->
         <td>{{ auction.categoryName }}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-outline-primary me-1" (click)="openViewModal(auction)">
