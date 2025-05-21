@@ -38,28 +38,28 @@ export class UserService {
   }
 
   addUser(formData: FormData): Observable<any> {
-    return this.http.post(`${ApiEndpoints.USER}/Add`, formData, this.getAuthHeaders());
+    return this.http.post(`${ApiEndpoints.USER}/Add`, formData);
   }
 
   getUserById(id: number): Observable<UserView> {
-    return this.http.get<UserView>(`${ApiEndpoints.USER}/${id}`, this.getAuthHeaders());
+    return this.http.get<UserView>(`${ApiEndpoints.USER}/${id}`);
   }
 
   getRoles(): Observable<Role[]> {
-    return this.http.get<Role[]>(`${ApiEndpoints.USER}/roles`, this.getAuthHeaders());
+    return this.http.get<Role[]>(`${ApiEndpoints.USER}/roles`);
   }
  
   getStatuses(): Observable<Status[]> {
-    return this.http.get<Status[]>(`${ApiEndpoints.USER}/statuses`, this.getAuthHeaders());
+    return this.http.get<Status[]>(`${ApiEndpoints.USER}/statuses`);
   }
 
   getAllUser(): Observable<UserView[]> {
-    return this.http.get<UserView[]>(ApiEndpoints.USER, this.getAuthHeaders());
+    return this.http.get<UserView[]>(ApiEndpoints.USER);
   }
 
   updateUser(userId: number, formData: FormData): Observable<any> {
     return this.http
-      .put<any>(`${ApiEndpoints.USER}/update/${userId}`, formData, this.getAuthHeaders())
+      .put<any>(`${ApiEndpoints.USER}/update/${userId}`, formData)
       .pipe(
         catchError(error => {
           console.error('API Error in updateUser:', error);
@@ -69,22 +69,23 @@ export class UserService {
   }
 
   getCountry(): Observable<Country[]> {
-    return this.http.get<Country[]>(ApiEndpoints.COUNTRY, this.getAuthHeaders());
+    return this.http.get<Country[]>(ApiEndpoints.COUNTRY);
   }
 
   deleteUser(userId: number): Observable<any> {
-    return this.http.delete<any>(`${ApiEndpoints.USER}/delete/${userId}`, this.getAuthHeaders());
+    return this.http.delete<any>(`${ApiEndpoints.USER}/delete/${userId}`);
   }
-
-  /**
-   * Helper method to get authentication headers
-   */
-  private getAuthHeaders() {
-    const token = localStorage.getItem('jwtToken');
-    return {
-      headers: new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      })
-    };
+  getAllUserWins(userId:number): Observable<any> {
+    return this.http.get<any>(`${ApiEndpoints.Win}/WinsLIst/${userId}`);
   }
+  getUnseenUserWins(userId:number): Observable<any> {
+    return this.http.get<any>(`${ApiEndpoints.Win}/NotifiationList/${userId}`);
+  }
+  MarkAsSeen(userId: number): Observable<{ message: string; affectedRows: number }> {
+    return this.http.put<{ message: string; affectedRows: number }>(
+      `${ApiEndpoints.Win}/mark-as-seen/${userId}`, 
+      null
+    );
+  }
+  
 }
