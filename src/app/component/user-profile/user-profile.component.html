@@ -1,15 +1,53 @@
 <div class="container py-4">
   <div class="row">
     <!-- Sidebar -->
-    <nav class="col-md-3 mb-4">
-      <div class="list-group">
-        <a class="list-group-item list-group-item-action active" href="#">My Details</a>
-        <a class="list-group-item list-group-item-action" href="#">Notifications</a>
-        <a class="list-group-item list-group-item-action" href="#">Settings & Privacy</a>
-        <a class="list-group-item list-group-item-action" href="#">Deposit and Limit</a>
-        <a class="list-group-item list-group-item-action" href="#">My Purchases</a>
-      </div>
-    </nav>
+    <!-- Sidebar -->
+<nav class="col-md-3 mb-4">
+  <div class="list-group sidebar-menu">
+
+    <!-- Static menu items -->
+    <a class="list-group-item list-group-item-action" routerLink="/my-details">
+      My Details
+    </a>
+
+    <a class="list-group-item list-group-item-action" routerLink="/notifications">
+      Notifications
+    </a>
+
+    <a class="list-group-item list-group-item-action" routerLink="/settings-privacy">
+      Settings & Privacy
+    </a>
+
+    <!-- Expandable menu title -->
+    <button
+      class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+      (click)="toggleDepositMenu()"
+      [class.active]="showDepositMenu"
+    >
+      Deposit and Limit
+      <span [ngClass]="{ 'rotate-icon': showDepositMenu }">&#9662;</span>
+    </button>
+
+    <!-- Submenu (only visible when toggled) -->
+    <div *ngIf="showDepositMenu" class="submenu-list">
+      <a class="list-group-item submenu-item" (click)="navigateTo('deposit-limit')">
+        My Deposit/Bidding Limit
+      </a>
+      <a class="list-group-item submenu-item" (click)="navigateTo('refund-request')">
+        Refund Deposit
+      </a>
+      <a class="list-group-item submenu-item" (click)="navigateTo('transaction-history')">
+        Transaction History
+      </a>
+    </div>
+
+    <a class="list-group-item list-group-item-action" routerLink="/my-purchases">
+      My Purchases
+    </a>
+
+  </div>
+</nav>
+
 
     <!-- Main Content -->
     <div class="col-md-9">
@@ -24,24 +62,48 @@
       <!-- Error message -->
       <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
         {{ errorMessage }}
-        <button class="btn btn-link" (click)="loadUserProfile()">Try Again</button>
+        <button class="btn btn-link" (click)="loadUserProfile()">
+          Try Again
+        </button>
       </div>
 
       <div *ngIf="!isLoading && !errorMessage" class="card mb-4">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="d-flex align-items-center">
-              <img [src]="profileImagePreviewUrl || 'https://via.placeholder.com/80'" class="rounded-circle me-3" alt="Profile" style="width: 80px; height: 80px; object-fit: cover;">
-              <button class="btn btn-outline-secondary btn-sm" (click)="onUploadPhoto()" [disabled]="!editMode">
+              <img
+                [src]="
+                  profileImagePreviewUrl || 'https://via.placeholder.com/80'
+                "
+                class="rounded-circle me-3"
+                alt="Profile"
+                style="width: 80px; height: 80px; object-fit: cover"
+              />
+              <button
+                class="btn btn-outline-secondary btn-sm"
+                (click)="onUploadPhoto()"
+                [disabled]="!editMode"
+              >
                 <i class="bi bi-upload"></i> Upload Photo
               </button>
             </div>
             <div>
-              <button class="btn" [ngClass]="editMode ? 'btn-success' : 'btn-primary'" (click)="toggleEditMode()">
-                <i class="bi" [ngClass]="editMode ? 'bi-check-lg' : 'bi-pencil'"></i> 
-                {{ editMode ? 'Save Changes' : 'Edit Profile' }}
+              <button
+                class="btn"
+                [ngClass]="editMode ? 'btn-success' : 'btn-primary'"
+                (click)="toggleEditMode()"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="editMode ? 'bi-check-lg' : 'bi-pencil'"
+                ></i>
+                {{ editMode ? "Save Changes" : "Edit Profile" }}
               </button>
-              <button *ngIf="editMode" class="btn btn-outline-secondary ms-2" (click)="cancelEdit()">
+              <button
+                *ngIf="editMode"
+                class="btn btn-outline-secondary ms-2"
+                (click)="cancelEdit()"
+              >
                 Cancel
               </button>
             </div>
@@ -51,54 +113,91 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Name</label>
-              <input type="text" class="form-control" [(ngModel)]="user.name" [readonly]="!editMode">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="user.name"
+                [readonly]="!editMode"
+              />
             </div>
             <div class="col-md-6">
               <label class="form-label">ID/Passport</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                [(ngModel)]="user.personalIdNumber" 
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="user.personalIdNumber"
                 [readonly]="!editMode"
-                [ngClass]="{'is-invalid': validationErrors.personalIdNumber}"
-                (change)="onPersonalIdChange($event)">
-              <div *ngIf="validationErrors.personalIdNumber" class="invalid-feedback">
+                [ngClass]="{ 'is-invalid': validationErrors.personalIdNumber }"
+                (change)="onPersonalIdChange($event)"
+              />
+              <div
+                *ngIf="validationErrors.personalIdNumber"
+                class="invalid-feedback"
+              >
                 {{ validationErrors.personalIdNumber }}
               </div>
             </div>
             <div class="col-md-6">
               <label class="form-label">Email</label>
-              <input type="email" class="form-control" [(ngModel)]="user.email" readonly>
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="user.email"
+                readonly
+              />
             </div>
             <div class="col-md-6">
               <label class="form-label">Phone Number</label>
-              <input 
-                type="tel" 
-                 inputmode="numeric" 
+              <input
+                type="tel"
+                inputmode="numeric"
                 pattern="^[0-9]*$"
-                class="form-control" 
-                 maxlength="10"
-                [(ngModel)]="user.mobileNumber" 
+                class="form-control"
+                maxlength="10"
+                [(ngModel)]="user.mobileNumber"
                 [readonly]="!editMode"
-                [ngClass]="{'is-invalid': validationErrors.mobileNumber}"
-                (change)="onMobileNumberChange($event)">
-              <div *ngIf="validationErrors.mobileNumber" class="invalid-feedback">
+                [ngClass]="{ 'is-invalid': validationErrors.mobileNumber }"
+                (change)="onMobileNumberChange($event)"
+              />
+              <div
+                *ngIf="validationErrors.mobileNumber"
+                class="invalid-feedback"
+              >
                 {{ validationErrors.mobileNumber }}
               </div>
             </div>
             <div class="col-md-6">
               <label class="form-label">Company Name (Optional)</label>
-              <input type="text" class="form-control" [(ngModel)]="user.companyName" placeholder="Enter company" [readonly]="!editMode">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="user.companyName"
+                placeholder="Enter company"
+                [readonly]="!editMode"
+              />
             </div>
             <div class="col-md-6">
-              <label class="form-label">Company Registration Number (Optional)</label>
-              <input type="text" class="form-control" [(ngModel)]="user.companyNumber" placeholder="Enter reg. no." [readonly]="!editMode">
+              <label class="form-label"
+                >Company Registration Number (Optional)</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="user.companyNumber"
+                placeholder="Enter reg. no."
+                [readonly]="!editMode"
+              />
             </div>
-            
+
             <div class="col-md-6">
               <label class="form-label">Gender</label>
               <div *ngIf="!editMode">
-                <input type="text" class="form-control" [(ngModel)]="user.gender" readonly>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="user.gender"
+                  readonly
+                />
               </div>
               <div *ngIf="editMode">
                 <select class="form-select" [(ngModel)]="user.gender">
@@ -110,14 +209,20 @@
             </div>
             <div class="col-md-6">
               <label class="form-label">Government ID Expiry Date</label>
-              <input 
-                type="date" 
-                class="form-control" 
-                [(ngModel)]="user.personalIdExpiryDate" 
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="user.personalIdExpiryDate"
                 [readonly]="!editMode"
-                [ngClass]="{'is-invalid': validationErrors.personalIdExpiryDate}"
-                (change)="onExpiryDateChange($event)">
-              <div *ngIf="validationErrors.personalIdExpiryDate" class="invalid-feedback">
+                [ngClass]="{
+                  'is-invalid': validationErrors.personalIdExpiryDate
+                }"
+                (change)="onExpiryDateChange($event)"
+              />
+              <div
+                *ngIf="validationErrors.personalIdExpiryDate"
+                class="invalid-feedback"
+              >
                 {{ validationErrors.personalIdExpiryDate }}
               </div>
             </div>
@@ -126,29 +231,37 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="col-md-6">
                   <label class="form-label">Deposit Balance</label>
-                  <input 
-                    type="number" 
-                    class="form-control" 
-                    [readonly]="!editMode" 
-                    [(ngModel)]="user.deposit" 
+                  <input
+                    type="number"
+                    class="form-control"
+                    [readonly]="!editMode"
+                    [(ngModel)]="user.deposit"
                     (change)="onDepositChange($event)"
-                    [ngClass]="{'is-invalid': validationErrors.deposit}"
-                    step="0.01">
-                  <div *ngIf="validationErrors.deposit" class="invalid-feedback">
+                    [ngClass]="{ 'is-invalid': validationErrors.deposit }"
+                    step="0.01"
+                  />
+                  <div
+                    *ngIf="validationErrors.deposit"
+                    class="invalid-feedback"
+                  >
                     {{ validationErrors.deposit }}
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Total Limit</label>
-                  <input 
-                    type="number" 
-                    class="form-control" 
-                    [readonly]="!editMode" 
-                    [(ngModel)]="user.totalLimit" 
+                  <input
+                    type="number"
+                    class="form-control"
+                    [readonly]="!editMode"
+                    [(ngModel)]="user.totalLimit"
                     (change)="onTotalLimitChange($event)"
-                    [ngClass]="{'is-invalid': validationErrors.totalLimit}"
-                    step="0.01">
-                  <div *ngIf="validationErrors.totalLimit" class="invalid-feedback">
+                    [ngClass]="{ 'is-invalid': validationErrors.totalLimit }"
+                    step="0.01"
+                  />
+                  <div
+                    *ngIf="validationErrors.totalLimit"
+                    class="invalid-feedback"
+                  >
                     {{ validationErrors.totalLimit }}
                   </div>
                 </div>
@@ -156,37 +269,55 @@
             </div>
           </div>
 
-           <!-- Government ID Image Section -->
-            <div class="col-12 mt-3">
-              <label class="form-label">Government ID Image</label>
-              <div class="d-flex align-items-center mb-2">
-                <div class="position-relative me-3" style="width: 150px; height: 90px;">
-                  <img [src]="personalIdImagePreviewUrl || 'https://via.placeholder.com/150x90?text=ID+Image'" 
-                       class="img-thumbnail" alt="ID Image" 
-                       style="width: 100%; height: 100%; object-fit: cover;">
-                  <div *ngIf="editMode && personalIdImagePreviewUrl" 
-                       class="position-absolute top-0 end-0">
-                    <button type="button" class="btn btn-sm btn-danger" 
-                            (click)="removeIDPhoto()">
-                      <i class="bi bi-x"></i>
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  <button *ngIf="editMode" class="btn btn-outline-secondary btn-sm" 
-                          (click)="onUploadIDPhoto()">
-                    <i class="bi bi-upload"></i> Upload ID Image
+          <!-- Government ID Image Section -->
+          <div class="col-12 mt-3">
+            <label class="form-label">Government ID Image</label>
+            <div class="d-flex align-items-center mb-2">
+              <div
+                class="position-relative me-3"
+                style="width: 150px; height: 90px"
+              >
+                <img
+                  [src]="
+                    personalIdImagePreviewUrl ||
+                    'https://via.placeholder.com/150x90?text=ID+Image'
+                  "
+                  class="img-thumbnail"
+                  alt="ID Image"
+                  style="width: 100%; height: 100%; object-fit: cover"
+                />
+                <div
+                  *ngIf="editMode && personalIdImagePreviewUrl"
+                  class="position-absolute top-0 end-0"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    (click)="removeIDPhoto()"
+                  >
+                    <i class="bi bi-x"></i>
                   </button>
-                  <div class="small text-muted mt-1">
-                    Accepted formats: JPG, PNG, PDF. Max size: 2MB
-                  </div>
+                </div>
+              </div>
+              <div>
+                <button
+                  *ngIf="editMode"
+                  class="btn btn-outline-secondary btn-sm"
+                  (click)="onUploadIDPhoto()"
+                >
+                  <i class="bi bi-upload"></i> Upload ID Image
+                </button>
+                <div class="small text-muted mt-1">
+                  Accepted formats: JPG, PNG, PDF. Max size: 2MB
                 </div>
               </div>
             </div>
-
+          </div>
 
           <div class="mt-4 d-flex justify-content-end">
-            <button class="btn btn-outline-primary" (click)="loadUserProfile()">Refresh Profile</button>
+            <button class="btn btn-outline-primary" (click)="loadUserProfile()">
+              Refresh Profile
+            </button>
           </div>
         </div>
       </div>
@@ -228,8 +359,12 @@
         </div>
         <div class="mt-2">
           <span>Download the App: </span>
-          <button class="btn btn-outline-dark btn-sm me-1"><i class="bi bi-apple"></i> IOS</button>
-          <button class="btn btn-outline-dark btn-sm"><i class="bi bi-android2"></i> Android</button>
+          <button class="btn btn-outline-dark btn-sm me-1">
+            <i class="bi bi-apple"></i> IOS
+          </button>
+          <button class="btn btn-outline-dark btn-sm">
+            <i class="bi bi-android2"></i> Android
+          </button>
         </div>
       </footer>
     </div>

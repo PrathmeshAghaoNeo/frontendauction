@@ -58,6 +58,7 @@ import { PageNotFoundComponent } from './component/page-not-found/page-not-found
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
 import { ReportsListComponent } from './component/reports-list/reports-list.component';
+import { RefundRequestComponent } from './component/refund-request/refund-request.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -120,7 +121,8 @@ export const routes: Routes = [
     {path:'page-not-found',component:PageNotFoundComponent},
     {path:'chat-bot', component:ChatBotComponent},
     {path: 'orders', component:GetOrdersComponentComponent},
-    {path:'reports',component:ReportsListComponent}
+    {path:'reports',component:ReportsListComponent},
+    {path:'refund-request',component:RefundRequestComponent}
 
     
     
