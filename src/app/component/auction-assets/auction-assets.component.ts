@@ -189,7 +189,8 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
 
   navigateToAsset(assetId: number | undefined): void {
   if (assetId) {
-    this.router.navigate(['/asset-details', assetId]);
+    const encodedUserId = btoa(assetId.toString());
+    this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
   }
 }
 }
