@@ -16,11 +16,12 @@ import { Auction } from '../../modals/auctions';
 import { AuctionService } from '../../services/auction.service';
 import { AssetCategory } from '../../modals/assetcategories';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-add-asset',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,NgSelectModule],
   templateUrl: './add-asset.component.html',
   styleUrl: './add-asset.component.css',
 })
@@ -145,10 +146,7 @@ export class AddAssetComponent {
     private auctionService: AuctionService
   ) {
     this.assetForm = this.fb.group({
-      // assetNumber: [
-      //   '',
-      //   [Validators.required, Validators.pattern(/^[0-9]{7}$/)],
-      // ],
+    
       title: ['', [Validators.required, Validators.maxLength(255)]],
       categoryId: [0, [Validators.required, Validators.maxLength(10)]],
       deposit: [
@@ -235,7 +233,21 @@ export class AddAssetComponent {
     });
   }
   
-  
+  getSelectedAuctionText(): string {
+  const selected = this.auctions.filter(a => this.asset.auctionIds.includes(a.auctionId));
+  return selected.map(a => `#${a.auctionNumber}`).join(', ');
+}
+
+toggleAuctionSelection(id: number) {
+  const index = this.asset.auctionIds.indexOf(id);
+  if (index > -1) {
+    this.asset.auctionIds.splice(index, 1);
+  } else {
+    this.asset.auctionIds.push(id);
+  }
+  this.onAuctionSelectionChange(this.asset.auctionIds);
+}
+
   fetchAuctions(): void {
     this.auctionService.getAllAuctions().subscribe({
       next: (data) => {
