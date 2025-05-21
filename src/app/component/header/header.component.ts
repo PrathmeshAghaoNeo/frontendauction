@@ -7,7 +7,6 @@ import { filter } from 'rxjs/operators';
 import { UserService } from '../../services/user.service';
 import { SignalRService } from '../../services/signal-r.service';
 import { ManageAssetService } from '../../services/asset.service';
-import { Asset } from '../../modals/manage-asset';
 
 @Component({
   selector: 'app-header',
