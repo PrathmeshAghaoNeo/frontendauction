@@ -1,10 +1,12 @@
-<div class="chatbot-container">
+<div class="chatbot-container" *ngIf= "isOpen">
   <!-- Chatbot Window -->
   <div class="chatbot-window">
     <!-- Main Help Menu -->
     <div class="chatbot-header" *ngIf="!isMessageView && !currentHelpPage">
       <!-- Header content for main view -->
       <h2 class="chatbot-title">Help Center</h2>
+      <button class="close-btn" (click)="toggleChat()">✕</button>
+
     </div>
 
     <!-- Message Section -->
@@ -154,7 +156,8 @@
       <div class="help-content">
         <h1>How to Enable Auto-Bid?</h1>
         <p class="help-description">Learn how to use the auto-bid feature to stay in the lead.</p>
-        <p class="help-updated">Updated over 2 months ago</p>
+        <!-- <p class="help-updated">Updated over 2 months ago</p> -->
+          <p class="help-updated"></p>
 
         <div class="table-of-contents">
           <div class="toc-header">
@@ -200,7 +203,8 @@
       <div class="help-content">
         <h1>Frequently Asked Questions</h1>
         <p class="help-description">Find answers to common questions about our platform.</p>
-        <p class="help-updated">Updated 1 month ago</p>
+        <!-- <p class="help-updated">Updated 1 month ago</p> -->
+         <p class="help-updated"></p>
 
         <div class="table-of-contents">
           <div class="toc-header">
@@ -246,7 +250,8 @@
       <div class="help-content">
         <h1>How to register in the App?</h1>
         <p class="help-description">Follow these simple steps to create your account and start bidding.</p>
-        <p class="help-updated">Updated 3 weeks ago</p>
+        <!-- <p class="help-updated">Updated 3 weeks ago</p> -->
+         <p class="help-updated"></p>
 
         <div class="table-of-contents">
           <div class="toc-header">
@@ -298,7 +303,8 @@
       <div class="help-content">
         <h1>How to Purchase a Plate Number?</h1>
         <p class="help-description">Learn the process of acquiring your desired vehicle plate number.</p>
-        <p class="help-updated">Updated 1 month ago</p>
+        <!-- <p class="help-updated">Updated 1 month ago</p> -->
+         <p class="help-updated"></p>
 
         <div class="table-of-contents">
           <div class="toc-header">
@@ -356,11 +362,6 @@
 </div>
 
 
-<!-- <div class="chatbot-fab" *ngIf="isChatPage" (click)="scrollToChatbot()">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-  </svg>
-</div> -->
 
 
 <div class="chatbot-fab" *ngIf="showChatbotButton" (click)="toggleChat()">
@@ -370,3 +371,6 @@
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
   </svg>
 </div>
+
+
+

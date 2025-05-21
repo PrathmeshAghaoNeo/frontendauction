@@ -49,32 +49,32 @@ export class ChatBotComponent implements OnInit {
 
 
 
-   toggleChat() {
-  this.isOpen = !this.isOpen;
+//    toggleChat() {
+//   this.isOpen = !this.isOpen;
 
-  if (this.isOpen) {
-    this.isMessageView = false;
-    this.currentHelpPage = null;
-    setTimeout(() => this.scrollToBottom(), 100);
-    console.log("open");
+//   if (this.isOpen) {
+//     this.isMessageView = false;
+//     this.currentHelpPage = null;
+//     setTimeout(() => this.scrollToBottom(), 100);
+//     console.log("open");
     
-  }
-  if(!this.isOpen){
-    console.log("close");
-  }
-}
-
-
-//  toggleChat() {
-//     this.isOpen = !this.isOpen;
-//     console.log(this.isOpen ? 'open' : 'close');
-
-//     if (this.isOpen) {
-//       this.isMessageView = false;
-//       this.currentHelpPage = null;
-//       setTimeout(() => this.scrollToBottom(), 100);
-//     }
 //   }
+//   if(!this.isOpen){
+//     console.log("close");
+//   }
+// }
+
+
+ toggleChat() {
+    this.isOpen = !this.isOpen;
+    console.log(this.isOpen ? 'open' : 'close');
+
+    if (this.isOpen) {
+      this.isMessageView = false;
+      this.currentHelpPage = null;
+      setTimeout(() => this.scrollToBottom(), 100);
+    }
+  }
 
   showMessageView(): void {
     this.isMessageView = true;

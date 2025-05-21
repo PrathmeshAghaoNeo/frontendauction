@@ -6,6 +6,8 @@
 
     <main class="app-content"  [ngClass]="{ 'auth-bg': isCurrentRoute(['/login','/']) }">
       <!-- <app-back-button *ngIf="showBackButton"></app-back-button> -->
+
+     <app-chat-bot></app-chat-bot>
       <router-outlet></router-outlet>
 
     </main>
