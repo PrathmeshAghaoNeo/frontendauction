@@ -273,4 +273,9 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
+    goBack(): void {
+    window.history.back();
+  }
 }

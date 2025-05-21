@@ -55,6 +55,7 @@ import { SignalrTestComponent } from './component/signalr-test/signalr-test.comp
 import { BidWatchlistComponent } from './component/bid-watchlist/bid-watchlist.component';
 import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-cart.component';
 import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
+import { GetOrderDetailsComponent } from './component/get-order-details/get-order-details.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -98,6 +99,8 @@ export const routes: Routes = [
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details/:assetId',component:AssetDetailComponent},
     {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
+
+    {path:'order-details/:assetId',component:GetOrderDetailsComponent},
  
 
     {path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },

@@ -1,4 +1,9 @@
-<div class="container mt-4">
+<div class="orders-container mt-4">
+   <div class="mb-3">
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i> Back
+    </button>
+  </div>
   <h2>My Orders</h2>
 
   <div *ngIf="isLoading" class="alert alert-info">Loading orders...</div>
@@ -15,6 +20,7 @@
         <h5 class="order-title">{{ order.title }}</h5>
         <p class="order-description">{{ order.description }}</p>
         <p class="order-price">₹{{ order.price }}</p>
+        <button class="view-more-btn" (click)="viewOrder(order.assetId)">View More</button>
       </div>
     </div>
   </div>

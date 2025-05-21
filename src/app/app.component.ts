@@ -64,7 +64,10 @@ export class AppComponent {
 
   const dynamicPatterns = [
     '/direct-sale-assets/',
-    '/auction-assets/'
+    '/auction-assets/',
+    '/direct-sale-assetpage/',
+    '/asset-details/'
+
   ];
 
   if (exactRoutes.includes(this.currentRoute)) {

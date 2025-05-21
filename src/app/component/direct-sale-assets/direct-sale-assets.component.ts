@@ -209,6 +209,10 @@ toWatchlist(){
       },
     });
   }
+
+    goBack() {
+    window.history.back();
+  }
 }
 
 
