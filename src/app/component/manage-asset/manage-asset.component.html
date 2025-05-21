@@ -175,8 +175,8 @@
             [ngClass]="{
               'bg-success': asset.auctionStatusId === 1,
               'bg-warning': asset.auctionStatusId === 2,
-              'bg-danger': asset.auctionStatusId === 3,
-              'bg-info ': asset.auctionStatusId === 4,
+              'bg-danger': asset.auctionStatusId === 4,
+              'bg-info ': asset.auctionStatusId === 3,
               'status-unknown': ![1, 2, 3, 4].includes(
                 asset.auctionStatusId ?? 0
               )

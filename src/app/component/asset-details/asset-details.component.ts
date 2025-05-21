@@ -20,8 +20,8 @@ import Swal from 'sweetalert2';
 })
 export class AssetDetailComponent implements OnInit, OnDestroy {
   // assetId: number = 0;
-   assetId: number = 107;
-    auctionId: number = 0;
+   assetId: number = 6;
+    auctionId: number = 99;
     userId: number = 1;
   asset: Asset | null = null;
   auction!: Auction;
@@ -93,10 +93,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     this.assetService.getAssetById(this.assetId).subscribe({
       next: (asset) => {
         this.asset = asset;
-        this.auctionId = this.asset?.auctionIds[0];
-        this.placeBid.auctionId = this.asset.auctionIds[0];
-        console.log(this.asset);
-        this.loadAuctionDetails();
+        console.log('Asset loaded:', this.asset);
         this.isLoading = false;
       },
       error: (error) => {

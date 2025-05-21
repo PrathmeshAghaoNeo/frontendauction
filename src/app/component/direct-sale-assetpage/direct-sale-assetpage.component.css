@@ -1,4 +1,8 @@
 /* General Styles */
+
+.body {
+  background-color: #f0caf0 !important;
+}
 .container-fluid {
   max-width: 1024px;
   margin: 0 auto;
@@ -6,7 +10,7 @@
 
 /* Card styling */
 .card {
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 12px !important;
   height: 100%;
 }
@@ -292,6 +296,11 @@
   background-color: #f8f9fa;
 }
 
+
+.slider-bg{
+    background-color: #d5bbf1;
+  }
+
 /* Responsive adjustments */
 @media (max-width: 767px) {
   .price-amount {
@@ -306,6 +315,7 @@
     min-width: 60px;
     height: 60px;
   }
+
 }
 
 

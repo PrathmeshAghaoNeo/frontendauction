@@ -1,0 +1,372 @@
+<div class="chatbot-container">
+  <!-- Chatbot Window -->
+  <div class="chatbot-window">
+    <!-- Main Help Menu -->
+    <div class="chatbot-header" *ngIf="!isMessageView && !currentHelpPage">
+      <!-- Header content for main view -->
+      <h2 class="chatbot-title">Help Center</h2>
+    </div>
+
+    <!-- Message Section -->
+    <div class="message-section" *ngIf="!isMessageView && !currentHelpPage">
+      <div class="message-box" (click)="showMessageView()">
+        <div class="message-content">
+          <p class="message-title">Send us a message</p>
+          <!-- <p class="message-subtitle">We typically reply in under 3 minutes</p> -->
+        </div>
+        <div class="arrow-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Help Topics -->
+      <div class="help-topics">
+        <div class="help-topic-card" (click)="showHelpPage('auto-bid')">
+          <p>How to Enable Auto-Bid?</p>
+          <div class="arrow-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="help-topic-card" (click)="showHelpPage('faq')">
+          <p>Frequently Asked Questions</p>
+          <div class="arrow-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="help-topic-card" (click)="showHelpPage('register')">
+          <p>How to register in the App?</p>
+          <div class="arrow-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="help-topic-card" (click)="showHelpPage('plate-number')">
+          <p>How to Purchase a Plate Number?</p>
+          <div class="arrow-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message View -->
+    <div class="message-view" *ngIf="isMessageView">
+      <div class="message-header">
+        <div class="back-button" (click)="backToMain()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <div class="header-content">
+          <div class="header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div>
+            <p class="header-title">Maram</p>
+            <p class="header-subtitle">The team can also help</p>
+          </div>
+        </div>
+        <div class="maximize-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </div>
+      </div>
+
+      <div class="message-content">
+        <div class="chat-message bot">
+          <div class="bot-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div class="message-text">
+            <p>Maram</p>
+            <p>Hi there! What is your question about?</p>
+          </div>
+        </div>
+
+        <div class="quick-replies">
+          <button class="quick-reply" (click)="selectQuickReply('platform')">This is platform related</button>
+          <button class="quick-reply" (click)="selectQuickReply('auction')">This is auction or asset related</button>
+          <button class="quick-reply" (click)="selectQuickReply('issue')">Report an issue</button>
+          <button class="quick-reply" (click)="selectQuickReply('other')">I have another question</button>
+        </div>
+      </div>
+
+      <div class="message-input">
+        <input type="text" placeholder="Send a message..." [(ngModel)]="message" (keyup.enter)="sendMessage()">
+        <div class="input-buttons">
+          <button class="emoji-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+              <line x1="9" y1="9" x2="9.01" y2="9"></line>
+              <line x1="15" y1="9" x2="15.01" y2="9"></line>
+            </svg>
+          </button>
+          <button class="send-button" (click)="sendMessage()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto-Bid Help Page -->
+    <div class="help-page" *ngIf="currentHelpPage === 'auto-bid'">
+      <div class="help-header">
+        <div class="back-button" (click)="backToMain()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <h2 class="help-page-title">How to Enable Auto-Bid?</h2>
+        <div class="maximize-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </div>
+      </div>
+
+      <div class="help-content">
+        <h1>How to Enable Auto-Bid?</h1>
+        <p class="help-description">Learn how to use the auto-bid feature to stay in the lead.</p>
+        <p class="help-updated">Updated over 2 months ago</p>
+
+        <div class="table-of-contents">
+          <div class="toc-header">
+            <p>Table of contents</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="help-steps">
+          <h2>Step 1: Explore available auctions and select the asset you're interested in.</h2>
+          <p>Once you've reached the asset page, tap on "Bid Now" button at the bottom of the screen to place your bid.</p>
+          
+          <h2>Step 2: Set your maximum bid limit</h2>
+          <p>After placing your initial bid, you can enable the auto-bid feature by setting a maximum amount you're willing to spend.</p>
+          
+          <h2>Step 3: Enable auto-bidding</h2>
+          <p>Toggle the "Auto-Bid" switch to ON and confirm your maximum bid amount. The system will automatically place bids on your behalf up to your specified limit.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Help Page -->
+    <div class="help-page" *ngIf="currentHelpPage === 'faq'">
+      <div class="help-header">
+        <div class="back-button" (click)="backToMain()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <h2 class="help-page-title">Frequently Asked Questions</h2>
+        <div class="maximize-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </div>
+      </div>
+
+      <div class="help-content">
+        <h1>Frequently Asked Questions</h1>
+        <p class="help-description">Find answers to common questions about our platform.</p>
+        <p class="help-updated">Updated 1 month ago</p>
+
+        <div class="table-of-contents">
+          <div class="toc-header">
+            <p>Table of contents</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="faq-content">
+          <h2>What payment methods are accepted?</h2>
+          <p>We accept major credit cards, debit cards, and bank transfers. For certain auctions, cryptocurrency payments may also be available.</p>
+          
+          <h2>How do I know if I won an auction?</h2>
+          <p>You will receive an immediate notification through the app and via email when you win an auction. You can also check your "My Bids" section to see the status of your active and completed bids.</p>
+          
+          <h2>What happens if I win an auction but change my mind?</h2>
+          <p>Please refer to our cancellation policy for specific details. In most cases, auction wins are binding and require completion of the purchase.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Help Page -->
+    <div class="help-page" *ngIf="currentHelpPage === 'register'">
+      <div class="help-header">
+        <div class="back-button" (click)="backToMain()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <h2 class="help-page-title">How to register in the App?</h2>
+        <div class="maximize-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </div>
+      </div>
+
+      <div class="help-content">
+        <h1>How to register in the App?</h1>
+        <p class="help-description">Follow these simple steps to create your account and start bidding.</p>
+        <p class="help-updated">Updated 3 weeks ago</p>
+
+        <div class="table-of-contents">
+          <div class="toc-header">
+            <p>Table of contents</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="help-steps">
+          <h2>Step 1: Download the App</h2>
+          <p>First, download our app from the Apple App Store or Google Play Store.</p>
+          
+          <h2>Step 2: Open the App and click "Sign Up"</h2>
+          <p>On the welcome screen, tap on the "Sign Up" button to begin the registration process.</p>
+          
+          <h2>Step 3: Enter your details</h2>
+          <p>Fill in your personal information, including name, email address, and phone number. Create a strong password for your account.</p>
+          
+          <h2>Step 4: Verify your account</h2>
+          <p>A verification code will be sent to your email or phone number. Enter this code to verify your account.</p>
+          
+          <h2>Step 5: Complete your profile</h2>
+          <p>Add your profile picture and any additional required information to complete your registration.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plate Number Help Page -->
+    <div class="help-page" *ngIf="currentHelpPage === 'plate-number'">
+      <div class="help-header">
+        <div class="back-button" (click)="backToMain()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <h2 class="help-page-title">How to Purchase a Plate Number?</h2>
+        <div class="maximize-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </div>
+      </div>
+
+      <div class="help-content">
+        <h1>How to Purchase a Plate Number?</h1>
+        <p class="help-description">Learn the process of acquiring your desired vehicle plate number.</p>
+        <p class="help-updated">Updated 1 month ago</p>
+
+        <div class="table-of-contents">
+          <div class="toc-header">
+            <p>Table of contents</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="help-steps">
+          <h2>Step 1: Browse available plate numbers</h2>
+          <p>Navigate to the "Plate Numbers" section in the app and browse through available options. You can filter by type, price range, and specific numbers or letters.</p>
+          
+          <h2>Step 2: Select your desired plate number</h2>
+          <p>Click on a plate number to view detailed information, including pricing and any special conditions.</p>
+          
+          <h2>Step 3: Place a bid or purchase directly</h2>
+          <p>Depending on the plate, you can either place a bid in an active auction or purchase it immediately at a fixed price.</p>
+          
+          <h2>Step 4: Complete payment</h2>
+          <p>Once you've won an auction or decided to purchase directly, follow the payment instructions to complete your transaction.</p>
+          
+          <h2>Step 5: Plate registration</h2>
+          <p>After successful payment, follow the instructions to register the plate number to your vehicle through the relevant local authority.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="navigation-bar" *ngIf="!currentHelpPage">
+      <div class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <p>Home</p>
+      </div>
+      <div class="nav-item active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <p>Messages</p>
+      </div>
+      <div class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <p>Help</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div class="chatbot-fab" *ngIf="isChatPage" (click)="scrollToChatbot()">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+</div> -->
+
+
+<div class="chatbot-fab" *ngIf="showChatbotButton" (click)="toggleChat()">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+       viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+</div>

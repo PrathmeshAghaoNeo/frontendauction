@@ -26,14 +26,14 @@ export class UpdateAssetCategoriesComponent implements OnInit {
   ];
 
   paymentMethods = [
-  { paymentMethodIds: 1, methodName: 'Bank Transfer' },
-  { paymentMethodIds: 2, methodName: 'Cheque' },
-  { paymentMethodIds: 3, methodName: 'Credit Card' },
-  { paymentMethodIds: 4, methodName: 'Apple Pay' },
-  { paymentMethodIds: 5, methodName: 'Debit Card' },
-  { paymentMethodIds: 6, methodName: 'Google Pay' },
-  { paymentMethodIds: 7, methodName: 'PayPal' },
-];
+    { paymentMethodIds: 1, methodName: 'Bank Transfer' },
+    { paymentMethodIds: 2, methodName: 'Cheque' },
+    { paymentMethodIds: 3, methodName: 'Credit Card' },
+    { paymentMethodIds: 4, methodName: 'Apple Pay' },
+    { paymentMethodIds: 5, methodName: 'Debit Card' },
+    { paymentMethodIds: 6, methodName: 'Google Pay' },
+    { paymentMethodIds: 7, methodName: 'PayPal' },
+  ];
 
   previewUrls: { [key: string]: string } = {
     iconFile: '',
@@ -53,8 +53,8 @@ export class UpdateAssetCategoriesComponent implements OnInit {
       subCategory: ['', Validators.maxLength(30)],
       depositPercentage: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       details: ['', [Validators.required, Validators.maxLength(50)]],
-      iconFile: [null, Validators.required], 
-      document: [null, Validators.required],  
+      iconFile: [null],
+      document: [null],
       icon: [null],
       statusId: ['', Validators.required],
       paymentMethods: this.fb.array([]),
@@ -74,51 +74,50 @@ export class UpdateAssetCategoriesComponent implements OnInit {
     });
   }
 
- loadAssetCategoryData(): void {
-  if (this.assetCategoryId) {
-    this.http.get(`${ApiEndpoints.ASSETCATEGORIES}/${this.assetCategoryId}`).subscribe({
-      next: (data: any) => {
-        this.assetCategoryForm.patchValue({
-          categoryName: data.categoryName,
-          subCategory: data.subcategory,
-          depositPercentage: data.depositPercentage,
-          details: data.details,
-          statusId: data.statusId,
-          adminFees: data.adminFees,
-          auctionFees: data.auctionFees,
-          buyersCommission: data.buyerCommission,
-          registrationDeadline: formatToDateTimeLocalFormat(data.registrationDeadline),
-          vat: data.vatid,
-          vatPercentage: data.vatpercentage,
-          icon: data.icon, // e.g., "CategoryIcons/23f2c368-fa58-4d09-ad1f-addab5a4270d.png"
-        });
-
-        // FIX: Preview icon using correct key
-        this.previewUrls['icon'] = data.icon ? 
-          (data.icon.startsWith('http') ? data.icon : this.assetBaseUrl + data.icon) : null;
-
-        // Document preview (if needed)
-       this.previewUrls['document'] = data.document
-  ? (data.document.startsWith('http') ? data.document : this.assetBaseUrl + data.document)
-  : null;
-
-        console.log('Preview URL for document:', this.previewUrls['document']);
-
-        // Payment methods (if applicable)
-        const formArray = this.assetCategoryForm.get('paymentMethods') as FormArray;
-        formArray.clear();
-        if (data.paymentMethods && Array.isArray(data.paymentMethods)) {
-          data.paymentMethods.forEach((method: string) => {
-            formArray.push(new FormControl(method));
+  loadAssetCategoryData(): void {
+    if (this.assetCategoryId) {
+      this.http.get(`${ApiEndpoints.ASSETCATEGORIES}/${this.assetCategoryId}`).subscribe({
+        next: (data: any) => {
+          this.assetCategoryForm.patchValue({
+            categoryName: data.categoryName,
+            subCategory: data.subcategory,
+            depositPercentage: data.depositPercentage,
+            details: data.details,
+            statusId: data.statusId,
+            adminFees: data.adminFees,
+            auctionFees: data.auctionFees,
+            buyersCommission: data.buyerCommission,
+            registrationDeadline: formatToDateTimeLocalFormat(data.registrationDeadline),
+            vat: data.vatid,
+            vatPercentage: data.vatpercentage,
+            icon: data.icon,
           });
+
+          this.previewUrls['icon'] = data.icon ?
+            (data.icon.startsWith('http') ? data.icon : this.assetBaseUrl + data.icon) : null;
+
+          this.previewUrls['document'] = data.document
+            ? (data.document.startsWith('http') ? data.document : this.assetBaseUrl + data.document)
+            : null;
+
+          console.log('Preview URL for document:', this.previewUrls['document']);
+
+          const formArray = this.assetCategoryForm.get('paymentMethods') as FormArray;
+          formArray.clear();
+
+          if (data.paymentMethodIds && Array.isArray(data.paymentMethodIds)) {
+            data.paymentMethodIds.forEach((id: number) => {
+              formArray.push(new FormControl(id));
+            });
+          }
+
+        },
+        error: () => {
+          Swal.fire('Error', 'Failed to load asset category data', 'error');
         }
-      },
-      error: () => {
-        Swal.fire('Error', 'Failed to load asset category data', 'error');
-      }
-    });
+      });
+    }
   }
-}
 
 
 

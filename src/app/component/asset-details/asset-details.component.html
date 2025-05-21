@@ -1,3 +1,4 @@
+<body>
 <div class="container-fluid px-3 py-3" *ngIf="isLoading">
   <div class="row">
     <div class="col-12 text-center py-5">
@@ -41,16 +42,9 @@
       <div class="image-gallery mb-4">
         <div id="assetCarousel" class="carousel slide" data-bs-ride="false">
           <div class="carousel-inner">
-            <div
-              class="carousel-item"
-              *ngFor="let image of asset?.galleries; let i = index"
-              [ngClass]="{ active: i === currentSlideIndex }"
-            >
-              <img
-                [src]="image.fileUrl"
-                class="d-block w-100"
-                [alt]="'Asset image ' + (i + 1)"
-              />
+            <div class="carousel-item" *ngFor="let image of asset?.galleries; let i = index"
+              [ngClass]="{'active': i === currentSlideIndex}">
+              <img [src]="image.fileUrl" class="d-block w-100" [alt]="'Asset image ' + (i+1)">
             </div>
           </div>
 
@@ -154,6 +148,9 @@
               </div>
             </div>
 
+
+             
+
             <!-- Display pricing information -->
             <div class="detail-row d-flex justify-content-between py-2">
               <div class="detail-label">Starting Price</div>
@@ -162,15 +159,18 @@
               </div>
             </div>
 
+
             <!-- Display auction information -->
             <div class="detail-row d-flex justify-content-between py-2">
               <div class="detail-label">Reserve Amount</div>
-              <div class="detail-value fw-bold">
-                {{ asset?.reserveAmount | currency }}
-              </div>
+              <div class="detail-value fw-bold">{{asset?.reserveAmount | currency}}</div>
             </div>
 
             <!-- Display status -->
+            <!-- <div class="detail-row d-flex justify-content-between py-2">
+              <div class="detail-label">Status</div>
+              <div class="detail-value fw-bold">{{asset?.statusName || 'N/A'}}</div>
+            </div> -->
             <div class="detail-row d-flex justify-content-between py-2">
               <!-- <div class="detail-label">Status</div>
               <div class="detail-value fw-bold">{{asset?.statusName || 'N/A'}}</div> -->
@@ -336,5 +336,3 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
