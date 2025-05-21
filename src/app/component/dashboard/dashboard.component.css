@@ -1,79 +1,116 @@
+/* ========== Layout ========== */
 .dashboard {
-    padding: 2rem;
+  padding: 20px;
+  background-color: #f7f9fc;
+}
+
+.main-content {
+  background-color: #f9f7fc;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -50px;
+  flex-wrap: wrap;
+}
+
+.auction-highlights {
+  flex: 1;
+  max-width: 60%;
+}
+
+.ongoing-auctions {
+  flex: 1;
+  max-width: 35%;
+}
+
+/* ========== Cards ========== */
+.card,
+.stat-card,
+.section-card {
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.section-card ul li {
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.section-card ul li:hover {
+  background-color: #f9f9f9;
+  animation-play-state: paused;
+}
+
+/* ========== Colors ========== */
+.text-purple {
+  color: #6f42c1 !important;
+}
+
+.bg-purple {
+  background-color: #6f42c1 !important;
+  color: #fff;
+}
+.chart-wrapper {
+  min-height: 300px;
+  width: 100%;
+  position: relative;
+}
+
+/* ========== Vertical Scrolling Auction Ticker ========== */
+.auction-ticker-wrapper {
+  max-height: 500px;
+  overflow: hidden;
+  position: relative;
+}
+canvas {
+  width: auto !important;
+  height: auto!important;
+}
+
+.card-body{
+  max-width: 500px;
+}
+.card-title.fs-4 {
+ font-size: 1.5rem;
+}
+.auction-ticker-list {
+  list-style: none;
+  text-align: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+  margin: 0;
+  animation: scrollTicker 55s linear infinite;
+  display: flex;
+  flex-direction: column;
+}
+
+.auction-ticker-list li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* Adjust how far it scrolls based on number of items shown */
+@keyframes scrollTicker {
+  0% {
+    transform: translateY(0%);
   }
-  
-  .main-content {
-    background-color: #f9f7fc;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  100% {
+    transform: translateY(-100%);
   }
-  
-  /* Colors */
-  .text-purple {
-    color: #6f42c1;
-  }
-  
-  .bg-purple {
-    background-color: #6f42c1 !important;
-    color: #fff;
-  }
-  
-  /* Cards */
-  .stat-card, .section-card {
-    background-color: white;
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  /* List styles */
-  .activity-list li {
-    margin-bottom: 10px;
-    font-size: 15px;
-  }
-  
-  .dot {
-    height: 10px;
-    width: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-  }
-  
-  .dot.purple {
-    background-color: #6f42c1;
-  }
-  .dot.green {
-    background-color: #28a745;
-  }
-  .dot.blue {
-    background-color: #17a2b8;
-  }
-  
-  /* Table styles */
-  .table th {
-    color: #6f42c1;
-    font-weight: 600;
-  }
-  
-  .table td {
-    vertical-align: middle;
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .dashboard {
-      padding: 1rem;
-    }
-  
-    .main-content {
-      padding: 1rem;
-    }
-  }
-  
-  .card {
-    width: 100%; /* Increase the width of the card */
+}
+
+
+/* ========== Table ========== */
+.card {
+    height: 100%
   }
   
   .table {
@@ -125,3 +162,67 @@
     align-items: center;
     justify-items: center;
   }
+
+/* ========== Utility ========== */
+.dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.dot.purple { background-color: #6f42c1; }
+.dot.green { background-color: #28a745; }
+.dot.blue { background-color: #3a30c6; }
+
+.views {
+  min-width: 520px;
+}
+
+.tables.con {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .dashboard,
+  .main-content {
+    padding: 1rem;
+  }
+}
+
+/* ===== Chart Legend Fix ===== */
+.chart-legend {
+  width: 87px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.chart-legend .dot {
+  height: 12px;
+  width: 12px;
+}
+
+/* Adjust container for responsiveness */
+.chart-wrapper {
+  min-height: 300px;
+  width: 100%;
+  position: relative;
+  padding-bottom: 1rem;
+}

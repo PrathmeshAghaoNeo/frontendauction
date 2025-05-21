@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { BackButtonComponent } from './component/back-button/back-button.component';
 import { SignalRService } from './services/signal-r.service';
+import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ import { SignalRService } from './services/signal-r.service';
     FooterComponent,
     SidebarComponent,
     NgIf,
+    ChatBotComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -59,6 +61,7 @@ export class AppComponent {
     '/bid-watchlist',
     '/bid-add-to-cart',
     '/asset-details',
+    '/orders',
   ];
 
   const dynamicPatterns = [

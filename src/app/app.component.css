@@ -36,7 +36,6 @@ body {
   background-color: #f8f9fa;
   border-right: 1px solid #dee2e6;
   overflow-y: auto; /* allows scrolling inside */
-  height: calc(100vh - 120px); /* adjust to fit under header/footer */
   position: relative;
 }
 

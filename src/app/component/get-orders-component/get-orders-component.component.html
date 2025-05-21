@@ -1,0 +1,21 @@
+<div class="container mt-4">
+  <h2>My Orders</h2>
+
+  <div *ngIf="isLoading" class="alert alert-info">Loading orders...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="!isLoading && orders.length === 0" class="alert alert-warning">
+    No orders found.
+  </div>
+
+  <div *ngIf="orders.length > 0" class="order-grid mt-3">
+    <div class="order-card" *ngFor="let order of orders">
+      <img [src]="order.thumbnailUrl" alt="{{ order.title }}" class="order-image" />
+      <div class="order-info">
+        <h5 class="order-title">{{ order.title }}</h5>
+        <p class="order-description">{{ order.description }}</p>
+        <p class="order-price">₹{{ order.price }}</p>
+      </div>
+    </div>
+  </div>
+</div>

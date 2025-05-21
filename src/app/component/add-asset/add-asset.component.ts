@@ -15,11 +15,13 @@ import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
 import { AuctionService } from '../../services/auction.service';
 import { AssetCategory } from '../../modals/assetcategories';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-add-asset',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,NgSelectModule],
   templateUrl: './add-asset.component.html',
   styleUrl: './add-asset.component.css',
 })
@@ -35,11 +37,7 @@ export class AddAssetComponent {
   imagePreviews: string[] = [];
 
 
-  categories = [
-    { id: 1, name: 'Auction' },
-    { id: 2, name: 'Fixed Price' },
-    { id: 3, name: 'Instant Buy' },
-  ];
+  categories: AssetCategory[] = [];
 
   // Optional mapping for cleaner field names
   fieldLabels: { [key: string]: string } = {
@@ -144,13 +142,11 @@ export class AddAssetComponent {
     private router: Router,
     private assetService: ManageAssetService,
     private location: Location,
+    private assetCategoriesService: AssetCategoriesService,
     private auctionService: AuctionService
   ) {
     this.assetForm = this.fb.group({
-      assetNumber: [
-        '',
-        [Validators.required, Validators.pattern(/^[0-9]{7}$/)],
-      ],
+    
       title: ['', [Validators.required, Validators.maxLength(255)]],
       categoryId: [0, [Validators.required, Validators.maxLength(10)]],
       deposit: [
@@ -219,6 +215,16 @@ export class AddAssetComponent {
     // Log asset object on page load
     this.fetchAuctions();
     console.log('Asset on page load:', this.asset);
+    this.assetCategoriesService.getAll().subscribe({
+  next: (data) => {
+    this.categories = data;
+    console.log('Categories:', this.categories);
+  },
+  error: (err) => {
+    console.error('Error fetching categories', err);
+    Swal.fire('Error!', 'Failed to load categories.', 'error');
+  },
+});
 
     
     // Listen to value changes of the form
@@ -227,7 +233,21 @@ export class AddAssetComponent {
     });
   }
   
-  
+  getSelectedAuctionText(): string {
+  const selected = this.auctions.filter(a => this.asset.auctionIds.includes(a.auctionId));
+  return selected.map(a => `#${a.auctionNumber}`).join(', ');
+}
+
+toggleAuctionSelection(id: number) {
+  const index = this.asset.auctionIds.indexOf(id);
+  if (index > -1) {
+    this.asset.auctionIds.splice(index, 1);
+  } else {
+    this.asset.auctionIds.push(id);
+  }
+  this.onAuctionSelectionChange(this.asset.auctionIds);
+}
+
   fetchAuctions(): void {
     this.auctionService.getAllAuctions().subscribe({
       next: (data) => {
@@ -414,7 +434,7 @@ export class AddAssetComponent {
     const formData = new FormData();
 
     // Append asset properties
-    formData.append('AssetNumber', this.asset.assetNumber);
+    // formData.append('AssetNumber', this.asset.assetNumber);
     formData.append('Title', this.asset.title);
     formData.append('CategoryId', this.asset.categoryId.toString());
     formData.append('Deposit', this.asset.deposit.toString());
@@ -719,16 +739,7 @@ export class AddAssetComponent {
         this.auctionError = '';
       }
 
-      // if (this.asset.detailsJson.some(detail =>
-      //     !detail.attributeName || detail.attributeName.trim() === '' ||
-      //     !detail.attributeValue || detail.attributeValue.trim() === ''
-      //   )
-      // ) {
-      //   this.attributeError = 'All attribute names and values must be filled.';
-      // }else{
-      //   this.attributeError = '';
-      // }
-
+  
       if (this.asset.detailsJson.length === 0 || this.asset.detailsJson == null) {
         this.attributeError = 'At least one detail is required.';
       } else if (this.asset.detailsJson.some(detail => 
@@ -837,11 +848,22 @@ export class AddAssetComponent {
     }
     event.target.value = '';
   }
-
+  
   removeGalleryItem(index: number): void {
     this.asset.galleryFiles.splice(index, 1);
     this.imagePreviews.splice(index, 1); // Remove the corresponding preview
   }
+  fetchCategories(): void {
+  this.assetCategoriesService.getAll().subscribe({
+    next: (data) => {
+      this.categories = data;
+    },
+    error: (err) => {
+      console.error('Error fetching categories', err);
+      Swal.fire('Error!', 'Failed to load categories.', 'error');
+    }
+  });
+}
 
   onImageDrop(event: DragEvent): void {
     event.preventDefault();
@@ -979,233 +1001,3 @@ export class AddAssetComponent {
     event.preventDefault();
   }
 }
-// onWinnerDocDrop(event: DragEvent): void {
-//   event.preventDefault();
-//   this.winnerDocError = '';
-
-//   const file = event.dataTransfer?.files?.[0];
-//   if (!file) return;
-
-//   if (file.size > 1 * 1024 * 1024) {
-//     this.winnerDocError = 'Unable to upload: File size must be under 1MB.';
-//     return;
-//   }
-
-//   if (file.type === 'application/pdf') {
-//     const reader = new FileReader();
-//     reader.onload = () => {
-//       const result = reader.result as string;
-//       this.asset.winnerDocuments.push(result);
-//     };
-//     reader.readAsDataURL(file);
-//   } else {
-//     this.winnerDocError = 'Only PDF files are allowed.';
-//   }
-// }
-
-// === File Input Handler ===
-// onWinnerDocumentSelected(event: any): void {
-//   const file: File = event.target.files[0];
-//   this.winnerDocError = '';
-
-//   if (!file) return;
-
-//   if (file.size > 1 * 1024 * 1024) {
-//     this.winnerDocError = 'Unable to upload: File size must be under 1MB.';
-//     event.target.value = '';
-//     return;
-//   }
-
-//   if (file.type === 'application/pdf') {
-//     const reader = new FileReader();
-//     reader.onload = () => {
-//       const result = reader.result as string;
-//       this.asset.winnerDocuments.push(result);
-//     };
-//     reader.readAsDataURL(file);
-//   } else {
-//     this.winnerDocError = 'Only PDF files are allowed.';
-//   }
-
-//   event.target.value = '';
-// }
-
-// // === Remove Handler ===
-// removeWinnerDocument(index: number): void {
-//   this.asset.winnerDocuments.splice(index, 1);
-// }
-
-// // === Type Checkers (if needed) ===
-// isPdfDoc(url: string): boolean {
-//   return url.endsWith('.pdf') || url.includes('application/pdf');
-// }
-
-// isPdfDataUrlDoc(url: string): boolean {
-//   return url.startsWith('data:');
-// }
-
-// isUrlDoc(url: string): boolean {
-//   return /^https?:\/\//.test(url);
-// }
-
-// getWinnerDocName(doc: string): string {
-//   if (this.isPdfDataUrlDoc(doc)) {
-//     return 'Uploaded PDF';
-//   } else {
-//     try {
-//       return decodeURIComponent(doc.split('/').pop() || doc);
-//     } catch {
-//       return doc;
-//     }
-//   }
-// }
-
-// Inside your AddAssetComponent
-
-// getCategoryId(value: string): number {
-//   switch (value) {
-//     case 'Auction': return 1;
-//     case 'Fixed Price': return 2;
-//     case 'Instant Buy': return 3;
-//     // case 'Real Estate': return 4;
-//     // case 'Art': return 5;
-//     // case 'Collectibles': return 6;
-//     default: return -1; // Default case if no match is found
-//   }
-// }
-
-// Convert all dropdown values to numeric IDs
-// getMappedDropdownValues(): any {
-//   return {
-//     makeOffer: this.getMakeOfferId(this.formValues.makeOffer),
-//     featured: this.getFeaturedId(this.formValues.featured),
-//     winnerAwarding: this.getWinnerAwardingId(this.formValues.winnerAwarding),
-//     deliveryRequired: this.getDeliveryRequiredId(this.formValues.deliveryRequired),
-//     status: this.getStatusId(this.formValues.status),
-//     vat: this.getVatId(this.formValues.vat),
-//     requestForViewing: this.getRequestForViewingId(this.formValues.requestForViewing),
-//     requestForInquiry: this.getRequestForInquiryId(this.formValues.requestForInquiry),
-//   };
-// }
-
-// preparePayload(): FormData {
-//   const formData = new FormData();
-
-//   const dropdownMapped = {
-//     makeOffer: this.getMakeOfferId(this.formValues.makeOffer),
-//     featured: this.getFeaturedId(this.formValues.featured),
-//     winnerAwarding: this.getWinnerAwardingId(this.formValues.winnerAwarding),
-//     deliveryRequired: this.getDeliveryRequiredId(this.formValues.deliveryRequired),
-//     statusId: this.getStatusId(this.formValues.status),
-//     vatid: this.getVatId(this.formValues.vat),
-//     requestForViewing: this.getRequestForViewingId(this.formValues.requestForViewing),
-//     requestForInquiry: this.getRequestForInquiryId(this.formValues.requestForInquiry),
-//   };
-
-//   const payload = {
-//     ...this.asset,
-//     ...dropdownMapped,
-//     // Remove details if your backend expects a different structure
-//     details: undefined
-//   };
-
-//   formData.append('asset', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
-
-//   // Append details
-//   this.asset.detailsJson.forEach((detail, index) => {
-//     formData.append(`details[${index}].attributeName`, detail.attributeName);
-//     formData.append(`details[${index}].attributeValue`, detail.attributeValue);
-//   });
-
-// // Append files
-// this.asset.galleryFiles.forEach(file => formData.append('galleryFiles', file));
-
-// this.documentUrls.forEach(url => formData.append('documentFiles', url));
-// this.asset.documentFiles.forEach(file => formData.append('documentFiles', file));
-
-// console.log('Request payload:', this.asset);
-
-//   console.log("this is payload" , formData);
-//   return formData;
-// }
-
-// // updateAsset(): void {
-// //   const dropdownMapped = this.getMappedDropdownValues();
-
-// //   // Example integration: attach to asset or send separately
-// //   const updatedPayload = {
-// //     ...this.asset,
-// //     ...dropdownMapped
-// //   };
-
-// //   console.log('Final Payload for Backend:', updatedPayload);
-// //   alert('Asset updated successfully!');
-// // }
-
-// updateAsset(): void {
-//   const payload = this.preparePayload();
-
-//   // Call your service to save the asset
-//   this.assetService.addAssetWithGallery(payload).subscribe({
-//     next: (response) => {
-//       console.log('Asset created successfully:', response);
-//       alert('Asset created successfully!');
-//       this.router.navigate(['assets']);
-//     },
-//     error: (error) => {
-//       console.error('Error creating asset:', error);
-//       alert('Error creating asset. Please try again.');
-//     }
-//   });
-// }
-
-// onGalleryFileSelected(event: any): void {
-//   const file: File = event.target.files[0];
-//   this.imageUploadError = '';
-//   if (file) {
-//     if (file.size > 500 * 1024) {
-//       this.imageUploadError = 'Image exceeds 500KB limit.';
-//       return;
-//     }
-//     const reader = new FileReader();
-//     reader.onload = () => {
-//       const result = reader.result as string;
-//       this.asset.gallery.push(result);
-//     };
-//     reader.readAsDataURL(file);
-//   }
-//   event.target.value = '';
-// }
-
-// convertToDataUrl(file: File): Promise<string> {
-//   return new Promise((resolve, reject) => {
-//     const reader = new FileReader();
-//     reader.onload = () => resolve(reader.result as string);
-//     reader.onerror = reject;
-//     reader.readAsDataURL(file);
-//   });
-// }
-
-// if (!this.isGalleryValid() || !this.isDocumentValid() || !this.assetForm.valid) {
-//   this.assetForm.markAllAsTouched();
-//   this.formSubmitted = true;
-//   return;
-// }
-// if (form.invalid) {
-//   // Touch all controls to show errors
-//   Object.values(form.controls).forEach(control => (control as AbstractControl).markAsTouched());
-//   return;
-// }
-
-// Call your service to save the asset
-// this.assetService.addAssetWithGallery(payload).subscribe({
-//   next: (response) => {
-//     console.log('Asset created successfully:', response);
-//     alert('Asset created successfully!');
-//     this.router.navigate(['assets']);
-//   },
-//   error: (error) => {
-//     console.error('Error creating asset:', error);
-//     alert('Error creating asset. Please try again.');
-//   }
-// });

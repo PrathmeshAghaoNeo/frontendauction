@@ -244,6 +244,11 @@
   color: #8335dc !important;
 }
 
+
+.slider-bg{
+    background-color: #d5bbf1;
+  }
+
 /* Responsive adjustments */
 @media (max-width: 767px) {
   .time-value {

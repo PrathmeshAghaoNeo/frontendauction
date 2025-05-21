@@ -19,7 +19,16 @@ export class ListService {
 
   constructor(private http: HttpClient,private router:Router) {}
 
-  // Cart methods
+  checkoutCart(payload: { userId: number; assetIds: number[] }) {
+  return this.http.post(`${this.baseUrl}/Orders/create-order`, payload); 
+}
+
+  getCheckoutOrders(userId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Orders/user/${userId}`);
+  }
+
+  
+
   addToCart(payload: CartRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/Cart/add`, payload);
   }
@@ -50,8 +59,6 @@ export class ListService {
     body: payload
   });
 }
-
-
 
   refreshComponent(): void {
   const currentUrl = this.router.url;

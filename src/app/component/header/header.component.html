@@ -33,31 +33,33 @@
         </div>
       </div>
       <div class="dropdown position-relative me-2" *ngIf="isLoggedIn">
-        <button class="btn bell-wrapper shadow-sm border-0 text-purple"
-                (click)="loadNotifications()"
-                id="notificationDropdown"
-                aria-expanded="false">
+        <button class="btn bell-wrapper shadow-sm border-0 text-purple rounded-bell" (click)="loadNotifications()"
+          id="notificationDropdown" aria-expanded="false">
           <i class="bi bi-bell fs-4"></i>
-          <span *ngIf="unseenWins.length > 0"
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm animate__animated animate__bounceIn">
-            {{ unseenWins.length }}
+          <span *ngIf="unseenWinDetails.length > 0"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm animate__animated animate__bounceIn">
+            {{ unseenWinDetails.length }}
             <span class="visually-hidden">unread notifications</span>
           </span>
         </button>
-      
-        <ul *ngIf="showNotifications"
-            class="custom-dropdown shadow-lg p-2"
-            aria-labelledby="notificationDropdown">
-          <li *ngIf="unseenWins.length === 0" class="dropdown-item text-muted fst-italic">
+
+        <ul *ngIf="showNotifications" class="custom-dropdown shadow-lg p-2" aria-labelledby="notificationDropdown">
+          <li *ngIf="unseenWinDetails.length === 0" class="dropdown-item text-muted fst-italic">
             No new notifications
           </li>
-          <li *ngFor="let win of unseenWins"
-              class="dropdown-item rounded-2 py-2 px-3 text-dark-purple fw-medium notification-hover">
-            🏆 You won: <span class="fw-semibold">{{ win.assetId }} with {{win.awardedPrice}}</span>
+          <li *ngFor="let win of unseenWinDetails"
+            class="dropdown-item rounded-2 py-2 px-3 text-dark-purple fw-medium notification-hover"
+            style="white-space: normal; word-wrap: break-word; line-height: 1.4; font-size: 14px;">
+            🏆 <span class="fw-semibold">Congratulations!</span><br />
+            You've won the auction for
+            <span class="fw-semibold">{{ win.assetName }}</span>
+            with
+            <span class="fw-semibold">{{ win.win.awardedPrice }} Bhd</span>
           </li>
+
         </ul>
       </div>
-      
+
 
 
       <button class="btn btn-outline-secondary rounded-circle me-2" type="button" routerLink="/settings"

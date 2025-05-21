@@ -20,8 +20,8 @@ import Swal from 'sweetalert2';
 })
 export class AssetDetailComponent implements OnInit, OnDestroy {
   // assetId: number = 0;
-   assetId: number = 107;
-    auctionId: number = 0;
+   assetId: number = 6;
+    auctionId: number = 99;
     userId: number = 1;
   asset: Asset | null = null;
   auction!: Auction;
@@ -57,17 +57,15 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private signalR: SignalRService, private bidService: BidService, private auctionService: AuctionService,private router: Router,
-    private assetService: ManageAssetService
+    private assetService: ManageAssetService,private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    // Get asset ID from route parameters
-    // this.route.params.subscribe(params => {
-    //   this.assetId = +params['id']; // Convert to number
-    //   this.loadAssetDetails();
-    // });
-
-    // this.startCountdown();
+    const paramsId = this.route.snapshot.queryParams['id'] ? +atob(this.route.snapshot.queryParams['id']) : null;
+    console.log(paramsId)
+    if(paramsId != null) {
+      this.assetId = paramsId
+    }
     this.signalR.startConnection();
     this.signalR.bidUpdates$.subscribe(data => {
       console.log(data);

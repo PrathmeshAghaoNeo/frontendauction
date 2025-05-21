@@ -6,6 +6,8 @@ import { AuthService } from '../../services/auth.service';
 import { filter } from 'rxjs/operators';
 import { UserService } from '../../services/user.service';
 import { SignalRService } from '../../services/signal-r.service';
+import { ManageAssetService } from '../../services/asset.service';
+import { Asset } from '../../modals/manage-asset';
 
 @Component({
   selector: 'app-header',
@@ -17,11 +19,9 @@ import { SignalRService } from '../../services/signal-r.service';
 export class HeaderComponent implements OnInit {
   isLoggedIn = false;
   currentRoute = '';
-  unseenWins: any[] = [];
   userId: number = 0;
   showNotifications = false;
-  
-  
+  unseenWinDetails: WinWithAsset[] = [];
   // constructor(public authService: AuthService, private router: Router) {
     //   this.authService.role$.subscribe(role => {
       //     this.isLoggedIn = !!role;
@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit {
     //     this.currentRoute = event.urlAfterRedirects
   //   });
   // }
-  constructor(public authService: AuthService, private router: Router, private winService: UserService,private signalR: SignalRService) {
+  constructor(public authService: AuthService, private router: Router, private winService: UserService,private signalR: SignalRService,private assetService: ManageAssetService) {
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = !!isLoggedIn;
     });
@@ -58,25 +58,49 @@ export class HeaderComponent implements OnInit {
   }
   getUnseenUserWins(userId: number) {
     this.winService.getUnseenUserWins(userId).subscribe({
-      next: (data) => {this.unseenWins = data,console.log(data)},
+      next: (wins) => {
+        this.unseenWinDetails = [];
+  
+        wins.forEach((win: any) => {
+          this.assetService.getAssetById(win.assetId).subscribe({
+            next: (asset) => {
+              this.unseenWinDetails.push({
+                win: win,
+                assetName: asset.title
+              });
+              console.log(this.unseenWinDetails)
+            },
+            error: (err) => console.error('Error loading asset:', err)
+          });
+        });
+      },
       error: (err) => console.error('Error loading notifications:', err)
     });
   }
   
+  
   loadNotifications() {
+    const wasOpen = this.showNotifications;
     this.showNotifications = !this.showNotifications;
   
-    if (this.showNotifications && this.unseenWins.length > 0) {
-      const userId = this.authService.getUserIdJwt();
-      if (userId) {
+    const userId = this.authService.getUserIdJwt();
+    if (!userId) return;
+  
+    if (this.showNotifications) {
+      if (this.unseenWinDetails.length > 0) {
         this.winService.MarkAsSeen(userId).subscribe({
-          next: () => {
-          },
+          next: () => {},
           error: (err) => console.error('Mark as seen failed', err)
         });
       }
+    } else if (wasOpen) {
+      this.getUnseenUserWins(userId);
     }
   }
+  
+ 
+
+
   logout() {
     this.authService.logout();
   }
