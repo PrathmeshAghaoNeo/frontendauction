@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-/* ==================== ADD-ASSET FORM STYLES ==================== */
-
-/* Add Asset Form Container */
-=======
 .auction-form-title {
   color: #6a1b9a;
   font-weight: 600;
@@ -36,7 +31,6 @@
     font-size: 2rem; /* Makes the arrow icon larger */
   }
   
->>>>>>> 95ece7aed413107f8dbf8351ac690b01732c6dcb
 .add-asset-container {
     background-color: white;
     padding: var(--form-padding);

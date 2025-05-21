@@ -43,6 +43,8 @@ export interface Asset {
   documents: AssetDocumentFormDto[];
   attributes: AssetDetailDto[];
   auctionStatusId?: number;
+  isAvailableForDirectSale: boolean;
+  isDeleted: boolean;
 }
 
 export interface AssetGalleryDto {

@@ -86,6 +86,8 @@ export class EditAssetComponent implements OnInit {
     galleries: [],
     documents: [],
     attributes: [],
+    isAvailableForDirectSale:false,
+    isDeleted:false,
   };
 
   isLoading: boolean = false;

@@ -57,6 +57,7 @@ import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-ca
 import { PageNotFoundComponent } from './component/page-not-found/page-not-found.component';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
+import { ReportsListComponent } from './component/reports-list/reports-list.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -93,7 +94,9 @@ export const routes: Routes = [
     {path:'update-transaction/:id', component:UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
-    {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    // {path:'reports', component:ReportsListComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'reports',component:ReportsListComponent},
+
     {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'User' }},
     {path: 'testing', component:ChartComponent},  
@@ -116,7 +119,8 @@ export const routes: Routes = [
 
     {path:'page-not-found',component:PageNotFoundComponent},
     {path:'chat-bot', component:ChatBotComponent},
-    {path: 'orders', component:GetOrdersComponentComponent}
+    {path: 'orders', component:GetOrdersComponentComponent},
+    {path:'reports',component:ReportsListComponent}
 
     
     

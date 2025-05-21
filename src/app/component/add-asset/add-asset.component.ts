@@ -4,6 +4,7 @@ import {
   FormBuilder,
   FormGroup,
   FormsModule,
+  NgSelectOption,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,12 +17,12 @@ import { Auction } from '../../modals/auctions';
 import { AuctionService } from '../../services/auction.service';
 import { AssetCategory } from '../../modals/assetcategories';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
-import { NgSelectModule } from '@ng-select/ng-select';
+// import {NgSelectModule} from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-add-asset',
   standalone: true,
-  imports: [CommonModule, FormsModule,NgSelectModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-asset.component.html',
   styleUrl: './add-asset.component.css',
 })
