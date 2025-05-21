@@ -67,7 +67,6 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     //   this.loadAssetDetails();
     // });
 
-    // // Start countdown immediately to ensure UI is updated immediately
     // this.startCountdown();
     this.signalR.startConnection();
     this.signalR.bidUpdates$.subscribe(data => {
@@ -76,13 +75,14 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         this.loadBid();
       }
     })
+    this.signalR.winnerUpdates$.subscribe(data => {
+      console.log(data);
+    })
     this.loadAssetDetails();
     
-    this.loadBid();
   }
 
   ngOnDestroy(): void {
-    // Clear the interval when component is destroyed
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }
@@ -97,6 +97,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         this.placeBid.auctionId = this.asset.auctionIds[0];
         console.log(this.asset);
         this.loadAuctionDetails();
+    this.loadBid();
         this.isLoading = false;
       },
       error: (error) => {
@@ -149,7 +150,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   }
   decrementBid() {
     if (this.asset?.minIncrement) {
-      const minAllowedBid =  this.bidData?.highestBid > 0 ? this.bidData.highestBid  : (this.asset.startingPrice ?? 0) + (this.asset.minIncrement ?? 0);
+      const minAllowedBid =  this.bidData?.highestBid > 0 ? this.bidData.highestBid + + (this.asset.minIncrement ?? 0)  : (this.asset.startingPrice ?? 0) + (this.asset.minIncrement ?? 0);
       const nextValue = this.placeBid.bidAmount - this.asset.minIncrement;
       if (nextValue >= minAllowedBid) {
         this.placeBid.bidAmount = nextValue;
@@ -160,7 +161,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   }
 
 
-  //counter logic here 
+  //counter logic here (Bidding)
 
   pad(value: number): string {
     return value < 10 ? '0' + value : value.toString();
@@ -214,7 +215,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         Swal.fire({
           icon: 'success',
           title: 'Bid Placed!',
-          text: `Your bid was placed successfully! Bid ID:`,
+          text: `Your bid was placed successfully!`,
           timer: 2000,
           showConfirmButton: false
         });

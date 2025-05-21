@@ -4,32 +4,64 @@
       <img src="/assets/mazadlogo.png" alt="Admin Logo" height="40" class="d-inline-block align-top rounded">
     </a>
 
-     <button class="btn btn-outline-primary me-2" type="button" routerLink="/bid-watchlist" routerLinkActive="active">
-        <i class="bi bi-bookmark-heart"></i> Watchlist
-      </button>
+    <button class="btn btn-outline-primary me-2" type="button" routerLink="/bid-watchlist" routerLinkActive="active">
+      <i class="bi bi-bookmark-heart"></i> Watchlist
+    </button>
 
-      <button class="btn btn-outline-success me-2" type="button" routerLink="/bid-add-to-cart" routerLinkActive="active">
-        <i class="bi bi-cart"></i> Cart
-      </button>
+    <button class="btn btn-outline-success me-2" type="button" routerLink="/bid-add-to-cart" routerLinkActive="active">
+      <i class="bi bi-cart"></i> Cart
+    </button>
 
-      
 
-       <button class="btn btn-outline-success me-2" type="button" routerLink="/direct-sale-assets/2" routerLinkActive="active">
-        <i class="bi bi-cart"></i> direct-sale-assets
-      </button>
+
+    <button class="btn btn-outline-success me-2" type="button" routerLink="/direct-sale-assets/2"
+      routerLinkActive="active">
+      <i class="bi bi-cart"></i> direct-sale-assets
+    </button>
 
     <div class="d-flex align-items-center" *ngIf="!onLoginPage()">
       <div class="dropdown me-2" ngbDropdown *ngIf="isLoggedIn">
-        
+
 
         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="addDropdown" ngbDropdownMenu>
-          <button class="dropdown-item btn-outline-secondary" type="button" routerLink="/newUser" routerLinkActive="active">New User</button>
-          <button class="dropdown-item btn-outline-secondary" type="button" routerLink="/newAuction" routerLinkActive="active">New Auction</button>
-          <button class="dropdown-item btn-outline-secondary" type="button" routerLink="/newAsset" routerLinkActive="active">New Asset</button>
+          <button class="dropdown-item btn-outline-secondary" type="button" routerLink="/newUser"
+            routerLinkActive="active">New User</button>
+          <button class="dropdown-item btn-outline-secondary" type="button" routerLink="/newAuction"
+            routerLinkActive="active">New Auction</button>
+          <button class="dropdown-item btn-outline-secondary" type="button" routerLink="/newAsset"
+            routerLinkActive="active">New Asset</button>
         </div>
       </div>
+      <div class="dropdown position-relative me-2" *ngIf="isLoggedIn">
+        <button class="btn bell-wrapper shadow-sm border-0 text-purple"
+                (click)="loadNotifications()"
+                id="notificationDropdown"
+                aria-expanded="false">
+          <i class="bi bi-bell fs-4"></i>
+          <span *ngIf="unseenWins.length > 0"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm animate__animated animate__bounceIn">
+            {{ unseenWins.length }}
+            <span class="visually-hidden">unread notifications</span>
+          </span>
+        </button>
+      
+        <ul *ngIf="showNotifications"
+            class="custom-dropdown shadow-lg p-2"
+            aria-labelledby="notificationDropdown">
+          <li *ngIf="unseenWins.length === 0" class="dropdown-item text-muted fst-italic">
+            No new notifications
+          </li>
+          <li *ngFor="let win of unseenWins"
+              class="dropdown-item rounded-2 py-2 px-3 text-dark-purple fw-medium notification-hover">
+            🏆 You won: <span class="fw-semibold">{{ win.assetId }} with {{win.awardedPrice}}</span>
+          </li>
+        </ul>
+      </div>
+      
 
-      <button class="btn btn-outline-secondary rounded-circle me-2" type="button" routerLink="/settings" routerLinkActive="active" *ngIf="isLoggedIn">
+
+      <button class="btn btn-outline-secondary rounded-circle me-2" type="button" routerLink="/settings"
+        routerLinkActive="active" *ngIf="isLoggedIn">
         <i class="bi bi-gear"></i>
       </button>
 
@@ -37,7 +69,8 @@
         <i class="bi bi-box-arrow-right me-1"></i>Logout
       </button>
 
-      <button *ngIf="!isLoggedIn" class="btn btn-outline-dark rounded-pill" type="button" routerLink="/login" routerLinkActive="active">
+      <button *ngIf="!isLoggedIn" class="btn btn-outline-dark rounded-pill" type="button" routerLink="/login"
+        routerLinkActive="active">
         <i class="bi bi-person-circle me-1"></i>Login
       </button>
     </div>
