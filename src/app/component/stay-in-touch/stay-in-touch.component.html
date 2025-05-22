@@ -1,0 +1,41 @@
+<!-- stay-in-touch.component.html -->
+<div class="social-media-section">
+  <div class="container py-4 px-0">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Stay In Touch</h5>
+        
+        <div class="social-accounts-list">
+          <ng-container *ngFor="let account of socialAccounts">
+            <div class="social-account-item">
+              <div class="account-info">
+                <div class="account-name">{{account.name}}</div>
+                <div class="account-input-container">
+                  <input type="text" 
+                        class="form-control account-input" 
+                        [value]="account.handle" 
+                        readonly 
+                        [placeholder]="account.name + ' URL'">
+                </div>
+              </div>
+              
+              <div class="account-action">
+                <button *ngIf="account.connected" 
+                        class="btn btn-outline-secondary disconnect-btn"
+                        (click)="disconnect(account)">
+                  <i class="bi bi-x-circle"></i> Disconnect
+                </button>
+                
+                <button *ngIf="!account.connected" 
+                        class="btn btn-danger connect-btn"
+                        (click)="connect(account)">
+                  <i class="bi bi-link-45deg"></i> Connect
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

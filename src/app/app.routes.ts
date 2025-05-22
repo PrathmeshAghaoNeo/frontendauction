@@ -57,6 +57,7 @@ import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-ca
 import { PageNotFoundComponent } from './component/page-not-found/page-not-found.component';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
+import { StayInTouchComponent } from './component/stay-in-touch/stay-in-touch.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -115,7 +116,8 @@ export const routes: Routes = [
 
     {path:'page-not-found',component:PageNotFoundComponent},
     {path:'chat-bot', component:ChatBotComponent},
-    {path: 'orders', component:GetOrdersComponentComponent}
+    {path: 'orders', component:GetOrdersComponentComponent},
+    {path:'stay-in-touch',component:StayInTouchComponent},
 
     
     

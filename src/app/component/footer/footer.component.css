@@ -1,0 +1,29 @@
+.maincontainer {
+  padding-top: 60px;
+}
+
+footer h6 {
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+footer a {
+  text-decoration: none;
+  font-size: 18px;
+}
+
+footer i {
+  font-size: 1.9rem;
+}
+
+.footer-links li {
+  margin-bottom: 12px;
+}
+
+.social-icon i {
+  transition: transform 0.3s ease;
+}
+
+.social-icon:hover i {
+  transform: scale(1.4);
+}

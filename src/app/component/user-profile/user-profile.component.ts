@@ -7,6 +7,8 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { UserView } from '../../modals/user';
 import Swal from 'sweetalert2';
+import { StayInTouchComponent } from '../stay-in-touch/stay-in-touch.component';
+import { HttpClientModule } from '@angular/common/http';
 
 interface UserProfile {
   userId: number;
@@ -30,13 +32,15 @@ interface UserProfile {
   instagram?: string;
   twitter?: string;
   facebook?: string;
+  linkedIn?: string;
+  youTube?: string;
   [key: string]: any; // Index signature to allow dynamic property access
 }
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+ imports: [CommonModule, FormsModule, StayInTouchComponent, HttpClientModule],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -62,7 +66,9 @@ export class UserProfileComponent implements OnInit {
     deposit: 0,
     instagram: '',
     twitter: '',
-    facebook: ''
+    facebook: '',
+    linkedIn: '',
+    youTube: ''
   };
 
   isLoading = true;
