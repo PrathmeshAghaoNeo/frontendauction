@@ -74,11 +74,14 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
 
   ngOnInit(): void {
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
+    console.log('in categorymethod', categoryId);
     if (!isNaN(categoryId)) {
-      this.assetService.getDirectAssets(categoryId).subscribe({
+          console.log('inside categorymethod', categoryId);
+
+      this.listService.getAuctionAssetsByCategory(categoryId).subscribe({
         next: (data) => {
           this.assets = data;
-          this.originalAssets = [...data]; // Keep a copy for filtering/sorting
+          this.originalAssets = [...data]; 
           this.noAssetsFound = this.assets.length === 0;
           console.log('Assets:', this.assets);
         },
@@ -160,31 +163,31 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
   isInWishlist(assetId: number): boolean {
   return this.wishlistAssetIds.includes(assetId);
 } 
-  toggleWishlist(assetId: number): void {
-    if (this.isInWishlist(assetId)) {
-      const payload = { userId: this.userId, assetId: assetId };
-      this.listService.removeFromWishlist(payload).subscribe({
-        next: () => {
-          this.wishlistAssetIds = this.wishlistAssetIds.filter(id => id !== assetId);
-          this.showToast(`Removed from wishlist.`, 'Removed!', 'info');
-        },
-        error: (err) => {
-          this.showToast(err.error.message || 'Error removing from wishlist.', 'Error!', 'error');
-        },
-      });
-    } else {
-      const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
-      this.listService.addToWishlist(payload).subscribe({
-        next: () => {
-          this.wishlistAssetIds.push(assetId);
-          this.showToast('Added to wishlist.', 'Added!', 'success');
-        },
-        error: (err) => {
-          this.showToast(err.error.message || 'Error adding to wishlist.', 'Error!', 'error');
-        },
-      });
-    }
-  }
+  // toggleWishlist(assetId: number): void {
+  //   if (this.isInWishlist(assetId)) {
+  //     const payload = { userId: this.userId, assetId: assetId };
+  //     this.listService.removeFromWishlist(payload).subscribe({
+  //       next: () => {
+  //         this.wishlistAssetIds = this.wishlistAssetIds.filter(id => id !== assetId);
+  //         this.showToast(`Removed from wishlist.`, 'Removed!', 'info');
+  //       },
+  //       error: (err) => {
+  //         this.showToast(err.error.message || 'Error removing from wishlist.', 'Error!', 'error');
+  //       },
+  //     });
+  //   } else {
+  //     const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
+  //     this.listService.addToWishlist(payload).subscribe({
+  //       next: () => {
+  //         this.wishlistAssetIds.push(assetId);
+  //         this.showToast('Added to wishlist.', 'Added!', 'success');
+  //       },
+  //       error: (err) => {
+  //         this.showToast(err.error.message || 'Error adding to wishlist.', 'Error!', 'error');
+  //       },
+  //     });
+  //   }
+  // }
 
 
   navigateToAsset(assetId: number | undefined): void {
@@ -193,6 +196,10 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
   }
 }
+
+  goBack() {
+    window.history.back();
+  }
 }
 
 

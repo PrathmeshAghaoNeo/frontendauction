@@ -21,6 +21,9 @@ export class BidAddToCartComponent implements AfterViewInit {
   cartAssets: DirectSaleAssetDto[] = [];
   userId: number = 1;
 
+
+  
+
   constructor(
     private assetService: ManageAssetService,
     private listservice: ListService,
@@ -54,6 +57,7 @@ confirmCheckout(): void {
       this.showToast('Checkout successful!', 'Success', 'success');
       this.cartAssets = []; 
       this.confirmModal.hide();
+      this.router.navigate(['/landing-page']) /// here why imnot getting the category id 
     },
     error: () => {
       this.showToast('Checkout failed.', 'Error', 'error');
@@ -84,7 +88,7 @@ confirmCheckout(): void {
       'text-white'
     );
     if (type === 'success') {
-      headerEl.classList.add('bg-danger', 'text-white');
+      headerEl.classList.add('bg-success', 'text-white');
     } else if (type === 'error') {
       headerEl.classList.add('bg-danger', 'text-white');
     } else {

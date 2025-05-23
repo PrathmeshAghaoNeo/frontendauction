@@ -57,6 +57,7 @@ import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-ca
 import { PageNotFoundComponent } from './component/page-not-found/page-not-found.component';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
+import { GetOrderDetailsComponent } from './component/get-order-details/get-order-details.component';
 import { ReportsListComponent } from './component/reports-list/reports-list.component';
 import { RefundRequestComponent } from './component/profile/refund-request/refund-request.component';
 import { DepositPageComponent } from './component/deposit-page/deposit-page.component';
@@ -126,6 +127,8 @@ export const routes: Routes = [
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details',component:AssetDetailComponent},
     // {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
+
+    {path:'order-details/:assetId',component:GetOrderDetailsComponent},
  
 
     {path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },

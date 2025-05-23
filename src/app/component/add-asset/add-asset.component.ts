@@ -37,6 +37,10 @@ export class AddAssetComponent {
 
   imagePreviews: string[] = [];
 
+  // this is for form submit the detsials
+  detailsAdded: boolean = false;
+
+
 
   categories: AssetCategory[] = [];
 
@@ -127,13 +131,6 @@ export class AddAssetComponent {
   vatOptions = ['Exclusive', 'Inclusive', 'Not Applicable'];
   requestForViewingOptions = ['On', 'Off'];
   requestForInquiryOptions = ['On', 'Off'];
-  auctionOptions = [
-    'Summer Auction 2023 AUC12345',
-    'Winter Auction 2023 AUC12341',
-    'Premium Collection Auction AUC12323',
-    'Special Edition Auction AUC29212',
-  ];
-
 
 
 
@@ -212,6 +209,7 @@ export class AddAssetComponent {
   }
   
 
+  
   ngOnInit() {
     // Log asset object on page load
     this.fetchAuctions();
@@ -301,15 +299,7 @@ toggleAuctionSelection(id: number) {
     this.asset.courtCaseNumber = input.value;
   }
 
-  // Add this with your other dropdown options
-  // Add these with your other dropdown options
 
-  // auctionOptions = [
-  //   { id: 43, name: 'Summer Auction 2023 AUC12345' },
-  //   { id: 41, name: 'Winter Auction 2023 AUC12341' },
-  //   { id: 46, name: 'Premium Collection Auction AUC12323' },
-  //   { id: 48, name: 'Special Edition Auction AUC29212' }
-  // ];
 
   getAuctionId(value: string): number {
     switch (value) {
@@ -577,6 +567,11 @@ toggleAuctionSelection(id: number) {
     //   return;
     // }
 
+     if (!this.detailsAdded || this.asset.detailsJson.length === 0) {
+    this.attributeError = 'Please add at least one attribute before submitting.';
+    return; 
+  }
+
 
     if (
       !this.isGalleryValid() ||
@@ -800,6 +795,7 @@ toggleAuctionSelection(id: number) {
 
   addDetail(): void {
     this.asset.detailsJson.push({ attributeName: '', attributeValue: '' });
+    this.detailsAdded = true;
   }
 
   removeDetail(index: number): void {

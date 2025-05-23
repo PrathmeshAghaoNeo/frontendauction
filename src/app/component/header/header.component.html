@@ -4,21 +4,8 @@
       <img src="/assets/mazadlogo.png" alt="Admin Logo" height="40" class="d-inline-block align-top rounded">
     </a>
 
-    <button class="btn btn-outline-primary me-2" type="button" routerLink="/bid-watchlist" routerLinkActive="active">
-      <i class="bi bi-bookmark-heart"></i> Watchlist
-    </button>
-
-    <button class="btn btn-outline-success me-2" type="button" routerLink="/bid-add-to-cart" routerLinkActive="active">
-      <i class="bi bi-cart"></i> Cart
-    </button>
-
-
-
-    <button class="btn btn-outline-success me-2" type="button" routerLink="/direct-sale-assets/2"
-      routerLinkActive="active">
-      <i class="bi bi-cart"></i> direct-sale-assets
-    </button>
-
+   
+    
     <div class="d-flex align-items-center" *ngIf="!onLoginPage()">
       <div class="dropdown me-2" ngbDropdown *ngIf="isLoggedIn">
 
