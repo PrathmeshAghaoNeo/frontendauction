@@ -57,6 +57,7 @@ import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-ca
 import { PageNotFoundComponent } from './component/page-not-found/page-not-found.component';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
+import { GetOrderDetailsComponent } from './component/get-order-details/get-order-details.component';
 import { AuditTrailComponent } from './component/audit-trail/audit-trail.component';
 
 export const routes: Routes = [
@@ -75,36 +76,53 @@ export const routes: Routes = [
   { path: 'update-auction/:id', component: UpdateAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'assets', component: ManageAssetComponent },
   { path: 'newAsset', component: AddAssetComponent },
-  { path: 'update-asset/:assetId', component: EditAssetComponent },
-  { path: 'requests', component: ManageRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'updateUser', component: UpdateUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'detailsUser', component: DetailsUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'requestsnew', component: AddRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'request-detail/:id', component: EditRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'assetcategories', component: ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'addassetcategories', component: AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'update-assetcategories/:id', component: UpdateAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'transactions', component: TransactionManagementComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'newTransaction', component: AddTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'update-transaction/:id', component: UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'categories', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'roles', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'reports', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'view-request', component: ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'user-profile', component: UserProfileComponent, canActivate: [RoleGuard], data: { role: 'User' } },
-  { path: 'testing', component: ChartComponent },
-  { path: 'user-signup', component: UserSignupComponent },
-  { path: 'asset-details', component: AssetDetailComponent },
-  { path: 'audit-trial', component: AuditTrailComponent },
-  { path: 'direct-sale-assetpage/:id', component: DirectSaleComponent },
-  { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
-  { path: 'auction-assets/:categoryId', component: AuctionAssetsComponent },
-  { path: 'testing', component: ChartComponent },
-  { path: 'signal', component: SignalrTestComponent },
-  { path: 'direct-bid', component: DirectBidComponent },
-  { path: 'bid-watchlist', component: BidWatchlistComponent },
-  { path: 'bid-add-to-cart', component: BidAddToCartComponent },
-  { path: '**', component: PageNotFoundComponent }
+  { path: 'update-asset/:assetId', component: EditAssetComponent},
+  
+  
+  
+
+    { path: 'requests', component: ManageRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' } },
+    {path:'updateUser', component:UpdateUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'detailsUser', component:DetailsUserComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'requestsnew', component: AddRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    { path: 'request-detail/:id', component: EditRequestsComponent,canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'assetcategories', component:ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'addassetcategories', component:AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'update-assetcategories/:id', component:UpdateAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'transactions', component:TransactionManagementComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'newTransaction', component:AddTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'update-transaction/:id', component:UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'Admin' }},
+    {path: 'testing', component:ChartComponent},  
+    {path:'user-signup',component:UserSignupComponent},
+    {path:'asset-details',component:AssetDetailComponent},
+    {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
+
+    {path:'order-details/:assetId',component:GetOrderDetailsComponent},
+ 
+
+    {path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
+    
+    {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
+    
+    {path: 'testing', component:ChartComponent}, 
+    {path: 'signal', component:SignalrTestComponent},
+    
+    { path: 'direct-bid', component: DirectBidComponent},
+    { path: 'bid-watchlist', component: BidWatchlistComponent},
+    { path: 'bid-add-to-cart', component: BidAddToCartComponent},
+
+    {path:'page-not-found',component:PageNotFoundComponent},
+    {path:'chat-bot', component:ChatBotComponent},
+    {path: 'orders', component:GetOrdersComponentComponent}
+
+    
+    
+    
 ];
 
 

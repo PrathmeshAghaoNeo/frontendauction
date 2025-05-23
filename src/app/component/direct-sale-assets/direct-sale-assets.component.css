@@ -28,19 +28,17 @@
 .toolbar-left button {
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
-  padding: 6px 10px;
-  border-radius: 8px;
   background-color: white;  
   cursor: pointer;
 }
 
-.toolbar-left img {
+.toolbar-right img {
   width: 43px;
     height: 34px;
-    margin-top: 10px;
   object-fit: contain;
   margin-right: 6px;
+  align-items: center;
+  vertical-align: middle; 
 }
 
 .toolbar-center .search-icon {
@@ -75,7 +73,7 @@
 
 .plates-container.grid-view {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
    padding: 2rem;
 }
@@ -348,3 +346,13 @@
 }
 
 
+.back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn-image {
+  width: 32px;
+  height: 32px;
+}

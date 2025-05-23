@@ -27,7 +27,10 @@ export class ListService {
     return this.http.get(`${this.baseUrl}/Orders/user/${userId}`);
   }
 
-  
+ getAuctionAssetsByCategory(categoryId: number): Observable<any> {
+  return this.http.get(`${this.baseUrl}/Assets/auctionasset?categoryId=${categoryId}`);
+}
+
 
   addToCart(payload: CartRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/Cart/add`, payload);

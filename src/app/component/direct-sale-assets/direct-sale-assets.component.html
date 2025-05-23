@@ -1,23 +1,19 @@
 <div class="top-toolbar">
   <div class="toolbar-left">
-    <!-- <button class="">
-      <img src="cars.png" alt="Car Plates" />
-    </button> -->
+    <button class="back-btn" routerLink="/directbid">
+      <button class="back-btn" (click)="goBack()">
+        <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+      </button>
+    </button>
+  </div>
+  <div class="toolbar-right">
     <img
       [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
       alt="Toggle View"
       class="toolbar-icon grid"
       (click)="toggleLayout()"
     />
-  </div>
-  <!-- <span>Plates</span> -->
 
-  <!-- <div class="toolbar-center">
-    <img class="search" src="search.png" alt="" />
-    <input type="text" class="search-input" placeholder="Search" />
-  </div> -->
-
-  <div class="toolbar-right">
     <!-- <img src="sort.png" alt="Filter" class="toolbar-icon sort" /> -->
 
     <button
@@ -68,8 +64,11 @@
           <div class="icons">
             <button
               class="icon-btn"
-              [title]="isInWishlist(asset.assetId) ? 'Remove from Wishlist' : 'Add to Wishlist'"
-
+              [title]="
+                isInWishlist(asset.assetId)
+                  ? 'Remove from Wishlist'
+                  : 'Add to Wishlist'
+              "
               (click)="toggleWishlist(asset.assetId)"
             >
               <img
@@ -84,8 +83,10 @@
 
             <button
               class="icon-btn"
-              [title]="isInCart(asset.assetId) ? 'Already in Cart' : 'Add to Cart'"
-               [disabled]="isInCart(asset.assetId)"
+              [title]="
+                isInCart(asset.assetId) ? 'Already in Cart' : 'Add to Cart'
+              "
+              [disabled]="isInCart(asset.assetId)"
               (click)="addToCart(asset.assetId)"
             >
               <img
@@ -105,7 +106,11 @@
         <div class="icons">
           <button
             class="icon-btn"
-             [title]="isInWishlist(asset.assetId) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+            [title]="
+              isInWishlist(asset.assetId)
+                ? 'Remove from Wishlist'
+                : 'Add to Wishlist'
+            "
             (click)="toggleWishlist(asset.assetId)"
           >
             <img
@@ -120,14 +125,14 @@
           <button
             class="icon-btn"
             title="Add"
-             [disabled]="isInCart(asset.assetId)"
+            [disabled]="isInCart(asset.assetId)"
             (click)="addToCart(asset.assetId)"
           >
-          <img
-                [src]="isInCart(asset.assetId) ? 'cart-added.png' : 'sell.png'"
-                alt="Cart Toggle"
-                class="button-image2"
-              />
+            <img
+              [src]="isInCart(asset.assetId) ? 'cart-added.png' : 'sell.png'"
+              alt="Cart Toggle"
+              class="button-image2"
+            />
           </button>
         </div>
 
@@ -137,19 +142,26 @@
   </div>
 </div>
 
-
 <!-- Toast container -->
-<div class="toast-container  p-3" style="z-index: 9999;">
-  <div #liveToast class="toast " role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+<div class="toast-container p-3" style="z-index: 9999">
+  <div
+    #liveToast
+    class="toast"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    data-bs-delay="4000"
+  >
     <div class="toast-header bg-info text-white">
       <strong class="me-auto">Notification</strong>
       <small class="text-muted">Just now</small>
-      <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close"></button>
+      <button
+        type="button"
+        class="btn-close btn-close-white ms-2 mb-1"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
     </div>
-    <div class="toast-body">
-      This is a toast message.
-    </div>
+    <div class="toast-body">This is a toast message.</div>
   </div>
 </div>
-
-

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,9 @@ import { Asset, Gallery } from '../../modals/manage-asset';
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 
+declare var bootstrap: any; 
+
+
 @Component({
   selector: 'app-direct-sale-assetpage',
   standalone: true,
@@ -15,7 +18,12 @@ import Swal from 'sweetalert2';
   templateUrl: './direct-sale-assetpage.component.html',
   styleUrls: ['./direct-sale-assetpage.component.scss']
 })
-export class DirectSaleComponent implements OnInit {
+export class DirectSaleComponent implements OnInit , AfterViewInit {
+ 
+    @ViewChild('liveToast') liveToast!: ElementRef;
+     toastInstance: any;
+    
+ 
   assetId: number | null = null;
   asset: Asset | null = null;
   isLoading = true;
@@ -23,6 +31,9 @@ export class DirectSaleComponent implements OnInit {
   currency = 'BHD';
    userId: number = 1;
   plateNumber = '';
+
+  wishlistAssetIds: number[] = [];  
+
   
   // Slider and tab functionality variables
   currentSlideIndex: number = 0;
@@ -34,6 +45,36 @@ export class DirectSaleComponent implements OnInit {
     private listService: ListService,
   ) {}
 
+
+  ngAfterViewInit() {
+    this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
+  }
+
+  showToast(message: string, header = 'Notification', type: 'success' | 'error' | 'info' = 'info') {
+   
+    const toastEl = this.liveToast.nativeElement;
+    
+  
+    toastEl.querySelector('.toast-header ').textContent = header;
+
+    // Change toast body message
+    toastEl.querySelector('.toast-body').textContent = message;
+
+    // Change header bg color depending on type
+    const headerEl = toastEl.querySelector('.toast-header');
+    
+    headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-white');
+    if (type === 'success') {
+      headerEl.classList.add('bg-success', 'text-white');
+    } else if (type === 'error') {
+      headerEl.classList.add('bg-danger', 'text-white');
+    } else {
+      headerEl.classList.add('bg-danger', 'text-white');
+    }
+
+    this.toastInstance.show();
+  }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       // Try both keys in case your route is /:id or /:assetId
@@ -44,6 +85,7 @@ export class DirectSaleComponent implements OnInit {
         this.assetId = idNum;
         console.log('Asset ID from route:', this.assetId);
         this.loadAssetDetails();
+        this.loadCartItems();
       } else {
         console.error('Invalid asset ID in route params:', idStr);
         this.isLoading = false;
@@ -51,6 +93,18 @@ export class DirectSaleComponent implements OnInit {
     });
   }
 
+
+    loadCartItems(): void {
+  this.listService.getCart(this.userId).subscribe({
+    next: (data) => {
+      this.wishlistAssetIds = data.map((item: any) => item.assetId);
+      console.log('cart Asset IDs:', this.wishlistAssetIds);
+    },
+    error: (err) => {
+      console.error('Error loading wishlist:', err);
+    },
+  });
+}
   loadAssetDetails(): void {
     if (this.assetId === null || isNaN(this.assetId)) {
       console.error('Attempted to load data with invalid assetId:', this.assetId);
@@ -121,6 +175,11 @@ export class DirectSaleComponent implements OnInit {
     });
   }
 
+
+  isAssetInCart(): boolean {
+  return this.assetId !== null && this.wishlistAssetIds.includes(this.assetId);
+}
+
   // Image slider functionality
   nextSlide(): void {
     if (this.asset && this.asset.galleries && this.asset.galleries.length > 0) {
@@ -185,24 +244,13 @@ export class DirectSaleComponent implements OnInit {
   
       this.listService.addToCart(payload).subscribe({
         next: () => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Added to Cart',
-            text: 'This asset has been added to your cart.',
-            confirmButtonText: 'OK',
-          }).then(() => {
-            this.listService.refreshComponent(); // Trigger component refresh
-          });
+          this.showToast('This asset has been added to your cart.', 'Added to Cart', 'success');
+
         },
         error: (err) => {
           console.log({err});
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text:
-              err.error.message || 'Something went wrong while adding to cart.',
-            confirmButtonText: 'OK',
-          });
+          const errorMsg = err.error?.message || 'Something went wrong while adding to cart.';
+      this.showToast(errorMsg, 'Error!', 'error');
         },
       });
     }
