@@ -4,7 +4,10 @@ import { CommonModule } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
 import { Router } from '@angular/router';
-
+import { loadStripe } from '@stripe/stripe-js';
+import { Stripe } from '@stripe/stripe-js';
+import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 declare var bootstrap: any;
 
 @Component({
@@ -19,15 +22,15 @@ export class BidAddToCartComponent implements AfterViewInit {
   toastInstance: any;
 
   cartAssets: DirectSaleAssetDto[] = [];
-  userId: number = 1;
+  userId: number | null = null;
 
-
-  
 
   constructor(
     private assetService: ManageAssetService,
     private listservice: ListService,
-    private router: Router
+    private router: Router,
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   confirmModal: any;
@@ -35,6 +38,9 @@ export class BidAddToCartComponent implements AfterViewInit {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
      this.confirmModal = new bootstrap.Modal(document.getElementById('confirmCheckoutModal')),{ backdrop: false };
   }
+
+  
+
 
 
 openCheckoutModal(): void {
@@ -47,24 +53,27 @@ openCheckoutModal(): void {
 
 
 confirmCheckout(): void {
+  if (this.userId === null) {
+    this.showToast('User not logged in.', 'Error', 'error');
+    return;
+  }
+
   const payload = {
-    userId: this.userId,
-    assetIds: this.cartAssets.map(a => a.assetId),
+    userId: this.userId, // Now it's guaranteed to be a number
+    assetIds: this.cartAssets.map(a => a.assetId)
   };
 
-  this.listservice.checkoutCart(payload).subscribe({
-    next: () => {
-      this.showToast('Checkout successful!', 'Success', 'success');
-      this.cartAssets = []; 
-      this.confirmModal.hide();
-      this.router.navigate(['/landing-page']) /// here why imnot getting the category id 
+  this.listservice.createStripeSession(payload).subscribe({
+    next: async (response: { sessionId: string }) => {
+      const stripe = await loadStripe('pk_test_...'); // your publishable key
+      await stripe?.redirectToCheckout({ sessionId: response.sessionId });
     },
     error: () => {
-      this.showToast('Checkout failed.', 'Error', 'error');
-      this.confirmModal.hide();
+      this.showToast('Stripe session creation failed.', 'Error', 'error');
     }
   });
 }
+
 
   showToast(
     message: string,
@@ -99,46 +108,55 @@ confirmCheckout(): void {
   }
 
   ngOnInit() {
-    this.listservice.getCart(this.userId).subscribe((data) => {
-      this.cartAssets = data;
-      console.log('Cart Assets:', this.cartAssets);
-    });
+  this.userId = this.authService.getUserIdJwt();
+  if (!this.userId) {
+    alert('User not logged in');
+    return;
   }
+
+  this.listservice.getCart(this.userId).subscribe((data) => {
+    this.cartAssets = data;
+    console.log('Cart Assets:', this.cartAssets);
+  });
+}
+
 
   getSubtotal(): number {
     return this.cartAssets.reduce((sum, asset) => sum + asset.price, 0);
   }
 
   removeFromCart(asset: DirectSaleAssetDto): void {
-    const payload = {
-      userId: this.userId,
-      assetId: asset.assetId,
-    };
-
-    console.log('before remove', this.cartAssets);
-
-    this.listservice.removeFromCart(payload).subscribe({
-      next: () => {
-        this.cartAssets = this.cartAssets.filter(
-          (a) => a.assetId !== asset.assetId
-        );
-        console.log('after remove', this.cartAssets);
-
-        // Show success toast
-        this.showToast(
-          `Removed "${asset.title}" from cart successfully!`,
-          'Success',
-          'success'
-        );
-      },
-      error: (err) => {
-        console.error('Error removing asset from cart:', err);
-
-        // Show error toast
-        this.showToast('Failed to remove asset from cart.', 'Error', 'error');
-      },
-    });
+  if (this.userId === null) {
+    this.showToast('User not logged in.', 'Error', 'error');
+    return;
   }
+
+  const payload = {
+    userId: this.userId, // now it's guaranteed to be a number
+    assetId: asset.assetId,
+  };
+
+  console.log('before remove', this.cartAssets);
+
+  this.listservice.removeFromCart(payload).subscribe({
+    next: () => {
+      this.cartAssets = this.cartAssets.filter(
+        (a) => a.assetId !== asset.assetId
+      );
+      console.log('after remove', this.cartAssets);
+
+      this.showToast(
+        `Removed "${asset.title}" from cart successfully!`,
+        'Success',
+        'success'
+      );
+    },
+    error: (err) => {
+      console.error('Error removing asset from cart:', err);
+      this.showToast('Failed to remove asset from cart.', 'Error', 'error');
+    },
+  });
+}
 
   goBack() {
     window.history.back();
