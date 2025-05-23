@@ -1,34 +1,61 @@
 <div class="refund-container">
   <!-- Header -->
   <div class="header">
-    <button class="back-button" aria-label="Back">&larr;</button>
+    <button
+      class="back-button"
+      aria-label="Back"
+      (click)="router.navigate(['/'])"
+    >
+      &larr;
+    </button>
     <h1>Refund Request</h1>
-    <button class="view-all-button">View All Refund Requests</button>
+    <button class="view-all-button" (click)="router.navigate(['/refunds'])">
+      View All Refund Requests
+    </button>
   </div>
 
   <!-- Status Message -->
   <div class="status-message">
     <h2>Request is being processed</h2>
     <p>
-      Please allow up to 1 business day to process your request. A transcription has been sent to your email address.
+      Please allow up to 1 business day to process your request. A confirmation
+      has been sent to your email address.
     </p>
   </div>
 
   <!-- Order Details -->
   <div class="order-details">
     <h3>Order Details</h3>
+
     <div class="detail-row">
       <span>Refund Amount</span>
-      <span>{{ refundDetails.amount }}</span>
+      <input
+        type="number"
+        [(ngModel)]="refundDetails.amount"
+        [max]="maxRefundAmount"
+        min="1"
+        (change)="validateRefundAmount()"
+      />
     </div>
+
+    <div
+      *ngIf="parseAmount(refundDetails.amount) > maxRefundAmount"
+      class="error-text"
+    >
+      Refund amount cannot exceed your available deposit (BHD
+      {{ maxRefundAmount }})
+    </div>
+
     <div class="detail-row">
       <span>Submission Date</span>
       <span>{{ refundDetails.submissionDate }}</span>
     </div>
+
     <div class="detail-row">
       <span>Status</span>
       <span class="status-pending">{{ refundDetails.status }}</span>
     </div>
+
     <div class="detail-row">
       <span>Reference</span>
       <span>{{ refundDetails.reference }}</span>
@@ -48,6 +75,8 @@
   <!-- Action Buttons -->
   <div class="action-buttons">
     <button class="download-btn">Download PDF</button>
-    <button class="continue-btn">Continue</button>
+    <button class="continue-btn" (click)="createRefundTransaction()">
+      Continue
+    </button>
   </div>
 </div>

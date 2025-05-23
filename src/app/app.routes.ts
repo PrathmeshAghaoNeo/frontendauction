@@ -58,7 +58,14 @@ import { PageNotFoundComponent } from './component/page-not-found/page-not-found
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
 import { ReportsListComponent } from './component/reports-list/reports-list.component';
-import { RefundRequestComponent } from './component/refund-request/refund-request.component';
+import { RefundRequestComponent } from './component/profile/refund-request/refund-request.component';
+import { DepositPageComponent } from './component/deposit-page/deposit-page.component';
+import { MyDetailsComponent } from './component/profile/my-details/my-details.component';
+import { TransactionHistoryComponent } from './component/profile/transaction-history/transaction-history.component';
+import { MyPurchasesComponent } from './component/profile/my-purchases/my-purchases.component';
+import { NotificationsComponent } from './component/profile/notifications/notifications.component';
+import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
+import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
 
 export const routes: Routes = [
     { path: '', component: StartPageComponent,pathMatch: 'full'},
@@ -99,7 +106,22 @@ export const routes: Routes = [
     {path:'reports',component:ReportsListComponent},
 
     {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
-    {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'Admin' }},
+    {
+    path: 'user-profile',
+    component: UserProfileComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+    children: [
+      { path: 'my-details', component: MyDetailsComponent },
+      { path: 'notifications', component: NotificationsComponent },
+      { path: 'settings-privacy', component: SettingsPrivacyComponent },
+      { path: 'deposit-limit', component: DepositLimitComponent },
+      { path: 'refund-request', component: RefundRequestComponent },
+      { path: 'transaction-history', component: TransactionHistoryComponent },
+      { path: 'my-purchases', component: MyPurchasesComponent },
+      { path: '', redirectTo: 'my-details', pathMatch: 'full' }, // default child redirect
+    ],
+  },
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details',component:AssetDetailComponent},
@@ -122,7 +144,8 @@ export const routes: Routes = [
     {path:'chat-bot', component:ChatBotComponent},
     {path: 'orders', component:GetOrdersComponentComponent},
     {path:'reports',component:ReportsListComponent},
-    {path:'refund-request',component:RefundRequestComponent}
+    {path:'refund-request',component:RefundRequestComponent},
+    {path:'deposit-page',component:DepositPageComponent}
 
     
     
