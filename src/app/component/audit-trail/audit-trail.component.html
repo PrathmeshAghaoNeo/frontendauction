@@ -1,0 +1,104 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="text-purple">Audit Trail</h2>
+  <div class="col-md-3 text-end">
+    <!-- <button class="btn custom-purple-btn" (click)="exportToExcel()" id="export">
+      <i class="bi bi-file-earmark-excel"></i> Export
+    </button> -->
+  </div>
+</div>
+
+<!-- Audit Trail Table -->
+<div class="table-responsive">
+  <table class="table table-hover shadow-sm border-0 rounded">
+    <thead class="table-purple text-white text-center">
+      <tr>
+        <th (click)="sortAuditLogs('createdBy')" style="cursor:pointer">
+          User
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'createdBy' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'createdBy' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'createdBy'
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuditLogs('roleId')" style="cursor:pointer">
+          Role
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'roleId' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'roleId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'roleId'
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuditLogs('activityPerformedAt')" style="cursor:pointer">
+          Date Time
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'activityPerformedAt' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'activityPerformedAt' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'activityPerformedAt'
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuditLogs('modelName')" style="cursor:pointer">
+          Model
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'modelName' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'modelName' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'modelName'
+          }" class="ms-1"></i>
+        </th>
+        <th (click)="sortAuditLogs('changeType')" style="cursor:pointer">
+          Change
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'changeType' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'changeType' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'changeType'
+          }" class="ms-1"></i>
+        </th>
+        <!-- <th (click)="sortAuditLogs('recordId')" style="cursor:pointer">
+          Record ID
+          <i class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortColumn === 'recordId' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'recordId' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'recordId'
+          }" class="ms-1"></i>
+        </th> -->
+        <th class="text-end">
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-center">
+      <tr *ngFor="let log of auditLogs | paginate: { id: 'log', itemsPerPage: itemsPerPage, currentPage: page}">
+        <td>{{ log.createdBy }}</td>
+        <td>{{ roleMap[log.roleId] }}</td>
+        <td>{{ log.activityPerformedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ log.modelName }}</td>
+        <td>{{ log.changeType }}</td>
+        <!-- <td>{{ log.recordId }}</td> -->
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary" (click)="openModal(jsonModal, log)">
+            <i class="bi bi-eye"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls id="log" (pageChange)="page = $event"></pagination-controls>
+</div>
+
+<!-- Modal Template -->
+<ng-template #jsonModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title text-primary">Audit Change Details</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body row">
+    <div class="col-md-6">
+      <h6 class="text-primary">Before Change</h6>
+      <pre class="bg-light p-3 rounded"><code>{{ selectedBeforeChange | prettyJson }}</code></pre>
+    </div>
+    <div class="col-md-6">
+      <h6 class="text-primary">After Change</h6>
+      <pre class="bg-light p-3 rounded"><code>{{ selectedAfterChange | prettyJson }}</code></pre>
+    </div>
+  </div>
+</ng-template>
+

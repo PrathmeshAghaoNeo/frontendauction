@@ -10,4 +10,5 @@ export interface Auction {
     categoryId: number;
     statusName:string;
     categoryName:string;
+    totalPrice:number;
   }

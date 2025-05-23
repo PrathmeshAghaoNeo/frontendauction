@@ -100,7 +100,6 @@ export class UpdateAssetCategoriesComponent implements OnInit {
             ? (data.document.startsWith('http') ? data.document : this.assetBaseUrl + data.document)
             : null;
 
-          console.log('Preview URL for document:', this.previewUrls['document']);
 
           const formArray = this.assetCategoryForm.get('paymentMethods') as FormArray;
           formArray.clear();
@@ -110,7 +109,7 @@ export class UpdateAssetCategoriesComponent implements OnInit {
               formArray.push(new FormControl(id));
             });
           }
-
+          console.log('paymentMethodIds');
         },
         error: () => {
           Swal.fire('Error', 'Failed to load asset category data', 'error');
@@ -146,15 +145,19 @@ export class UpdateAssetCategoriesComponent implements OnInit {
   }
   onCheckboxChange(event: any) {
     const formArray = this.assetCategoryForm.get('paymentMethods') as FormArray;
+    const value = +event.target.value;
     if (event.target.checked) {
-      formArray.push(new FormControl(event.target.value));
+      if (!formArray.value.includes(value)) {
+        formArray.push(new FormControl(value));
+      }
     } else {
-      const index = formArray.controls.findIndex((x) => x.value === event.target.value);
+      const index = formArray.controls.findIndex((x) => x.value === value);
       if (index !== -1) {
         formArray.removeAt(index);
       }
     }
   }
+
 
   onSubmit(): void {
     if (!this.assetCategoryForm.valid) {
@@ -170,12 +173,17 @@ export class UpdateAssetCategoriesComponent implements OnInit {
     formData.append('DepositPercentage', formValue.depositPercentage);
     formData.append('Details', formValue.details || '');
 
-    // Helper function
     function safeAppend(fd: FormData, key: string, value: any) {
       if (value !== undefined && value !== null) {
         fd.append(key, value.toString());
       }
     }
+    const selectedPaymentMethods = formValue.paymentMethods;
+    for (let methodId of selectedPaymentMethods) {
+      formData.append('PaymentMethodIds', methodId.toString());
+    }
+console.log('Selected payment methods:', selectedPaymentMethods);
+
 
     safeAppend(formData, 'Vatid', formValue.vat);
     safeAppend(formData, 'AdminFees', formValue.adminFees);
