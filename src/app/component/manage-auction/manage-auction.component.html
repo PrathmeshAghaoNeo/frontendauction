@@ -69,12 +69,12 @@
             'bi-arrow-down-up': sortColumn !== 'type'
           }" class="ms-1"></i>
         </th>
-        <th (click)="sortAuctions('auctionStart')" style="cursor:pointer">
-          Auction Start
+        <th (click)="sortAuctions('totalPrice')" style="cursor:pointer">
+          Total-Price
           <i class="bi" [ngClass]="{
-            'bi-caret-up-fill': sortColumn === 'auctionStart' && sortDirection === 'asc',
-            'bi-caret-down-fill': sortColumn === 'auctionStart' && sortDirection === 'desc',
-            'bi-arrow-down-up': sortColumn !== 'auctionStart'
+            'bi-caret-up-fill': sortColumn === 'totalPrice' && sortDirection === 'asc',
+            'bi-caret-down-fill': sortColumn === 'totalPrice' && sortDirection === 'desc',
+            'bi-arrow-down-up': sortColumn !== 'totalPrice'
           }" class="ms-1"></i>
         </th>
         <th (click)="sortAuctions('auctionEnd')" style="cursor:pointer">
@@ -125,15 +125,15 @@
         <td>{{ auction.auctionNumber }}</td>
         <td>{{ auction.title }}</td>
         <td>{{ auction.type }}</td>
-        <td>{{ auction.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ auction.totalPrice }}</td>
         <td>{{ auction.endDateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
       
         <td>
           <span [ngClass]="{
             'bg-success': auction.statusId === 1,
             'bg-warning ': auction.statusId === 2,  
-            'bg-danger ': auction.statusId === 3,
-            'bg-info ': auction.statusId === 4
+            'bg-danger ': auction.statusId === 4,
+            'bg-info ': auction.statusId === 3
             
              }" class="badge badge-fixed-width text-dark">
             {{ getStatusName(auction.statusId) }}
@@ -187,8 +187,8 @@
         <p class="form-control-plaintext">{{ selectedAuction?.categoryName }}</p>
       </div>
       <div class="col-md-6">
-        <label for="startDate" class="form-label required-label">Start:</label>
-        <p class="form-control-plaintext">{{ selectedAuction?.startDateTime | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <label for="startDate" class="form-label required-label">Total Price</label>
+        <p class="form-control-plaintext">{{ selectedAuction?.totalPrice}}</p>
       </div>
       <div class="col-md-6">
         <label for="endDate" class="form-label required-label">End:</label>
