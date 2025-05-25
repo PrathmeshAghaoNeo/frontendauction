@@ -131,6 +131,10 @@ export class AddAssetComponent {
   requestForViewingOptions = ['On', 'Off'];
   requestForInquiryOptions = ['On', 'Off'];
 
+sellers = [
+  { id: 1, name: 'vaish patil' },
+  // ...add more as needed
+];
 
 
 
@@ -233,18 +237,30 @@ export class AddAssetComponent {
   
   getSelectedAuctionText(): string {
   const selected = this.auctions.filter(a => this.asset.auctionIds.includes(a.auctionId));
-  return selected.map(a => `#${a.auctionNumber}`).join(', ');
+  return selected.map(a => `${a.type} #${a.auctionNumber}`).join(', ');
 }
 
+// toggleAuctionSelection(id: number) {
+//   const index = this.asset.auctionIds.indexOf(id);
+//   if (index > -1) {
+//     this.asset.auctionIds.splice(index, 1);
+//   } else {
+//     this.asset.auctionIds.push(id);
+//   }
+//   this.onAuctionSelectionChange(this.asset.auctionIds);
+// }
 toggleAuctionSelection(id: number) {
-  const index = this.asset.auctionIds.indexOf(id);
-  if (index > -1) {
-    this.asset.auctionIds.splice(index, 1);
+  if (this.asset.auctionIds.includes(id)) {
+    // If already selected, unselect it
+    this.asset.auctionIds = [];
   } else {
-    this.asset.auctionIds.push(id);
+    // Only allow one auction at a time
+    this.asset.auctionIds = [id];
   }
+
   this.onAuctionSelectionChange(this.asset.auctionIds);
 }
+
 
   fetchAuctions(): void {
     this.auctionService.getAllAuctions().subscribe({

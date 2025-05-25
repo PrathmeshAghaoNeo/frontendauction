@@ -88,7 +88,7 @@ confirmCheckout(): void {
       'text-white'
     );
     if (type === 'success') {
-      headerEl.classList.add('bg-success', 'text-white');
+      headerEl.classList.add('bg-danger', 'text-white');
     } else if (type === 'error') {
       headerEl.classList.add('bg-danger', 'text-white');
     } else {

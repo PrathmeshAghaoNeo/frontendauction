@@ -191,6 +191,11 @@ toWatchlist(){
   this.router.navigate(['/direct-sale-assetpage/', assetId]);
 }
 
+redirectToCart(): void {
+  this.router.navigate(['/bid-add-to-cart']);
+}
+
+
   addToCart(assetId: number): void {
     const payload = {
       userId: this.userId,
