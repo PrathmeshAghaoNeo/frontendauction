@@ -148,9 +148,8 @@ export const routes: Routes = [
     {path: 'orders', component:GetOrdersComponentComponent},
     {path:'reports',component:ReportsListComponent},
     {path:'refund-request',component:RefundRequestComponent},
-    {path:'deposit-page',component:DepositPageComponent}
-
-    
+    {path:'deposit-page',component:DepositPageComponent},
+    {path:'audit-trial',component:AuditTrailComponent}
     
     
 ];
