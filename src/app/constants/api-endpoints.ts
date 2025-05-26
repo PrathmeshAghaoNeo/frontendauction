@@ -20,6 +20,10 @@ export const ApiEndpoints = {
   REQUEST: `${BASE_URL}/Request`,
   Auth: `${BASE_URL}/Auth`,
   Bid : `${BASE_URL}/Bid`,
+  AUDITTRAIL : `${BASE_URL}/AuditTrail`,
+
+
+  
   Win: `${BASE_URL}/AssetWinner`,
 };
 

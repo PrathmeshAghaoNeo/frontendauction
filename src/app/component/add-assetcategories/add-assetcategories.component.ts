@@ -178,7 +178,6 @@ export class AddAssetCategoriesComponent implements OnInit {
     }
     safeAppend(formData, 'Vatpercentage', formValue.vatPercentage);
     safeAppend(formData, 'StatusId', formValue.statusId);
-  // Iterate over the selected payment method IDs instead of paymentMethods array
   const selectedPaymentMethods = formValue.paymentMethodIds;
     for (let methodId of selectedPaymentMethods) {
   formData.append('PaymentMethodIds', methodId.toString()); // or `${methodId}`
