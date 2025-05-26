@@ -24,7 +24,6 @@ export const ApiEndpoints = {
 
 
   
-  Win: `${BASE_URL}/AssetWinner`,
 };
 
 

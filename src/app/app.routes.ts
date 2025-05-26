@@ -43,7 +43,7 @@ import { UserProfileComponent } from './component/user-profile/user-profile.comp
 import { SignupComponent } from './component/signup/signup.component';
 import { UserSignupComponent } from './component/user-signup/user-signup.component';
 import { AssetDetailComponent } from './component/asset-details/asset-details.component';
-import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
+// import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 
 
 
@@ -59,6 +59,15 @@ import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { GetOrdersComponentComponent } from './component/get-orders-component/get-orders-component.component';
 import { GetOrderDetailsComponent } from './component/get-order-details/get-order-details.component';
 import { AuditTrailComponent } from './component/audit-trail/audit-trail.component';
+import { ReportsListComponent } from './component/reports-list/reports-list.component';
+import { RefundRequestComponent } from './component/profile/refund-request/refund-request.component';
+import { DepositPageComponent } from './component/deposit-page/deposit-page.component';
+import { MyDetailsComponent } from './component/profile/my-details/my-details.component';
+import { TransactionHistoryComponent } from './component/profile/transaction-history/transaction-history.component';
+import { MyPurchasesComponent } from './component/profile/my-purchases/my-purchases.component';
+import { NotificationsComponent } from './component/profile/notifications/notifications.component';
+import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
+import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
 
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
@@ -94,14 +103,35 @@ export const routes: Routes = [
     {path:'update-transaction/:id', component:UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'categories', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
     {path:'roles', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
-    {path:'reports', component:DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    // {path:'reports', component:ReportsListComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+    {path:'reports',component:ReportsListComponent},
+
     {path:'view-request', component:ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
-    {path:'user-profile',component:UserProfileComponent,canActivate:[RoleGuard],data: { role: 'Admin' }},
+    {
+    path: 'user-profile',
+    component: UserProfileComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+    children: [
+      { path: 'my-details', component: MyDetailsComponent },
+      { path: 'notifications', component: NotificationsComponent },
+      { path: 'settings-privacy', component: SettingsPrivacyComponent },
+      { path: 'deposit-limit', component: DepositLimitComponent },
+      { path: 'refund-request', component: RefundRequestComponent },
+      { path: 'transaction-history', component: TransactionHistoryComponent },
+      { path: 'my-purchases', component: MyPurchasesComponent },
+      { path: '', redirectTo: 'my-details', pathMatch: 'full' }, // default child redirect
+    ],
+  },
     {path: 'testing', component:ChartComponent},  
     {path:'user-signup',component:UserSignupComponent},
     {path:'asset-details',component:AssetDetailComponent},
+<<<<<<< HEAD
     {path:'audit-trial',component:AuditTrailComponent},
     {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
+=======
+    // {path:'direct-sale-assetpage/:assetId',component:DirectSaleComponent},
+>>>>>>> 8c41f5d3ee3d10bee8b54b513b1ef6932cf55655
 
     {path:'order-details/:assetId',component:GetOrderDetailsComponent},
  
@@ -111,6 +141,7 @@ export const routes: Routes = [
     {path:'auction-assets/:categoryId', component:AuctionAssetsComponent},    
     
     {path: 'testing', component:ChartComponent}, 
+    { path: 'direct-bid', component: DirectBidComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
     {path: 'signal', component:SignalrTestComponent},
     
     { path: 'direct-bid', component: DirectBidComponent},
@@ -119,9 +150,11 @@ export const routes: Routes = [
 
     {path:'page-not-found',component:PageNotFoundComponent},
     {path:'chat-bot', component:ChatBotComponent},
-    {path: 'orders', component:GetOrdersComponentComponent}
-
-    
+    {path: 'orders', component:GetOrdersComponentComponent},
+    {path:'reports',component:ReportsListComponent},
+    {path:'refund-request',component:RefundRequestComponent},
+    {path:'deposit-page',component:DepositPageComponent},
+    {path:'audit-trial',component:AuditTrailComponent}
     
     
 ];

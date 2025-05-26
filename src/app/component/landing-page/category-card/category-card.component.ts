@@ -43,7 +43,6 @@ export class CategoryCardComponent implements OnInit {
 
     // You can implement additional logic here
   }
-
   getFullIconUrl(icon: string | null | undefined): string {
     if (!icon) return 'assets/images/Screenshot28.png';
     if (icon.startsWith('http') || icon.startsWith('data:image')) {
