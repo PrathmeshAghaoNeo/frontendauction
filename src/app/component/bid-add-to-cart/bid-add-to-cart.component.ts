@@ -23,7 +23,8 @@ export class BidAddToCartComponent implements AfterViewInit {
 
   cartAssets: DirectSaleAssetDto[] = [];
   userId: number | null = null;
-
+  email: string | null = null;
+  amount:number =10;
 
   constructor(
     private assetService: ManageAssetService,
@@ -36,44 +37,47 @@ export class BidAddToCartComponent implements AfterViewInit {
   confirmModal: any;
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
-     this.confirmModal = new bootstrap.Modal(document.getElementById('confirmCheckoutModal')),{ backdrop: false };
+    (this.confirmModal = new bootstrap.Modal(
+      document.getElementById('confirmCheckoutModal')
+    )),
+      { backdrop: false };
   }
 
-  
-
-
-
-openCheckoutModal(): void {
-  const modalElement = document.getElementById('confirmCheckoutModal');
-  if (modalElement) {
-    this.confirmModal = new bootstrap.Modal(modalElement, { backdrop: false });
-    this.confirmModal.show();
-  }
-}
-
-
-confirmCheckout(): void {
-  if (this.userId === null) {
-    this.showToast('User not logged in.', 'Error', 'error');
-    return;
-  }
-
-  const payload = {
-    userId: this.userId, // Now it's guaranteed to be a number
-    assetIds: this.cartAssets.map(a => a.assetId)
-  };
-
-  this.listservice.createStripeSession(payload).subscribe({
-    next: async (response: { sessionId: string }) => {
-      const stripe = await loadStripe('pk_test_...'); // your publishable key
-      await stripe?.redirectToCheckout({ sessionId: response.sessionId });
-    },
-    error: () => {
-      this.showToast('Stripe session creation failed.', 'Error', 'error');
+  openCheckoutModal(): void {
+    const modalElement = document.getElementById('confirmCheckoutModal');
+    if (modalElement) {
+      this.confirmModal = new bootstrap.Modal(modalElement, {
+        backdrop: false,
+      });
+      this.confirmModal.show();
     }
-  });
-}
+  }
 
+  confirmCheckout(): void {
+    if (this.userId === null) {
+      this.showToast('User not logged in.', 'Error', 'error');
+      return;
+    }
+
+    const payload = {
+      userId: this.userId, // Now it's guaranteed to be a number
+      assetIds: this.cartAssets.map((a) => a.assetId),
+      totalAmount: this.amount,
+      email: this.email,
+    };
+
+    this.listservice.createStripeSession(payload).subscribe({
+      next: async (response: { sessionId: string }) => {
+        const stripe = await loadStripe(
+          'pk_test_51RRtikGY6ElyrgGUXgRRI22AYfGJLziO9q1H1xoPlBiG2PfQaFe4xspeDge5fvL2sUONWDvx9NgKiz2db79DX7Q300AGRBCUQk'
+        ); // your publishable key
+        await stripe?.redirectToCheckout({ sessionId: response.sessionId });
+      },
+      error: () => {
+        this.showToast('Stripe session creation failed.', 'Error', 'error');
+      },
+    });
+  }
 
   showToast(
     message: string,
@@ -108,55 +112,64 @@ confirmCheckout(): void {
   }
 
   ngOnInit() {
-  this.userId = this.authService.getUserIdJwt();
-  if (!this.userId) {
-    alert('User not logged in');
-    return;
+    this.userId = this.authService.getUserIdJwt();
+
+    if (!this.userId) {
+      alert('User not logged in');
+      return;
+    }
+    //  Fetch user email
+    this.userService.getUserById(this.userId).subscribe({
+      next: (user) => {
+        this.email = user.email; // Store email for session creation
+      },
+      error: () => {
+        this.showToast('Failed to fetch user details.', 'Error', 'error');
+      },
+    });
+
+    this.listservice.getCart(this.userId).subscribe((data) => {
+      this.cartAssets = data;
+      console.log('Cart Assets:', this.cartAssets);
+    });
   }
-
-  this.listservice.getCart(this.userId).subscribe((data) => {
-    this.cartAssets = data;
-    console.log('Cart Assets:', this.cartAssets);
-  });
-}
-
 
   getSubtotal(): number {
     return this.cartAssets.reduce((sum, asset) => sum + asset.price, 0);
   }
 
   removeFromCart(asset: DirectSaleAssetDto): void {
-  if (this.userId === null) {
-    this.showToast('User not logged in.', 'Error', 'error');
-    return;
+    if (this.userId === null) {
+      this.showToast('User not logged in.', 'Error', 'error');
+      return;
+    }
+
+    const payload = {
+      userId: this.userId, // now it's guaranteed to be a number
+      assetId: asset.assetId,
+    };
+
+    console.log('before remove', this.cartAssets);
+
+    this.listservice.removeFromCart(payload).subscribe({
+      next: () => {
+        this.cartAssets = this.cartAssets.filter(
+          (a) => a.assetId !== asset.assetId
+        );
+        console.log('after remove', this.cartAssets);
+
+        this.showToast(
+          `Removed "${asset.title}" from cart successfully!`,
+          'Success',
+          'success'
+        );
+      },
+      error: (err) => {
+        console.error('Error removing asset from cart:', err);
+        this.showToast('Failed to remove asset from cart.', 'Error', 'error');
+      },
+    });
   }
-
-  const payload = {
-    userId: this.userId, // now it's guaranteed to be a number
-    assetId: asset.assetId,
-  };
-
-  console.log('before remove', this.cartAssets);
-
-  this.listservice.removeFromCart(payload).subscribe({
-    next: () => {
-      this.cartAssets = this.cartAssets.filter(
-        (a) => a.assetId !== asset.assetId
-      );
-      console.log('after remove', this.cartAssets);
-
-      this.showToast(
-        `Removed "${asset.title}" from cart successfully!`,
-        'Success',
-        'success'
-      );
-    },
-    error: (err) => {
-      console.error('Error removing asset from cart:', err);
-      this.showToast('Failed to remove asset from cart.', 'Error', 'error');
-    },
-  });
-}
 
   goBack() {
     window.history.back();
