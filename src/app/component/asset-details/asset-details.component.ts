@@ -10,6 +10,7 @@ import { BidService } from '../../services/bid.service';
 import { AuctionService } from '../../services/auction.service';
 import { FormsModule, NgModel } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-asset-details',
@@ -22,7 +23,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   // assetId: number = 0;
    assetId: number = 6;
     auctionId: number = 99;
-    userId: number = 1;
+    User: number |null = null;
   asset: Asset | null = null;
   auction!: Auction;
 
@@ -33,7 +34,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   placeBid: BidDto = {
       auctionId: 0,
       assetId: this.assetId,
-      userId: this.userId,
+      userId: this.User,
       bidAmount: 0,
     }
     bidData: bidStats = {
@@ -57,10 +58,13 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private signalR: SignalRService, private bidService: BidService, private auctionService: AuctionService,private router: Router,
-    private assetService: ManageAssetService,private route: ActivatedRoute
+    private assetService: ManageAssetService,private route: ActivatedRoute,private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.User = this.authService.getUserIdJwt();
+    console.log("UserId is ::",this.User)
+    this.placeBid.userId = this.User;
     const paramsId = this.route.snapshot.queryParams['id'] ? +atob(this.route.snapshot.queryParams['id']) : null;
     console.log(paramsId)
     if(paramsId != null) {
@@ -94,6 +98,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         this.auctionId = this.asset?.auctionIds[0];
         this.placeBid.auctionId = this.asset.auctionIds[0];
         console.log(this.asset);
+        this.placeBid.assetId = this.asset.assetId
         this.loadAuctionDetails();
     this.loadBid();
         this.isLoading = false;

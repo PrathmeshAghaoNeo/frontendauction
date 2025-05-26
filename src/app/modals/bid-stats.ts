@@ -6,6 +6,6 @@ export interface bidStats {
 export interface BidDto {
     auctionId: number;
     assetId: number;
-    userId: number;
+    userId: number | null;
     bidAmount: number;
   }
