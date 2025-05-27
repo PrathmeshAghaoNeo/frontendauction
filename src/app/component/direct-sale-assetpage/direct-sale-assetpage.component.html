@@ -20,9 +20,9 @@
         </a>
       </div>
       <div>
-        <button class="btn btn-link text-dark">
+        <!-- <button class="btn btn-link text-dark">
           <i class="bi bi-bookmark"></i>
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
@@ -193,8 +193,8 @@
           <!-- Add to Cart Button -->
           <div class="row" *ngIf="asset">
             <div class="col-12">
-              <button class="add-to-cart-button" (click)="addToCart(asset.assetId)">
-                <i class="bi bi-cart-plus me-2"></i> Add to Cart
+              <button class="add-to-cart-button" [disabled]="isAssetInCart()" (click)="addToCart(asset.assetId)">
+                <i class="bi bi-cart-plus me-2"></i>  {{ isAssetInCart() ? 'Already in Cart' : 'Add to Cart' }}
               </button>
             </div>
           </div>
@@ -203,4 +203,34 @@
     </div>
   </div>
 </div>
+<<<<<<< HEAD
+
+
+
+
+<!-- Toast container -->
+<div class="toast-container p-3" style="z-index: 9999">
+  <div
+    #liveToast
+    class="toast"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    data-bs-delay="4000"
+  >
+    <div class="toast-header bg-info text-white">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">Just now</small>
+      <button
+        type="button"
+        class="btn-close btn-close-white ms-2 mb-1"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="toast-body">This is a toast message.</div>
+  </div>
+</div>
+=======
 </body>
+>>>>>>> e4eb5cb8f85a5c250436fcf389363fab4ab77bcb

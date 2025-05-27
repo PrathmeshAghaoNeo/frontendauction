@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DirectSaleComponent } from './direct-sale-assetpage.component';
+import { AuditTrailComponent } from './audit-trail.component';
 
-describe('DirectSaleAssetpageComponent', () => {
-  let component: DirectSaleComponent;
-  let fixture: ComponentFixture<DirectSaleComponent>;
+describe('AuditTrailComponent', () => {
+  let component: AuditTrailComponent;
+  let fixture: ComponentFixture<AuditTrailComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DirectSaleComponent]
+      imports: [AuditTrailComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DirectSaleComponent);
+    fixture = TestBed.createComponent(AuditTrailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,5 +21,3 @@ describe('DirectSaleAssetpageComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-

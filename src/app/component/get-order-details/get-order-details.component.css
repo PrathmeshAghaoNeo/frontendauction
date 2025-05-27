@@ -1,0 +1,46 @@
+/* Tabs */
+button.active-tab {
+  border-bottom: 3px solid #8335dc;
+  font-weight: 600;
+  color: #8335dc;
+}
+
+/* Carousel */
+.carousel-inner img {
+  height: 300px;
+  object-fit: cover;
+}
+
+/* Thumbnail */
+.thumb {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 8px;
+}
+
+.thumb.active {
+  border-color: #8335dc;
+}
+
+/* Plate design */
+.license-plate-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  padding: 10px;
+  display: inline-block;
+}
+
+.plate-info {
+  text-align: center;
+}
+
+.plate-number-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Misc */
+.card {
+  border-radius: 1rem !important;
+}

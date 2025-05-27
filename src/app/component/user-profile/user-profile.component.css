@@ -117,3 +117,23 @@ input[type="number"]:not([readonly]) {
 .d-flex.justify-content-between.align-items-center {
   gap: 0.2rem; /* Creates equal spacing between flex items */
 }
+
+
+.sidebar-menu .submenu-item {
+  font-size: 13px;
+  background-color: transparent;
+  text-align: end;
+  color: #333;
+  padding-left: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar-menu .submenu-item:hover {
+  background-color: #f1f1f1;
+}
+
+.rotate-icon {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}

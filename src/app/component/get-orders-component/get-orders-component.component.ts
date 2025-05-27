@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { ListService } from '../../services/list.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { DirectSaleAssetDto } from '../../modals/manage-asset';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-get-orders-component',
@@ -11,12 +12,13 @@ import { DirectSaleAssetDto } from '../../modals/manage-asset';
   styleUrl: './get-orders-component.component.css'
 })
 export class GetOrdersComponentComponent {
+
 userId = 1; 
   orders: DirectSaleAssetDto[] = [];
   isLoading = false;
   errorMessage = '';
 
-  constructor(private ordersService: ListService) {}
+  constructor(private ordersService: ListService , private router : Router , private location:Location) {}
 
   ngOnInit(): void {
     this.fetchOrders();
@@ -37,4 +39,15 @@ userId = 1;
       }
     });
   }
+
+
+
+  goBack(): void {
+  this.location.back();
+}
+
+  viewOrder(orderId: number) {
+  this.router.navigate(['/order-details/', orderId]);
+}
+
 }

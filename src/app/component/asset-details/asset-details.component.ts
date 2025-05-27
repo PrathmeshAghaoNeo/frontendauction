@@ -57,18 +57,15 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private signalR: SignalRService, private bidService: BidService, private auctionService: AuctionService,private router: Router,
-    private assetService: ManageAssetService
+    private assetService: ManageAssetService,private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    // Get asset ID from route parameters
-    // this.route.params.subscribe(params => {
-    //   this.assetId = +params['id']; // Convert to number
-    //   this.loadAssetDetails();
-    // });
-
-    // // Start countdown immediately to ensure UI is updated immediately
-    // this.startCountdown();
+    const paramsId = this.route.snapshot.queryParams['id'] ? +atob(this.route.snapshot.queryParams['id']) : null;
+    console.log(paramsId)
+    if(paramsId != null) {
+      this.assetId = paramsId
+    }
     this.signalR.startConnection();
     this.signalR.bidUpdates$.subscribe(data => {
       console.log(data);
@@ -76,13 +73,14 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         this.loadBid();
       }
     })
+    this.signalR.winnerUpdates$.subscribe(data => {
+      console.log(data);
+    })
     this.loadAssetDetails();
     
-    this.loadBid();
   }
 
   ngOnDestroy(): void {
-    // Clear the interval when component is destroyed
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }
@@ -93,7 +91,11 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     this.assetService.getAssetById(this.assetId).subscribe({
       next: (asset) => {
         this.asset = asset;
-        console.log('Asset loaded:', this.asset);
+        this.auctionId = this.asset?.auctionIds[0];
+        this.placeBid.auctionId = this.asset.auctionIds[0];
+        console.log(this.asset);
+        this.loadAuctionDetails();
+    this.loadBid();
         this.isLoading = false;
       },
       error: (error) => {
@@ -146,7 +148,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   }
   decrementBid() {
     if (this.asset?.minIncrement) {
-      const minAllowedBid =  this.bidData?.highestBid > 0 ? this.bidData.highestBid  : (this.asset.startingPrice ?? 0) + (this.asset.minIncrement ?? 0);
+      const minAllowedBid =  this.bidData?.highestBid > 0 ? this.bidData.highestBid + + (this.asset.minIncrement ?? 0)  : (this.asset.startingPrice ?? 0) + (this.asset.minIncrement ?? 0);
       const nextValue = this.placeBid.bidAmount - this.asset.minIncrement;
       if (nextValue >= minAllowedBid) {
         this.placeBid.bidAmount = nextValue;
@@ -157,7 +159,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   }
 
 
-  //counter logic here 
+  //counter logic here (Bidding)
 
   pad(value: number): string {
     return value < 10 ? '0' + value : value.toString();
@@ -211,7 +213,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         Swal.fire({
           icon: 'success',
           title: 'Bid Placed!',
-          text: `Your bid was placed successfully! Bid ID:`,
+          text: `Your bid was placed successfully!`,
           timer: 2000,
           showConfirmButton: false
         });
@@ -269,5 +271,10 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+
+    goBack(): void {
+    window.history.back();
   }
 }

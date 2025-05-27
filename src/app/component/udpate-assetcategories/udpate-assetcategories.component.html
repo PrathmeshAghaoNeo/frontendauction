@@ -107,22 +107,25 @@
           accept="application/pdf" />
 
         <div *ngIf="assetCategoryForm.get('document')?.invalid && assetCategoryForm.get('document')?.touched"
-        class="text-danger">
-        Document is required (PDF).
-      </div>
-    </div>
-    
-    
-    <!-- Payment Methods -->
-    <label for="paymentMethod" class="form-label required-label">Payment Method</label>
-    <div class="payment-method-list">
-      <div *ngFor="let method of paymentMethods" class="payment-checkbox">
-        <input type="checkbox" [value]="method.paymentMethodIds" (change)="onCheckboxChange($event)"
-            [checked]="assetCategoryForm.get('paymentMethods')?.value.includes(method.paymentMethodIds)" />
-            {{ method.methodName }}
-          </div>
+          class="text-danger">
+          Document is required (PDF).
         </div>
-        
+      </div>
+
+
+      <!-- Payment Methods -->
+      <label for="paymentMethod" class="form-label required-label">Payment Method</label>
+      <div class="payment-method-list">
+        <div *ngFor="let method of paymentMethods" class="payment-checkbox">
+          <input type="checkbox" [id]="'method-' + method.paymentMethodIds" [value]="method.paymentMethodIds"
+            (change)="onCheckboxChange($event)"
+            [checked]="assetCategoryForm.get('paymentMethods')?.value.includes(method.paymentMethodIds)" />
+          <label [for]="'method-' + method.paymentMethodIds">
+            {{ method.methodName }}
+          </label>
+        </div>
+      </div>
+
 
       <div class="row">
         <!-- Status -->

@@ -23,25 +23,44 @@ export class ListService {
   return this.http.post(`${this.baseUrl}/Orders/create-order`, payload); 
 }
 
+checkoutWithStripe(amount: number, assetIds: number[], userId: number) {
+  return this.http.post<{ sessionId: string }>(`${this.baseUrl}/payment/create-checkout-session`, {
+    amount,
+    assetIds,
+    userId
+  });
+}
+
+createStripeSession(payload: { userId: number; assetIds: number[] }) {
+  return this.http.post<{ sessionId: string }>(`${this.baseUrl}/Payments/create-checkout-session`, payload);
+}
+
+
   getCheckoutOrders(userId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/Orders/user/${userId}`);
   }
 
-  
+ getAuctionAssetsByCategory(categoryId: number): Observable<any> {
+  return this.http.get(`${this.baseUrl}/Assets/auctionasset?categoryId=${categoryId}`);
+}
+
 
   addToCart(payload: CartRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/Cart/add`, payload);
   }
 
   getCart(userId: number): Observable<any> {
+
     return this.http.get(`${this.baseUrl}/Cart/${userId}`);
   }
+
 
   removeFromCart(payload: { userId: number; assetId: number }): Observable<any> {
     return this.http.request('DELETE', `${this.baseUrl}/Cart/remove`, {
       headers: { 'Content-Type': 'application/json' },
       body: payload,
     });
+
   }
 
   // Wishlist methods
@@ -52,6 +71,9 @@ export class ListService {
   getWishlist(userId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/Wishlist/${userId}`);
   }
+
+
+  
 
  removeFromWishlist(payload: { userId: number; assetId: number }): Observable<any> {
   return this.http.request('DELETE', `${this.baseUrl}/Wishlist/remove`, {
