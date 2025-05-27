@@ -1,151 +1,195 @@
 <div class="deposit-limit-container">
-    <!-- Left Section -->
-    <div class="box left-section">
-        <!-- Category Selection -->
-        <div class="form-group mb-3">
-            <label for="categoryId" class="form-label">Category</label>
-            <select formControlName="categoryId" id="categoryId" class="form-select">
-                <option value="" disabled selected hidden>Select Category</option>
-                <option *ngFor="let cat of categories" [value]="cat.categoryId">
-                    {{ cat.categoryName }}
-                </option>
-            </select>
-        </div>
-
-        <!-- Consumed Limit Progress -->
-        <div class="form-group mb-3">
-            <label class="form-label">Consumed Limit</label>
-
-            <div class="progress-bar-container">
-                <div class="progress-bar-fill" [style.width.%]="consumedPercentage"
-                    [style.background-color]="getProgressColor(consumedPercentage)">
-                </div>
-            </div>
-
-            <div class="text-muted medium mt-1">{{ consumedPercentage }}% used</div>
-        </div>
-
-        <!-- Deposit Summary -->
-        <div class="form-group mb-3">
-            <label class="form-label">Deposit Summary</label>
-            <div class="deposit-summary-grid">
-                <div class="summary-item">
-                    <div class="summary-value">BHD {{ currentDeposit | number }}</div>
-                    <div class="summary-label">Current Deposit</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-value">BHD {{ depositAmount | number }}</div>
-                    <div class="summary-label">Available Limit</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-value">BHD {{ totalLimit | number }}</div>
-                    <div class="summary-label">Total Limit</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top-Up Controls -->
-        <div class="form-group text-center">
-            <label class="form-label">Top-Up Limit</label>
-            <div class="top-up-controls d-flex justify-content-center align-items-center gap-3 mb-2">
-                <button type="button" class="btn btn-outline-secondary" (click)="decreaseLimit()">−</button>
-                <span class="fs-5 fw-bold">BHD {{ topUpAmount | number }}</span>
-                <button type="button" class="btn btn-outline-secondary" (click)="increaseLimit()">+</button>
-            </div>
-            <div class="deposit-hint small text-muted">
-                You pay a deposit of: <strong>BHD {{ depositAmount | number }}</strong>
-            </div>
-        </div>
+  <!-- Left Section -->
+  <div class="box left-section">
+    <!-- Category Selection -->
+    <div class="form-group mb-3">
+      <label for="categoryId" class="form-label">Category</label>
+      <select formControlName="categoryId" id="categoryId" class="form-select">
+        <option value="" disabled selected hidden>Select Category</option>
+        <option *ngFor="let cat of categories" [value]="cat.categoryId">
+          {{ cat.categoryName }}
+        </option>
+      </select>
     </div>
 
-    <!-- Right Section -->
-    <div class="box right-section">
-        <!-- Payment Summary -->
-        <h4 class="section-title">Payment Summary</h4>
-        <div class="summary-row">
-            <span>Item Amount</span>
-            <span>BHD {{ depositAmount | number }}</span>
-        </div>
-        <div class="summary-row">
-            <span>VAT 10%</span>
-            <span>BHD {{ vatAmount | number }}</span>
-        </div>
-        <div class="summary-row total">
-            <span>Total Amount</span>
-            <span>BHD {{ totalAmount | number }}</span>
-        </div>
+    <!-- Consumed Limit Progress -->
+    <div class="form-group mb-3">
+      <label class="form-label">Consumed Limit</label>
 
-        <div class="payment-summary-container">
-            <div *ngFor="let method of paymentMethods" class="payment-card"
-                [class.expanded]="selectedPaymentMethod === method.value" (click)="selectPaymentMethod(method.value)">
+      <div class="progress-bar-container">
+        <div
+          class="progress-bar-fill"
+          [style.width.%]="consumedPercentage"
+          [style.background-color]="getProgressColor(consumedPercentage)"
+        ></div>
+      </div>
 
-                <div class="payment-header">
-                    <input type="radio" [checked]="selectedPaymentMethod === method.value" name="paymentMethod" />
-                    <span>{{ method.label }}</span>
-                </div>
-
-                <div *ngIf="selectedPaymentMethod === method.value" class="payment-details">
-                    <ng-container [ngSwitch]="method.value">
-                        <div *ngSwitchCase="'bank'">
-                            <p class="note">Please allow up to 24hrs before the deposit is reflected...</p>
-
-                            <div class="form-group">
-                                <label>Upload Cheque</label>
-                                <input type="file" (click)="$event.stopPropagation()" />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Date</label>
-                                <input type="date" (click)="$event.stopPropagation()" />
-                            </div>
-
-                            <div class="account-details">
-                                <p><strong>Account name:</strong> Mazad B.S.C. (c)</p>
-                                <p><strong>Bank name:</strong> National Bank of Bahrain</p>
-                                <p><strong>IBAN:</strong> BH22 NBOB 0000 0099 666677</p>
-                                <p><strong>Account number:</strong> 0099666677</p>
-                                <p><strong>Swift code:</strong> NBOBBHBM</p>
-                                <p><strong>Routing number:</strong> 1223345678990</p>
-                            </div>
-                        </div>
-
-                        <!-- Cheque -->
-                        <div *ngSwitchCase="'cheque'">
-                            <p class="note">Please visit any of our branches or upload cheque image.</p>
-
-                            <div class="form-group">
-                                <label>Upload Cheque</label>
-                                <input type="file" (click)="$event.stopPropagation()" />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Date</label>
-                                <input type="date" (click)="$event.stopPropagation()" />
-                            </div>
-
-                            <div class="location-details">
-                                <p><strong>Location:</strong> Office 2603, Building 316, Block 346, Manama, Bahrain</p>
-                                <p><strong>Timings:</strong> Sun – Thur, 8 AM – 4 PM (+3 GMT)</p>
-                            </div>
-
-                            <div class="map-box">
-                                <img src="assets/map-placeholder.jpg" alt="map" class="map" />
-                            </div>
-                        </div>
-
-                        <!-- Others -->
-                        <div *ngSwitchDefault>
-                            <p>Proceed with {{ method.label }}.</p>
-                        </div>
-                    </ng-container>
-
-                    <div class="total-box">
-                        <p><strong>Total Amount:</strong> BHD {{ totalAmount | number }}</p>
-                    </div>
-
-                    <button class="btn btn-danger btn-block">Continue</button>
-                </div>
-            </div>
-        </div>
+      <div class="text-muted medium mt-1">{{ consumedPercentage }}% used</div>
     </div>
+
+    <!-- Deposit Summary -->
+    <div class="form-group mb-3">
+      <label class="form-label">Deposit Summary</label>
+      <div class="deposit-summary-grid">
+        <div class="summary-item">
+          <div class="summary-value">BHD {{ currentDeposit | number }}</div>
+          <div class="summary-label">Current Deposit</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value">BHD {{ depositAmount | number }}</div>
+          <div class="summary-label">Available Limit</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value">BHD {{ totalLimit | number }}</div>
+          <div class="summary-label">Total Limit</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top-Up Controls -->
+    <div class="form-group text-center">
+      <label class="form-label">Top-Up Limit</label>
+      <div
+        class="top-up-controls d-flex justify-content-center align-items-center gap-3 mb-2"
+      >
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="decreaseLimit()"
+        >
+          −
+        </button>
+        <span class="fs-5 fw-bold">BHD {{ topUpAmount | number }}</span>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="increaseLimit()"
+        >
+          +
+        </button>
+      </div>
+      <div class="deposit-hint small text-muted">
+        You pay a deposit of: <strong>BHD {{ depositAmount | number }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Section -->
+  <div class="box right-section">
+    <!-- Payment Summary -->
+    <h4 class="section-title">Payment Summary</h4>
+    <div class="summary-row">
+      <span>Item Amount</span>
+      <span>BHD {{ depositAmount | number }}</span>
+    </div>
+    <div class="summary-row">
+      <span>VAT 10%</span>
+      <span>BHD {{ vatAmount | number }}</span>
+    </div>
+    <div class="summary-row total">
+      <span>Total Amount</span>
+      <span>BHD {{ totalAmount | number }}</span>
+    </div>
+
+    <div class="payment-summary-container">
+      <div
+        *ngFor="let method of paymentMethods"
+        class="payment-card"
+        [class.expanded]="selectedPaymentMethod === method.value"
+        (click)="selectPaymentMethod(method.value)"
+      >
+        <div class="payment-header">
+          <input
+            type="radio"
+            [checked]="selectedPaymentMethod === method.value"
+            name="paymentMethod"
+          />
+          <span>{{ method.label }}</span>
+        </div>
+
+        <div
+          *ngIf="selectedPaymentMethod === method.value"
+          class="payment-details"
+        >
+          <ng-container [ngSwitch]="method.value">
+            <div *ngSwitchCase="'bank'">
+              <p class="note">
+                Please allow up to 24hrs before the deposit is reflected...
+              </p>
+
+              <div class="form-group">
+                <label>Upload Cheque</label>
+                <input type="file" (click)="$event.stopPropagation()" />
+              </div>
+
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" (click)="$event.stopPropagation()" />
+              </div>
+
+              <div class="account-details">
+                <p><strong>Account name:</strong> Mazad B.S.C. (c)</p>
+                <p><strong>Bank name:</strong> National Bank of Bahrain</p>
+                <p><strong>IBAN:</strong> BH22 NBOB 0000 0099 666677</p>
+                <p><strong>Account number:</strong> 0099666677</p>
+                <p><strong>Swift code:</strong> NBOBBHBM</p>
+                <p><strong>Routing number:</strong> 1223345678990</p>
+              </div>
+            </div>
+
+            <!-- Cheque -->
+            <div *ngSwitchCase="'cheque'">
+              <p class="note">
+                Please visit any of our branches or upload cheque image.
+              </p>
+
+              <div class="form-group">
+                <label>Upload Cheque</label>
+                <input type="file" (click)="$event.stopPropagation()" />
+              </div>
+
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" (click)="$event.stopPropagation()" />
+              </div>
+
+              <div class="location-details">
+                <p>
+                  <strong>Location:</strong> Office 2603, Building 316, Block
+                  346, Manama, Bahrain
+                </p>
+                <p>
+                  <strong>Timings:</strong> Sun – Thur, 8 AM – 4 PM (+3 GMT)
+                </p>
+              </div>
+
+              <div class="map-box">
+                <iframe
+                  width="100%"
+                  height="300"
+                  style="border: 0"
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Empire+State+Building,New+York+NY"
+                >
+                </iframe>
+              </div>
+            </div>
+
+            <!-- Others -->
+            <div *ngSwitchDefault>
+              <p>Proceed with {{ method.label }}.</p>
+            </div>
+          </ng-container>
+
+          <div class="total-box">
+            <p><strong>Total Amount:</strong> BHD {{ totalAmount | number }}</p>
+          </div>
+
+          <button class="btn btn-danger btn-block">Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

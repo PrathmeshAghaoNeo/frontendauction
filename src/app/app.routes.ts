@@ -89,6 +89,7 @@ export const routes: Routes = [
 
 
   { path: 'requests', component: ManageRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  {path:'user',component:ManageUserComponent,canActivate:[RoleGuard],data:{role:'Admin'}},
   { path: 'updateUser', component: UpdateUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'detailsUser', component: DetailsUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'requestsnew', component: AddRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
