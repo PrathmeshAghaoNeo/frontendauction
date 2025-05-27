@@ -128,9 +128,16 @@
                                 <p><strong>Timings:</strong> Sun – Thur, 8 AM – 4 PM (+3 GMT)</p>
                             </div>
 
-                            <div class="map-box">
-                                <img src="assets/map-placeholder.jpg" alt="map" class="map" />
-                            </div>
+                            <google-map height="400px" width="100%" [center]="center" [zoom]="zoom"
+                                [options]="mapOptions">
+                                <map-marker [position]="markerPosition"></map-marker>
+                                <!-- <button (click)="setCurrentLocation()" class="btn btn-primary mb-2">
+                                    Use My Current Location
+                                </button> -->
+
+                            </google-map>
+
+
                         </div>
 
                         <!-- Others -->
