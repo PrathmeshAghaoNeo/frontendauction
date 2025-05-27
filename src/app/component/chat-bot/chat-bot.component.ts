@@ -2,24 +2,60 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { Observable, catchError, of, tap } from 'rxjs';
+import { ApiEndpoints } from '../../constants/api-endpoints';
+import { ChatbotService } from '../../services/chatbot.service';
+import { LinebreaksPipe } from './linebreaks.pipe';
+// Define interfaces for API response
+interface QuickReply {
+  text: string;
+  payload: string;
+}
+
+interface SuggestedArticle {
+  title: string;
+  content: string;
+}
+
+interface ChatbotApiResponse {
+  responseMessage: string;
+  quickReplies: QuickReply[];
+  suggestedArticles: SuggestedArticle[];
+}
 
 @Component({
   selector: 'app-chat-bot',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, LinebreaksPipe],
   templateUrl: './chat-bot.component.html',
-  styleUrls: ['./chat-bot.component.css']
+  styleUrls: ['./chat-bot.component.css'],
+  
 })
 export class ChatBotComponent implements OnInit {
   isOpen = false;
   isMessageView = false;
   currentHelpPage: string | null = null;
-  messages: { text: string; isUser: boolean; timestamp: Date }[] = [];
+  messages: { text: string; isUser: boolean; timestamp: Date; quickReplies?: QuickReply[]; suggestedArticles?: SuggestedArticle[] }[] = [];
   message = '';
   isChatPage = false;
-  showChatbotButton = true; // Changed from isChatPage to always show by default
+  showChatbotButton = true;
+  isLoading = false;
+  showHelpSection: boolean = false;
+  activeNavItem: string = 'home';
+  isMaximized: boolean = false;
+  userMaximizedPreference: boolean = false;
+  helpSearch: string = '';
+  faqs: any[] = [];
+  filteredFaqs: any[] = [];
+  currentFaqAnswer: any = null;
+  hasUnreadMessages = true;
+  
+  // Updated API URL - removed https for localhost development
+  private apiUrl = (`${ApiEndpoints.CHATBOT}`);
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private http: HttpClient,private chatbotService: ChatbotService) {
+    // Initialize with welcome message
     this.messages.push({
       text: 'Hello! How can I help you today?',
       isUser: false,
@@ -30,11 +66,43 @@ export class ChatBotComponent implements OnInit {
   ngOnInit() {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-
-        // this.isChatPage = this.router.url === '/chat-bot';
-          this.showChatbotButton = true;
+        this.showChatbotButton = true;
       }
     });
+    this.activeNavItem = 'home';
+    // Fetch FAQs from backend
+    this.http.get<any[]>('https://localhost:62627/api/Faq').subscribe(faqs => {
+      this.faqs = faqs;
+      this.filteredFaqs = faqs;
+    });
+  }
+
+private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | null> {
+  return this.chatbotService.sendMessage(userMessage).pipe(
+    catchError(error => {
+      console.error('API call failed:', error);
+      
+      let errorMessage = "I'm experiencing some technical difficulties. Please try again later or contact support.";
+      if (error.status === 0) {
+        errorMessage = "Unable to connect to the server. Please check your internet connection or try again later.";
+      } else if (error.status === 404) {
+        errorMessage = "Service temporarily unavailable. Please try again later.";
+      } else if (error.status >= 500) {
+        errorMessage = "Server error occurred. Please try again in a few moments.";
+      }
+
+      return of({
+        responseMessage: errorMessage,
+        quickReplies: [],
+        suggestedArticles: []
+      });
+    })
+  );
+}
+
+  // Generate session ID
+  private generateSessionId(): string {
+    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
 
   scrollToChatbot() {
@@ -42,30 +110,11 @@ export class ChatBotComponent implements OnInit {
     if (chatbot) {
       chatbot.scrollIntoView({ behavior: 'smooth' });
     } else {
-      // If chatbot isn't in view, toggle it open
       this.toggleChat();
     }
   }
 
-
-
-//    toggleChat() {
-//   this.isOpen = !this.isOpen;
-
-//   if (this.isOpen) {
-//     this.isMessageView = false;
-//     this.currentHelpPage = null;
-//     setTimeout(() => this.scrollToBottom(), 100);
-//     console.log("open");
-    
-//   }
-//   if(!this.isOpen){
-//     console.log("close");
-//   }
-// }
-
-
- toggleChat() {
+  toggleChat() {
     this.isOpen = !this.isOpen;
     console.log(this.isOpen ? 'open' : 'close');
 
@@ -76,10 +125,40 @@ export class ChatBotComponent implements OnInit {
     }
   }
 
+  toggleMaximize(): void {
+    this.isMaximized = !this.isMaximized;
+    this.userMaximizedPreference = this.isMaximized;
+  }
+
   showMessageView(): void {
     this.isMessageView = true;
     this.currentHelpPage = null;
+    this.isMaximized = this.userMaximizedPreference;
+    // Load initial API response when first entering message view
+    if (this.messages.length === 1) {
+      this.loadInitialApiResponse();
+    }
     setTimeout(() => this.scrollToBottom(), 100);
+  }
+
+  // Load initial response from API when entering chat
+  private loadInitialApiResponse(): void {
+    this.isLoading = true;
+    // Send empty string or "hello" for initial greeting
+    this.callChatbotApi('hello').subscribe(response => {
+      this.isLoading = false;
+      if (response) {
+        // Replace the initial message with API response
+        this.messages[0] = {
+          text: response.responseMessage,
+          isUser: false,
+          timestamp: new Date(),
+          quickReplies: response.quickReplies,
+          suggestedArticles: response.suggestedArticles
+        };
+      }
+      this.scrollToBottom();
+    });
   }
 
   showHelpPage(page: string): void {
@@ -90,8 +169,11 @@ export class ChatBotComponent implements OnInit {
   backToMain(): void {
     this.isMessageView = false;
     this.currentHelpPage = null;
+    this.currentFaqAnswer = null;
+    this.isMaximized = false;
   }
 
+  // Handle original quick replies and API payload-based replies
   selectQuickReply(topic: string): void {
     let replyText = '';
     
@@ -108,63 +190,86 @@ export class ChatBotComponent implements OnInit {
       case 'other':
         replyText = 'I have another question';
         break;
+      // Handle API payload-based quick replies
+      case 'bid':
+        replyText = 'Bidding Help';
+        break;
+      case 'register':
+        replyText = 'Registration Help';
+        break;
+      case 'deposit':
+        replyText = 'Deposit Issues';
+        break;
       default:
         replyText = topic;
     }
     
+    // Add user message
     this.messages.push({
       text: replyText,
       isUser: true,
       timestamp: new Date()
     });
     
-    setTimeout(() => {
-      this.simulateBotResponse(replyText);
-    }, 1000);
+    this.scrollToBottom();
+    this.isLoading = true;
+    
+    // Call API with the selected topic/payload
+    this.callChatbotApi(topic).subscribe(response => {
+      this.isLoading = false;
+      if (response) {
+        this.messages.push({
+          text: response.responseMessage,
+          isUser: false,
+          timestamp: new Date(),
+          quickReplies: response.quickReplies,
+          suggestedArticles: response.suggestedArticles
+        });
+      }
+      this.scrollToBottom();
+    });
   }
 
-  sendMessage(): void {
-    if (this.message.trim() === '') return;
-    
+  // Handle API quick reply clicks
+  handleQuickReply(quickReply: QuickReply): void {
+    // Add user message
     this.messages.push({
-      text: this.message,
+      text: quickReply.text,
       isUser: true,
       timestamp: new Date()
     });
     
-    const sentMessage = this.message;
-    this.message = '';
-    
     this.scrollToBottom();
+    this.isLoading = true;
     
-    setTimeout(() => {
-      this.simulateBotResponse(sentMessage);
-    }, 1000);
+    // Call API with payload
+    this.callChatbotApi(quickReply.payload).subscribe(response => {
+      this.isLoading = false;
+      if (response) {
+        this.messages.push({
+          text: response.responseMessage,
+          isUser: false,
+          timestamp: new Date(),
+          quickReplies: response.quickReplies,
+          suggestedArticles: response.suggestedArticles
+        });
+      }
+      this.scrollToBottom();
+    });
   }
 
-  private simulateBotResponse(userMessage: string): void {
-    const lowerCaseMessage = userMessage.toLowerCase();
-    
-    let response = "I'm not sure how to respond to that. Can you please provide more details?";
-    
-    if (lowerCaseMessage.includes('hello') || lowerCaseMessage.includes('hi')) {
-      response = "Hello! How can I assist you today?";
-    } else if (lowerCaseMessage.includes('help')) {
-      response = "I'm here to help! What do you need assistance with?";
-    } else if (lowerCaseMessage.includes('bid') || lowerCaseMessage.includes('auction')) {
-      response = "To place a bid, navigate to the item details page and click on the 'Place Bid' button. Make sure you're logged in first!";
-    } else if (lowerCaseMessage.includes('login') || lowerCaseMessage.includes('sign')) {
-      response = "You can log in by clicking the 'Login' button in the top navigation bar.";
-    } else if (lowerCaseMessage.includes('register') || lowerCaseMessage.includes('account')) {
-      response = "To register for an account, click the 'Sign Up' button and fill out the registration form.";
-    } else if (lowerCaseMessage.includes('platform')) {
-      response = "Our platform offers secure bidding and direct sales for premium assets. Is there something specific about the platform you'd like to know?";
-    } else if (lowerCaseMessage.includes('issue')) {
-      response = "I'm sorry to hear you're experiencing an issue. Could you provide more details about what's happening? Our team will help resolve it.";
-    }
-    
+  // Handle suggested article clicks
+  handleSuggestedArticle(article: SuggestedArticle): void {
+    // Add user message
     this.messages.push({
-      text: response,
+      text: `Tell me about: ${article.title}`,
+      isUser: true,
+      timestamp: new Date()
+    });
+    
+    // Add article content as bot response
+    this.messages.push({
+      text: article.content,
       isUser: false,
       timestamp: new Date()
     });
@@ -172,16 +277,131 @@ export class ChatBotComponent implements OnInit {
     this.scrollToBottom();
   }
 
+  // Send user message
+  sendMessage(): void {
+    if (this.message.trim() === '' || this.isLoading) return;
+    
+    const userMessage = this.message.trim();
+    
+    // Add user message to chat
+    this.messages.push({
+      text: userMessage,
+      isUser: true,
+      timestamp: new Date()
+    });
+    
+    this.message = ''; // Clear input
+    this.scrollToBottom();
+    this.isLoading = true;
+    
+    // Call API
+    this.callChatbotApi(userMessage).subscribe(response => {
+      this.isLoading = false;
+      if (response) {
+        this.messages.push({
+          text: response.responseMessage,
+          isUser: false,
+          timestamp: new Date(),
+          quickReplies: response.quickReplies,
+          suggestedArticles: response.suggestedArticles
+        });
+      }
+      this.scrollToBottom();
+    });
+  }
+
   private scrollToBottom(): void {
-    const chatBody = document.querySelector('.chat-body');
-    if (chatBody) {
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
+    setTimeout(() => {
+      const messageContent = document.querySelector('.message-content');
+      if (messageContent) {
+        messageContent.scrollTop = messageContent.scrollHeight;
+      }
+    }, 100);
   }
 
   handleKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
       this.sendMessage();
     }
   }
+
+
+  goToHome(): void {
+  this.isMessageView = false;
+  this.currentHelpPage = null;
+}
+
+handleFaqQuestion(questionId: string): void {
+  this.currentHelpPage = `faq-${questionId}`;
+}
+
+handleNavigation(navItem: string): void {
+  // Prevent navigation if in message or help answer page
+  if (this.isMessageView || this.currentHelpPage) return;
+  this.activeNavItem = navItem;
+  this.isMaximized = false; // Always minimize on navigation
+  switch (navItem) {
+    case 'home':
+      this.isMessageView = false;
+      this.currentHelpPage = null;
+      this.showHelpSection = false;
+      break;
+    case 'messages':
+      this.showMessageView();
+      this.showHelpSection = false;
+      break;
+    case 'help':
+      this.isMessageView = false;
+      this.currentHelpPage = null;
+      this.showHelpSection = false;
+      this.openHelpSection();
+      break;
+  }
+}
+
+openHelpSection(): void {
+  this.showHelpSection = true;
+  this.isMessageView = false;
+  this.currentHelpPage = null;
+  this.activeNavItem = 'help';
+}
+
+filterFaq() {
+  const search = this.helpSearch.toLowerCase();
+  this.filteredFaqs = this.faqs.filter(f => f.question.toLowerCase().includes(search));
+}
+
+showFaqAnswer(faq: any) {
+  this.currentFaqAnswer = faq;
+  this.currentHelpPage = 'faq';
+}
+
+get homeFaqs() {
+  return this.faqs.filter(q => q.tags && q.tags.toLowerCase().includes('home')).slice(0, 4);
+}
+
+/**
+ * Helper to remove '- ' prefix from a string (for displaying points)
+ */
+removeDashPrefix(point: string): string {
+  return point.startsWith('- ') ? point.substring(2) : point;
+}
+
+/**
+ * Format a line: if it contains an SVG or emoji, wrap it for styling and start on a new line
+ */
+public formatLineWithIcon(line: string): string {
+  // Simple check for SVG or emoji (emoji: unicode range, SVG: <svg)
+  const svgRegex = /<svg[\s\S]*?<\/svg>/i;
+  const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+  if (svgRegex.test(line)) {
+    return `<span class='icon-line'>${line}</span>`;
+  } else if (emojiRegex.test(line)) {
+    return `<span class='emoji-line'>${line}</span>`;
+  } else {
+    return line;
+  }
+}
+
 }

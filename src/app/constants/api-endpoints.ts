@@ -20,8 +20,8 @@ export const ApiEndpoints = {
   REQUEST: `${BASE_URL}/Request`,
   Auth: `${BASE_URL}/Auth`,
   Bid : `${BASE_URL}/Bid`,
-
-  
+  CHATBOT : `${BASE_URL}/Chatbot/message`,
+  FAQ: `${BASE_URL}/Faq`,
 };
 
 
