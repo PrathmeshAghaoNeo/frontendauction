@@ -163,17 +163,19 @@
                 </p>
               </div>
 
-                            <google-map height="400px" width="100%" [center]="center" [zoom]="zoom"
-                                [options]="mapOptions">
-                                <map-marker [position]="markerPosition"></map-marker>
-                                <!-- <button (click)="setCurrentLocation()" class="btn btn-primary mb-2">
+              <google-map
+                height="400px"
+                width="100%"
+                [center]="center"
+                [zoom]="zoom"
+                [options]="mapOptions"
+              >
+                <map-marker [position]="markerPosition"></map-marker>
+                <!-- <button (click)="setCurrentLocation()" class="btn btn-primary mb-2">
                                     Use My Current Location
                                 </button> -->
-
-                            </google-map>
-
-
-                        </div>
+              </google-map>
+            </div>
 
             <!-- Others -->
             <div *ngSwitchDefault>
@@ -185,7 +187,12 @@
             <p><strong>Total Amount:</strong> BHD {{ totalAmount | number }}</p>
           </div>
 
-          <button class="btn btn-danger btn-block">Continue</button>
+          <button class="btn btn=danger btn-block"
+            (click)="addTransaction()"
+            [disabled]="!selectedPaymentMethod"
+          >
+            Continue
+          </button>
         </div>
       </div>
     </div>
