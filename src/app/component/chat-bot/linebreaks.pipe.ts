@@ -10,3 +10,5 @@ export class LinebreaksPipe implements PipeTransform {
     return value.replace(/(?:\r\n|\r|\n)/g, '<br>');
   }
 } 
+
+// jgggy

@@ -869,6 +869,8 @@
   display: inline-block;
   vertical-align: middle;
   justify-content: center/* Logs */
+
+}
 .logs {
   padding: 16px;
   background-color: #f8f9fa;
@@ -927,7 +929,7 @@
   margin: 0;
   line-height: 1.4;
 };
-}
+
 .message-header-icon {
   margin-right: 0.5px;
 }
