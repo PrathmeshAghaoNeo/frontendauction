@@ -84,12 +84,9 @@ export const routes: Routes = [
   { path: 'assets', component: ManageAssetComponent },
   { path: 'newAsset', component: AddAssetComponent },
   { path: 'update-asset/:assetId', component: EditAssetComponent },
-
-
-
-
   { path: 'requests', component: ManageRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  {path:'user',component:ManageUserComponent,canActivate:[RoleGuard],data:{role:'Admin'}},
+  {path:'users',component:ManageUserComponent,canActivate:[RoleGuard],data:{role:'Admin'}},
+ {path:'newUser',component:AddUserComponent},
   { path: 'updateUser', component: UpdateUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'detailsUser', component: DetailsUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'requestsnew', component: AddRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
