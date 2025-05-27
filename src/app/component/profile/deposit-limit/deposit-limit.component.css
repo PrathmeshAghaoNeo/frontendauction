@@ -237,3 +237,9 @@ select.form-select {
   border-radius: 8px;
   margin-top: 1rem;
 }
+
+google-map {
+  display: block;
+  height: 400px;
+  width: 100%;
+}

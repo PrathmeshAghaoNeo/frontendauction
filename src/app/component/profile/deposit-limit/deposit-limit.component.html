@@ -163,19 +163,17 @@
                 </p>
               </div>
 
-              <div class="map-box">
-                <iframe
-                  width="100%"
-                  height="300"
-                  style="border: 0"
-                  loading="lazy"
-                  allowfullscreen
-                  referrerpolicy="no-referrer-when-downgrade"
-                  src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Empire+State+Building,New+York+NY"
-                >
-                </iframe>
-              </div>
-            </div>
+                            <google-map height="400px" width="100%" [center]="center" [zoom]="zoom"
+                                [options]="mapOptions">
+                                <map-marker [position]="markerPosition"></map-marker>
+                                <!-- <button (click)="setCurrentLocation()" class="btn btn-primary mb-2">
+                                    Use My Current Location
+                                </button> -->
+
+                            </google-map>
+
+
+                        </div>
 
             <!-- Others -->
             <div *ngSwitchDefault>
