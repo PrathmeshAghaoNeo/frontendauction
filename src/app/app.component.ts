@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { NgIf } from '@angular/common';
@@ -37,8 +37,9 @@ export class AppComponent {
       this.currentRoute = event.urlAfterRedirects.split('?')[0];
       console.log(this.currentRoute)
     });
+    
   }
-  
+  // @Input() showCustomButtons: boolean = false;
   ngOnInit(): void {
   }
 
@@ -63,14 +64,15 @@ export class AppComponent {
     '/bid-add-to-cart',
     '/asset-details',
     '/orders',
+    
   ];
 
   const dynamicPatterns = [
     '/direct-sale-assets/',
     '/auction-assets/',
     '/direct-sale-assetpage/',
-    '/asset-details/'
-
+    '/asset-details/',
+    '/user-profile'
   ];
 
   if (exactRoutes.includes(this.currentRoute)) {
@@ -79,7 +81,9 @@ export class AppComponent {
 
   return dynamicPatterns.some(pattern => this.currentRoute.startsWith(pattern));
 }
-
+  get showCustomHeaderButtons(): boolean {
+  return this.currentRoute === '/reguserlandingpage';
+}
 
   get showSidebar(): boolean {
     return !this.isStartPage && !this.needSideBar;

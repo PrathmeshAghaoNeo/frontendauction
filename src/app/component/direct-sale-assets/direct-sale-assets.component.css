@@ -200,6 +200,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: #9b59b6;
+<<<<<<< HEAD
   width: 100%;
   text-align: center;
   height: 74px;
@@ -214,6 +215,9 @@
   border-bottom-right-radius: 12px;
 
   
+=======
+  color: #27ae60;
+>>>>>>> e84ceaf6e5292f778f9d37074e6769ec6bf888b7
 }
 
 .plates-container.row-view .icons {

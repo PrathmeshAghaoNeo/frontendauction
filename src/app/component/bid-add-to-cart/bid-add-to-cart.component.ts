@@ -4,7 +4,10 @@ import { CommonModule } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
 import { Router } from '@angular/router';
-
+import { loadStripe } from '@stripe/stripe-js';
+import { Stripe } from '@stripe/stripe-js';
+import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 declare var bootstrap: any;
 
 @Component({
@@ -19,52 +22,62 @@ export class BidAddToCartComponent implements AfterViewInit {
   toastInstance: any;
 
   cartAssets: DirectSaleAssetDto[] = [];
-  userId: number = 1;
-
-
-  
+  userId: number | null = null;
+  email: string | null = null;
+  amount:number =10;
 
   constructor(
     private assetService: ManageAssetService,
     private listservice: ListService,
-    private router: Router
+    private router: Router,
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   confirmModal: any;
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
-     this.confirmModal = new bootstrap.Modal(document.getElementById('confirmCheckoutModal')),{ backdrop: false };
+    (this.confirmModal = new bootstrap.Modal(
+      document.getElementById('confirmCheckoutModal')
+    )),
+      { backdrop: false };
   }
 
-
-openCheckoutModal(): void {
-  const modalElement = document.getElementById('confirmCheckoutModal');
-  if (modalElement) {
-    this.confirmModal = new bootstrap.Modal(modalElement, { backdrop: false });
-    this.confirmModal.show();
-  }
-}
-
-
-confirmCheckout(): void {
-  const payload = {
-    userId: this.userId,
-    assetIds: this.cartAssets.map(a => a.assetId),
-  };
-
-  this.listservice.checkoutCart(payload).subscribe({
-    next: () => {
-      this.showToast('Checkout successful!', 'Success', 'success');
-      this.cartAssets = []; 
-      this.confirmModal.hide();
-      this.router.navigate(['/landing-page']) /// here why imnot getting the category id 
-    },
-    error: () => {
-      this.showToast('Checkout failed.', 'Error', 'error');
-      this.confirmModal.hide();
+  openCheckoutModal(): void {
+    const modalElement = document.getElementById('confirmCheckoutModal');
+    if (modalElement) {
+      this.confirmModal = new bootstrap.Modal(modalElement, {
+        backdrop: false,
+      });
+      this.confirmModal.show();
     }
-  });
-}
+  }
+
+  confirmCheckout(): void {
+    if (this.userId === null) {
+      this.showToast('User not logged in.', 'Error', 'error');
+      return;
+    }
+
+    const payload = {
+      userId: this.userId, // Now it's guaranteed to be a number
+      assetIds: this.cartAssets.map((a) => a.assetId),
+      totalAmount: this.getSubtotal(),
+      email: this.email,
+    };
+
+    this.listservice.createStripeSession(payload).subscribe({
+      next: async (response: { sessionId: string }) => {
+        const stripe = await loadStripe(
+          'pk_test_51RRtikGY6ElyrgGUXgRRI22AYfGJLziO9q1H1xoPlBiG2PfQaFe4xspeDge5fvL2sUONWDvx9NgKiz2db79DX7Q300AGRBCUQk'
+        ); // your publishable key
+        await stripe?.redirectToCheckout({ sessionId: response.sessionId });
+      },
+      error: () => {
+        this.showToast('Stripe session creation failed.', 'Error', 'error');
+      },
+    });
+  }
 
   showToast(
     message: string,
@@ -99,6 +112,22 @@ confirmCheckout(): void {
   }
 
   ngOnInit() {
+    this.userId = this.authService.getUserIdJwt();
+
+    if (!this.userId) {
+      alert('User not logged in');
+      return;
+    }
+    //  Fetch user email
+    this.userService.getUserById(this.userId).subscribe({
+      next: (user) => {
+        this.email = user.email; // Store email for session creation
+      },
+      error: () => {
+        this.showToast('Failed to fetch user details.', 'Error', 'error');
+      },
+    });
+
     this.listservice.getCart(this.userId).subscribe((data) => {
       this.cartAssets = data;
       console.log('Cart Assets:', this.cartAssets);
@@ -110,8 +139,13 @@ confirmCheckout(): void {
   }
 
   removeFromCart(asset: DirectSaleAssetDto): void {
+    if (this.userId === null) {
+      this.showToast('User not logged in.', 'Error', 'error');
+      return;
+    }
+
     const payload = {
-      userId: this.userId,
+      userId: this.userId, // now it's guaranteed to be a number
       assetId: asset.assetId,
     };
 
@@ -124,7 +158,6 @@ confirmCheckout(): void {
         );
         console.log('after remove', this.cartAssets);
 
-        // Show success toast
         this.showToast(
           `Removed "${asset.title}" from cart successfully!`,
           'Success',
@@ -133,8 +166,6 @@ confirmCheckout(): void {
       },
       error: (err) => {
         console.error('Error removing asset from cart:', err);
-
-        // Show error toast
         this.showToast('Failed to remove asset from cart.', 'Error', 'error');
       },
     });
