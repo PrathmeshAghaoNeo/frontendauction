@@ -53,7 +53,7 @@ import { MyPurchasesComponent } from './component/profile/my-purchases/my-purcha
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
-import { DirectSaleComponent } from './component/landing-page/direct-sale/direct-sale.component';
+import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -109,7 +109,7 @@ export const routes: Routes = [
   { path: 'user-signup', component: UserSignupComponent },
   { path: 'asset-details', component: AssetDetailComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
-  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleComponent },
+  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleComponent},
   { path: 'order-details/:assetId', component: GetOrderDetailsComponent },
   { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
   { path: 'auction-assets/:categoryId', component: AuctionAssetsComponent },
