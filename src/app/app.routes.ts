@@ -31,6 +31,7 @@ import { UserProfileComponent } from './component/user-profile/user-profile.comp
 import { SignupComponent } from './component/signup/signup.component';
 import { UserSignupComponent } from './component/user-signup/user-signup.component';
 import { AssetDetailComponent } from './component/asset-details/asset-details.component';
+
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
 import { EditAssetComponent } from './component/edit-asset/edit-asset.component';
@@ -56,21 +57,24 @@ import { DirectSaleComponent } from './component/landing-page/direct-sale/direct
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'landing-page', component: LandingPageComponent, },
+  { path: 'landing-page', component: LandingPageComponent },
   { path: 'logintest', component: TestloginComponent },
   { path: 'reguserlandingpage', component: RegUserLandingPageComponent, canActivate: [RoleGuard], data: { role: 'User' } },
+
+  // Admin-only routes
   { path: 'dashboard', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'assets', component: ManageAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'newAsset', component: AddAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'update-asset/:assetId', component: EditAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'auctions', component: ManageAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'users', component: ManageUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'settings', component: SettingsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'newUser', component: AddUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'newAuction', component: AddAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'update-auction/:id', component: UpdateAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'assets', component: ManageAssetComponent },
   { path: 'newAsset', component: AddAssetComponent },
   { path: 'update-asset/:assetId', component: EditAssetComponent },
   { path: 'requests', component: ManageRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  {path:'users',component:ManageUserComponent,canActivate:[RoleGuard],data:{role:'Admin'}},
+ {path:'newUser',component:AddUserComponent},
   { path: 'updateUser', component: UpdateUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'detailsUser', component: DetailsUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'requestsnew', component: AddRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
@@ -98,7 +102,7 @@ export const routes: Routes = [
       { path: 'refund-request', component: RefundRequestComponent },
       { path: 'transaction-history', component: TransactionHistoryComponent },
       { path: 'my-purchases', component: MyPurchasesComponent },
-      { path: '', redirectTo: 'my-details', pathMatch: 'full' }, // default child redirect
+      { path: '', redirectTo: 'my-details', pathMatch: 'full' },
     ],
   },
   { path: 'testing', component: ChartComponent },
@@ -125,5 +129,3 @@ export const routes: Routes = [
 
 
 ];
-
-

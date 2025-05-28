@@ -62,7 +62,7 @@ export class BidAddToCartComponent implements AfterViewInit {
     const payload = {
       userId: this.userId, // Now it's guaranteed to be a number
       assetIds: this.cartAssets.map((a) => a.assetId),
-      totalAmount: this.amount,
+      totalAmount: this.getSubtotal(),
       email: this.email,
     };
 
