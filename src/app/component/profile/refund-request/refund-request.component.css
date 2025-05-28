@@ -1,45 +1,61 @@
 .refund-container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: auto;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+  font-family: 'Poppins', sans-serif;
+  animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-.back-button {
-  font-size: 20px;
-  background: none;
+.header h1 {
+  font-size: 2rem; /* Increased font size */
+  font-family: 'Poppins', sans-serif; /* Stylish, modern font */
+  font-weight: 600;
+  color: #333; /* Optional: adjust color */
+  margin: 0;
+}
+
+.back-button, .view-all-button {
+  background: #eaeaea;
   border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  color: #555;
+  font-size: 0.9rem;
+  transition: background 0.3s;
 }
 
-.view-all-button {
-  background: #f2f2f2;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 0.9rem;
-  cursor: pointer;
+.back-button:hover, .view-all-button:hover {
+  background: #d1d1d1;
 }
 
 .status-message {
-  text-align: center;
+  background: #f9fafb;
+  border-left: 4px solid #007bff;
+  padding: 1rem;
   margin-bottom: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .status-message h2 {
   font-size: 1.1rem;
-  font-weight: 600;
+  color: #007bff;
+  margin-bottom: 0.4rem;
 }
 
 .status-message p {
@@ -48,27 +64,46 @@
 }
 
 .order-details {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1.2rem;
   margin-bottom: 1.5rem;
 }
 
 .order-details h3 {
   font-size: 1rem;
   margin-bottom: 1rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .detail-row {
   display: flex;
   justify-content: space-between;
-  margin: 8px 0;
+  margin: 0.6rem 0;
   font-size: 0.95rem;
 }
 
+.detail-row label {
+  font-weight: 500;
+  color: #333;
+}
+
+.amount-input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 120px;
+  text-align: right;
+}
+
+.error-text {
+  font-size: 0.85rem;
+  color: #d9534f;
+  margin-top: 5px;
+}
+
 .status-pending {
-  color: orange;
+  color: #ffa500;
   font-weight: 600;
 }
 
@@ -80,16 +115,22 @@
 .contact-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 0.5rem;
+  gap: 12px;
+  margin-top: 0.7rem;
 }
 
 .contact-buttons button {
-  padding: 8px 12px;
+  background: #f3f4f6;
+  padding: 10px 14px;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #f9f9f9;
+  border-radius: 8px;
+  font-size: 0.9rem;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.contact-buttons button:hover {
+  background-color: #e0e0e0;
 }
 
 .action-buttons {
@@ -98,21 +139,29 @@
   gap: 10px;
 }
 
-.download-btn {
-  background: #f2f2f2;
+.download-btn, .continue-btn {
   padding: 12px;
+  border-radius: 8px;
   font-size: 1rem;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.3s;
+}
+
+.download-btn {
+  background: #e7e7e7;
+  color: #333;
+}
+
+.download-btn:hover {
+  background: #d6d6d6;
 }
 
 .continue-btn {
-  background: #f00;
+  background: #28a745;
   color: white;
-  padding: 12px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+}
+
+.continue-btn:hover {
+  background: #218838;
 }

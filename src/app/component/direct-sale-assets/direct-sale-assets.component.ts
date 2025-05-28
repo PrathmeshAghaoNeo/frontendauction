@@ -211,6 +211,11 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/direct-sale-assetpage/', assetId]);
   }
 
+redirectToCart(): void {
+  this.router.navigate(['/bid-add-to-cart']);
+}
+
+
   addToCart(assetId: number): void {
      if (!this.userId) return;
     const payload = {

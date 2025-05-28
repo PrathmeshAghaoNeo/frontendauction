@@ -62,7 +62,7 @@ export class BidAddToCartComponent implements AfterViewInit {
     const payload = {
       userId: this.userId, // Now it's guaranteed to be a number
       assetIds: this.cartAssets.map((a) => a.assetId),
-      totalAmount: this.amount,
+      totalAmount: this.getSubtotal(),
       email: this.email,
     };
 
@@ -101,7 +101,7 @@ export class BidAddToCartComponent implements AfterViewInit {
       'text-white'
     );
     if (type === 'success') {
-      headerEl.classList.add('bg-success', 'text-white');
+      headerEl.classList.add('bg-danger', 'text-white');
     } else if (type === 'error') {
       headerEl.classList.add('bg-danger', 'text-white');
     } else {
