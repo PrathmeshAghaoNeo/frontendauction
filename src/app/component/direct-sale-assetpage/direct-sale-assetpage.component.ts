@@ -18,7 +18,7 @@ declare var bootstrap: any;
   templateUrl: './direct-sale-assetpage.component.html',
   styleUrls: ['./direct-sale-assetpage.component.scss']
 })
-export class DirectSaleComponent implements OnInit , AfterViewInit {
+export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
  
     @ViewChild('liveToast') liveToast!: ElementRef;
      toastInstance: any;
