@@ -8,6 +8,7 @@ import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
+import { Auction } from '../../modals/auctions';
 
 
 
@@ -26,6 +27,7 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
    toastInstance: any;
   
   assets: DirectSaleAssetDto[] = [];
+  auction:Auction[] = [];
   originalAssets: DirectSaleAssetDto[] = [];
   layoutType: 'grid' | 'row' = 'grid';
   noAssetsFound: boolean = false;

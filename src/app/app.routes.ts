@@ -109,7 +109,7 @@ export const routes: Routes = [
   { path: 'user-signup', component: UserSignupComponent },
   { path: 'asset-details', component: AssetDetailComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
-  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleComponent },
+  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleComponent},
   { path: 'order-details/:assetId', component: GetOrderDetailsComponent },
   { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
   { path: 'auction-assets/:categoryId', component: AuctionAssetsComponent },
