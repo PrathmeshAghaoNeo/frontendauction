@@ -65,6 +65,7 @@ import { NotificationsComponent } from './component/profile/notifications/notifi
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
 import { DirectSaleComponent } from './component/landing-page/direct-sale/direct-sale.component';
+import { ChatbotAdminComponent } from './component/chatbot-admin/chatbot-admin.component';
 
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
@@ -146,7 +147,7 @@ export const routes: Routes = [
   { path: 'reports', component: ReportsListComponent },
   { path: 'refund-request', component: RefundRequestComponent },
   { path: 'deposit-page', component: DepositPageComponent },
-  { path: 'audit-trial', component: AuditTrailComponent }
-
+  { path: 'audit-trial', component: AuditTrailComponent },
+  { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
 
 ];
