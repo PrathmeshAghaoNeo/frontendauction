@@ -1,9 +1,13 @@
 <div class="app-container">
-  <app-header *ngIf="showHeaderAndFooter" class="app-header"></app-header>
+  <app-header 
+  *ngIf="showHeaderAndFooter" 
+  [showCustomButtons]="showCustomHeaderButtons" 
+  class="app-header">
+</app-header>
 
   <div class="app-body" [ngClass]="{ 'no-sidebar': !showSidebar }">
     <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
-
+    
     <main class="app-content"  [ngClass]="{ 'auth-bg': isCurrentRoute(['/login','/']) }">
       <!-- <app-back-button *ngIf="showBackButton"></app-back-button> -->
       <router-outlet></router-outlet>

@@ -977,23 +977,23 @@
     
 }
 
-.icon-btn {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  height: 40px;
-  width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  transition: background-color 0.2s ease;
-  border-radius: 50%;
-}
+  .icon-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background-color 0.2s ease;
+    border-radius: 50%;
+  }
 
-.icon-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);  
-}
+  .icon-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);  
+  }
 
 .button-image1 {
   width: 20px;

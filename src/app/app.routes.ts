@@ -1,52 +1,36 @@
 import { Routes } from '@angular/router';
 import { RoleGuard } from './services/auth.guard';
-
-// Public Routes
 import { StartPageComponent } from './component/start-page/start-page.component';
 import { LoginComponent } from './component/login/login.component';
 import { TestloginComponent } from './component/testlogin/testlogin.component';
 import { LandingPageComponent } from './component/landing-page/landing-page.component';
-
-// User Routes
 import { RegUserLandingPageComponent } from './component/pages/reg-user-landing-page.component';
-
-// Admin Routes
 import { DashboardComponent } from './component/dashboard/dashboard.component';
 import { SettingsComponent } from './component/settings/settings.component';
 import { ManageUserComponent } from './component/manage-user/manage-user.component';
 import { AddUserComponent } from './component/add-user/add-user.component';
 import { UpdateUserComponent } from './component/update-user/update-user.component';
 import { DetailsUserComponent } from './component/details-user/details-user.component';
-
 import { ManageAssetComponent } from './component/manage-asset/manage-asset.component';
 import { AddAssetComponent } from './component/add-asset/add-asset.component';
 import { ManageAssetCategoriesComponent } from './component/manage-assetcategories/manage-assetcategories.component';
 import { AddAssetCategoriesComponent } from './component/add-assetcategories/add-assetcategories.component';
 import { UpdateAssetCategoriesComponent } from './component/udpate-assetcategories/udpate-assetcategories.component';
 import { AddRequestsComponent } from './component/add-requests/add-requests.component';
-
 import { ManageAuctionComponent } from './component/manage-auction/manage-auction.component';
 import { AddAuctionComponent } from './component/add-auction/add-auction.component';
 import { UpdateAuctionComponent } from './component/update-auction/update-auction.component';
-
 import { ManageRequestsComponent } from './component/manage-requests/manage-requests.component';
 import { EditRequestsComponent } from './component/edit-requests/edit-requests.component';
 import { ViewRequestComponent } from './component/view-request/view-request.component';
-
 import { TransactionManagementComponent } from './component/manage-transaction/manage-transaction.component';
 import { AddTransactionComponent } from './component/add-transaction/add-transaction.component';
 import { UpdateTransactionComponent } from './component/update-transaction/update-transaction.component';
-
 import { ChartComponent } from './component/chart/chart.component';
-// import { AddRequestsComponent } from './component/add-requests/add-requests.component';
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { SignupComponent } from './component/signup/signup.component';
 import { UserSignupComponent } from './component/user-signup/user-signup.component';
 import { AssetDetailComponent } from './component/asset-details/asset-details.component';
-// import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
-
-
-
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
 import { EditAssetComponent } from './component/edit-asset/edit-asset.component';
@@ -69,7 +53,6 @@ import { NotificationsComponent } from './component/profile/notifications/notifi
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
 import { DirectSaleComponent } from './component/landing-page/direct-sale/direct-sale.component';
-
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -87,10 +70,6 @@ export const routes: Routes = [
   { path: 'assets', component: ManageAssetComponent },
   { path: 'newAsset', component: AddAssetComponent },
   { path: 'update-asset/:assetId', component: EditAssetComponent },
-
-
-
-
   { path: 'requests', component: ManageRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'updateUser', component: UpdateUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'detailsUser', component: DetailsUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
@@ -106,13 +85,11 @@ export const routes: Routes = [
   { path: 'roles', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   // {path:'reports', component:ReportsListComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
   { path: 'reports', component: ReportsListComponent },
-
   { path: 'view-request', component: ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   {
     path: 'user-profile',
-    component: UserProfileComponent,
+    component: UserProfileComponent,  
     canActivate: [RoleGuard],
-    data: { role: 'Admin' },
     children: [
       { path: 'my-details', component: MyDetailsComponent },
       { path: 'notifications', component: NotificationsComponent },
@@ -129,22 +106,15 @@ export const routes: Routes = [
   { path: 'asset-details', component: AssetDetailComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
   { path: 'direct-sale-assetpage/:assetId', component: DirectSaleComponent },
-
   { path: 'order-details/:assetId', component: GetOrderDetailsComponent },
-
-
   { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
-
   { path: 'auction-assets/:categoryId', component: AuctionAssetsComponent },
-
   { path: 'testing', component: ChartComponent },
   { path: 'direct-bid', component: DirectBidComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'signal', component: SignalrTestComponent },
-
   { path: 'direct-bid', component: DirectBidComponent },
   { path: 'bid-watchlist', component: BidWatchlistComponent },
   { path: 'bid-add-to-cart', component: BidAddToCartComponent },
-
   { path: 'page-not-found', component: PageNotFoundComponent },
   { path: 'chat-bot', component: ChatBotComponent },
   { path: 'orders', component: GetOrdersComponentComponent },
