@@ -53,7 +53,7 @@ import { MyPurchasesComponent } from './component/profile/my-purchases/my-purcha
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
-import { DirectSaleComponent } from './component/landing-page/direct-sale/direct-sale.component';
+import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
