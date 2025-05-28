@@ -8,6 +8,7 @@ import {
 import { AssetCategoriesService } from '../../../services/assetcategories.service';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { TransactionService } from '../../../services/transaction.service'; // <-- Add your path
+import { TransactionMetadataService, PaymentMethod, TransactionType, CardType } from '../../../services/transaction-meta.service';
 
 @Component({
   selector: 'app-deposit-limit',
@@ -33,6 +34,10 @@ export class DepositLimitComponent implements OnInit {
   currentDeposit: number = 20000;
   topUpLimit: number = 300000;
   selectedPaymentMethod: string = '';
+  paymentMethodsMeta: PaymentMethod[] = [];
+  transactionTypesMeta: TransactionType[] = [];
+  cardTypesMeta: CardType[] = [];
+
   paymentMethods = [
     { label: 'Bank Transfer', value: 'bank' },
     { label: 'Cheque', value: 'cheque' },
@@ -52,13 +57,29 @@ export class DepositLimitComponent implements OnInit {
   constructor(
     private assetCategoriesService: AssetCategoriesService,
     private fb: FormBuilder,
-    private transactionService: TransactionService // <-- Inject service
+    private transactionService: TransactionService, // <-- Inject service
+    private metadataService: TransactionMetadataService
   ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
     this.setCurrentLocation();
+    const cached = this.metadataService.getCachedMetadata();
+  if (cached) {
+    this.populateMetadata(cached);
+  } else {
+    this.metadataService.fetchMetadata().subscribe((data) => {
+      this.populateMetadata(data);
+    });
   }
+  }
+
+  populateMetadata(data: any): void {
+  this.paymentMethodsMeta = data.paymentMethods;
+  this.transactionTypesMeta = data.transactionTypes;
+  this.cardTypesMeta = data.cardTypes;
+}
+
 
   setCurrentLocation(): void {
     if (navigator.geolocation) {
@@ -136,7 +157,7 @@ export class DepositLimitComponent implements OnInit {
     const transactionBody = {
       amount: totalAmount,
       userId: this.currentUserId,
-      transactionTypeId: this.getTransactionTypeId(this.selectedPaymentMethod),
+      transactionTypeId: 2,
       paymentMethodId: this.getPaymentMethodId(this.selectedPaymentMethod),
       cardTypeId: 1, // Optional
       merchantTransactionId: this.generateMerchantTransactionId(),

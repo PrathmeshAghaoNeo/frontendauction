@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
-
+import { TransactionMetadataService,CardType, PaymentMethod, TransactionType, TransactionStatus } from '../../services/transaction-meta.service';
 
 
 @Component({
@@ -23,6 +23,10 @@ export class TransactionManagementComponent implements OnInit {
   @ViewChild('viewTransactionModal') viewTransactionModal: any;
   @ViewChild('deleteTransactionModal') deleteTransactionModal: any;
 
+  cardTypes: CardType[] = [];
+  paymentMethods: PaymentMethod[] = [];
+  transactionTypes: TransactionType[] = [];
+  statuses: TransactionStatus[] = [];
   transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
   sortColumn: string = '';
@@ -44,11 +48,27 @@ export class TransactionManagementComponent implements OnInit {
   constructor(
     private transactionService: TransactionService,
     private modalService: NgbModal,
+    private metadataService: TransactionMetadataService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    const cached = this.metadataService.getCachedMetadata();
+    if (cached) {
+      this.populateDropdowns(cached);
+    } else {
+      this.metadataService.fetchMetadata().subscribe((data) => {
+        this.populateDropdowns(data);
+      });
+    }
     this.loadTransactions();
+  }
+
+   populateDropdowns(data: any): void {
+    this.transactionTypes = [{ transactionTypeId: 0, transactionTypeName: 'All Transaction Types' }, ...data.transactionTypes];
+    this.paymentMethods = [{ paymentMethodId: 0, paymentMethodName: 'All Payment Methods' }, ...data.paymentMethods];
+    this.cardTypes = [{ cardTypeId: 0, cardTypeName: 'All Card Types' }, ...data.cardTypes];
+    this.statuses = [{ statusId: 0, statusName: 'All Statuses' }, ...data.statuses];
   }
 
   loadTransactions(): void {

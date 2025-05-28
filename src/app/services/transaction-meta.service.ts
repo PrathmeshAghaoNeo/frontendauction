@@ -34,7 +34,7 @@ export interface TransactionMetadata {
   providedIn: 'root',
 })
 export class TransactionMetadataService {
-  private metadataUrl = '/api/Transaction/metadata'; // Adjust the URL to match your backend
+  private metadataUrl = 'https://localhost:62627/api/Transactions/metadata'; // Adjust the URL to match your backend
   private metadataSubject = new BehaviorSubject<TransactionMetadata | null>(null);
   public metadata$ = this.metadataSubject.asObservable();
 
