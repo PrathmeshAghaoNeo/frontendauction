@@ -10,7 +10,7 @@ import { AuthService } from './services/auth.service';
 import { BackButtonComponent } from './component/back-button/back-button.component';
 import { SignalRService } from './services/signal-r.service';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
-
+ 
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -29,7 +29,7 @@ import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 })
 export class AppComponent {
   currentRoute: string = '';
-  
+ 
   constructor(private router: Router,private authService: AuthService, private signalRService:SignalRService) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
@@ -37,21 +37,21 @@ export class AppComponent {
       this.currentRoute = event.urlAfterRedirects.split('?')[0];
       console.log(this.currentRoute)
     });
-    
+   
   }
   // @Input() showCustomButtons: boolean = false;
   ngOnInit(): void {
   }
-
+ 
  
   get isStartPage(): boolean {
     return this.currentRoute === '/';
   }
-
+ 
   isCurrentRoute(routes: string[]): boolean {
     return routes.includes(this.currentRoute);
   }
-
+ 
   get needSideBar(): boolean {
   const exactRoutes = [
     '/landing-page',
@@ -64,9 +64,9 @@ export class AppComponent {
     '/bid-add-to-cart',
     '/asset-details',
     '/orders',
-    
+   
   ];
-
+ 
   const dynamicPatterns = [
     '/direct-sale-assets/',
     '/auction-assets/',
@@ -74,21 +74,21 @@ export class AppComponent {
     '/asset-details/',
     '/user-profile'
   ];
-
+ 
   if (exactRoutes.includes(this.currentRoute)) {
     return true;
   }
-
+ 
   return dynamicPatterns.some(pattern => this.currentRoute.startsWith(pattern));
 }
   get showCustomHeaderButtons(): boolean {
   return this.currentRoute === '/reguserlandingpage';
 }
-
+ 
   get showSidebar(): boolean {
     return !this.isStartPage && !this.needSideBar;
   }
-
+ 
   get showHeaderAndFooter(): boolean {
     return !this.isCurrentRoute(['/login','/']);
   }
@@ -96,3 +96,4 @@ export class AppComponent {
     return !this.isCurrentRoute(['/login', '/start-page','/landing-page', '/reguserlandingpage','/']);
   }
 }
+ 
