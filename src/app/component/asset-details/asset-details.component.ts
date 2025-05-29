@@ -4,13 +4,16 @@ import { Asset } from '../../modals/manage-asset';
 import { ManageAssetService } from '../../services/asset.service';
 import { CommonModule } from '@angular/common';
 import { Auction } from '../../modals/auctions';
-import { BidDto, bidStats } from '../../modals/bid-stats';
+import { AutoBidDto, BidDto, bidStats } from '../../modals/bid-stats';
 import { SignalRService } from '../../services/signal-r.service';
 import { BidService } from '../../services/bid.service';
 import { AuctionService } from '../../services/auction.service';
 import { FormsModule, NgModel } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../services/auth.service';
 
+
+declare var bootstrap: any;
 @Component({
   selector: 'app-asset-details',
   standalone: true,
@@ -20,9 +23,22 @@ import Swal from 'sweetalert2';
 })
 export class AssetDetailComponent implements OnInit, OnDestroy {
   // assetId: number = 0;
-   assetId: number = 6;
+  showRightPanel: boolean = false;
+  TrailshowRightPanel: boolean = false;
+
+   pendingAutoBidState: boolean = false;
+
+pendingValue: boolean = false;
+  modalMessage: string = '';
+  
+   autoBidToggle: boolean = false;
+  setLimitAmount: number = 0;
+  
+
+    assetId: number = 110;
     auctionId: number = 99;
-    userId: number = 1;
+ 
+  User: number |null = null;
   asset: Asset | null = null;
   auction!: Auction;
 
@@ -33,15 +49,23 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   placeBid: BidDto = {
       auctionId: 0,
       assetId: this.assetId,
-      userId: this.userId,
+      userId: this.User,
       bidAmount: 0,
     }
+
     bidData: bidStats = {
       highestBid: 0,
       bidCount: 0
     }
 
-    
+ AutoBid: AutoBidDto = {
+    assetId: this.assetId,
+    userId: this.User,
+    auctionId: this.auctionId,
+    maxBidAmount: 0,
+    isActive: false
+}
+
   timeLeft = {
     total: 0,
     days: 0,
@@ -57,10 +81,13 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private signalR: SignalRService, private bidService: BidService, private auctionService: AuctionService,private router: Router,
-    private assetService: ManageAssetService,private route: ActivatedRoute
+    private assetService: ManageAssetService,private route: ActivatedRoute,private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.User = this.authService.getUserIdJwt();
+    console.log("UserId is ::",this.User)
+    this.placeBid.userId = this.User;
     const paramsId = this.route.snapshot.queryParams['id'] ? +atob(this.route.snapshot.queryParams['id']) : null;
     console.log(paramsId)
     if(paramsId != null) {
@@ -77,8 +104,36 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
       console.log(data);
     })
     this.loadAssetDetails();
+    this.loadAutoBid();
+    console.log("loadautobidData");
     
+    console.log('showRightPanel on reload:', this.showRightPanel); 
   }
+
+
+loadAutoBid() {
+  this.bidService.getAutoBid(this.User, this.auctionId, this.assetId).subscribe({
+    next: (data) => {
+      // this.AutoBid = data;
+      this.AutoBid = data;
+      console.log("autodata", data.isActive);
+      console.log('AutoBid data:', this.AutoBid.isActive);
+      this.setLimitAmount = this.AutoBid.maxBidAmount;
+
+      this.showRightPanel = data.isActive;
+      
+      console.log('AutoBid data:', this.AutoBid);
+
+      console.log('data:', data); 
+      console.log('TrailshowRightPanel on load:', this.showRightPanel); 
+    },
+    error: (error) => {
+      console.error('Failed to load AutoBid data', error);
+    }
+  });
+}
+
+
 
   ngOnDestroy(): void {
     if (this.countdownInterval) {
@@ -277,4 +332,171 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     goBack(): void {
     window.history.back();
   }
+
+
+
+  //for setting limit to max limit part 
+   decrementLimit() {
+    if (this.asset?.minIncrement) {
+      const minAllowedBid =  this.AutoBid?.maxBidAmount > 0 ? this.AutoBid.maxBidAmount + + (this.asset.minIncrement ?? 0)  : (this.asset.startingPrice ?? 0) + (this.asset.minIncrement ?? 0);
+      const nextValue = this.AutoBid.maxBidAmount - this.asset.minIncrement;
+      if (nextValue >= minAllowedBid) {
+        this.AutoBid.maxBidAmount = nextValue;
+      } else {
+        this.AutoBid.maxBidAmount = minAllowedBid;
+      }
+    }
+  }
+
+  incrementLimit() {
+    if (this.asset?.minIncrement) {
+      this.AutoBid.maxBidAmount += this.asset.minIncrement;
+    }
+  }
+
+  get minValidLimit(): number {
+  if (this.bidData.highestBid > 0) {
+    return this.bidData.highestBid + (this.asset?.minIncrement ?? 0);
+  } else {
+    return (this.asset?.startingPrice ?? 0) + (this.asset?.minIncrement ?? 0);
+  }
+}
+
+onSetLimit(): void {
+  if (this.setLimitAmount >= this.minValidLimit) {
+    const payload = {
+      userId: this.User,
+      auctionId: this.auctionId,
+      assetId: this.assetId,
+      maxBidAmount: this.setLimitAmount
+    };
+
+    this.bidService.placeAutoBid(payload).subscribe({
+      next: (res) => {
+        console.log(res);
+        alert('Auto-bid placed successfully!');
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error placing auto-bid.');
+      }
+    });
+  }
+}
+
+
+// toggleAutoBid(value: boolean) {
+//   if (value) {
+//     const confirmed = window.confirm('Are you sure you want to enable auto-bid?');
+//     if (!confirmed) {
+//       // User cancelled, so don't enable auto-bid
+//       return;
+//     }
+//   }
+
+//   this.AutoBid.isActive = value;
+//   this.showRightPanel = value;
+
+//   if (value === true) {
+//     this.AutoBid.maxBidAmount = this.setLimitAmount;
+//     const payload = {
+//       userId: this.userId,
+//       auctionId: this.auctionId,
+//       assetId: this.assetId,
+//       maxBidAmount: this.setLimitAmount,
+//     };
+//     console.log("payload", payload);
+//     this.bidService.placeAutoBid(payload).subscribe({
+//       next: (response) => {
+//         console.log('AutoBid placed:', response);
+//         Swal.fire({
+//           icon: 'success',
+//           title: 'Auto-Bid Set',
+//           text: `Your auto-bid has been set successfully!`,
+//           timer: 2000,
+//           showConfirmButton: false
+//         });
+//       },
+//       error: (err) => {
+//         console.error('Failed to place AutoBid:', err);
+//         Swal.fire({
+//           icon: 'error',
+//           title: 'Auto-Bid Failed',
+//           text: 'Failed to set auto-bid. Please try again.',
+//           timer: 2000,
+//           showConfirmButton: false
+//         });
+//       }
+//     });
+//   } else {
+//     const payload = {
+//       userId: this.userId,
+//       auctionId: this.auctionId,
+//       assetId: this.assetId
+//     };
+//     this.bidService.removeAutoBid(payload).subscribe({
+//       next: (response) => {
+//         console.log('AutoBid removed:', response);
+//       },
+//       error: (err) => {
+//         console.error('Failed to remove AutoBid:', err);
+//       }
+//     });
+//   }
+// }
+
+openConfirmationModal(value: boolean) {
+    this.pendingValue = value;
+    this.modalMessage = value
+      ? 'Are you sure you want to enable auto-bid?'
+      : 'Are you sure you want to disable auto-bid?';
+
+    const modalElement = document.getElementById('autoBidConfirmModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement,{backdrop:false});
+      modal.show();
+    }
+  }
+
+  confirmAutoBid() {
+    const value = this.pendingValue;
+    this.AutoBid.isActive = value;
+    this.showRightPanel = value;
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('autoBidConfirmModal'));
+    modal?.hide();
+
+    if (value) {
+      this.AutoBid.maxBidAmount = this.setLimitAmount;
+      const payload = {
+        userId: this.User,
+        auctionId: this.auctionId,
+        assetId: this.assetId,
+        maxBidAmount: this.setLimitAmount,
+      };
+      this.bidService.placeAutoBid(payload).subscribe({
+        next: (res) => {
+          console.log('AutoBid placed:', res);
+        },
+        error: (err) => {
+          console.error('Failed to place AutoBid:', err);
+        }
+      });
+    } else {
+      const payload = {
+        userId: this.User,
+        auctionId: this.auctionId,
+        assetId: this.assetId,
+      };
+      this.bidService.removeAutoBid(payload).subscribe({
+        next: (res) => {
+          console.log('AutoBid removed:', res);
+        },
+        error: (err) => {
+          console.error('Failed to remove AutoBid:', err);
+        }
+      });
+    }
+  }
+
 }

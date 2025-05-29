@@ -380,6 +380,7 @@
   cursor: pointer;
   text-transform: lowercase;
   transition: background-color 0.2s;
+  margin-top: 10px;
 }
  
 .bid-button:hover {
@@ -390,6 +391,32 @@
   margin-right: 8px;
 }
 
+
+.bid-button-1{
+ display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 15px;
+  background-color: #9b33d3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: lowercase;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+ 
+.bid-button-1:hover {
+  background-color: #7d15b5;
+}
+ 
+.bid-button-1 i {
+  margin-right: 8px;
+}
 /* Original Navigation & Footer (Hidden) */
 .navigation, .footer {
   display: none;
@@ -408,4 +435,58 @@
   .bid-amount, .bid-count {
     font-size: 16px;
   }
+}
+
+.large-toggle .form-check-input {
+  width: 3rem;
+  height: 1.5rem;
+  box-shadow: none;
+}
+
+.large-toggle .form-check-label {
+  font-size: 1.25rem;
+  font-weight: 500;
+  box-shadow: none;
+}
+.btn-toggle .btn {
+  border-radius: 0;
+}
+
+.btn-toggle .btn:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.btn-toggle .btn:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+
+
+.modal-content {
+  background-color: lavender;
+  border: 2px solid #000000; 
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+
+.modal-header {
+  background-color: #f0f4ff;
+  border: 2px solid #6c63ff; 
+}
+
+.btn-success {
+  background-color: #28a745;
+  border: none;
+}
+
+.btn-outline-danger {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
 }
