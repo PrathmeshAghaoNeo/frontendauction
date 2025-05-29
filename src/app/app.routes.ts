@@ -59,7 +59,7 @@ import { ReportsListComponent } from './component/reports-list/reports-list.comp
 import { RefundRequestComponent } from './component/profile/refund-request/refund-request.component';
 import { DepositPageComponent } from './component/deposit-page/deposit-page.component';
 import { MyDetailsComponent } from './component/profile/my-details/my-details.component';
-import { TransactionHistoryComponent } from './component/profile/transaction-history/transaction-history.component';
+import {  UserTransactionsComponent } from './component/profile/transaction-history/transaction-history.component';
 import { MyPurchasesComponent } from './component/profile/my-purchases/my-purchases.component';
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
@@ -115,7 +115,7 @@ export const routes: Routes = [
       { path: 'settings-privacy', component: SettingsPrivacyComponent },
       { path: 'deposit-limit', component: DepositLimitComponent },
       { path: 'refund-request', component: RefundRequestComponent },
-      { path: 'transaction-history', component: TransactionHistoryComponent },
+      { path: 'transaction-history', component: UserTransactionsComponent },
       { path: 'my-purchases', component: MyPurchasesComponent },
       { path: '', redirectTo: 'my-details', pathMatch: 'full' },
     ],
