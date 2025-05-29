@@ -74,9 +74,8 @@
             >
               <option value="" disabled selected>Select a category</option>
               <option *ngFor="let cat of categories" [value]="cat.categoryId">
-            {{ cat.categoryName }}
-          </option>
-
+                {{ cat.categoryName }}
+              </option>
             </select>
 
             <div
@@ -121,38 +120,27 @@
             </div>
           </div>
           <div class="mb-2">
-            <label class="form-label required-label">Seller ID</label>
-            <input
-              class="form-control"
-              type="number"
+            <label class="form-label required-label">Seller</label>
+            <select
+              class="form-select"
               [(ngModel)]="asset.sellerId"
               name="seller"
+              #seller="ngModel"
               required
-              min="1"
-              maxlength="5000"
-              #sellerId="ngModel"
-              [class.is-invalid]="
-                sellerId.invalid && (sellerId.touched || assetForm.submitted)
-              "
-              (input)="limitToThreeDigits($event)"
-            />
-            <div
-              *ngIf="
-                sellerId.invalid && (sellerId.touched || assetForm.submitted)
-              "
-              class="invalid-feedback"
             >
-              <div *ngIf="sellerId.errors?.['required']">
-                Seller ID is required.
-              </div>
-              <div *If="sellerId.errors?.['min']">
-                Seller ID must be at least 1.
-              </div>
-              <div *If="sellerId.errors?.['max']">
-                Seller ID cannot exceed 5000.
-              </div>
+              <option *ngFor="let s of sellers" [value]="s.id">
+                {{ s.name }}
+              </option>
+            </select>
+
+            <div
+              *ngIf="seller.invalid && (seller.touched || assetForm.submitted)"
+              class="text-danger"
+            >
+              <div *ngIf="seller.errors?.['required']">Seller is required.</div>
             </div>
           </div>
+
           <div class="mb-2">
             <label class="form-label required-label">Commission %</label>
             <input

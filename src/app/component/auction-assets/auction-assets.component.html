@@ -47,6 +47,7 @@
                       ? 'Remove from Wishlist'
                       : 'Add to Wishlist'
                   "
+                   (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
                 >
                 <!-- (click)="toggleWishlist(asset.assetId)" -->
                   <img
@@ -104,12 +105,26 @@
             (click)="navigateToAsset(asset?.assetId)"
           />
           <div class="icons icons-top">
-            <button class="icon-btn icon-btn-1" title="Save">
+            <button class="icon-btn icon-btn-1" 
+            [title]="
+                    isInWishlist(asset.assetId)
+                      ? 'Remove from Wishlist'
+                      : 'Add to Wishlist'
+                  "
+             (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
+            >
               <!-- (click)="addToWishlist(asset.assetId)" -->
               <img
-                src="wishlist.png"
-                alt="Add to Wishlist"
-                class="button-image1"
+                [src]="
+                      isInWishlist(asset.assetId)
+                        ? 'bookmark.png'
+                        : 'wishlist.png'
+                    "
+                    alt="Wishlist Toggle"
+                    class="button-image1"
+                    [ngClass]="{
+                      'active-wishlist': isInWishlist(asset.assetId)
+                    }"
               />
             </button>
             <button
