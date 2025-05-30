@@ -679,15 +679,6 @@
   background-color: rgba(0, 0, 0, 0.05);  
 }
 
-.button-image1 {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-}
-
-.button-image1.active-wishlist {
-  border-radius: 4px;
-}
 .bid-info{
   width: 100%;
   display: flex;
@@ -989,16 +980,6 @@
 
 .icon-btn:hover {
   background-color: #999986;  
-}
-
-.button-image1 {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-}
-
-.button-image1.active-wishlist {
-  border-radius: 4px;
 }
 
 

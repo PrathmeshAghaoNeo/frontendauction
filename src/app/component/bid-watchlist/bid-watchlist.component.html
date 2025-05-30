@@ -1,5 +1,31 @@
+<div class="watchlist-container">
+  <button class="back-btn2">
+    <button class="back-btn2" (click)="goBack()">
+      <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+    </button>
+  </button>
+
+  <h2 class="watchlist-title">My Watchlist</h2>
+
+  <div class="wishlist-tabs">
+    <button
+      [class.active-tab]="selectedTab === 'auction'"
+      (click)="selectedTab = 'auction'"
+    >
+      Auctions
+    </button>
+    <button
+      [class.active-tab]="selectedTab === 'direct'"
+      (click)="selectedTab = 'direct'"
+    >
+      Direct Sale
+    </button>
+  </div>
+</div>
+
 <div class="cart-grid">
-  <div class="cart-card" *ngFor="let asset of watchlistAssets">
+  <!-- <div class="cart-card" *ngFor="let asset of watchlistAssets"> -->
+  <div class="cart-card" *ngFor="let asset of filteredWatchlistAssets">
     <div class="cart-image-wrap">
       <img
         *ngIf="asset.thumbnailUrl?.length"
@@ -27,7 +53,9 @@
           </button>
           <button
             class="icon-btn"
-            [title]="isInCart(asset.assetId) ? 'Already in Cart' : 'Add to Cart'"  
+            [title]="
+              isInCart(asset.assetId) ? 'Already in Cart' : 'Add to Cart'
+            "
             (click)="addToCart(asset.assetId)"
             [disabled]="isInCart(asset.assetId)"
           >
@@ -50,17 +78,25 @@
 </div>
 
 <!-- Toast container -->
-<div class="toast-container p-3" style="z-index: 9999;">
-  <div #liveToast class="toast " role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+<div class="toast-container p-3" style="z-index: 9999">
+  <div
+    #liveToast
+    class="toast"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    data-bs-delay="4000"
+  >
     <div class="toast-header bg-info text-white">
       <strong class="me-auto">Notification</strong>
       <small class="text-muted">Just now</small>
-      <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close"></button>
+      <button
+        type="button"
+        class="btn-close btn-close-white ms-2 mb-1"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
     </div>
-    <div class="toast-body">
-      This is a toast message.
-    </div>
+    <div class="toast-body">This is a toast message.</div>
   </div>
 </div>
-
-

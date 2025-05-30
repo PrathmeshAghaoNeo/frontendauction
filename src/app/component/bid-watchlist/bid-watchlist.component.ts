@@ -20,6 +20,7 @@ export class BidWatchlistComponent implements AfterViewInit {
     @ViewChild('liveToast') liveToast!: ElementRef;
    toastInstance: any;
    
+   selectedTab: 'auction' | 'direct' = 'auction';
   
 
   watchlistAssets: DirectSaleAssetDto[] = []; 
@@ -62,6 +63,12 @@ constructor(private assetService: ManageAssetService , private listService :List
     this.toastInstance.show();
   }
 
+
+  get filteredWatchlistAssets() {
+  return this.watchlistAssets.filter(asset =>
+    this.selectedTab === 'auction' ? !asset.isAvailableForDirectSale : asset.isAvailableForDirectSale
+  );
+}
 
 
 ngOnInit() {
