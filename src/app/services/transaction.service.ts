@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from "../constants/enviroments";
-import { TransactionType, PaymentMethod, CardType, TransactionStatus, AddTransaction, Transaction } from '../modals/manage-transaction';
+import { TransactionType, PaymentMethod, CardType, TransactionStatus, AddTransaction, Transaction, UserTransaction } from '../modals/manage-transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -92,6 +92,10 @@ export class TransactionService {
 
   getTransactionStatuses(): Observable<TransactionStatus[]> {
     return this.http.get<TransactionStatus[]>(`${environment.apiUrl}/transaction-statuses`);
+  }
+
+  getUserTransactions(userId: number): Observable<UserTransaction[]> {
+    return this.http.get<UserTransaction[]>(`${this.apiUrl}/user/1/transactions`);
   }
 }
 

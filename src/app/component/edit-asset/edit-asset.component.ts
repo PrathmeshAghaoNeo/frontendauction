@@ -113,7 +113,12 @@ export class EditAssetComponent implements OnInit {
   winnerAwardingOptions = ['Automatic', 'Manual'];
   deliveryRequiredOptions = ['Yes', 'No'];
   selectedOpton: number= 0;
+
   
+  sellers = [
+  { id: 1, name: 'Vaish Patil' },
+];
+
   statusOptions = [
     { id: 1, name: 'Draft' },
     { id: 2, name: 'Published' },

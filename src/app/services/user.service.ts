@@ -2,9 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Country, Role, Status, User, UserView } from '../modals/user';
+import { Country, Role, Status, User, UserView,Notification} from '../modals/user';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { AuthService } from './auth.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -87,5 +88,13 @@ export class UserService {
       null
     );
   }
-  
+  getNotificationByUserId(userId:number): Observable<Notification[]>{
+    return this.http.get<Notification[]>(`${ApiEndpoints.USER}/Notification/${userId}`);
+  }
+  clearNotificationByUserId(userId:number): Observable<any> {
+    return this.http.delete<any>(`${ApiEndpoints.USER}/delete-all-notification/${userId}`);
+  }
+  markNottificationAsSeen(notificationId:string):Observable<any>{
+    return this.http.put<any>(`${ApiEndpoints.USER}/mark-as-read/${notificationId}`, notificationId);
+  }
 }

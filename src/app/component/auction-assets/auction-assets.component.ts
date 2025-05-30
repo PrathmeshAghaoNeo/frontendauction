@@ -8,6 +8,7 @@ import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
+import { Auction } from '../../modals/auctions';
 
 
 
@@ -26,6 +27,7 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
    toastInstance: any;
   
   assets: DirectSaleAssetDto[] = [];
+  auction:Auction[] = [];
   originalAssets: DirectSaleAssetDto[] = [];
   layoutType: 'grid' | 'row' = 'grid';
   noAssetsFound: boolean = false;
@@ -82,6 +84,7 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data]; 
+          this.loadWishlist();
           this.noAssetsFound = this.assets.length === 0;
           console.log('Assets:', this.assets);
         },
@@ -160,34 +163,47 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     });
   }
 
-  isInWishlist(assetId: number): boolean {
-  return this.wishlistAssetIds.includes(assetId);
-} 
-  // toggleWishlist(assetId: number): void {
-  //   if (this.isInWishlist(assetId)) {
-  //     const payload = { userId: this.userId, assetId: assetId };
-  //     this.listService.removeFromWishlist(payload).subscribe({
-  //       next: () => {
-  //         this.wishlistAssetIds = this.wishlistAssetIds.filter(id => id !== assetId);
-  //         this.showToast(`Removed from wishlist.`, 'Removed!', 'info');
-  //       },
-  //       error: (err) => {
-  //         this.showToast(err.error.message || 'Error removing from wishlist.', 'Error!', 'error');
-  //       },
-  //     });
-  //   } else {
-  //     const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
-  //     this.listService.addToWishlist(payload).subscribe({
-  //       next: () => {
-  //         this.wishlistAssetIds.push(assetId);
-  //         this.showToast('Added to wishlist.', 'Added!', 'success');
-  //       },
-  //       error: (err) => {
-  //         this.showToast(err.error.message || 'Error adding to wishlist.', 'Error!', 'error');
-  //       },
-  //     });
-  //   }
-  // }
+   isInWishlist(assetId: number): boolean {
+    return this.wishlistAssetIds.includes(assetId);
+  }
+
+
+  toggleWishlist(assetId: number): void {
+     if (!this.userId) return;
+    if (this.isInWishlist(assetId)) {
+      const payload = { userId: this.userId, assetId: assetId };
+      this.listService.removeFromWishlist(payload).subscribe({
+        next: () => {
+          this.wishlistAssetIds = this.wishlistAssetIds.filter(
+            (id) => id !== assetId
+          );
+          this.showToast(`Removed from wishlist.`, 'Removed!', 'info');
+        },
+        error: (err) => {
+          this.showToast(
+            err.error.message || 'Error removing from wishlist.',
+            'Error!',
+            'error'
+          );
+        },
+      });
+    } else {
+      const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
+      this.listService.addToWishlist(payload).subscribe({
+        next: () => {
+          this.wishlistAssetIds.push(assetId);
+          this.showToast('Added to wishlist.', 'Added!', 'success');
+        },
+        error: (err) => {
+          this.showToast(
+            err.error.message || 'Error adding to wishlist.',
+            'Error!',
+            'error'
+          );
+        },
+      });
+    }
+  }
 
 
   navigateToAsset(assetId: number | undefined): void {

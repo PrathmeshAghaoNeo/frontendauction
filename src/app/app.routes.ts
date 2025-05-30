@@ -48,13 +48,14 @@ import { ReportsListComponent } from './component/reports-list/reports-list.comp
 import { RefundRequestComponent } from './component/profile/refund-request/refund-request.component';
 import { DepositPageComponent } from './component/deposit-page/deposit-page.component';
 import { MyDetailsComponent } from './component/profile/my-details/my-details.component';
-import { TransactionHistoryComponent } from './component/profile/transaction-history/transaction-history.component';
+import {  UserTransactionsComponent } from './component/profile/transaction-history/transaction-history.component';
 import { MyPurchasesComponent } from './component/profile/my-purchases/my-purchases.component';
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
-import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 import { ManageRolesComponent } from './component/manage-roles/manage-roles.component';
+import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
+import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -101,16 +102,17 @@ export const routes: Routes = [
       { path: 'settings-privacy', component: SettingsPrivacyComponent },
       { path: 'deposit-limit', component: DepositLimitComponent },
       { path: 'refund-request', component: RefundRequestComponent },
-      { path: 'transaction-history', component: TransactionHistoryComponent },
+      { path: 'transaction-history', component: UserTransactionsComponent },
       { path: 'my-purchases', component: MyPurchasesComponent },
       { path: '', redirectTo: 'my-details', pathMatch: 'full' },
     ],
   },
+  { path: 'payment-success', component: PaymentSuccessComponent },
   { path: 'testing', component: ChartComponent },
   { path: 'user-signup', component: UserSignupComponent },
   { path: 'asset-details', component: AssetDetailComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
-  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleComponent },
+  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleAssetComponent},
   { path: 'order-details/:assetId', component: GetOrderDetailsComponent },
   { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
   { path: 'auction-assets/:categoryId', component: AuctionAssetsComponent },
