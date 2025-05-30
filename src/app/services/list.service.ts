@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 
 
 export interface CartRequest {
-  userId: number;
+  userId: number |null;
   assetId: number;
   quantity: number;
 }
@@ -49,7 +49,7 @@ createStripeSession(payload: { userId: number; assetIds: number[] }) {
     return this.http.post(`${this.baseUrl}/Cart/add`, payload);
   }
 
-  getCart(userId: number): Observable<any> {
+  getCart(userId: number | null): Observable<any> {
 
     return this.http.get(`${this.baseUrl}/Cart/${userId}`);
   }
@@ -68,14 +68,14 @@ createStripeSession(payload: { userId: number; assetIds: number[] }) {
     return this.http.post(`${this.baseUrl}/Wishlist/add`, payload);
   }
 
-  getWishlist(userId: number): Observable<any> {
+  getWishlist(userId: number | null): Observable<any> {
     return this.http.get(`${this.baseUrl}/Wishlist/${userId}`);
   }
 
 
   
 
- removeFromWishlist(payload: { userId: number; assetId: number }): Observable<any> {
+ removeFromWishlist(payload: { userId: number |null; assetId: number }): Observable<any> {
   return this.http.request('DELETE', `${this.baseUrl}/Wishlist/remove`, {
     headers: { 'Content-Type': 'application/json' },
     body: payload

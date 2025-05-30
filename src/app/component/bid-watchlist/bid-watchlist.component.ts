@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ListService } from '../../services/list.service';
 import { environment } from '../../constants/enviroments';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../services/auth.service';
 
 declare var bootstrap: any; 
 
@@ -24,12 +25,14 @@ export class BidWatchlistComponent implements AfterViewInit {
   
 
   watchlistAssets: DirectSaleAssetDto[] = []; 
-  userId: number = 1;
+  // userId: number = 1;
+
   apiUrl = environment.baseurl;
+  User: number |null = null;
 
   cartAssetIds: number[] = [];
 
-constructor(private assetService: ManageAssetService , private listService :ListService , private router:Router) {}
+constructor(private assetService: ManageAssetService , private listService :ListService , private router:Router , private authService: AuthService) {}
 
 
 
@@ -72,7 +75,10 @@ constructor(private assetService: ManageAssetService , private listService :List
 
 
 ngOnInit() {
-    this.listService.getWishlist(this.userId).subscribe((data) => {
+  this.User = this.authService.getUserIdJwt();
+    console.log("UserId is ::",this.User)
+
+    this.listService.getWishlist(this.User).subscribe((data) => {
       this.watchlistAssets = data;
       console.log('Watchlist:', this.watchlistAssets);
        this.loadCartItems();
@@ -80,7 +86,7 @@ ngOnInit() {
   }
 
 loadCartItems(): void {
-  this.listService.getCart(this.userId).subscribe({
+  this.listService.getCart(this.User).subscribe({
     next: (data) => {
       this.cartAssetIds = data.map((item: any) => item.assetId); 
       console.log('Cart Asset IDs:', this.cartAssetIds);
@@ -107,7 +113,7 @@ goToCart() {
 
 addToCart(assetId: number): void {
   const payload = {
-    userId: this.userId,
+    userId: this.User,
     assetId: assetId,
     quantity: 1,
   };
@@ -127,7 +133,7 @@ addToCart(assetId: number): void {
 
   removeFromWatchlist(asset: any): void {
   const payload = {
-    userId: this.userId,
+    userId: this.User,
     assetId: asset.assetId
   };
 
