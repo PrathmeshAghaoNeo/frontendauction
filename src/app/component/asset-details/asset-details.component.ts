@@ -93,7 +93,6 @@ pendingValue: boolean = false;
     if(paramsId != null) {
       this.assetId = paramsId
     }
-    this.signalR.startConnection();
     this.signalR.bidUpdates$.subscribe(data => {
       console.log(data);
       if (data.assetId === this.assetId) {
@@ -149,6 +148,7 @@ loadAutoBid() {
         this.auctionId = this.asset?.auctionIds[0];
         this.placeBid.auctionId = this.asset.auctionIds[0];
         console.log(this.asset);
+        this.placeBid.assetId = this.asset.assetId
         this.loadAuctionDetails();
     this.loadBid();
         this.isLoading = false;
@@ -323,7 +323,7 @@ loadAutoBid() {
       confirmButtonText: 'OK'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/landing-page']);
       }
     });
   }

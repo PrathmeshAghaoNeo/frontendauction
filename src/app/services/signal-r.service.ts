@@ -17,18 +17,30 @@ export class SignalRService {
     bidTime: string;
   }>();
   private winnerSubject = new Subject<any[]>();
+  private notificationSubject = new Subject<{
+    userId: string;
+    title: string;
+    message: string;
+    expiresAt: string;
+    assetId: string;
+    auctionId: string;
+  }>();
   
   bidUpdates$ = this.bidSubject.asObservable();
   winnerUpdates$ = this.winnerSubject.asObservable();
+  notificationUpdates$ = this.notificationSubject.asObservable();
 
+  
   constructor() { }
   startConnection(): void {
     if (this.hubConnection) return;
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl( `${environment.baseurl}bidhub`)
-      .withAutomaticReconnect()
-      .build(); 
+      .withUrl(`${environment.baseurl}bidhub`, {
+    accessTokenFactory: () => localStorage.getItem('token') || ''
+  })
+  .withAutomaticReconnect()
+  .build();
 
     this.hubConnection
       .start()
@@ -54,5 +66,16 @@ export class SignalRService {
       //   console.log('New bid received:', data);
       //   // You can also bind to view here
       // });
+      this.hubConnection.on('ReceiveNotification', (notification: any) => {
+      console.log('Notification received:', notification);
+      this.notificationSubject.next({
+        userId: notification.userId,
+        title: notification.title,
+        message: notification.message,
+        expiresAt: notification.expiresAt,
+        assetId: notification.assetId,
+        auctionId: notification.auctionId
+      });
+    });
   }
 }
