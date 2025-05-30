@@ -35,6 +35,11 @@ createStripeSession(payload: { userId: number; assetIds: number[] }) {
   return this.http.post<{ sessionId: string }>(`${this.baseUrl}/Payments/create-checkout-session`, payload);
 }
 
+confirmPayment(payload:{sessionId: string ; userId:number}) {
+    return this.http.post<any>(`${this.baseUrl}/Payments/confirm-payment`,  payload);
+  }
+
+
 
   getCheckoutOrders(userId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/Orders/user/${userId}`);
