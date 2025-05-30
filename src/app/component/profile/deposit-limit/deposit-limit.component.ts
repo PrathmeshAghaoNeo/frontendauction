@@ -146,38 +146,42 @@ export class DepositLimitComponent implements OnInit {
     }
   }
 
-  addTransaction(): void {
-    if (!this.selectedPaymentMethod) {
-      alert('Please select a payment method.');
-      return;
-    }
-
-    const totalAmount = this.totalAmount;
-
-    const transactionBody = {
-      amount: totalAmount,
-      userId: this.currentUserId,
-      transactionTypeId: 2,
-      paymentMethodId: this.getPaymentMethodId(this.selectedPaymentMethod),
-      cardTypeId: 1, // Optional
-      merchantTransactionId: this.generateMerchantTransactionId(),
-      transactionDateTime: new Date().toISOString(),
-      statusId: 1,
-      notes: `Top-up via ${this.selectedPaymentMethod}`,
-      documentPath: this.uploadedDocumentPath || '',
-    };
-
-    this.transactionService.addTransaction(transactionBody).subscribe({
-      next: (res) => {
-        console.log('Transaction created:', res);
-        alert('Transaction successfully added!');
-      },
-      error: (err) => {
-        console.error('Transaction failed:', err);
-        alert('Failed to add transaction.');
-      },
-    });
+ addTransaction(): void {
+  if (!this.selectedPaymentMethod) {
+    alert('Please select a payment method.');
+    return;
   }
+
+  const totalAmount = this.totalAmount;
+
+  const adminApprovalRequiredMethods = ['Bank Transfer', 'Cheque'];
+  const isManualMethod = adminApprovalRequiredMethods.includes(this.selectedPaymentMethod);
+  const statusId = isManualMethod ? 1 : 3; // 1 = Pending, 3 = Completed
+
+  const transactionBody = {
+    amount: totalAmount,
+    userId: this.currentUserId,
+    transactionTypeId: 2, // Deposit
+    paymentMethodId: this.getPaymentMethodId(this.selectedPaymentMethod),
+    cardTypeId: 1, // Optional
+    merchantTransactionId: this.generateMerchantTransactionId(),
+    transactionDateTime: new Date().toISOString(),
+    statusId: statusId,
+    notes: `Top-up via ${this.selectedPaymentMethod}`,
+    documentPath: this.uploadedDocumentPath || '',
+  };
+
+  this.transactionService.addTransaction(transactionBody).subscribe({
+    next: (res) => {
+      console.log('Transaction created:', res);
+      alert('Transaction successfully added!');
+    },
+    error: (err) => {
+      console.error('Transaction failed:', err);
+      alert('Failed to add transaction.');
+    },
+  });
+}
 
   getTransactionTypeId(method: string): number {
     const map: Record<string, number> = {
