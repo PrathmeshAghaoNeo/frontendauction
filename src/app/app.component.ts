@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { NgIf } from '@angular/common';
@@ -10,7 +10,10 @@ import { AuthService } from './services/auth.service';
 import { BackButtonComponent } from './component/back-button/back-button.component';
 import { SignalRService } from './services/signal-r.service';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
- 
+ import {ElementRef,ViewChild} from '@angular/core';
+
+ declare var bootstrap: any;
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -27,10 +30,14 @@ import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit,AfterViewInit {
   currentRoute: string = '';
- 
-  constructor(private router: Router,private authService: AuthService, private signalRService:SignalRService) {
+   @ViewChild('liveToast') liveToast!: ElementRef;
+    toastInstance: any;
+  
+
+
+  constructor(private router: Router,private authService: AuthService, private signalR:SignalRService) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
@@ -41,9 +48,58 @@ export class AppComponent {
   }
   // @Input() showCustomButtons: boolean = false;
   ngOnInit(): void {
+     this.signalR.startConnection();
+
+  this.signalR.bidUpdates$.subscribe(data => {
+    console.log('Bid update received in AppComponent:', data);
+    // Optional: use a shared event bus to broadcast
+  });
+
+  this.signalR.winnerUpdates$.subscribe(data => {
+    console.log('Winner update received:', data);
+    
+  });
+  this.signalR.notificationUpdates$.subscribe(notification => {
+      console.log('Notification received:', notification);
+       this.showToast(notification.message, 'Bid Update !!', 'info');
+    });
   }
- 
- 
+
+  ngAfterViewInit() {
+    this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
+  }
+
+
+  //toaster message 
+
+ showToast(
+  message: string,
+  header = 'Notification',
+  type: 'success' | 'error' | 'info' = 'info'
+) {
+  const toastEl = this.liveToast.nativeElement;
+
+  toastEl.querySelector('.toast-header strong').textContent = header;
+  toastEl.querySelector('.toast-body').textContent = message;
+
+  const headerEl = toastEl.querySelector('.toast-header');
+  headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-white');
+
+  if (type === 'success') {
+    headerEl.classList.add('bg-success', 'text-white');
+  } else if (type === 'error') {
+    headerEl.classList.add('bg-danger', 'text-white');
+  } else {
+    headerEl.classList.add('bg-info', 'text-white');
+  }
+
+  // Always re-instantiate the toast
+  const toastInstance = new bootstrap.Toast(toastEl);
+  toastInstance.show();
+}
+
+
+
   get isStartPage(): boolean {
     return this.currentRoute === '/';
   }

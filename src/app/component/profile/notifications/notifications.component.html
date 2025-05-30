@@ -1,1 +1,67 @@
-<p>notifications works!</p>
+<div class="notification-container bg-white rounded shadow-sm p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+    <h4 class="mb-0 text-primary">Notifications</h4>
+    <button class="btn btn-sm btn-outline-danger" (click)="clearNotifications()">
+      Clear All
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-3 text-muted">Loading...</div>
+  <div *ngIf="!loading && notifications.length === 0" class="text-center py-3 text-muted">
+    No notifications found.
+  </div>
+
+  <!-- Push Notifications -->
+<div *ngIf="hasPushNotifications()">
+  <h5 class="text-secondary border-bottom pb-2">Push Notifications<small class="text-muted ms-2" style="font-size: 0.8rem;">(expires in 2 days)</small></h5>
+  <ul class="list-group mb-4">
+    <li 
+      class="list-group-item mb-2 rounded border shadow-sm position-relative"
+      *ngFor="let notification of getPushNotifications()"
+      [ngClass]="{ 'bg-light': !notification.isRead }"
+      style="cursor: pointer;"
+    >
+      <span
+        *ngIf="!notification.isRead"
+        class="position-absolute top-0 start-0 translate-middle p-1 bg-danger border border-light rounded-circle"
+        style="width: 10px; height: 10px;"
+      ></span>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="fw-medium">{{ notification.message }}</div>
+        <div *ngIf="notification.title === 'You\'ve been outbid' && notification.assetId">
+          <button class="btn btn-sm btn-outline-primary ms-3" (click)="onBidClick($event, notification)">Bid Now</button>
+        </div>
+      </div>
+      <small class="text-muted d-block">{{ notification.createdAt | date: 'dd-mm-yy' }}</small>
+    </li>
+  </ul>
+</div>
+
+<!-- Normal Notifications -->
+<div *ngIf="hasNormalNotifications()">
+  <h5 class="text-secondary border-bottom pb-2">Notifications</h5>
+  <ul class="list-group">
+    <li 
+      class="list-group-item mb-2 rounded border shadow-sm position-relative"
+      *ngFor="let notification of getNormalNotifications()"
+      [ngClass]="{ 'bg-light': !notification.isRead }"
+      (click)="markAsRead(notification.id)"
+      style="cursor: pointer;"
+    >
+      <span
+        *ngIf="!notification.isRead"
+        class="position-absolute top-0 start-0 translate-middle p-1 bg-danger border border-light rounded-circle"
+        style="width: 10px; height: 10px;"
+      ></span>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="fw-medium">{{ notification.message }}</div>
+        <div *ngIf="notification.title === 'You\'ve been outbid' && notification.assetId">
+          <button class="btn btn-sm btn-outline-primary ms-3" (click)="onBidClick($event, notification)">Bid Now</button>
+        </div>
+      </div>
+      <small class="text-muted d-block">{{ notification.createdAt | date: 'dd-mm-yy' }}</small>
+    </li>
+  </ul>
+</div>

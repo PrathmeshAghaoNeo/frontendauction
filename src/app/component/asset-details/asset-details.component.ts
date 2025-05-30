@@ -93,7 +93,6 @@ pendingValue: boolean = false;
     if(paramsId != null) {
       this.assetId = paramsId
     }
-    this.signalR.startConnection();
     this.signalR.bidUpdates$.subscribe(data => {
       console.log(data);
       if (data.assetId === this.assetId) {
@@ -324,7 +323,7 @@ loadAutoBid() {
       confirmButtonText: 'OK'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/landing-page']);
       }
     });
   }
