@@ -54,6 +54,7 @@ import { NotificationsComponent } from './component/profile/notifications/notifi
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
 import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
+import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -105,6 +106,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'my-details', pathMatch: 'full' },
     ],
   },
+  { path: 'payment-success', component: PaymentSuccessComponent },
   { path: 'testing', component: ChartComponent },
   { path: 'user-signup', component: UserSignupComponent },
   { path: 'asset-details', component: AssetDetailComponent },
