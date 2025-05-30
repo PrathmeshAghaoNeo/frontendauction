@@ -1,6 +1,6 @@
 .cart-grid {
-  width: 100%;
-  height: 100%;
+     width: auto;
+    height: 365PX;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
@@ -27,6 +27,17 @@
 .cart-card:hover {
   transform: translateY(-4px);
 }
+
+
+.watchlist-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  padding: 0 1rem;
+  text-align: center;
+}
+
 
 .cart-image-wrap {
   width: 100%;
@@ -151,4 +162,42 @@
 
 .cart-btn:hover {
   background-color: #2980b9;
+}
+
+
+
+.wishlist-tabs {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background-color: #f4f6f9;
+  justify-content: space-evenly;
+}
+
+.wishlist-tabs button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 50%;
+  padding: 0.5rem 1rem;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  color: #7f8c8d;
+  transition: all 0.3s ease;
+}
+
+.wishlist-tabs .active-tab {
+  border-color: #3498db;
+  color: #2c3e50;
+}
+
+.back-btn2 {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.back-btn-image {
+  width: 32px;
+  height: 32px;
 }
