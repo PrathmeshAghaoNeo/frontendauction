@@ -206,3 +206,8 @@
   
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Fix for Bootstrap modal backdrop so modals are interactive and not fully opaque */
+.modal-backdrop.show {
+  opacity: var(--bs-backdrop-opacity, 0.5) !important;
+}

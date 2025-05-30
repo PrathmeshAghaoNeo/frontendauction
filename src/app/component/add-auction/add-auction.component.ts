@@ -48,7 +48,7 @@ export class AddAuctionComponent implements OnInit {
     this.auctionForm = this.fb.group(
       {
         auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
-        title: ['', [Validators.required, Validators.maxLength(20)]],
+        title: ['', [Validators.required, Validators.maxLength(40)]],
         type: ['', Validators.required],
         startDateTime: ['', futureDateValidator],
         endDateTime: ['', [Validators.required, futureDateValidator]], 

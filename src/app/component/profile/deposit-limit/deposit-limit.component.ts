@@ -1,13 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AssetCategoriesService } from '../../../services/assetcategories.service';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { TransactionService } from '../../../services/transaction.service'; // <-- Add your path
+import { TransactionService } from '../../../services/transaction.service';
 import { TransactionMetadataService, PaymentMethod, TransactionType, CardType } from '../../../services/transaction-meta.service';
 
 @Component({
@@ -15,29 +11,34 @@ import { TransactionMetadataService, PaymentMethod, TransactionType, CardType } 
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, GoogleMapsModule],
   templateUrl: './deposit-limit.component.html',
-  styleUrl: './deposit-limit.component.css',
+  styleUrls: ['./deposit-limit.component.css'], // fixed typo: styleUrl -> styleUrls
 })
 export class DepositLimitComponent implements OnInit {
   center: google.maps.LatLngLiteral = { lat: 26.2285, lng: 50.5861 };
   zoom = 15;
   markerPosition: google.maps.LatLngLiteral = this.center;
-   mapOptions: google.maps.MapOptions = {
+  mapOptions: google.maps.MapOptions = {
     center: this.center,
     zoom: 14,
   };
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
   selectedFile: File | null = null;
   categories: any[] = [];
-  selectedCategory: any = null;
-  totalLimit: number = 500000;
-  currentDeposit: number = 20000;
-  topUpLimit: number = 300000;
-  selectedPaymentMethod: string = '';
+  selectedCategory: number | null = null;
+
+  totalLimit = 500000;
+  currentDeposit = 20000;
+  topUpLimit = 300000;
+
+  selectedPaymentMethod = '';
+
   paymentMethodsMeta: PaymentMethod[] = [];
   transactionTypesMeta: TransactionType[] = [];
   cardTypesMeta: CardType[] = [];
 
+  // These are redundant with paymentMethodsMeta but you might want them for UI if needed
   paymentMethods = [
     { label: 'Bank Transfer', value: 'bank' },
     { label: 'Cheque', value: 'cheque' },
@@ -47,39 +48,44 @@ export class DepositLimitComponent implements OnInit {
     { label: 'Google Pay', value: 'google' },
     { label: 'Paypal', value: 'paypal' },
   ];
-  topUpAmount: number = 400000;
-  availableLimit: number = 250000;
 
-  uploadedDocumentPath: string = '';
-  currentUserId: number = 1; // Replace with actual current user ID
+  topUpAmount = 400000;
+  availableLimit = 250000;
 
+  uploadedDocumentPath = '';
+  currentUserId = 1; // TODO: Replace with actual logged-in user ID
 
   constructor(
     private assetCategoriesService: AssetCategoriesService,
     private fb: FormBuilder,
-    private transactionService: TransactionService, // <-- Inject service
+    private transactionService: TransactionService,
     private metadataService: TransactionMetadataService
   ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
     this.setCurrentLocation();
+
     const cached = this.metadataService.getCachedMetadata();
-  if (cached) {
-    this.populateMetadata(cached);
-  } else {
-    this.metadataService.fetchMetadata().subscribe((data) => {
-      this.populateMetadata(data);
-    });
-  }
+    if (cached) {
+      this.populateMetadata(cached);
+    } else {
+      this.metadataService.fetchMetadata().subscribe({
+        next: (data) => this.populateMetadata(data),
+        error: (err) => console.error('Failed to fetch metadata', err),
+      });
+    }
   }
 
-  populateMetadata(data: any): void {
-  this.paymentMethodsMeta = data.paymentMethods;
-  this.transactionTypesMeta = data.transactionTypes;
-  this.cardTypesMeta = data.cardTypes;
-}
-
+  populateMetadata(data: {
+    paymentMethods: PaymentMethod[];
+    transactionTypes: TransactionType[];
+    cardTypes: CardType[];
+  }): void {
+    this.paymentMethodsMeta = data.paymentMethods;
+    this.transactionTypesMeta = data.transactionTypes;
+    this.cardTypesMeta = data.cardTypes;
+  }
 
   setCurrentLocation(): void {
     if (navigator.geolocation) {
@@ -93,9 +99,7 @@ export class DepositLimitComponent implements OnInit {
         },
         (error) => {
           console.error('Error getting location:', error);
-          alert(
-            'Location access denied or unavailable. Showing default location.'
-          );
+          alert('Location access denied or unavailable. Showing default location.');
         }
       );
     } else {
@@ -104,14 +108,14 @@ export class DepositLimitComponent implements OnInit {
   }
 
   fetchCategories(): void {
-    this.assetCategoriesService.getAll().subscribe((res) => {
-      this.categories = res;
+    this.assetCategoriesService.getAll().subscribe({
+      next: (res) => (this.categories = res),
+      error: (err) => console.error('Failed to load categories', err),
     });
   }
 
   selectPaymentMethod(method: string): void {
-    this.selectedPaymentMethod =
-      this.selectedPaymentMethod === method ? '' : method;
+    this.selectedPaymentMethod = this.selectedPaymentMethod === method ? '' : method;
   }
 
   uploadDeposit(): void {
@@ -121,18 +125,21 @@ export class DepositLimitComponent implements OnInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
-      console.log('Selected file:', this.selectedFile);
+      const file = input.files[0];
 
-      if (this.selectedFile.size > 5 * 1024 * 1024) {
+      if (file.size > 5 * 1024 * 1024) {
         alert('File is too large. Maximum allowed size is 5MB.');
         this.selectedFile = null;
+        input.value = ''; // Reset file input
         return;
       }
 
-      // TODO: Upload file and assign uploadedDocumentPath
-      // Simulate successful upload for now:
-      this.uploadedDocumentPath = 'uploads/' + this.selectedFile.name;
+      this.selectedFile = file;
+      console.log('Selected file:', file);
+
+      // TODO: Implement real file upload logic here.
+      // For now, simulate upload success:
+      this.uploadedDocumentPath = `uploads/${file.name}`;
     }
   }
 
@@ -146,54 +153,41 @@ export class DepositLimitComponent implements OnInit {
     }
   }
 
- addTransaction(): void {
-  if (!this.selectedPaymentMethod) {
-    alert('Please select a payment method.');
-    return;
-  }
+  addTransaction(): void {
+    if (!this.selectedPaymentMethod) {
+      alert('Please select a payment method.');
+      return;
+    }
 
-  const totalAmount = this.totalAmount;
+    // Determine if admin approval is required
+    const adminApprovalRequiredMethods = ['bank', 'cheque']; // use values matching the keys
+    const isManualMethod = adminApprovalRequiredMethods.includes(this.selectedPaymentMethod);
+    const statusId = isManualMethod ? 1 : 3; // 1 = Pending, 3 = Completed
 
-  const adminApprovalRequiredMethods = ['Bank Transfer', 'Cheque'];
-  const isManualMethod = adminApprovalRequiredMethods.includes(this.selectedPaymentMethod);
-  const statusId = isManualMethod ? 1 : 3; // 1 = Pending, 3 = Completed
-
-  const transactionBody = {
-    amount: totalAmount,
-    userId: this.currentUserId,
-    transactionTypeId: 2, // Deposit
-    paymentMethodId: this.getPaymentMethodId(this.selectedPaymentMethod),
-    cardTypeId: 1, // Optional
-    merchantTransactionId: this.generateMerchantTransactionId(),
-    transactionDateTime: new Date().toISOString(),
-    statusId: statusId,
-    notes: `Top-up via ${this.selectedPaymentMethod}`,
-    documentPath: this.uploadedDocumentPath || '',
-  };
-
-  this.transactionService.addTransaction(transactionBody).subscribe({
-    next: (res) => {
-      console.log('Transaction created:', res);
-      alert('Transaction successfully added!');
-    },
-    error: (err) => {
-      console.error('Transaction failed:', err);
-      alert('Failed to add transaction.');
-    },
-  });
-}
-
-  getTransactionTypeId(method: string): number {
-    const map: Record<string, number> = {
-      bank: 1,
-      cheque: 2,
-      card: 3,
-      benefit: 4,
-      apple: 5,
-      google: 6,
-      paypal: 7,
+    const transactionBody = {
+      amount: this.totalAmount,
+      userId: this.currentUserId,
+      transactionTypeId: 2, // Deposit type, can be made dynamic if needed
+      paymentMethodId: this.getPaymentMethodId(this.selectedPaymentMethod),
+      cardTypeId: 1, // You may want to add UI to select cardTypeId or make optional
+      merchantTransactionId: this.generateMerchantTransactionId(),
+      transactionDateTime: new Date().toISOString(),
+      statusId: statusId,
+      notes: `Top-up via ${this.selectedPaymentMethod}`,
+      documentPath: this.uploadedDocumentPath || '',
     };
-    return map[method] || 0;
+
+    this.transactionService.addTransaction(transactionBody).subscribe({
+      next: (res) => {
+        console.log('Transaction created:', res);
+        alert('Transaction successfully added!');
+        // Optionally reset form here or update UI accordingly
+      },
+      error: (err) => {
+        console.error('Transaction failed:', err);
+        alert('Failed to add transaction.');
+      },
+    });
   }
 
   getPaymentMethodId(method: string): number {
@@ -206,11 +200,11 @@ export class DepositLimitComponent implements OnInit {
       google: 6,
       paypal: 7,
     };
-    return map[method] || 0;
+    return map[method] ?? 0;
   }
 
   generateMerchantTransactionId(): string {
-    return 'MERC' + Math.floor(Math.random() * 1000000000).toString();
+    return 'MERC' + Math.floor(Math.random() * 1_000_000_000).toString().padStart(9, '0');
   }
 
   onCategoryChange(categoryId: number): void {
