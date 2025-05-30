@@ -73,7 +73,7 @@ confirmPayment(payload:{sessionId: string ; userId:number}) {
     return this.http.post(`${this.baseUrl}/Wishlist/add`, payload);
   }
 
-  getWishlist(userId: number): Observable<any> {
+  getWishlist(userId: number|null): Observable<any> {
     return this.http.get(`${this.baseUrl}/Wishlist/${userId}`);
   }
 
