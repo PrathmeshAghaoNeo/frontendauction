@@ -54,6 +54,7 @@ import { NotificationsComponent } from './component/profile/notifications/notifi
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
 import { DirectSaleComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
+import { ManageRolesComponent } from './component/manage-roles/manage-roles.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -86,7 +87,7 @@ export const routes: Routes = [
   { path: 'newTransaction', component: AddTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'update-transaction/:id', component: UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'categories', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'roles', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'roles', component: ManageRolesComponent},
   // {path:'reports', component:ReportsListComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
   { path: 'reports', component: ReportsListComponent },
   { path: 'view-request', component: ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
