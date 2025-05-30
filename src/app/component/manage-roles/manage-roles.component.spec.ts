@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChatBotComponent } from './chat-bot.component';
+import { ManageRolesComponent } from './manage-roles.component';
 
-describe('ChatBotComponent', () => {
-  let component: ChatBotComponent;
-  let fixture: ComponentFixture<ChatBotComponent>;
+describe('ManageRolesComponent', () => {
+  let component: ManageRolesComponent;
+  let fixture: ComponentFixture<ManageRolesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChatBotComponent]
+      imports: [ManageRolesComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChatBotComponent);
+    fixture = TestBed.createComponent(ManageRolesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,6 +21,3 @@ describe('ChatBotComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-
-// hnb

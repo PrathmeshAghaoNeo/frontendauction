@@ -53,6 +53,9 @@ import { MyPurchasesComponent } from './component/profile/my-purchases/my-purcha
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
+import { ChatbotAdminComponent } from './component/chatbot-admin/chatbot-admin.component';
+
+import { ManageRolesComponent } from './component/manage-roles/manage-roles.component';
 import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
 export const routes: Routes = [
@@ -87,7 +90,7 @@ export const routes: Routes = [
   { path: 'newTransaction', component: AddTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'update-transaction/:id', component: UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'categories', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'roles', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'roles', component: ManageRolesComponent},
   // {path:'reports', component:ReportsListComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
   { path: 'reports', component: ReportsListComponent },
   { path: 'view-request', component: ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
@@ -127,7 +130,7 @@ export const routes: Routes = [
   { path: 'reports', component: ReportsListComponent },
   { path: 'refund-request', component: RefundRequestComponent },
   { path: 'deposit-page', component: DepositPageComponent },
-  { path: 'audit-trial', component: AuditTrailComponent }
-
+  { path: 'audit-trial', component: AuditTrailComponent },
+  { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
 
 ];

@@ -12,15 +12,15 @@
         >
           My Details
         </a>
-
+ 
         <a class="list-group-item list-group-item-action" routerLink="notifications" routerLinkActive="active">
           Notifications
         </a>
-
+ 
         <a class="list-group-item list-group-item-action" routerLink="settings-privacy" routerLinkActive="active">
           Settings & Privacy
         </a>
-
+ 
         <!-- Expandable menu -->
         <button
           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
@@ -30,7 +30,7 @@
           Deposit and Limit
           <span [ngClass]="{ 'rotate-icon': showDepositMenu }">&#9662;</span>
         </button>
-
+ 
         <!-- Submenu -->
         <div *ngIf="showDepositMenu" class="submenu-list">
           <a class="list-group-item submenu-item" (click)="navigateTo('deposit-limit')">
@@ -43,13 +43,13 @@
             Transaction History
           </a>
         </div>
-
+ 
         <a class="list-group-item list-group-item-action" routerLink="my-purchases" routerLinkActive="active">
           My Purchases
         </a>
       </div>
     </nav>
-
+ 
     <!-- Router outlet for child components -->
     <div class="col-md-9">
       <router-outlet></router-outlet>
