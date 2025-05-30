@@ -80,23 +80,38 @@
           <h5 class="modal-title" id="faqModalLabel">{{ isEditing ? 'Edit FAQ' : 'Add FAQ' }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
         </div>
-        <form (ngSubmit)="saveFaq()">
+        <form #faqForm="ngForm" (ngSubmit)="saveFaq()">
           <div class="modal-body">
             <div class="mb-3">
-              <label class="form-label">Question</label>
-              <input class="form-control" [(ngModel)]="formFaq.question" name="question" required>
+              <label class="form-label required-label fw-bold">Question <span class="required-star" style="color: red;">*</span></label>
+              <input class="form-control" [(ngModel)]="formFaq.question" name="question" required maxlength="50" #question="ngModel">
+              <div *ngIf="faqForm.submitted && question.errors">
+                <span class="text-danger" *ngIf="question.errors['required']">Question is required.</span>
+                <span class="text-danger" *ngIf="question.errors['maxlength']">Maximum 50 characters allowed.</span>
+              </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Answer</label>
-              <textarea class="form-control" [(ngModel)]="formFaq.answer" name="answer" required></textarea>
+              <label class="form-label required-label fw-bold">Answer <span class="required-star" style="color: red;">*</span></label>
+              <textarea class="form-control" [(ngModel)]="formFaq.answer" name="answer" required maxlength="150" #answer="ngModel"></textarea>
+              <div *ngIf="faqForm.submitted && answer.errors">
+                <span class="text-danger" *ngIf="answer.errors['required']">Answer is required.</span>
+                <span class="text-danger" *ngIf="answer.errors['maxlength']">Maximum 150 characters allowed.</span>
+              </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Category</label>
-              <input class="form-control" [(ngModel)]="formFaq.category" name="category" required>
+              <label class="form-label required-label fw-bold">Category <span class="required-star" style="color: red;">*</span></label>
+              <input class="form-control" [(ngModel)]="formFaq.category" name="category" required maxlength="30" #category="ngModel">
+              <div *ngIf="faqForm.submitted && category.errors">
+                <span class="text-danger" *ngIf="category.errors['required']">Category is required.</span>
+                <span class="text-danger" *ngIf="category.errors['maxlength']">Maximum 30 characters allowed.</span>
+              </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Tags</label>
-              <input class="form-control" [(ngModel)]="formFaq.tags" name="tags">
+              <label class="form-label required-label fw-bold">Tags <span class="required-star" style="color: red;">*</span></label>
+              <input class="form-control" [(ngModel)]="formFaq.tags" name="tags" required #tags="ngModel">
+              <div *ngIf="faqForm.submitted && tags.errors">
+                <span class="text-danger" *ngIf="tags.errors['required']">Tags are required.</span>
+              </div>
             </div>
           </div>
           <div class="modal-footer">

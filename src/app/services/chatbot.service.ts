@@ -7,8 +7,8 @@ import { AuthService } from './auth.service';
 
 // Define interfaces for API request and response
 export interface ChatbotRequest {
-  message: string;    // Match the C# controller property name
-  userId: number | null;    // Match the C# controller property name
+  message: string;    
+  userId: number | null;   
 }
 
 export interface QuickReply {
@@ -25,6 +25,7 @@ export interface ChatbotApiResponse {
   responseMessage: string;
   quickReplies: QuickReply[];
   suggestedArticles: SuggestedArticle[];
+  isEndOfChat: boolean;
 }
 
 @Injectable({
@@ -45,7 +46,7 @@ export class ChatbotService {
     const userId = this.authService.getUserIdJwt() || null;
     
     const payload: ChatbotRequest = {
-      message: userMessage,    // Match the C# controller property name
+      message: userMessage,    
       userId: userId          // Now using integer or null
     };
 

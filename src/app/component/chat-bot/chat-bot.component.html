@@ -110,8 +110,44 @@
         </div>
       </div>
 
-      <!-- Chat Messages Area -->
-      <div class="message-content">
+      <!-- Welcome message and main menu options -->
+      <div *ngIf="messages.length === 1 && mainMenuOptions.length > 0 && !isEndOfChat" class="main-menu-options">
+        <div class="welcome-message">
+          <p>{{ messages[0].text }}</p>
+        </div>
+        <div class="main-options">
+          <button class="main-option-btn" *ngFor="let option of mainMenuOptions" (click)="handleQuickReply(option)">
+            {{ option.text }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Message Input: always at the bottom, outside main menu and chat area -->
+      <div class="message-input" style="position: absolute; left: 0; right: 0; bottom: 56px; z-index: 10;">
+        <input 
+          type="text" 
+          placeholder="Send a message..." 
+          [(ngModel)]="message" 
+          (keydown)="handleKeyDown($event)"
+          [disabled]="isLoading">
+        <div class="input-buttons">
+          <button class="send-button" (click)="sendMessage()" [disabled]="isLoading">
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg> -->
+
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" y1="12" x2="20" y2="12"></line>
+      <polyline points="14 6 20 12 14 18"></polyline>
+    </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Messages Area (after main menu) -->
+      <div class="message-content" *ngIf="!(messages.length === 1 && mainMenuOptions.length > 0 && !isEndOfChat)">
         <!-- Display all chat messages -->
         <div class="chat-messages" *ngFor="let msg of messages">
           <div class="chat-message" [ngClass]="{'bot': !msg.isUser, 'user': msg.isUser}">
@@ -121,7 +157,6 @@
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
             </div>
-            
             <!-- Message Text -->
             <div class="message-text">
               <p *ngIf="!msg.isUser">ChatBot</p>
@@ -138,9 +173,9 @@
                   <span [innerHTML]="formatLineWithIcon(line)"></span><br />
                 </ng-container>
               </ng-template>
-              
-              <!-- API Quick Replies -->
-              <div class="api-quick-replies" *ngIf="!msg.isUser && msg.quickReplies && msg.quickReplies.length > 0">
+
+              <!-- API Quick Replies (sub-questions) -->
+              <div class="api-quick-replies" *ngIf="!msg.isUser && msg.quickReplies && msg.quickReplies.length > 0 && !isEndOfChat">
                 <button 
                   class="api-quick-reply" 
                   *ngFor="let reply of msg.quickReplies"
@@ -148,7 +183,14 @@
                   {{ reply.text }}
                 </button>
               </div>
-              
+
+              <!-- End of chat: show Start Over button -->
+              <div class="end-of-chat" *ngIf="!msg.isUser && isEndOfChat">
+                <button class="start-over-btn" (click)="handleQuickReply({text: 'Start Over', payload: 'start_over'})">
+                  Start Over
+                </button>
+              </div>
+
               <!-- Suggested Articles -->
               <div class="suggested-articles" *ngIf="!msg.isUser && msg.suggestedArticles && msg.suggestedArticles.length > 0">
                 <h4>Suggested Articles:</h4>
@@ -175,32 +217,6 @@
             <p>Maram</p>
             <p>Typing...</p>
           </div>
-        </div>
-      </div>
-
-      <!-- Message Input -->
-      <div class="message-input">
-        <input 
-          type="text" 
-          placeholder="Send a message..." 
-          [(ngModel)]="message" 
-          (keydown)="handleKeyDown($event)"
-          [disabled]="isLoading">
-        <div class="input-buttons">
-          <!-- <button class="emoji-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-              <line x1="9" y1="9" x2="9.01" y2="9"></line>
-              <line x1="15" y1="9" x2="15.01" y2="9"></line>
-            </svg>
-          </button> -->
-          <button class="send-button" (click)="sendMessage()" [disabled]="isLoading">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
         </div>
       </div>
     </div>

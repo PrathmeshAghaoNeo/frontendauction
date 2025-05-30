@@ -79,3 +79,7 @@
 .faq-action-btn:focus {
   box-shadow: 0 0 0 2px #bca4e6;
 } 
+
+.justify-content-start{
+  color: #ff4d4f;
+}

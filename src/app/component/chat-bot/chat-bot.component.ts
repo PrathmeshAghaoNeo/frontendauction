@@ -22,6 +22,7 @@ interface ChatbotApiResponse {
   responseMessage: string;
   quickReplies: QuickReply[];
   suggestedArticles: SuggestedArticle[];
+  isEndOfChat: boolean;
 }
 
 @Component({
@@ -51,6 +52,9 @@ export class ChatBotComponent implements OnInit {
   currentFaqAnswer: any = null;
   hasUnreadMessages = true;
   
+  mainMenuOptions: QuickReply[] = [];
+  isEndOfChat: boolean = false;
+
   // Updated API URL - removed https for localhost development
   private apiUrl = (`${ApiEndpoints.CHATBOT}`);
 
@@ -94,7 +98,8 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
       return of({
         responseMessage: errorMessage,
         quickReplies: [],
-        suggestedArticles: []
+        suggestedArticles: [],
+        isEndOfChat: false
       });
     })
   );
@@ -113,6 +118,15 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
       this.toggleChat();
     }
   }
+
+//   private scrollToChatbot(): void {
+//   setTimeout(() => {
+//     const container = document.querySelector('.message-content');
+//     if (container) {
+//       container.scrollTop = container.scrollHeight;
+//     }
+//   }, 100);
+// }
 
   toggleChat() {
     this.isOpen = !this.isOpen;
@@ -148,6 +162,8 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
     this.callChatbotApi('hello').subscribe(response => {
       this.isLoading = false;
       if (response) {
+        this.isEndOfChat = !!response.isEndOfChat;
+        this.mainMenuOptions = response.quickReplies || [];
         // Replace the initial message with API response
         this.messages[0] = {
           text: response.responseMessage,
@@ -173,79 +189,20 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
     this.isMaximized = false;
   }
 
-  // Handle original quick replies and API payload-based replies
-  selectQuickReply(topic: string): void {
-    let replyText = '';
-    
-    switch(topic) {
-      case 'platform':
-        replyText = 'This is platform related';
-        break;
-      case 'auction':
-        replyText = 'This is auction or asset related';
-        break;
-      case 'issue':
-        replyText = 'Report an issue';
-        break;
-      case 'other':
-        replyText = 'I have another question';
-        break;
-      // Handle API payload-based quick replies
-      case 'bid':
-        replyText = 'Bidding Help';
-        break;
-      case 'register':
-        replyText = 'Registration Help';
-        break;
-      case 'deposit':
-        replyText = 'Deposit Issues';
-        break;
-      default:
-        replyText = topic;
-    }
-    
-    // Add user message
-    this.messages.push({
-      text: replyText,
-      isUser: true,
-      timestamp: new Date()
-    });
-    
-    this.scrollToBottom();
-    this.isLoading = true;
-    
-    // Call API with the selected topic/payload
-    this.callChatbotApi(topic).subscribe(response => {
-      this.isLoading = false;
-      if (response) {
-        this.messages.push({
-          text: response.responseMessage,
-          isUser: false,
-          timestamp: new Date(),
-          quickReplies: response.quickReplies,
-          suggestedArticles: response.suggestedArticles
-        });
-      }
-      this.scrollToBottom();
-    });
-  }
-
-  // Handle API quick reply clicks
+  // Handle API quick replies
   handleQuickReply(quickReply: QuickReply): void {
-    // Add user message
+    // Add the quick reply as a user message
     this.messages.push({
       text: quickReply.text,
       isUser: true,
       timestamp: new Date()
     });
-    
-    this.scrollToBottom();
     this.isLoading = true;
-    
-    // Call API with payload
-    this.callChatbotApi(quickReply.payload).subscribe(response => {
+    this.callChatbotApi(quickReply.text).subscribe(response => {
       this.isLoading = false;
       if (response) {
+        this.isEndOfChat = !!response.isEndOfChat;
+        this.mainMenuOptions = response.quickReplies || [];
         this.messages.push({
           text: response.responseMessage,
           isUser: false,
@@ -256,48 +213,24 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
       }
       this.scrollToBottom();
     });
-  }
-
-  // Handle suggested article clicks
-  handleSuggestedArticle(article: SuggestedArticle): void {
-    // Add user message
-    this.messages.push({
-      text: `Tell me about: ${article.title}`,
-      isUser: true,
-      timestamp: new Date()
-    });
-    
-    // Add article content as bot response
-    this.messages.push({
-      text: article.content,
-      isUser: false,
-      timestamp: new Date()
-    });
-    
     this.scrollToBottom();
   }
 
-  // Send user message
+  // Send user message to chatbot
   sendMessage(): void {
-    if (this.message.trim() === '' || this.isLoading) return;
-    
     const userMessage = this.message.trim();
-    
-    // Add user message to chat
+    if (!userMessage) return;
     this.messages.push({
       text: userMessage,
       isUser: true,
       timestamp: new Date()
     });
-    
-    this.message = ''; // Clear input
-    this.scrollToBottom();
     this.isLoading = true;
-    
-    // Call API
     this.callChatbotApi(userMessage).subscribe(response => {
       this.isLoading = false;
       if (response) {
+        this.isEndOfChat = !!response.isEndOfChat;
+        this.mainMenuOptions = response.quickReplies || [];
         this.messages.push({
           text: response.responseMessage,
           isUser: false,
@@ -308,6 +241,8 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
       }
       this.scrollToBottom();
     });
+    this.message = '';
+    this.scrollToBottom();
   }
 
   private scrollToBottom(): void {
@@ -402,6 +337,11 @@ public formatLineWithIcon(line: string): string {
   } else {
     return line;
   }
+}
+
+handleSuggestedArticle(article: SuggestedArticle) {
+  // You can implement this as needed
+  console.log('Suggested article clicked:', article);
 }
 
 }
