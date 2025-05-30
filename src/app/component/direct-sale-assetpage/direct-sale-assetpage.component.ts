@@ -18,7 +18,7 @@ declare var bootstrap: any;
   templateUrl: './direct-sale-assetpage.component.html',
   styleUrls: ['./direct-sale-assetpage.component.scss']
 })
-export class DirectSaleComponent implements OnInit , AfterViewInit {
+export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
  
     @ViewChild('liveToast') liveToast!: ElementRef;
      toastInstance: any;
@@ -245,7 +245,7 @@ export class DirectSaleComponent implements OnInit , AfterViewInit {
       this.listService.addToCart(payload).subscribe({
         next: () => {
           this.showToast('This asset has been added to your cart.', 'Added to Cart', 'success');
-
+          this.listService.refreshComponent();
         },
         error: (err) => {
           console.log({err});

@@ -137,7 +137,7 @@ canvas {
     font-size: x-small;
   }
   .scaled-table-container {
-    transform: scale(0.6);
+    transform: scale(0.75);
     width: fit-content;
     border-radius: var(--card-radius);
     box-shadow: var(--shadow-light) !important;
@@ -157,7 +157,7 @@ canvas {
     min-width: 520px;
   }
   .tables.con{
-    margin-top: 20px;
+    margin-top: 10px;
     display: flex;
     align-items: center;
     justify-items: center;

@@ -24,7 +24,8 @@ export class BidAddToCartComponent implements AfterViewInit {
   cartAssets: DirectSaleAssetDto[] = [];
   userId: number | null = null;
   email: string | null = null;
-  amount:number =10;
+  amount: number = 10;
+  sessionID: string | null = null;
 
   constructor(
     private assetService: ManageAssetService,
@@ -68,6 +69,7 @@ export class BidAddToCartComponent implements AfterViewInit {
 
     this.listservice.createStripeSession(payload).subscribe({
       next: async (response: { sessionId: string }) => {
+        localStorage.setItem('paymentId', response.sessionId);
         const stripe = await loadStripe(
           'pk_test_51RRtikGY6ElyrgGUXgRRI22AYfGJLziO9q1H1xoPlBiG2PfQaFe4xspeDge5fvL2sUONWDvx9NgKiz2db79DX7Q300AGRBCUQk'
         ); // your publishable key
@@ -101,7 +103,7 @@ export class BidAddToCartComponent implements AfterViewInit {
       'text-white'
     );
     if (type === 'success') {
-      headerEl.classList.add('bg-success', 'text-white');
+      headerEl.classList.add('bg-danger', 'text-white');
     } else if (type === 'error') {
       headerEl.classList.add('bg-danger', 'text-white');
     } else {

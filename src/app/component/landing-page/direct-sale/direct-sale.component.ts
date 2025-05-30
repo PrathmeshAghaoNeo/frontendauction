@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   styleUrl: './direct-sale.component.css',
 
 })
-export class DirectSaleComponent implements OnInit {
+export class DirectSaleComponentLP implements OnInit {
 
   categories: AssetCategory[] = [];
   selectedAssetCategory: AssetCategory | null = null;

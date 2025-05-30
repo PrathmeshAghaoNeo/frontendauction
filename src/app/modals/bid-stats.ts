@@ -5,7 +5,16 @@ export interface bidStats {
 
 export interface BidDto {
     auctionId: number;
-    assetId: number;
-    userId: number;
+    assetId: number |null;
+    userId: number| null;
     bidAmount: number;
   }
+
+
+export interface AutoBidDto{
+    auctionId: number;
+    assetId: number;
+    userId: number |null; 
+    maxBidAmount: number;
+    isActive: boolean;
+}

@@ -24,6 +24,7 @@ export const ApiEndpoints = {
   FAQ: `${BASE_URL}/Faq`,
   AUDITTRAIL : `${BASE_URL}/AuditTrail`,
   Win: `${BASE_URL}/AssetWinner`,
+  ROLE: `${BASE_URL}/Role`,
 
 
   

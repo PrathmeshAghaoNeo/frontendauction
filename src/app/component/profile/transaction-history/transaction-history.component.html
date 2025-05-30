@@ -1,1 +1,34 @@
 <p>transaction-history works!</p>
+<div *ngIf="loading">Loading transactions...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<table *ngIf="!loading && !error" class="table table-striped">
+  <thead>
+    <tr>
+      <th>RefNo</th>
+      <th>Request</th>
+      <th>DateTime</th>
+      <th>Amount</th>
+      <th>Type</th>
+      <th>Method</th>
+      <th>Status</th>
+      <th>ApprovedDateTime</th>
+      <th>ApprovedBy</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let txn of transactions">
+      <td>{{ txn.refNo }}</td>
+      <td>{{ txn.request }}</td>
+      <td>{{ txn.dateTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+      <td>{{ txn.amount | number:'1.2-2' }}</td>
+      <td>{{ txn.type }}</td>
+      <td>{{ txn.method }}</td>
+      <td>{{ txn.status }}</td>
+      <td>{{ txn.approvedDateTime ? (txn.approvedDateTime | date:'yyyy-MM-dd HH:mm:ss') : '—' }}</td>
+      <td>{{ txn.approvedBy || '—' }}</td>
+      <td>{{ txn.notes }}</td>
+    </tr>
+  </tbody>
+</table>

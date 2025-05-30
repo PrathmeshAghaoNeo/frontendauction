@@ -51,3 +51,17 @@ export interface Transaction {
     id: number;
     name: string;
   }
+
+
+ export interface UserTransaction {
+  refNo: string;                 // e.g. "TXN202505280001"
+  request: string;               // e.g. "Deposit", "Refund Request"
+  dateTime: string;              // ISO datetime string, e.g. "2025-05-28T09:00:00Z"
+  amount: number;                // e.g. 100.00 or -50.00
+  type: string;                 // e.g. "Deposit", "Refund"
+  method: string;               // e.g. "Bank Transfer", "—"
+  status: string;               // e.g. "Completed", "Pending"
+  approvedDateTime?: string | null;  // ISO datetime string or null
+  approvedBy?: string | null;         // e.g. "Admin A" or null
+  notes?: string | null;              // e.g. "Deposit via bank" or null
+}
