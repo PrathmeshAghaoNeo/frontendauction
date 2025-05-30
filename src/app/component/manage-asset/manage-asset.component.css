@@ -210,7 +210,7 @@
 
 /* ===== Modal Overlay ===== */
 .modal-overlay {
-position: fixed;
+position: fixed ;
 top: 0;
 left: 0;
 width: 100%;
@@ -225,6 +225,7 @@ animation: fadeIn 0.3s ease-in-out;
 
 /* ===== Modal Content ===== */
 .modal-content {
+  position: relative;
 background-color: white;
 color: #333;
 border-radius: var(--card-radius);
