@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ListService } from '../../services/list.service';
 import { CommonModule, Location } from '@angular/common';
 import { DirectSaleAssetDto } from '../../modals/manage-asset';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,18 +10,30 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './get-orders-component.component.html',
-  styleUrl: './get-orders-component.component.css'
+  styleUrl: './get-orders-component.component.css',
 })
 export class GetOrdersComponentComponent {
-
-userId = 1; 
+  userId: number | null = null;
   orders: DirectSaleAssetDto[] = [];
   isLoading = false;
   errorMessage = '';
+  @Input() showGoBackButton: boolean = true;
 
-  constructor(private ordersService: ListService , private router : Router , private location:Location) {}
+  constructor(
+    private ordersService: ListService,
+    private router: Router,
+    private location: Location,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.userId = this.authService.getUserIdJwt();
+    if (!this.userId) {
+      this.errorMessage = 'User not authenticated.';
+      console.error(this.errorMessage);
+      return;
+    }
+
     this.fetchOrders();
   }
 
@@ -36,18 +49,15 @@ userId = 1;
         this.errorMessage = 'Failed to load orders.';
         console.error(err);
         this.isLoading = false;
-      }
+      },
     });
   }
 
-
-
   goBack(): void {
-  this.location.back();
-}
+    this.router.navigate(['/reguserlandingpage']);
+  }
 
   viewOrder(orderId: number) {
-  this.router.navigate(['/order-details/', orderId]);
-}
-
+    this.router.navigate(['/order-details/', orderId]);
+  }
 }

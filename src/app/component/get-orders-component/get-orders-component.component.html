@@ -1,6 +1,6 @@
 <div class="orders-container mt-4">
    <div class="mb-3">
-    <button class="btn btn-outline-secondary" (click)="goBack()">
+    <button class="btn btn-outline-secondary" *ngIf="showGoBackButton" (click)="goBack()">
       <i class="bi bi-arrow-left"></i> Back
     </button>
   </div>
