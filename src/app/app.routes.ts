@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard } from './services/auth.guard';
 import { StartPageComponent } from './component/start-page/start-page.component';
 import { LoginComponent } from './component/login/login.component';
@@ -58,6 +58,7 @@ import { ChatbotAdminComponent } from './component/chatbot-admin/chatbot-admin.c
 import { ManageRolesComponent } from './component/manage-roles/manage-roles.component';
 import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
+import { NgModule } from '@angular/core';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -134,3 +135,17 @@ export const routes: Routes = [
   { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
 
 ];
+
+
+
+
+
+// for scrollbar
+
+// @NgModule({
+//   imports: [RouterModule.forRoot(routes, {
+//     scrollPositionRestoration: 'enabled',
+//   })],
+//   exports: [RouterModule]
+// })
+// export class AppRoutingModule { }
