@@ -8,6 +8,7 @@ import { UserService } from '../../services/user.service';
 import { SignalRService } from '../../services/signal-r.service';
 import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
+import { Notification } from '../../modals/user';
 
 @Component({
   selector: 'app-header',
@@ -24,18 +25,19 @@ export class HeaderComponent implements OnInit {
   isLoggedIn = false;
   currentRoute = '';
   userId: number = 0;
-  showNotifications = false;
-  unseenWinDetails: WinWithAsset[] = [];
   wishlistAssetIds: number[] = [];
 userProfileImageUrl: string = '';
   cartAssetIds: number[] = [];
+  notifications: Notification[] = [];
+  unreadCount : number= 0;
 
   constructor(
       private listService: ListService,
       public authService: AuthService, 
       private router: Router, 
       private winService: UserService, 
-      private signalR: SignalRService, 
+      private signalR: SignalRService,
+      private userService: UserService,
       private assetService: ManageAssetService) 
       {
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
@@ -53,7 +55,7 @@ userProfileImageUrl: string = '';
   ngOnInit(): void {
     const userId = this.authService.getUserIdJwt();
     if (userId) {
-      this.getUnseenUserWins(userId);
+      this.loadNotifications(userId);
     }
     this.signalR.startConnection();
     this.signalR.winnerUpdates$.subscribe(data => {
@@ -100,47 +102,47 @@ userProfileImageUrl: string = '';
       },
     });
   }
-  getUnseenUserWins(userId: number) {
-    this.winService.getUnseenUserWins(userId).subscribe({
-      next: (wins) => {
-        this.unseenWinDetails = [];
+  // getUnseenUserWins(userId: number) {
+  //   this.winService.getUnseenUserWins(userId).subscribe({
+  //     next: (wins) => {
+  //       this.unseenWinDetails = [];
 
-        wins.forEach((win: any) => {
-          this.assetService.getAssetById(win.assetId).subscribe({
-            next: (asset) => {
-              this.unseenWinDetails.push({
-                win: win,
-                assetName: asset.title
-              });
-              console.log(this.unseenWinDetails)
-            },
-            error: (err) => console.error('Error loading asset:', err)
-          });
-        });
-      },
-      error: (err) => console.error('Error loading notifications:', err)
-    });
-  }
+  //       wins.forEach((win: any) => {
+  //         this.assetService.getAssetById(win.assetId).subscribe({
+  //           next: (asset) => {
+  //             this.unseenWinDetails.push({
+  //               win: win,
+  //               assetName: asset.title
+  //             });
+  //             console.log(this.unseenWinDetails)
+  //           },
+  //           error: (err) => console.error('Error loading asset:', err)
+  //         });
+  //       });
+  //     },
+  //     error: (err) => console.error('Error loading notifications:', err)
+  //   });
+  // }
 
 
-  loadNotifications() {
-    const wasOpen = this.showNotifications;
-    this.showNotifications = !this.showNotifications;
+  // loadNotifications() {
+  //   const wasOpen = this.showNotifications;
+  //   this.showNotifications = !this.showNotifications;
 
-    const userId = this.authService.getUserIdJwt();
-    if (!userId) return;
+  //   const userId = this.authService.getUserIdJwt();
+  //   if (!userId) return;
 
-    if (this.showNotifications) {
-      if (this.unseenWinDetails.length > 0) {
-        this.winService.MarkAsSeen(userId).subscribe({
-          next: () => { },
-          error: (err) => console.error('Mark as seen failed', err)
-        });
-      }
-    } else if (wasOpen) {
-      this.getUnseenUserWins(userId);
-    }
-  }
+  //   if (this.showNotifications) {
+  //     if (this.unseenWinDetails.length > 0) {
+  //       this.winService.MarkAsSeen(userId).subscribe({
+  //         next: () => { },
+  //         error: (err) => console.error('Mark as seen failed', err)
+  //       });
+  //     }
+  //   } else if (wasOpen) {
+  //     this.getUnseenUserWins(userId);
+  //   }
+  // }
 
 
 
@@ -151,5 +153,26 @@ userProfileImageUrl: string = '';
 
   onLoginPage(): boolean {
     return this.currentRoute === '/login';
+  }
+
+
+
+  //Notfication Code 
+   loadNotifications(userId:number): void {
+   
+    if (!userId) return;
+
+    this.userService.getNotificationByUserId(userId).subscribe({
+      next: (data) => {
+        this.notifications = data;
+        console.log(this.notifications)
+        this.unreadCount = this.notifications.filter(n => !n.isRead).length;
+      console.log('Unread Count:', this.unreadCount);
+      },
+      error: (err) => {
+        console.error('Failed to load notifications:', err);
+        
+      },
+    });
   }
 }
