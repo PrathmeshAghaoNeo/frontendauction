@@ -1,0 +1,51 @@
+<!-- Filter Icon Button -->
+<button class="filter-icon-btn" (click)="openModal()">
+  <span>&#x1F50D;</span> <!-- magnifying glass icon as placeholder -->
+</button>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()"></div>
+
+<!-- Modal Content -->
+<div class="modal-content" *ngIf="isModalOpen" (click)="$event.stopPropagation()">
+  <button class="close-btn" (click)="closeModal()">&times;</button>
+  <h2>Filter Assets</h2>
+
+  <!-- Asset Name Filter -->
+  <div class="filter-section">
+    <h3>Asset Name</h3>
+    <div *ngFor="let name of assetNames">
+      <input type="checkbox" [value]="name" [(ngModel)]="selectedAssetNames[name]"> {{ name }}
+    </div>
+  </div>
+
+  <!-- Price Filter -->
+  <div class="filter-section">
+    <h3>Price</h3>
+    <div *ngFor="let price of priceRanges">
+      <input type="checkbox" [value]="price" [(ngModel)]="selectedPriceRanges[price]"> {{ price }}
+    </div>
+  </div>
+
+  <!-- Duration Filter -->
+  <div class="filter-section">
+    <h3>Duration</h3>
+    <div *ngFor="let duration of durations">
+      <input type="checkbox" [value]="duration" [(ngModel)]="selectedDurations[duration]"> {{ duration }}
+    </div>
+  </div>
+
+  <!-- Price Range Slider -->
+  <div class="filter-section">
+    <h3>Price Range</h3>
+    <div class="slider-container">
+      <input type="range" [min]="minPrice" [max]="maxPrice" [(ngModel)]="priceRange[0]">
+      <input type="range" [min]="minPrice" [max]="maxPrice" [(ngModel)]="priceRange[1]">
+      <div class="slider-labels">
+        <span>{{ priceRange[0] }}</span> to <span>{{ priceRange[1] }}</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="apply-btn" (click)="applyFilter()">Apply Filter</button>
+</div> 
