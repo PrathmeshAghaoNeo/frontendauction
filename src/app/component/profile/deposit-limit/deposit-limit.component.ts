@@ -176,7 +176,7 @@ export class DepositLimitComponent implements OnInit {
     const isManualMethod = adminApprovalRequiredMethods.includes(
       this.selectedPaymentMethod
     );
-    const statusId = isManualMethod ? 1 : 3; // 1 = Pending, 3 = Completed
+    const statusId = isManualMethod ? 1 : 2; // 1 = Pending, 3 = Completed
 
     const transactionBody = {
       amount: this.totalAmount,
