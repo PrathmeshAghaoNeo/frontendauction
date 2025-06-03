@@ -1,6 +1,8 @@
-.grid-main{
+.auction-asset-container{
   height: 100vh;
 }
+
+
 .top-toolbar {
   display: flex;
   justify-content: space-between;
@@ -589,7 +591,7 @@
 .plate-name{
   width: 100%;
   font-family: "Oswald", sans-serif;
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 600;
   text-align: start;
   margin-top: 17px;

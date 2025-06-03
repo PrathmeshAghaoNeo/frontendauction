@@ -67,7 +67,7 @@ userProfileImageUrl: string = '';
     return !this.showCustomButtons;
   }
   navigatetoallthebidsbythatuser(){
-    
+    this.router.navigate(['/bid-history'])
   }
   loadWishlist(): void {
     if (!this.userId) return;
