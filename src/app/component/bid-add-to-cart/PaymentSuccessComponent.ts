@@ -29,7 +29,7 @@ export class PaymentSuccessComponent implements OnInit {
         sessionId: sessionId,
         userId: this.userId,
       };
-
+      localStorage.removeItem('paymentId');
       this.listservice.confirmPayment(payload).subscribe({
         next: () => {
           this.toastr.success('Order created successfully!');

@@ -18,6 +18,7 @@
     <li 
       class="list-group-item mb-2 rounded border shadow-sm position-relative"
       *ngFor="let notification of getPushNotifications()"
+       (click)="onNotificationClick(notification)"
       [ngClass]="{ 'bg-light': !notification.isRead }"
       style="cursor: pointer;"
     >

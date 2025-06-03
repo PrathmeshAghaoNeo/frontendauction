@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 import { ListService } from '../../services/list.service';
 import { environment } from '../../constants/enviroments';
 import { AuthService } from '../../services/auth.service';
-
 import Swal from 'sweetalert2';
+
 
 declare var bootstrap: any;
 
@@ -27,6 +27,7 @@ export class BidWatchlistComponent implements AfterViewInit {
   watchlistAssets: DirectSaleAssetDto[] = [];
   userId: number|null = null; // Initialize as 0
   apiUrl = environment.baseurl;
+  User: number |null = null;
 
   cartAssetIds: number[] = [];
 

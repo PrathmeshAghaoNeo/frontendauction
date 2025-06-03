@@ -1,0 +1,17 @@
+.table-purple {
+  background-color: #6f42c1; 
+}
+
+.text-truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+  .modal-header-purple {
+    background-color: #b99af3;
+    color: white;
+  }

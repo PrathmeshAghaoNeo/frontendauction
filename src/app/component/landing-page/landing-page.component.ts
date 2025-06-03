@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { PromotionsComponent } from './promotions/promotions.component';
 import { CategoryCardComponent } from './category-card/category-card.component';
 import { DirectSaleComponentLP } from './direct-sale/direct-sale.component';
+import { FooterComponent } from "../footer/footer.component";
 
 @Component({
   selector: 'app-landing-page',
@@ -10,8 +11,9 @@ import { DirectSaleComponentLP } from './direct-sale/direct-sale.component';
   imports: [
     PromotionsComponent,
     DirectSaleComponentLP,
-    CategoryCardComponent
-  ],
+    CategoryCardComponent,
+    FooterComponent
+],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css']
 })

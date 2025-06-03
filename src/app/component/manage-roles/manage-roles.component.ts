@@ -73,6 +73,10 @@ export class ManageRolesComponent implements OnInit {
 
   return permissions.length ? permissions.join(', ') : 'No Permissions';
 }
+getEnabledPermissions(role: RoleWithPermissions): string[] {
+    const permissionKeys = Object.keys(role) as (keyof RoleWithPermissions)[];
+    return permissionKeys.filter(key => typeof role[key] === 'boolean' && role[key] === true && key !== 'roleId' && key !== 'roleName');
+  }
   applyFilters(): void {
     const text = this.searchText.toLowerCase();
     this.filteredRoles = this.roles.filter(role =>

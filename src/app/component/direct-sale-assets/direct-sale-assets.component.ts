@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
@@ -45,7 +45,8 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
     private assetService: ManageAssetService,
     private listService: ListService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private viewportScroller: ViewportScroller
   ) {}
 
   ngAfterViewInit() {
@@ -85,6 +86,7 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
 
     if (!this.userId) {
