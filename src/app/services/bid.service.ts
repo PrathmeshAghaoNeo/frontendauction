@@ -20,6 +20,11 @@ export class BidService {
     );
   }
 
+  getUserBidsHitory(userId: number | null): Observable<BidDto[]> {
+    return this.http.get<BidDto[]>(`${ApiEndpoints.Bid}/UserBids/${userId}`);
+  }
+
+
   getAutoBid(
     userId: number| null,
     auctionId: number,
@@ -40,6 +45,7 @@ export class BidService {
       autoBidData
     );
   }
+
 
  removeAutoBid(payload: {
   userId: number|null;

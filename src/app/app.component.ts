@@ -120,6 +120,7 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/bid-add-to-cart',
     '/asset-details',
     '/orders',
+    '/bid-history'
    
   ];
  
@@ -128,7 +129,8 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/auction-assets/',
     '/direct-sale-assetpage/',
     '/asset-details/',
-    '/user-profile'
+    '/order-details/',
+    '/user-profile/',
   ];
  
   if (exactRoutes.includes(this.currentRoute)) {

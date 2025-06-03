@@ -59,6 +59,7 @@ import { ManageRolesComponent } from './component/manage-roles/manage-roles.comp
 import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
 import { NgModule } from '@angular/core';
+import { BidHistoryComponent } from './component/bid-history/bid-history.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -132,6 +133,7 @@ export const routes: Routes = [
   { path: 'refund-request', component: RefundRequestComponent },
   { path: 'deposit-page', component: DepositPageComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
+  {path: 'bid-history', component: BidHistoryComponent},
   { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
 
 ];
@@ -140,12 +142,3 @@ export const routes: Routes = [
 
 
 
-// for scrollbar
-
-// @NgModule({
-//   imports: [RouterModule.forRoot(routes, {
-//     scrollPositionRestoration: 'enabled',
-//   })],
-//   exports: [RouterModule]
-// })
-// export class AppRoutingModule { }
