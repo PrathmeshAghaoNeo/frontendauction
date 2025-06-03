@@ -2,7 +2,7 @@
   <!-- Left Section -->
   <div class="box left-section">
     <!-- Category Selection -->
-    <div class="form-group mb-3">
+    <!-- <div class="form-group mb-3">
       <label for="categoryId" class="form-label">Category</label>
       <select formControlName="categoryId" id="categoryId" class="form-select">
         <option value="" disabled selected hidden>Select Category</option>
@@ -10,7 +10,7 @@
           {{ cat.categoryName }}
         </option>
       </select>
-    </div>
+    </div> -->
 
     <!-- Consumed Limit Progress -->
     <div class="form-group mb-3">
@@ -36,7 +36,7 @@
           <div class="summary-label">Current Deposit</div>
         </div>
         <div class="summary-item">
-          <div class="summary-value">BHD {{ depositAmount | number }}</div>
+          <div class="summary-value">BHD {{ availableLimit | number }}</div>
           <div class="summary-label">Available Limit</div>
         </div>
         <div class="summary-item">
@@ -48,26 +48,49 @@
 
     <!-- Top-Up Controls -->
     <div class="form-group text-center">
-      <label class="form-label">Top-Up Limit</label>
-      <div
-        class="top-up-controls d-flex justify-content-center align-items-center gap-3 mb-2"
-      >
+      <label class="form-label mb-2">Top-Up Limit</label>
+
+      <div class="d-flex justify-content-center align-items-center gap-3 mb-2">
+        <!-- Decrease Button -->
         <button
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-outline-secondary btn-lg px-3"
           (click)="decreaseLimit()"
         >
           −
         </button>
-        <span class="fs-5 fw-bold">BHD {{ topUpAmount | number }}</span>
+
+        <!-- Input Group -->
+        <div
+          class="input-group input-group-lg shadow-sm rounded align-items-center"
+          style="width: 200px"
+        >
+          <span
+            class="input-group-text bg-light text-dark fw-bold border-end-0 px-3"
+          >
+            BHD
+          </span>
+          <input
+            type="number"
+            class="form-control fs-5 fw-semibold border-start-0"
+            [(ngModel)]="topUpAmount"
+            placeholder="Enter amount"
+            min="0"
+            step="10"
+            style="border-radius: 0 0.5rem 0.5rem 0"
+          />
+        </div>
+
+        <!-- Increase Button -->
         <button
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-outline-secondary btn-lg px-3"
           (click)="increaseLimit()"
         >
           +
         </button>
       </div>
+
       <div class="deposit-hint small text-muted">
         You pay a deposit of: <strong>BHD {{ depositAmount | number }}</strong>
       </div>
@@ -112,68 +135,101 @@
           class="payment-details"
         >
           <ng-container [ngSwitch]="method.value">
-            <div *ngSwitchCase="'bank'">
-              <p class="note">
-                Please allow up to 24hrs before the deposit is reflected...
+            <!-- Bank Transfer -->
+            <div
+              *ngSwitchCase="'bank'"
+              class="p-3 border rounded bg-light mb-3"
+            >
+              <p class="text-muted small mb-3">
+                <i class="bi bi-info-circle-fill me-1"></i>
+                Please allow up to 24hrs before the deposit is reflected.
               </p>
 
-              <div class="form-group">
-                <label>Upload Cheque</label>
-                <input type="file" (click)="$event.stopPropagation()" />
+              <div class="mb-2">
+                <label class="form-label mb-1">Upload Cheque</label>
+                <input
+                  type="file"
+                  class="form-control form-control-sm"
+                  (click)="$event.stopPropagation()"
+                />
               </div>
 
-              <div class="form-group">
-                <label>Date</label>
-                <input type="date" (click)="$event.stopPropagation()" />
+              <div class="mb-3">
+                <label class="form-label mb-1">Date</label>
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  (click)="$event.stopPropagation()"
+                />
               </div>
 
-              <div class="account-details">
-                <p><strong>Account name:</strong> Mazad B.S.C. (c)</p>
-                <p><strong>Bank name:</strong> National Bank of Bahrain</p>
-                <p><strong>IBAN:</strong> BH22 NBOB 0000 0099 666677</p>
-                <p><strong>Account number:</strong> 0099666677</p>
-                <p><strong>Swift code:</strong> NBOBBHBM</p>
-                <p><strong>Routing number:</strong> 1223345678990</p>
+              <div class="border rounded p-2 bg-white shadow-sm small">
+                <strong class="d-block mb-2">Bank Account Details</strong>
+                <p class="mb-1">
+                  <strong>Account name:</strong> Mazad B.S.C. (c)
+                </p>
+                <p class="mb-1">
+                  <strong>Bank name:</strong> National Bank of Bahrain
+                </p>
+                <p class="mb-1">
+                  <strong>IBAN:</strong> BH22 NBOB 0000 0099 666677
+                </p>
+                <p class="mb-1"><strong>Account number:</strong> 0099666677</p>
+                <p class="mb-1"><strong>Swift code:</strong> NBOBBHBM</p>
+                <p class="mb-0">
+                  <strong>Routing number:</strong> 1223345678990
+                </p>
               </div>
             </div>
 
             <!-- Cheque -->
-            <div *ngSwitchCase="'cheque'">
-              <p class="note">
+            <div
+              *ngSwitchCase="'cheque'"
+              class="p-3 border rounded bg-light mb-3"
+            >
+              <p class="text-muted small mb-3">
+                <i class="bi bi-info-circle-fill me-1"></i>
                 Please visit any of our branches or upload cheque image.
               </p>
 
-              <div class="form-group">
-                <label>Upload Cheque</label>
-                <input type="file" (click)="$event.stopPropagation()" />
+              <div class="mb-2">
+                <label class="form-label mb-1">Upload Cheque</label>
+                <input
+                  type="file"
+                  class="form-control form-control-sm"
+                  (click)="$event.stopPropagation()"
+                />
               </div>
 
-              <div class="form-group">
-                <label>Date</label>
-                <input type="date" (click)="$event.stopPropagation()" />
+              <div class="mb-3">
+                <label class="form-label mb-1">Date</label>
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  (click)="$event.stopPropagation()"
+                />
               </div>
 
-              <div class="location-details">
-                <p>
+              <div class="border rounded p-2 bg-white shadow-sm small">
+                <strong class="d-block mb-2">Branch Details</strong>
+                <p class="mb-1">
                   <strong>Location:</strong> Office 2603, Building 316, Block
                   346, Manama, Bahrain
                 </p>
-                <p>
+                <p class="mb-0">
                   <strong>Timings:</strong> Sun – Thur, 8 AM – 4 PM (+3 GMT)
                 </p>
               </div>
 
               <google-map
-                height="400px"
+                height="300px"
                 width="100%"
+                class="rounded shadow-sm mt-2"
                 [center]="center"
                 [zoom]="zoom"
                 [options]="mapOptions"
               >
                 <map-marker [position]="markerPosition"></map-marker>
-                <!-- <button (click)="setCurrentLocation()" class="btn btn-primary mb-2">
-                                    Use My Current Location
-                                </button> -->
               </google-map>
             </div>
 
@@ -187,7 +243,8 @@
             <p><strong>Total Amount:</strong> BHD {{ totalAmount | number }}</p>
           </div>
 
-          <button class="btn btn=danger btn-block"
+          <button
+            class="btn btn=danger btn-block btn-primary"
             (click)="addTransaction()"
             [disabled]="!selectedPaymentMethod"
           >

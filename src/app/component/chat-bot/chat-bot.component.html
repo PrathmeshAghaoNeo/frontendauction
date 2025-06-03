@@ -12,7 +12,7 @@
 
     <!-- Message Section -->
     <div class="message-section" *ngIf="!isMessageView && !currentHelpPage && !showHelpSection">
-      <div class="message-box" (click)="showMessageView()">
+      <div class="message-box" (click)="showMessageView()" *ngIf="!isMessageView">
         <div class="message-content">
           <p class="message-title">Send us a message</p>
         </div>
@@ -30,6 +30,23 @@
               <path d="M9 18l6-6-6-6"></path>
             </svg>
           </div>
+        </div>
+      </div>
+      <div class="message-input sticky-input" *ngIf="isMessageView">
+        <input 
+          type="text" 
+          placeholder="Send a message..." 
+          [(ngModel)]="message" 
+          (keydown)="handleKeyDown($event)"
+          [disabled]="isLoading">
+        <div class="input-buttons">
+          <button class="send-button" (click)="sendMessage()" [disabled]="isLoading">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" y1="12" x2="20" y2="12"></line>
+      <polyline points="14 6 20 12 14 18"></polyline>
+    </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -112,37 +129,15 @@
 
       <!-- Welcome message and main menu options -->
       <div *ngIf="messages.length === 1 && mainMenuOptions.length > 0 && !isEndOfChat" class="main-menu-options">
-        <div class="welcome-message">
-          <p>{{ messages[0].text }}</p>
-        </div>
-        <div class="main-options">
-          <button class="main-option-btn" *ngFor="let option of mainMenuOptions" (click)="handleQuickReply(option)">
-            {{ option.text }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Message Input: always at the bottom, outside main menu and chat area -->
-      <div class="message-input" style="position: absolute; left: 0; right: 0; bottom: 56px; z-index: 10;">
-        <input 
-          type="text" 
-          placeholder="Send a message..." 
-          [(ngModel)]="message" 
-          (keydown)="handleKeyDown($event)"
-          [disabled]="isLoading">
-        <div class="input-buttons">
-          <button class="send-button" (click)="sendMessage()" [disabled]="isLoading">
-            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg> -->
-
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="4" y1="12" x2="20" y2="12"></line>
-      <polyline points="14 6 20 12 14 18"></polyline>
-    </svg>
-          </button>
+        <div class="bot-greeting-block">
+          <div class="welcome-message">
+            <p>{{ messages[0].text }}</p>
+          </div>
+          <div class="main-options">
+            <button class="main-option-btn" *ngFor="let option of mainMenuOptions" (click)="handleQuickReply(option)">
+              {{ option.text }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -151,12 +146,6 @@
         <!-- Display all chat messages -->
         <div class="chat-messages" *ngFor="let msg of messages">
           <div class="chat-message" [ngClass]="{'bot': !msg.isUser, 'user': msg.isUser}">
-            <!-- Bot Icon for bot messages -->
-            <div class="bot-icon" *ngIf="!msg.isUser">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-              </svg>
-            </div>
             <!-- Message Text -->
             <div class="message-text">
               <p *ngIf="!msg.isUser">ChatBot</p>
@@ -173,7 +162,6 @@
                   <span [innerHTML]="formatLineWithIcon(line)"></span><br />
                 </ng-container>
               </ng-template>
-
               <!-- API Quick Replies (sub-questions) -->
               <div class="api-quick-replies" *ngIf="!msg.isUser && msg.quickReplies && msg.quickReplies.length > 0 && !isEndOfChat">
                 <button 
@@ -183,14 +171,12 @@
                   {{ reply.text }}
                 </button>
               </div>
-
               <!-- End of chat: show Start Over button -->
               <div class="end-of-chat" *ngIf="!msg.isUser && isEndOfChat">
                 <button class="start-over-btn" (click)="handleQuickReply({text: 'Start Over', payload: 'start_over'})">
                   Start Over
                 </button>
               </div>
-
               <!-- Suggested Articles -->
               <div class="suggested-articles" *ngIf="!msg.isUser && msg.suggestedArticles && msg.suggestedArticles.length > 0">
                 <h4>Suggested Articles:</h4>
@@ -217,6 +203,23 @@
             <p>Maram</p>
             <p>Typing...</p>
           </div>
+        </div>
+      </div>
+      <div class="message-input sticky-input" *ngIf="isMessageView">
+        <input 
+          type="text" 
+          placeholder="Send a message..." 
+          [(ngModel)]="message" 
+          (keydown)="handleKeyDown($event)"
+          [disabled]="isLoading">
+        <div class="input-buttons">
+          <button class="send-button" (click)="sendMessage()" [disabled]="isLoading">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" y1="12" x2="20" y2="12"></line>
+      <polyline points="14 6 20 12 14 18"></polyline>
+    </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -266,52 +269,6 @@
         </div>
       </div>
     </div>
-
-    <!-- FAQ Help Page -->
-    <!-- <div class="help-page" *ngIf="currentHelpPage === 'faq'">
-      <div class="help-header">
-        <div class="back-button" (click)="backToMain()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"></path>
-          </svg>
-        </div>
-        <h2 class="help-page-title">Frequently Asked Questions</h2>
-        <div class="maximize-button" (click)="toggleMaximize()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <polyline points="9 21 3 21 3 15"></polyline>
-            <line x1="21" y1="3" x2="14" y2="10"></line>
-            <line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
-        </div>
-      </div>
-
-      <div class="help-content">
-        <h1>Frequently Asked Questions</h1>
-        <p class="help-description">Find answers to common questions about our platform.</p>
-        <p class="help-updated"></p>
-
-        <div class="table-of-contents">
-          <div class="toc-header">
-            <p>Table of contents</p>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-        </div>
-
-        <div class="faq-content">
-          <h2>What payment methods are accepted?</h2>
-          <p>We accept major credit cards, debit cards, and bank transfers. For certain auctions, cryptocurrency payments may also be available.</p>
-          
-          <h2>How do I know if I won an auction?</h2>
-          <p>You will receive an immediate notification through the app and via email when you win an auction. You can also check your "My Bids" section to see the status of your active and completed bids.</p>
-          
-          <h2>What happens if I win an auction but change my mind?</h2>
-          <p>Please refer to our cancellation policy for specific details. In most cases, auction wins are binding and require completion of the purchase.</p>
-        </div>
-      </div>
-    </div> -->
 
     <!-- Register Help Page -->
     <div class="help-page" *ngIf="currentHelpPage === 'register'">
@@ -445,4 +402,3 @@
   </svg>
 </div>
 
-<!-- sdfsdf -->

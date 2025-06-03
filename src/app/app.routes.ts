@@ -58,6 +58,9 @@ import { ChatbotAdminComponent } from './component/chatbot-admin/chatbot-admin.c
 import { ManageRolesComponent } from './component/manage-roles/manage-roles.component';
 import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
+import { FilterComponent } from './component/filter/filter.component';
+// import { BidHistoryComponent } from './component/bid-history/bid-history.component';
+
 import { NgModule } from '@angular/core';
 import { BidHistoryComponent } from './component/bid-history/bid-history.component';
 import { CheckoutComponentComponent } from './component/checkout-component/checkout-component.component';
@@ -137,7 +140,9 @@ export const routes: Routes = [
   {path: 'bid-history', component: BidHistoryComponent},
   { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
 
-  {path:"finalCheckout/:assetId" , component:CheckoutComponentComponent}
+  {path:"finalCheckout/:assetId" , component:CheckoutComponentComponent},
+  // { path: 'filter', loadComponent: () => import('./component/filter/filter.component').then(m => m.FilterComponent) },
+  {path:'filter', component: FilterComponent}
 ];
 
 

@@ -61,7 +61,7 @@ export class AppComponent implements OnInit,AfterViewInit {
   });
   this.signalR.notificationUpdates$.subscribe(notification => {
       console.log('Notification received:', notification);
-       this.showToast(notification.message, 'Bid Update !!', 'info');
+       this.showToast(notification.message, ' New Update !!', 'info');
     });
   }
 

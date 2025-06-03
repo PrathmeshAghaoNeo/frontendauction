@@ -15,7 +15,7 @@ export interface Transaction {
   statusId: number;
   statusName: string;
   notes?: string;
-  documentUrls: string[];
+  documentUrls?: string[];
 }
 
   

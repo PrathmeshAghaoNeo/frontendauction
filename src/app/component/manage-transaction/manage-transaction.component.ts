@@ -42,7 +42,6 @@ export class TransactionManagementComponent implements OnInit {
   filterStartDate: string | null = null;
   filterEndDate: string | null = null;
   searchTerm: string = '';
-
   selectedTransaction: Transaction | null = null;
 
   constructor(

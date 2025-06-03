@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Country, Role, Status, User, UserView,Notification} from '../modals/user';
+import { Country, Role, Status, User, UserView,Notification, DepositLimits} from '../modals/user';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { AuthService } from './auth.service';
 
@@ -96,5 +96,9 @@ export class UserService {
   }
   markNottificationAsSeen(notificationId:string):Observable<any>{
     return this.http.put<any>(`${ApiEndpoints.USER}/mark-as-read/${notificationId}`, notificationId);
+  }
+
+  getUserDepositLimits(userId: number): Observable<DepositLimits> {
+    return this.http.get<DepositLimits>(`https://localhost:62627/api/User/${userId}/deposit-limits`);
   }
 }

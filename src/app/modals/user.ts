@@ -72,3 +72,9 @@ export interface Role {
   auctionId: any
   assetId: any
 }
+
+export interface DepositLimits{
+  totalLimit: number,
+  currentDeposit: number,
+  availableLimit:number
+}
