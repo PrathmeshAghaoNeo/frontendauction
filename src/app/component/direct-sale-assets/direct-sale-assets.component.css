@@ -1,6 +1,7 @@
 .Grid-container{
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .top-toolbar {
   display: flex;
   justify-content: space-between;
@@ -162,7 +163,9 @@
     box-shadow: 0 4px 12px rgb(201, 201, 201);
 }
 .row-view .plate-card:hover{
- /* background-color: #eadef2; */
+  background-color: #eadef2;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(106, 27, 154, 0.15);
 }
 .plate-display-row{
   display: flex;
@@ -173,7 +176,7 @@
 
 /* Image stays left */
 .plates-container.row-view .plate-main-image {
-  width: 86px;
+  width: 105px;
   height: 88px;
   object-fit: cover;
   border-radius: var(--card-radius);
@@ -264,10 +267,16 @@
   /* transition: transform 0.2s ease, box-shadow 0.3s ease; */
 }
 
-.plate-card:hover {
+/* .plate-card:hover {
   
   box-shadow: 0 4px 16px rgba(106, 27, 154, 0.15);
+} */
+.plate-card:hover {
+  background-color: #eadef2;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(106, 27, 154, 0.15);
 }
+
 
 
 .plate-display {

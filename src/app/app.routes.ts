@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard } from './services/auth.guard';
 import { StartPageComponent } from './component/start-page/start-page.component';
 import { LoginComponent } from './component/login/login.component';
@@ -53,9 +53,13 @@ import { MyPurchasesComponent } from './component/profile/my-purchases/my-purcha
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
+import { ChatbotAdminComponent } from './component/chatbot-admin/chatbot-admin.component';
+
 import { ManageRolesComponent } from './component/manage-roles/manage-roles.component';
 import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
+import { NgModule } from '@angular/core';
+import { BidHistoryComponent } from './component/bid-history/bid-history.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -128,7 +132,13 @@ export const routes: Routes = [
   { path: 'reports', component: ReportsListComponent },
   { path: 'refund-request', component: RefundRequestComponent },
   { path: 'deposit-page', component: DepositPageComponent },
-  { path: 'audit-trial', component: AuditTrailComponent }
-
+  { path: 'audit-trial', component: AuditTrailComponent },
+  {path: 'bid-history', component: BidHistoryComponent},
+  { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
 
 ];
+
+
+
+
+

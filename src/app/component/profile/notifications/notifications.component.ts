@@ -63,7 +63,7 @@ export class NotificationsComponent {
   bidNow(assetId: any): void {
   const encodedUserId = btoa(assetId.toString());
     this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
-}
+  }
 onBidClick(event: Event, notification: Notification): void {
   event.stopPropagation(); 
   this.markAsRead(notification.id);
@@ -96,6 +96,12 @@ getPushNotifications(): Notification[] {
 
 getNormalNotifications(): Notification[] {
   return this.notifications.filter(n => n.userId !== null);
+}
+onNotificationClick(notification: Notification): void {
+  if (notification.assetId) {
+    this.markAsRead(notification.id);
+    this.bidNow(notification.assetId);
+  }
 }
 
 }

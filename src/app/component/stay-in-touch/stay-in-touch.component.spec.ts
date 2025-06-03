@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChatBotComponent } from './chat-bot.component';
+import { StayInTouchComponent } from './stay-in-touch.component';
 
-describe('ChatBotComponent', () => {
-  let component: ChatBotComponent;
-  let fixture: ComponentFixture<ChatBotComponent>;
+describe('StayInTouchComponent', () => {
+  let component: StayInTouchComponent;
+  let fixture: ComponentFixture<StayInTouchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChatBotComponent]
+      imports: [StayInTouchComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChatBotComponent);
+    fixture = TestBed.createComponent(StayInTouchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,6 +21,3 @@ describe('ChatBotComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-
-// hnb

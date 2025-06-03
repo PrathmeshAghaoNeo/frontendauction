@@ -1,6 +1,6 @@
 <div class="orders-container mt-4">
    <div class="mb-3">
-    <button class="btn btn-outline-secondary" (click)="goBack()">
+    <button class="btn btn-outline-secondary" *ngIf="showGoBackButton" (click)="goBack()">
       <i class="bi bi-arrow-left"></i> Back
     </button>
   </div>
@@ -19,7 +19,7 @@
       <div class="order-info">
         <h5 class="order-title">{{ order.title }}</h5>
         <p class="order-description">{{ order.description }}</p>
-        <p class="order-price">₹{{ order.price }}</p>
+        <p class="order-price">BHD {{ order.price }}</p>
         <button class="view-more-btn" (click)="viewOrder(order.assetId)">View More</button>
       </div>
     </div>

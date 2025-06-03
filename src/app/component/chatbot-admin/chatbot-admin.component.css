@@ -1,0 +1,85 @@
+/* Fix for Bootstrap modal backdrop so modals are interactive and not fully opaque */
+/* .modal-backdrop.show {
+  opacity: var(--bs-backdrop-opacity, 0.5) !important;
+} */
+/* Minimal styling, relies on Bootstrap */
+
+
+.table td, .table th {
+  vertical-align: middle;
+} 
+
+/* FAQ Row Styles */
+.faq-row {
+  width: 100%;
+  min-width: 0;
+  transition: background 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+  /* Optionally increase padding for better hover effect */
+  /* padding: 1.25rem !important; */
+}
+.faq-row:hover {
+  background: #3e148b; /* much darker for visibility */
+  box-shadow: 0 2px 8px #9d7dd7;
+}
+.faq-question-text {
+  font-weight: 400;
+  transition: none;
+}
+.faq-question-area:hover .faq-question-text {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* FAQ Action Button Styles */
+.faq-action-btn {
+  border: 2px solid #bca4e6;
+  background: #fff;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.2s, background 0.2s, border-color 0.2s;
+  margin-right: 4px;
+  padding: 0;
+}
+.faq-action-btn:last-child {
+  margin-right: 0;
+}
+.faq-action-btn i {
+  font-size: 1rem;
+  color: #7c3aed;
+  transition: color 0.2s;
+}
+.faq-action-btn.view:hover, .faq-action-btn.edit:hover {
+  background: #7c3aed;
+  border-color: #7c3aed;
+}
+.faq-action-btn.view:hover i, .faq-action-btn.edit:hover i {
+  color: #fff;
+}
+.faq-action-btn.edit {
+  border-color: #bca4e6;
+}
+.faq-action-btn.delete {
+  border-color: #ff4d4f;
+}
+.faq-action-btn.delete i {
+  color: #ff4d4f;
+}
+.faq-action-btn.delete:hover {
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+}
+.faq-action-btn.delete:hover i {
+  color: #fff;
+}
+.faq-action-btn:focus {
+  box-shadow: 0 0 0 2px #bca4e6;
+} 
+
+.justify-content-start{
+  color: #ff4d4f;
+}

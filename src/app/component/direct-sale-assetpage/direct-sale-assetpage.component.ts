@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
@@ -7,6 +7,7 @@ import { ManageAssetService } from '../../services/asset.service';
 import { Asset, Gallery } from '../../modals/manage-asset';
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../services/auth.service';
 
 declare var bootstrap: any; 
 
@@ -29,7 +30,7 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
   isLoading = true;
   price = 0;
   currency = 'BHD';
-   userId: number = 1;
+   userId: number |null = null;
   plateNumber = '';
 
   wishlistAssetIds: number[] = [];  
@@ -43,6 +44,8 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
     private listService: ListService,
+    private authService:AuthService,
+    private router:Router
   ) {}
 
 
@@ -76,6 +79,14 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.userId = this.authService.getUserIdJwt();
+
+    if (!this.userId) {
+      this.showToast('User not logged in.', 'Error', 'error');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.route.paramMap.subscribe((params: ParamMap) => {
       // Try both keys in case your route is /:id or /:assetId
       const idStr = params.get('id') ?? params.get('assetId');

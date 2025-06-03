@@ -1,6 +1,13 @@
+.watchlist-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f6f9;
+}
+
 .cart-grid {
      width: auto;
-    height: 365PX;
+    height: auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
