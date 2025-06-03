@@ -4,7 +4,14 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AssetCategoriesService } from '../../../services/assetcategories.service';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { TransactionService } from '../../../services/transaction.service';
-import { TransactionMetadataService, PaymentMethod, TransactionType, CardType } from '../../../services/transaction-meta.service';
+import {
+  TransactionMetadataService,
+  PaymentMethod,
+  TransactionType,
+  CardType,
+} from '../../../services/transaction-meta.service';
+import { UserService } from '../../../services/user.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-deposit-limit',
@@ -28,44 +35,42 @@ export class DepositLimitComponent implements OnInit {
   categories: any[] = [];
   selectedCategory: number | null = null;
 
-  totalLimit = 500000;
-  currentDeposit = 20000;
-  topUpLimit = 300000;
+  totalLimit = 0;
+  currentDeposit = 0;
+  topUpLimit = 0;
+  availableLimit = 0;
 
+  topUpAmount = 400;
   selectedPaymentMethod = '';
 
   paymentMethodsMeta: PaymentMethod[] = [];
   transactionTypesMeta: TransactionType[] = [];
   cardTypesMeta: CardType[] = [];
+  paymentMethods: { label: string; value: string }[] = [];
 
-  // These are redundant with paymentMethodsMeta but you might want them for UI if needed
-  paymentMethods = [
-    { label: 'Bank Transfer', value: 'bank' },
-    { label: 'Cheque', value: 'cheque' },
-    { label: 'Credit Card', value: 'card' },
-    { label: 'Benefit', value: 'benefit' },
-    { label: 'Apple Pay', value: 'apple' },
-    { label: 'Google Pay', value: 'google' },
-    { label: 'Paypal', value: 'paypal' },
-  ];
-
-  topUpAmount = 400000;
-  availableLimit = 250000;
 
   uploadedDocumentPath = '';
-  currentUserId = 1; // TODO: Replace with actual logged-in user ID
+  currentUserId: number = 0; // TODO: Replace with actual logged-in user ID
 
   constructor(
     private assetCategoriesService: AssetCategoriesService,
     private fb: FormBuilder,
     private transactionService: TransactionService,
-    private metadataService: TransactionMetadataService
+    private metadataService: TransactionMetadataService,
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
     this.setCurrentLocation();
-
+    const userId = this.authService.getUserIdJwt();
+    if (userId === null) {
+      alert('User not authenticated. Cannot proceed.');
+      return;
+    }
+    this.currentUserId = userId;
+    this.loadUserDepositLimit(userId);
     const cached = this.metadataService.getCachedMetadata();
     if (cached) {
       this.populateMetadata(cached);
@@ -78,15 +83,19 @@ export class DepositLimitComponent implements OnInit {
   }
 
   populateMetadata(data: {
-    paymentMethods: PaymentMethod[];
-    transactionTypes: TransactionType[];
-    cardTypes: CardType[];
-  }): void {
-    this.paymentMethodsMeta = data.paymentMethods;
-    this.transactionTypesMeta = data.transactionTypes;
-    this.cardTypesMeta = data.cardTypes;
-  }
+  paymentMethods: PaymentMethod[];
+  transactionTypes: TransactionType[];
+  cardTypes: CardType[];
+}): void {
+  this.paymentMethodsMeta = data.paymentMethods;
+  this.transactionTypesMeta = data.transactionTypes;
+  this.cardTypesMeta = data.cardTypes;
 
+  this.paymentMethods = data.paymentMethods.map(pm => ({
+    label: pm.paymentMethodName,
+    value: this.mapPaymentMethodNameToValue(pm.paymentMethodName),
+  }));
+}
   setCurrentLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -99,7 +108,9 @@ export class DepositLimitComponent implements OnInit {
         },
         (error) => {
           console.error('Error getting location:', error);
-          alert('Location access denied or unavailable. Showing default location.');
+          alert(
+            'Location access denied or unavailable. Showing default location.'
+          );
         }
       );
     } else {
@@ -115,7 +126,8 @@ export class DepositLimitComponent implements OnInit {
   }
 
   selectPaymentMethod(method: string): void {
-    this.selectedPaymentMethod = this.selectedPaymentMethod === method ? '' : method;
+    this.selectedPaymentMethod =
+      this.selectedPaymentMethod === method ? '' : method;
   }
 
   uploadDeposit(): void {
@@ -161,7 +173,9 @@ export class DepositLimitComponent implements OnInit {
 
     // Determine if admin approval is required
     const adminApprovalRequiredMethods = ['bank', 'cheque']; // use values matching the keys
-    const isManualMethod = adminApprovalRequiredMethods.includes(this.selectedPaymentMethod);
+    const isManualMethod = adminApprovalRequiredMethods.includes(
+      this.selectedPaymentMethod
+    );
     const statusId = isManualMethod ? 1 : 3; // 1 = Pending, 3 = Completed
 
     const transactionBody = {
@@ -190,21 +204,35 @@ export class DepositLimitComponent implements OnInit {
     });
   }
 
-  getPaymentMethodId(method: string): number {
-    const map: Record<string, number> = {
-      bank: 1,
-      cheque: 2,
-      card: 3,
-      benefit: 4,
-      apple: 5,
-      google: 6,
-      paypal: 7,
-    };
-    return map[method] ?? 0;
+  mapPaymentMethodNameToValue(name: string): string {
+    const lower = name.toLowerCase();
+    if (lower.includes('bank')) return 'bank';
+    if (lower.includes('cheque')) return 'cheque';
+    if (lower.includes('credit')) return 'card';
+    if (lower.includes('debit')) return 'card';
+    if (lower.includes('benefit')) return 'benefit';
+    if (lower.includes('apple')) return 'apple';
+    if (lower.includes('google')) return 'google';
+    if (lower.includes('paypal')) return 'paypal';
+    if (lower.includes('cash')) return 'cash';
+    return lower;
+  }
+
+  getPaymentMethodId(methodValue: string): number {
+    const match = this.paymentMethodsMeta.find(
+      (pm) =>
+        this.mapPaymentMethodNameToValue(pm.paymentMethodName) === methodValue
+    );
+    return match?.paymentMethodId ?? 0;
   }
 
   generateMerchantTransactionId(): string {
-    return 'MERC' + Math.floor(Math.random() * 1_000_000_000).toString().padStart(9, '0');
+    return (
+      'MERC' +
+      Math.floor(Math.random() * 1_000_000_000)
+        .toString()
+        .padStart(9, '0')
+    );
   }
 
   onCategoryChange(categoryId: number): void {
@@ -224,12 +252,26 @@ export class DepositLimitComponent implements OnInit {
   }
 
   get consumedPercentage(): number {
-    return (this.availableLimit / this.totalLimit) * 100;
+    return ((this.totalLimit - this.availableLimit) / this.totalLimit) * 100;
   }
 
   getProgressColor(percentage: number): string {
     if (percentage < 50) return 'yellow';
     else if (percentage < 80) return 'green';
     else return 'red';
+  }
+
+  loadUserDepositLimit(userId: number): void {
+    this.userService.getUserDepositLimits(userId).subscribe({
+      next: (res) => {
+        this.totalLimit = res.totalLimit;
+        this.currentDeposit = res.currentDeposit;
+        this.availableLimit = res.availableLimit;
+      },
+      error: (err) => {
+        console.error('Failed to fetch deposit limits', err);
+        alert('Unable to fetch deposit limit info.');
+      },
+    });
   }
 }
