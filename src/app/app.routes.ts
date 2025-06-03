@@ -60,6 +60,7 @@ import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/dire
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
 import { NgModule } from '@angular/core';
 import { BidHistoryComponent } from './component/bid-history/bid-history.component';
+import { CheckoutComponentComponent } from './component/checkout-component/checkout-component.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -136,6 +137,7 @@ export const routes: Routes = [
   {path: 'bid-history', component: BidHistoryComponent},
   { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
 
+  {path:"finalCheckout/:assetId" , component:CheckoutComponentComponent}
 ];
 
 

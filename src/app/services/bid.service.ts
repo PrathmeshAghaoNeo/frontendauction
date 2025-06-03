@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AutoBidDto, BidDto, bidStats } from '../modals/bid-stats';
+import { AutoBidDto, BidDto, bidStats, WonBid } from '../modals/bid-stats';
 import { ApiEndpoints } from '../constants/api-endpoints';
 
 @Injectable({
@@ -23,7 +23,10 @@ export class BidService {
   getUserBidsHitory(userId: number | null): Observable<BidDto[]> {
     return this.http.get<BidDto[]>(`${ApiEndpoints.Bid}/UserBids/${userId}`);
   }
-
+  
+  getWonBidsByUserId(userId: number | null): Observable<WonBid[]> {
+      return this.http.get<WonBid[]>(`${ApiEndpoints.Bid}/WonBids/${userId}`);
+    }
 
   getAutoBid(
     userId: number| null,
@@ -56,5 +59,8 @@ export class BidService {
     body: payload
   });
 }
+
+
+
 
 }

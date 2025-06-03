@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import { BidService } from '../../services/bid.service';
 import { Observable, of } from 'rxjs';
 import { Asset } from '../../modals/manage-asset';
+import { BidDisplayModel, WonBid } from '../../modals/bid-stats';
 
 // declare var bootstrap: any;
 @Component({
@@ -30,9 +31,12 @@ export class BidHistoryComponent implements OnInit {
     this.router.navigate(['/orders']);
   }
 
+  selectedTab: 'ongoing' | 'won' = 'ongoing';
   isGridView = true;
 
-  bidHistory: any[] = []; // Or use a proper type if you have one
+  bidHistory: BidDisplayModel[] = [];
+  wonBids: BidDisplayModel[] = [];
+
   environment = environment;
   assets_new: Asset[] = [];
   originAssets_new: Asset[] = [];
@@ -57,6 +61,7 @@ export class BidHistoryComponent implements OnInit {
   setView(grid: boolean) {
     this.isGridView = grid;
   }
+
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
@@ -73,27 +78,23 @@ export class BidHistoryComponent implements OnInit {
 
         this.bidservice.getUserBidsHitory(this.userId!).subscribe({
           next: (bids) => {
-            // Create a lookup for assets
             const assetMap = new Map(
               this.assets_new.map((a) => [a.assetId, a])
             );
-
-            // Map to track the highest bid per asset
             const maxBidMap = new Map<number, any>();
 
             for (const bid of bids) {
               if (bid.assetId == null) continue;
-
               const currentMax = maxBidMap.get(bid.assetId);
-              // Compare bidAmount against bidAmount, not amount
               if (!currentMax || bid.bidAmount > currentMax.bidAmount) {
                 maxBidMap.set(bid.assetId, bid);
               }
             }
 
-            // Build your bidHistory with the winning bid and its asset
             this.bidHistory = Array.from(maxBidMap.values()).map((bid) => ({
-              ...bid,
+              assetId: bid.assetId,
+              bidAmount: bid.bidAmount,
+              status: bid.status || 'Pending',
               asset: assetMap.get(bid.assetId) || null,
             }));
 
@@ -101,10 +102,47 @@ export class BidHistoryComponent implements OnInit {
           },
           error: (err) => console.error('Error fetching bid history:', err),
         });
+
+        this.bidservice.getWonBidsByUserId(this.userId!).subscribe({
+          next: (wonBids) => {
+            this.wonBids = wonBids.map((won) => ({
+              assetId: won.assetId,
+              awardedPrice: won.awardedPrice,
+              reason: won.reason,
+              note: won.note,
+              approved: won.approved,
+              isSeen: won.isSeen,
+              createdAt: won.createdAt,
+              asset:
+                this.assets_new.find((a) => a.assetId === won.assetId) || null,
+            }));
+            console.log('Won bids with assets:', this.wonBids);
+          },
+          error: (err) => console.error('Error fetching won bids:', err),
+        });
       },
       error: (err) => console.error('Error loading assets:', err),
     });
   }
+
+  switchTab(tab: 'ongoing' | 'won') {
+    this.selectedTab = tab;
+  }
+
+  getCurrentBids(): any[] {
+    return this.selectedTab === 'ongoing' ? this.bidHistory : this.wonBids;
+  }
+
+
+  onBidCardClick(bid: BidDisplayModel) {
+  if (this.selectedTab === 'won') {
+    // Navigate to the receipt or purchase detail page
+    console.log("asset ",bid);
+    
+    this.router.navigate(['/finalCheckout',bid.assetId]);
+  }
+}
+
 
   goBack() {
     window.history.back();

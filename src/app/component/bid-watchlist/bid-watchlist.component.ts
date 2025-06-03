@@ -22,6 +22,7 @@ export class BidWatchlistComponent implements AfterViewInit {
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
 
+  isGridView: boolean = true;
   selectedTab: 'auction' | 'direct' = 'auction';
 
   watchlistAssets: DirectSaleAssetDto[] = [];
@@ -95,6 +96,13 @@ export class BidWatchlistComponent implements AfterViewInit {
     this.loadCartItems();
   });
 }
+
+
+switchTab(tab: 'auction' | 'direct') {
+  this.selectedTab = tab;
+  // this.watchlistAssets();
+}
+
 
 
   loadCartItems(): void {

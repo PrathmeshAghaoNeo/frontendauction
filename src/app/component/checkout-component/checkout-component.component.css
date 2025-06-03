@@ -1,0 +1,93 @@
+.checkout-page {
+  padding: 30px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.checkout-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.checkout-left {
+  flex: 1 1 55%;
+  min-width: 300px;
+}
+
+.checkout-right {
+  flex: 0 0 500px;
+}
+
+.checkout-header {
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 12px;
+}
+
+.checkout-title {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.gallery {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.gallery-image {
+  width: 180px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.checkout-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.checkout-summary-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 55px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.text-purple {
+  color: #6f42c1;
+}
+
+.attribute-section .card {
+  border-radius: 12px;
+  margin-top: 24px;
+}
+
+.attribute-section .card-header {
+  padding: 16px 24px;
+}
+
+.attribute-section .table {
+  font-size: 0.95rem;
+}
+
+.attribute-section th {
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.attribute-section td {
+  padding: 12px 20px;
+  vertical-align: middle;
+}
+
+.attribute-section tr:hover {
+  background-color: #f9f9fc;
+}
+
+.attribute-section .fw-semibold {
+  font-weight: 600;
+}

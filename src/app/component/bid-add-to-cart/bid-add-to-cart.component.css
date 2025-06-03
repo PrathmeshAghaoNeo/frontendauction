@@ -9,7 +9,9 @@
   padding: 2rem;
   font-family: 'Poppins', sans-serif;
   background-color: #f7f8fa;
+  min-height: 100vh;
 }
+
 
 .cart-items {
   flex: 2;
