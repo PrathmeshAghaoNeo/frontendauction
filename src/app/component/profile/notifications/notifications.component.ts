@@ -34,8 +34,13 @@ export class NotificationsComponent {
 
     this.userService.getNotificationByUserId(userId).subscribe({
       next: (data) => {
-        this.notifications = data;
-        console.log(this.notifications)
+      // Convert createdAt strings to valid Date objects
+      this.notifications = data.map(n => ({
+         ...n,
+  createdAt: typeof n.createdAt === 'string' 
+    ? new Date(n.createdAt.replace(' ', 'T') + 'Z') 
+    : n.createdAt
+      }));
         this.loading = false;
       },
       error: (err) => {
