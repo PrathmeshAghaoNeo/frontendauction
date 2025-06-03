@@ -10,6 +10,9 @@ import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { Auction } from '../../modals/auctions';
 import { AuthService } from '../../services/auth.service';
+import { BidService } from '../../services/bid.service';
+import { bidStatsBulk } from '../../modals/bid-stats';
+import { AuctionService } from '../../services/auction.service';
 
 
 
@@ -36,14 +39,18 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
   userId: number |null = null;
   environment=environment;
    wishlistAssetIds: number[] = [];  
+   assetIds:number[] = [];
+   AuctionIds: number[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
+    private auctionService: AuctionService,
     private http: HttpClient,
     private listService:ListService , 
     private router: Router,
     private authService : AuthService,
+    private bidService: BidService,
     private viewportScroller: ViewportScroller
   ) {}
 
@@ -78,27 +85,60 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.viewportScroller.scrollToPosition([0, 0]);
-    this.userId = this.authService.getUserIdJwt();
-    const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
-    console.log('in categorymethod', categoryId);
-    if (!isNaN(categoryId)) {
-          console.log('inside categorymethod', categoryId);
+  this.viewportScroller.scrollToPosition([0, 0]);
+  this.userId = this.authService.getUserIdJwt();
+  const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
+  if (!isNaN(categoryId)) {
+    this.listService.getAuctionAssetsByCategory(categoryId).subscribe({
+      next: (data) => {
+        this.assets = data;
+        this.originalAssets = [...data]; 
+        this.loadWishlist();
+        this.noAssetsFound = this.assets.length === 0;
+        this.assetIds = this.assets.map(a => a.assetId);
+        this.AuctionIds = this.assets.map(a => a.auctionId);
 
-      this.listService.getAuctionAssetsByCategory(categoryId).subscribe({
-        next: (data) => {
-          this.assets = data;
-          this.originalAssets = [...data]; 
-          this.loadWishlist();
-          this.noAssetsFound = this.assets.length === 0;
-          console.log('Assets:', this.assets);
-        },
-        error: (err) => console.error('Error fetching assets:', err)
-      });
-    } else {
-      console.error('Invalid category ID');
-    }
+        // Step 1: Get bid stats
+        this.bidService.getBidStatsByAssetIds(this.assetIds).subscribe({
+          next: (bidStatsList: bidStatsBulk[]) => {
+            this.assets = this.assets.map(asset => {
+              const stats = bidStatsList.find(b => b.assetId === asset.assetId);
+              return {
+                ...asset,
+                bidCount: stats?.bidCount ?? 0,
+                highestbid: stats?.highestBid,
+              };
+            });
+
+            // Step 2: Get auctions by IDs
+            this.auctionService.getAuctionsByIds(this.AuctionIds).subscribe({
+              next: (auctions: Auction[]) => {
+                this.assets = this.assets.map(asset => {
+                  const auction = auctions.find(a => a.auctionId === asset.auctionId);
+                  return {
+                    ...asset,
+                    auctionEndTime: auction?.endDateTime ?? null,
+                  };
+                });
+                console.log("Final mapped assets with auction info:", this.assets);
+              },
+              error: err => console.error('Error fetching auctions:', err)
+            });
+
+          },
+          error: err => console.error('Error fetching bid stats:', err)
+        });
+
+      },
+      error: err => console.error('Error fetching assets:', err)
+    });
+  } else {
+    console.error('Invalid category ID');
   }
+}
+
+
+
 
   getFlagUrl(asset: Asset): string {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
@@ -209,6 +249,19 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
       });
     }
   }
+
+ getTimeRemaining(endTime?: string | null): string {
+  if (!endTime) return '';
+  const utcTime = endTime.endsWith('Z') ? endTime : endTime + 'Z';
+  const end = Date.parse(utcTime);
+  const now = Date.now();
+  const diff = end - now;
+  if (diff <= 0) return 'Ended';
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  return `${days}d ${hours}h`;
+}
+
 
 
   navigateToAsset(assetId: number | undefined): void {
