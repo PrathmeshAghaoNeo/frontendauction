@@ -2,13 +2,14 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { Asset, } from '../../modals/manage-asset';
 import { HttpClient } from '@angular/common/http';
 import { ManageAssetService } from '../../services/asset.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { Auction } from '../../modals/auctions';
+import { AuthService } from '../../services/auth.service';
 
 
 
@@ -32,7 +33,7 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
   layoutType: 'grid' | 'row' = 'grid';
   noAssetsFound: boolean = false;
   // TODO: Replace with actual user ID from auth context
-  userId: number = 70;
+  userId: number |null = null;
   environment=environment;
    wishlistAssetIds: number[] = [];  
 
@@ -42,6 +43,8 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     private http: HttpClient,
     private listService:ListService , 
     private router: Router,
+    private authService : AuthService,
+    private viewportScroller: ViewportScroller
   ) {}
 
 
@@ -75,6 +78,8 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.viewportScroller.scrollToPosition([0, 0]);
+    this.userId = this.authService.getUserIdJwt();
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     console.log('in categorymethod', categoryId);
     if (!isNaN(categoryId)) {

@@ -4,12 +4,12 @@
     <button
       class="back-button"
       aria-label="Back"
-      (click)="router.navigate(['/'])"
+      (click)="router.navigate(['/user-profile/my-details'])"
     >
       &larr;
     </button>
     <h1>Refund Request</h1>
-    <button class="view-all-button" (click)="router.navigate(['/refunds'])">
+    <button class="view-all-button" (click)="goToTransactionHistory()">
       View All Refund Requests
     </button>
   </div>

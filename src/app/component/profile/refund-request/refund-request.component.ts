@@ -117,4 +117,8 @@ export class RefundRequestComponent implements OnInit {
   parseAmount(value: string): number {
     return parseFloat(value || '0');
   }
+
+  goToTransactionHistory(): void {
+    this.router.navigate(['/user-profile/transaction-history']);
+  }
 }

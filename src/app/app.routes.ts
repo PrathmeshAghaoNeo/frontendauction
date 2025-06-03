@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard } from './services/auth.guard';
 import { StartPageComponent } from './component/start-page/start-page.component';
 import { LoginComponent } from './component/login/login.component';
@@ -59,7 +59,10 @@ import { ManageRolesComponent } from './component/manage-roles/manage-roles.comp
 import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
 import { FilterComponent } from './component/filter/filter.component';
+// import { BidHistoryComponent } from './component/bid-history/bid-history.component';
 
+import { NgModule } from '@angular/core';
+import { BidHistoryComponent } from './component/bid-history/bid-history.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -133,7 +136,13 @@ export const routes: Routes = [
   { path: 'refund-request', component: RefundRequestComponent },
   { path: 'deposit-page', component: DepositPageComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
+  {path: 'bid-history', component: BidHistoryComponent},
   { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   // { path: 'filter', loadComponent: () => import('./component/filter/filter.component').then(m => m.FilterComponent) },
   {path:'filter', component: FilterComponent}
 ];
+
+
+
+
+

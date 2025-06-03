@@ -4,11 +4,14 @@ import { Router } from '@angular/router';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { RoleWithPermissions } from '../modals/roles';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private currentUser: any = null;
+  private currentRole: RoleWithPermissions | null = null;
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
@@ -31,10 +34,14 @@ export class AuthService {
     );
   }
   
-  hasToken(): boolean {
+  hasToken(): boolean { 
     return !!localStorage.getItem('token');
   }
-  
+  setUser(user: any, role: RoleWithPermissions) {
+    this.currentUser = user;
+    this.currentRole = role;
+  }
+
   getRoleJwt(): string | null {
     const token = localStorage.getItem('token');
     if (!token) return null;
@@ -71,10 +78,18 @@ export class AuthService {
       }
     });
   }
+  getRole(): RoleWithPermissions | null {
+    return this.currentRole;
+  }
 
+  isLoggedIn(): boolean {
+    return !!this.currentUser;
+  }
   logout(): void {
     localStorage.removeItem('token');
     this.isLoggedInSubject.next(false);
     this.router.navigate(['/login']);
+    this.currentUser = null;
+    this.currentRole = null;
   }
 }

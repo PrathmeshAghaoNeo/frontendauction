@@ -1,20 +1,22 @@
-<div class="watchlist-container">
-  <button class="back-btn2">
+<div class="watchlist-page">
+
+  <div class="watchlist-container">
+    <button class="back-btn2">
     <button class="back-btn2" (click)="goBack()">
       <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
     </button>
   </button>
-
+  
   <h2 class="watchlist-title">My Watchlist</h2>
-
+  
   <div class="wishlist-tabs">
     <button
       [class.active-tab]="selectedTab === 'auction'"
       (click)="selectedTab = 'auction'"
     >
-      Auctions
-    </button>
-    <button
+    Auctions
+  </button>
+  <button
       [class.active-tab]="selectedTab === 'direct'"
       (click)="selectedTab = 'direct'"
     >
@@ -42,7 +44,7 @@
 
       <div class="cart-bottom-row">
         <div class="price">BHD {{ asset.price }}</div>
-
+        
         <div class="cart-actions">
           <button
             class="icon-btn"
@@ -52,7 +54,7 @@
             <img src="trash.png" class="button-image1" />
           </button>
           <button
-            class="icon-btn"
+          class="icon-btn"
             [title]="
               isInCart(asset.assetId) ? 'Already in Cart' : 'Add to Cart'
             "
@@ -72,11 +74,6 @@
   </div>
 </div>
 
-<div class="cart-navigation-buttons">
-  <button class="nav-btn back-btn" (click)="goBack()">Back</button>
-  <button class="nav-btn cart-btn" (click)="goToCart()">Go to Cart</button>
-</div>
-
 <!-- Toast container -->
 <div class="toast-container p-3" style="z-index: 9999">
   <div
@@ -86,17 +83,19 @@
     aria-live="assertive"
     aria-atomic="true"
     data-bs-delay="4000"
-  >
+    >
     <div class="toast-header bg-info text-white">
       <strong class="me-auto">Notification</strong>
       <small class="text-muted">Just now</small>
       <button
-        type="button"
-        class="btn-close btn-close-white ms-2 mb-1"
+      type="button"
+      class="btn-close btn-close-white ms-2 mb-1"
         data-bs-dismiss="toast"
         aria-label="Close"
       ></button>
     </div>
     <div class="toast-body">This is a toast message.</div>
   </div>
+</div>
+
 </div>

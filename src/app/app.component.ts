@@ -61,7 +61,7 @@ export class AppComponent implements OnInit,AfterViewInit {
   });
   this.signalR.notificationUpdates$.subscribe(notification => {
       console.log('Notification received:', notification);
-       this.showToast(notification.message, 'Bid Update !!', 'info');
+       this.showToast(notification.message, ' New Update !!', 'info');
     });
   }
 
@@ -120,6 +120,7 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/bid-add-to-cart',
     '/asset-details',
     '/orders',
+    '/bid-history'
    
   ];
  
@@ -128,7 +129,8 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/auction-assets/',
     '/direct-sale-assetpage/',
     '/asset-details/',
-    '/user-profile'
+    '/order-details/',
+    '/user-profile/',
   ];
  
   if (exactRoutes.includes(this.currentRoute)) {
