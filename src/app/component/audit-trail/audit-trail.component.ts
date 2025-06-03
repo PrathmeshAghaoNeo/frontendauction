@@ -76,11 +76,28 @@ export class AuditTrailComponent implements OnInit {
     );
   }
 
-  
+  parseJsonString(jsonString: string): any {
+  try {
+    let parsed = JSON.parse(jsonString);
 
-  openModal(content: any, log: any): void {
-    this.selectedBeforeChange = log.beforeChange;
-    this.selectedAfterChange = log.afterChange;
-    this.modalService.open(content, { size: 'xl', centered: true });
+    if (typeof parsed === 'string') {
+      parsed = JSON.parse(parsed);
+    }
+
+    return parsed;
+  } catch (e) {
+    console.error('Invalid JSON format', e);
+    return {};
   }
+}
+
+
+
+ openModal(content: any, log: any): void {
+  this.selectedBeforeChange = this.parseJsonString(log.beforeChange);
+  this.selectedAfterChange = this.parseJsonString(log.afterChange);
+  this.modalService.open(content, { size: 'xl', centered: true });
+}
+
+
 }

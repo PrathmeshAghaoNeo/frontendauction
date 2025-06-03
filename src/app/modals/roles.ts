@@ -16,3 +16,7 @@ export interface RoleWithPermissions {
   viewAuditTrail: boolean;
   changeCommission: boolean;
 }
+
+export type PermissionKey = {
+  [K in keyof RoleWithPermissions]: RoleWithPermissions[K] extends boolean ? K : never;
+}[keyof RoleWithPermissions];

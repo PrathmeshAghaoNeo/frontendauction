@@ -47,7 +47,7 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" routerLink="/roles" routerLinkActive="active">
-        <i class="fas fa-user-shield"></i> Roles
+        <i class="fas fa-user-shield"></i> Roles  
       </a>
     </li>
     <li class="nav-item">
@@ -59,4 +59,12 @@
     
     
   </ul>
+  
 </nav>
+
+
+<ul>
+  <li *ngFor="let item of filteredMenu">
+    <a [routerLink]="item.route">{{ item.label }}</a>
+  </li>
+</ul>
