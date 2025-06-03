@@ -1,4 +1,3 @@
-
 <div *ngIf="loading">Loading transactions...</div>
 <div *ngIf="error" class="error">{{ error }}</div>
 
@@ -13,22 +12,50 @@
       <th>Method</th>
       <th>Status</th>
       <th>ApprovedDateTime</th>
-      <th>ApprovedBy</th>
+      <!-- <th>ApprovedBy</th> -->
       <th>Notes</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let txn of transactions">
+    <tr *ngFor="let txn of transactions|  paginate : { itemsPerPage: itemsPerPage, currentPage: page} ; let i = index " >
       <td>{{ txn.refNo }}</td>
       <td>{{ txn.request }}</td>
-      <td>{{ txn.dateTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
-      <td>{{ txn.amount | number:'1.2-2' }}</td>
+      <td>{{ txn.dateTime | date : "yyyy-MM-dd HH:mm:ss" }}</td>
+      <td>{{ txn.amount | number : "1.2-2" }}</td>
       <td>{{ txn.type }}</td>
       <td>{{ txn.method }}</td>
       <td>{{ txn.status }}</td>
-      <td>{{ txn.approvedDateTime ? (txn.approvedDateTime | date:'yyyy-MM-dd HH:mm:ss') : '—' }}</td>
-      <td>{{ txn.approvedBy || '—' }}</td>
-      <td>{{ txn.notes }}</td>
+      <td>
+        {{
+          txn.approvedDateTime
+            ? (txn.approvedDateTime | date : "yyyy-MM-dd HH:mm:ss")
+            : "—"
+        }}
+      </td>
+      <!-- <td>{{ txn.approvedBy || "—" }}</td> -->
+      <!-- <td class="notes">{{txn.notes}}</td> -->
+      <!-- <td class="notes">{{txn.notes|slice : 0 :20}}</td> -->
+      <td class="notes">
+        <ng-container *ngIf="isLongNote(txn.notes); else shortNote">
+          <span *ngIf="!expandedNotes.has(i)">
+            {{ txn.notes?.slice(0, 10) }}...
+            <a href="#" (click)="toggleNote(i); $event.preventDefault()"
+              >Read more</a
+            >
+          </span>
+          <span *ngIf="expandedNotes.has(i)">
+            {{ txn.notes }}
+            <a href="#" (click)="toggleNote(i); $event.preventDefault()"
+              >Show less</a
+            >
+          </span>
+        </ng-container>
+
+        <ng-template #shortNote>
+          {{ txn.notes || "—" }}
+        </ng-template>
+      </td>
     </tr>
   </tbody>
 </table>
+<pagination-controls (pageChange)="page = $event"></pagination-controls>
