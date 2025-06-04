@@ -24,6 +24,7 @@ export class HeaderComponent implements OnInit {
   @Input() showCustomButtons = false;
 
   isLoggedIn = false;
+  currentLang: string = 'en';
   currentRoute = '';
   userId: number = 0;
   wishlistAssetIds: number[] = [];
@@ -182,5 +183,14 @@ userProfileImageUrl: string = '';
     this.translate.use(lang);
     localStorage.setItem('lang', lang);
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    this.currentLang = lang;
   }
+  toggleLang() {
+  if (this.currentLang === 'en') {
+    this.switchLang('ar');
+  } else {
+    this.switchLang('en');
+  }
+}
+
 }

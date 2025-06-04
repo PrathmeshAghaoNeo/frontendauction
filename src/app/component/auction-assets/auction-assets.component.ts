@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
 import { BidService } from '../../services/bid.service';
 import { bidStatsBulk } from '../../modals/bid-stats';
 import { AuctionService } from '../../services/auction.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
@@ -21,7 +22,7 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-direct-bid',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './auction-assets.component.html',
   styleUrl: './auction-assets.component.css'
 })
