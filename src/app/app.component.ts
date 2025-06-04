@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, Input, OnInit } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { NgIf } from '@angular/common';
@@ -11,6 +11,7 @@ import { BackButtonComponent } from './component/back-button/back-button.compone
 import { SignalRService } from './services/signal-r.service';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
  import {ElementRef,ViewChild} from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
  declare var bootstrap: any;
 
@@ -31,6 +32,7 @@ import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit,AfterViewInit {
+  private translate = inject(TranslateService);
   currentRoute: string = '';
    @ViewChild('liveToast') liveToast!: ElementRef;
     toastInstance: any;
@@ -44,7 +46,8 @@ export class AppComponent implements OnInit,AfterViewInit {
       this.currentRoute = event.urlAfterRedirects.split('?')[0];
       console.log(this.currentRoute)
     });
-   
+     this.translate.setDefaultLang('en');
+    this.translate.use('en');
   }
   // @Input() showCustomButtons: boolean = false;
   ngOnInit(): void {

@@ -9,40 +9,31 @@
       <!-- 🎯 Custom Register User Landing Page Buttons -->
       <ng-container *ngIf="showCustomButtons">
         <!-- Cart Button -->
-        <button class="icon-btn btn-light me-2" type="button" (click)="toCart()" title="Cart">
+        <button class="icon-btn btn-light me-2" type="button" (click)="toCart()" [title]="'CART' | translate">
           <i class="bi bi-cart fs-5"></i>
         </button>
 
         <!-- Watchlist Button -->
-        <button class="icon-btn btn-light me-2" type="button" (click)="toWatchlist()" title="Watchlist">
+        <button class="icon-btn btn-light me-2" type="button" (click)="toWatchlist()" [title]="'WATCHLIST' | translate">
           <i class="bi bi-bookmark-heart fs-5"></i>
         </button>
 
-        <!-- Bid Button (replacing image with SVG or use same class) -->
-        <button class="icon-btn btn-light me-2" title="Bid" (click)="navigatetoallthebidsbythatuser()">
+        <!-- Bid Button -->
+        <button class="icon-btn btn-light me-2" type="button" (click)="navigatetoallthebidsbythatuser()" [title]="'BID' | translate">
           <img src="Bidauction1.png" alt="Bid" class="icon-img" />
         </button>
 
         <!-- Profile Button -->
-        <button class="icon-btn btn-light me-2 position-relative" type="button" (click)="navigateToUserProfile()" title="Profile">
-  <i class="bi bi-person-circle fs-5"></i>
-  <span *ngIf="unreadCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-    {{ unreadCount }}
-  </span>
-</button>
+        <button class="icon-btn btn-light me-2 position-relative" type="button" (click)="navigateToUserProfile()" [title]="'PROFILE' | translate">
+          <i class="bi bi-person-circle fs-5"></i>
+          <span *ngIf="unreadCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ unreadCount }}
+          </span>
+        </button>
 
-
-
-        <!-- <button class="icon-btn me-2" type="button" (click)="navigateToUserProfile()"
-          title="View Profile">
-          <img [src]="userProfileImageUrl" alt="User"
-            (error)="userProfileImageUrl = 'assets/images/default-profile.jpg'" class="rounded-circle shadow-sm"
-            style="height: 40px; width: 40px; object-fit: cover;" />
-        </button> -->
-
-
+        <!-- Logout Button -->
         <button class="btn btn-outline-danger rounded-pill" (click)="logout()">
-          <i class="bi bi-box-arrow-right me-1"></i>Logout
+          <i class="bi bi-box-arrow-right me-1"></i>{{ 'LOGOUT' | translate }}
         </button>
       </ng-container>
 
@@ -50,33 +41,30 @@
       <ng-container *ngIf="showDefaultButtons">
         <div class="dropdown me-2" *ngIf="isLoggedIn">
           <div class="dropdown-menu dropdown-menu-end">
-            <button class="dropdown-item btn-outline-secondary" routerLink="/newUser">New User</button>
-            <button class="dropdown-item btn-outline-secondary" routerLink="/newAuction">New Auction</button>
-            <button class="dropdown-item btn-outline-secondary" routerLink="/newAsset">New Asset</button>
+            <button class="dropdown-item btn-outline-secondary" routerLink="/newUser">{{ 'NEW_USER' | translate }}</button>
+            <button class="dropdown-item btn-outline-secondary" routerLink="/newAuction">{{ 'NEW_AUCTION' | translate }}</button>
+            <button class="dropdown-item btn-outline-secondary" routerLink="/newAsset">{{ 'NEW_ASSET' | translate }}</button>
           </div>
         </div>
-        
-        <!-- changed Because Have to integrated into UserProfile -->
-        <!-- <div class="dropdown position-relative me-2" *ngIf="isLoggedIn">
-          <button class="btn bell-wrapper shadow-sm border-0 text-purple rounded-bell" (click)="loadNotifications()">
-            <i class="bi bi-bell fs-4"></i>
-            <span *ngIf="unseenWinDetails.length > 0" class="badge bg-danger rounded-pill">
-              {{ unseenWinDetails.length }}
-            </span>
-          </button>
-        </div> -->
 
-        <button class="btn btn-outline-secondary rounded-circle me-2" routerLink="/settings" *ngIf="isLoggedIn">
+        <!-- Settings Button -->
+        <button class="btn btn-outline-secondary rounded-circle me-2" routerLink="/settings" *ngIf="isLoggedIn" [title]="'SETTINGS' | translate">
           <i class="bi bi-gear"></i>
         </button>
 
+        <!-- Logout -->
         <button *ngIf="isLoggedIn" class="btn btn-outline-danger rounded-pill" (click)="logout()">
-          <i class="bi bi-box-arrow-right me-1"></i>Logout
+          <i class="bi bi-box-arrow-right me-1"></i>{{ 'LOGOUT' | translate }}
         </button>
 
+        <!-- Login -->
         <button *ngIf="!isLoggedIn" class="btn btn-outline-dark rounded-pill" routerLink="/login">
-          <i class="bi bi-person-circle me-1"></i>Login
+          <i class="bi bi-person-circle me-1"></i>{{ 'LOGIN' | translate }}
         </button>
+
+        <!-- Language Switch -->
+        <button (click)="switchLang('en')">{{ 'LANGUAGE_EN' | translate }}</button>
+        <button (click)="switchLang('ar')">{{ 'LANGUAGE_AR' | translate }}</button>
       </ng-container>
     </div>
   </div>

@@ -1,0 +1,61 @@
+{
+  "LOGIN": "تسجيل الدخول",
+  "WELCOME": "مرحبًا بك في منصة المزادات",
+
+  "ENTER_EMAIL_PLACEHOLDER": "أدخل البريد الإلكتروني",
+  "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب.",
+  "EMAIL_INVALID": "يرجى إدخال بريد إلكتروني صالح.",
+  "SEND_OTP": "إرسال رمز التحقق",
+
+  "NOT_A_USER": "لست مستخدمًا؟",
+  "SIGN_UP": "إنشاء حساب",
+
+  "VERIFY_OTP": "تحقق من رمز التحقق",
+  "RESEND_OTP": "إعادة إرسال رمز التحقق",
+  "RESEND_OTP_IN": "بعد {{seconds}} ثانية",
+
+  "DIRECT_SALE": "البيع المباشر",
+  "EXPLORE_AUCTIONS": "استكشف المزادات",
+
+  "CART": "عربة التسوق",
+  "WATCHLIST": "قائمة المراقبة",
+  "BID": "مزايدة",
+  "PROFILE": "الملف الشخصي",
+  "LOGOUT": "تسجيل الخروج",
+  "NEW_USER": "مستخدم جديد",
+  "NEW_AUCTION": "مزاد جديد",
+  "NEW_ASSET": "أصل جديد",
+  "SETTINGS": "الإعدادات",
+  "LANGUAGE_EN": "الإنجليزية",
+  "LANGUAGE_AR": "العربية",
+
+  "FOOTER_MAZAD": "مزاد",
+  "FOOTER_CATEGORIES": "الفئات",
+  "FOOTER_LIVE_AUCTIONS": "المزادات المباشرة",
+
+  "FOOTER_HELP": "المساعدة",
+  "FOOTER_CONTACT_SUPPORT": "اتصل بالدعم",
+  "FOOTER_PRIVACY_POLICY": "سياسة الخصوصية",
+  "FOOTER_TERMS": "شروط الخدمة",
+  "FOOTER_COOKIES": "سياسة ملفات تعريف الارتباط",
+
+  "FOOTER_RESOURCES": "الموارد",
+  "FOOTER_BLOG": "مدونة",
+  "FOOTER_FAQ": "الأسئلة الشائعة",
+  "FOOTER_GUIDES": "أدلة",
+  "FOOTER_STATUS": "الحالة",
+
+  "FOOTER_COPYRIGHT": "© 2025 شركتك. جميع الحقوق محفوظة.",
+
+  "TOGGLE_VIEW": "تبديل العرض",
+  "BACK_TO_BIDDING": "العودة إلى المزايدة",
+  "ADD_TO_WISHLIST": "أضف إلى قائمة المراقبة",
+  "REMOVE_FROM_WISHLIST": "إزالة من قائمة المراقبة",
+  "PLACE_BID": "قم بالمزايدة",
+  "HIGHEST_BID": "أعلى مزايدة",
+  "BID_COUNT": "عدد المزايدات",
+  "TIME_LEFT": "الوقت المتبقي",
+  "PRICE": "السعر",
+  "NOTIFICATION": "إشعار",
+  "TOAST_SAMPLE_MESSAGE": "هذه رسالة إشعار."
+}
