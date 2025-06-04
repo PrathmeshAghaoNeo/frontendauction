@@ -191,6 +191,31 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
 
   // Handle API quick replies
   handleQuickReply(quickReply: QuickReply): void {
+    // If user clicks "Start Over", reset the chat
+    if ((quickReply.payload || '').toLowerCase() === 'start_over' || (quickReply.text || '').toLowerCase() === 'start over') {
+      this.messages = [{
+        text: 'Hello! How can I help you today?',
+        isUser: false,
+        timestamp: new Date()
+      }];
+      this.isLoading = true;
+      this.callChatbotApi('hello').subscribe(response => {
+        this.isLoading = false;
+        if (response) {
+          this.isEndOfChat = !!response.isEndOfChat;
+          this.mainMenuOptions = response.quickReplies || [];
+          this.messages[0] = {
+            text: response.responseMessage,
+            isUser: false,
+            timestamp: new Date(),
+            quickReplies: response.quickReplies,
+            suggestedArticles: response.suggestedArticles
+          };
+        }
+        this.scrollToBottom();
+      });
+      return;
+    }
     // Add the quick reply as a user message
     this.messages.push({
       text: quickReply.text,
@@ -198,7 +223,9 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
       timestamp: new Date()
     });
     this.isLoading = true;
-    this.callChatbotApi(quickReply.text).subscribe(response => {
+    // Send payload (ID) if available, otherwise send text
+    const messageToSend = quickReply.payload || quickReply.text;
+    this.callChatbotApi(messageToSend).subscribe(response => {
       this.isLoading = false;
       if (response) {
         this.isEndOfChat = !!response.isEndOfChat;

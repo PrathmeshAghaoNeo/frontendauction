@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
 selector: 'app-login',
 standalone: true,
-imports: [FormsModule, CommonModule],
+imports: [FormsModule, CommonModule,TranslateModule],
 templateUrl: './login.component.html',
 styleUrls: ['./login.component.css']
 })

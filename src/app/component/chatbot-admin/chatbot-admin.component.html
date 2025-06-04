@@ -8,6 +8,9 @@
       <input type="text" class="form-control" placeholder="Search FAQs..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()">
       <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
     </div>
+
+
+    
     <!-- Add FAQ Button -->
     <button class="btn btn-primary" (click)="openAddModal()">
       <i class="bi bi-plus-lg"></i> Add New FAQ
@@ -15,7 +18,7 @@
   </div>
 
   <!-- FAQ List -->
-  <div *ngFor="let faq of paginatedFaqs()" class="faq-row d-flex align-items-center justify-content-between bg-light rounded mb-2 p-3">
+  <div *ngFor="let faq of filteredFaqs | paginate: { id: 'faq', itemsPerPage: itemsPerPage, currentPage: page}" class="faq-row d-flex align-items-center justify-content-between bg-light rounded mb-2 p-3 ">
     <div class="d-flex align-items-center faq-question-area">
       <i class="bi bi-file-earmark-text me-2 text-primary"></i>
       <span class="faq-question-text">{{ faq.question }}</span>
@@ -34,19 +37,7 @@
   </div>
 
   <!-- Pagination -->
-  <nav *ngIf="filteredFaqs.length > pageSize" class="mt-4">
-    <ul class="pagination justify-content-start">
-      <li class="page-item" [class.disabled]="currentPage === 1">
-        <a class="page-link" href="#" (click)="goToPage(currentPage - 1)">&laquo; Previous</a>
-      </li>
-      <li class="page-item" *ngFor="let page of totalPagesArray(); let i = index" [class.active]="currentPage === (i+1)">
-        <a class="page-link" href="#" (click)="goToPage(i+1)">{{ i+1 }}</a>
-      </li>
-      <li class="page-item" [class.disabled]="currentPage === totalPages()">
-        <a class="page-link" href="#" (click)="goToPage(currentPage + 1)">Next &raquo;</a>
-      </li>
-    </ul>
-  </nav>
+  <pagination-controls id="faq" (pageChange)="page = $event"></pagination-controls>
 
   <!-- View Modal -->
   <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
@@ -74,52 +65,161 @@
 
   <!-- Add/Edit Modal -->
   <div class="modal fade" id="faqModal" tabindex="-1" aria-labelledby="faqModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="faqModalLabel">{{ isEditing ? 'Edit FAQ' : 'Add FAQ' }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content faq-modal-content">
+        <div class="modal-header faq-modal-header">
+          <h5 class="modal-title text-white fw-bold" id="faqModalLabel">
+            <i class="bi bi-plus-circle me-2" *ngIf="!isEditing"></i>
+            <i class="bi bi-pencil-square me-2" *ngIf="isEditing"></i>
+            {{ isEditing ? 'Edit FAQ' : 'Add New FAQ' }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
         </div>
         <form #faqForm="ngForm" (ngSubmit)="saveFaq()">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label required-label fw-bold">Question <span class="required-star" style="color: red;">*</span></label>
-              <input class="form-control" [(ngModel)]="formFaq.question" name="question" required maxlength="50" #question="ngModel">
-              <div *ngIf="faqForm.submitted && question.errors">
-                <span class="text-danger" *ngIf="question.errors['required']">Question is required.</span>
-                <span class="text-danger" *ngIf="question.errors['maxlength']">Maximum 50 characters allowed.</span>
+          <div class="modal-body faq-modal-body">
+            <div class="form-section">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label fw-bold text-primary">
+                      <i class="bi bi-question-circle me-2"></i>Question 
+                      <span class="required-star">*</span>
+                    </label>
+                    <input class="form-control modern-input" 
+                           [(ngModel)]="formFaq.question" 
+                           name="question" 
+                           required 
+                           maxlength="50" 
+                           #question="ngModel"
+                           placeholder="Enter your question here...">
+                    <div class="form-text">Maximum 50 characters</div>
+                    <div *ngIf="faqForm.submitted && question.errors" class="error-messages">
+                      <div class="error-message" *ngIf="question.errors['required']">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Question is required.
+                      </div>
+                      <div class="error-message" *ngIf="question.errors['maxlength']">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Maximum 50 characters allowed.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label fw-bold text-primary">
+                      <i class="bi bi-tag me-2"></i>Category 
+                      <span class="required-star">*</span>
+                    </label>
+                    <input class="form-control modern-input" 
+                           [(ngModel)]="formFaq.category" 
+                           name="category" 
+                           required 
+                           maxlength="30" 
+                           #category="ngModel"
+                           placeholder="Enter category...">
+                    <div class="form-text">Maximum 30 characters</div>
+                    <div *ngIf="faqForm.submitted && category.errors" class="error-messages">
+                      <div class="error-message" *ngIf="category.errors['required']">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Category is required.
+                      </div>
+                      <div class="error-message" *ngIf="category.errors['maxlength']">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Maximum 30 characters allowed.
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label required-label fw-bold">Answer <span class="required-star" style="color: red;">*</span></label>
-              <textarea class="form-control" [(ngModel)]="formFaq.answer" name="answer" required maxlength="150" #answer="ngModel"></textarea>
-              <div *ngIf="faqForm.submitted && answer.errors">
-                <span class="text-danger" *ngIf="answer.errors['required']">Answer is required.</span>
-                <span class="text-danger" *ngIf="answer.errors['maxlength']">Maximum 150 characters allowed.</span>
+              
+              <div class="row mt-3">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="form-label fw-bold text-primary">
+                      <i class="bi bi-chat-left-text me-2"></i>Answer 
+                      <span class="required-star">*</span>
+                    </label>
+                    <textarea class="form-control modern-textarea" 
+                              [(ngModel)]="formFaq.answer" 
+                              name="answer" 
+                              required 
+                              maxlength="150" 
+                              #answer="ngModel"
+                              rows="4"
+                              placeholder="Enter the answer here..."></textarea>
+                    <div class="form-text">Maximum 150 characters</div>
+                    <div *ngIf="faqForm.submitted && answer.errors" class="error-messages">
+                      <div class="error-message" *ngIf="answer.errors['required']">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Answer is required.
+                      </div>
+                      <div class="error-message" *ngIf="answer.errors['maxlength']">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Maximum 150 characters allowed.
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label required-label fw-bold">Category <span class="required-star" style="color: red;">*</span></label>
-              <input class="form-control" [(ngModel)]="formFaq.category" name="category" required maxlength="30" #category="ngModel">
-              <div *ngIf="faqForm.submitted && category.errors">
-                <span class="text-danger" *ngIf="category.errors['required']">Category is required.</span>
-                <span class="text-danger" *ngIf="category.errors['maxlength']">Maximum 30 characters allowed.</span>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label required-label fw-bold">Tags <span class="required-star" style="color: red;">*</span></label>
-              <input class="form-control" [(ngModel)]="formFaq.tags" name="tags" required #tags="ngModel">
-              <div *ngIf="faqForm.submitted && tags.errors">
-                <span class="text-danger" *ngIf="tags.errors['required']">Tags are required.</span>
+              
+              <div class="row mt-3">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="form-label fw-bold text-primary">
+                      <i class="bi bi-tags me-2"></i>Tags 
+                      <span class="required-star">*</span>
+                    </label>
+                    <input class="form-control modern-input" 
+                           [(ngModel)]="formFaq.tags" 
+                           name="tags" 
+                           required 
+                           #tags="ngModel"
+                           placeholder="Enter tags separated by commas...">
+                    <div class="form-text">Separate multiple tags with commas</div>
+                    <div *ngIf="faqForm.submitted && tags.errors" class="error-messages">
+                      <div class="error-message" *ngIf="tags.errors['required']">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Tags are required.
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button class="btn btn-success" type="submit">{{ isEditing ? 'Update' : 'Add' }}</button>
-            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" (click)="closeModal()">Cancel</button>
+          <div class="modal-footer faq-modal-footer">
+            <button class="btn btn-outline-secondary me-2" type="button" data-bs-dismiss="modal" (click)="closeModal()">
+              <i class="bi bi-x-lg me-2"></i>Cancel
+            </button>
+            <button class="btn btn-primary" type="submit">
+              <i class="bi bi-check-lg me-2" *ngIf="!isEditing"></i>
+              <i class="bi bi-arrow-repeat me-2" *ngIf="isEditing"></i>
+              {{ isEditing ? 'Update FAQ' : 'Add FAQ' }}
+            </button>
           </div>
         </form>
       </div>
     </div>
   </div>
-</div> 
+
+  <!-- Success Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content success-modal-content">
+        <div class="modal-body text-center p-5">
+          <!-- Success Icon -->
+          <div class="success-icon-container mb-4">
+            <div class="success-icon">
+              <i class="bi bi-check-lg"></i>
+            </div>
+          </div>
+          
+          <!-- Success Title -->
+          <h3 class="success-title mb-3">Success!</h3>
+          
+          <!-- Success Message -->
+          <p class="success-message mb-4">{{ successMessage }}</p>
+          
+          <!-- OK Button -->
+          <button type="button" class="btn btn-primary px-4" (click)="closeSuccessModal()">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

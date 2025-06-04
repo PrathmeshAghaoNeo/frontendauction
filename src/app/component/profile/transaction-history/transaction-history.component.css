@@ -1,0 +1,11 @@
+.notes{
+    width: 200px;
+}
+
+
+
+.notes a {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}

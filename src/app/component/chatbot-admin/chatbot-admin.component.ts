@@ -26,6 +26,15 @@ export class ChatbotAdminComponent implements OnInit {
   pageSize: number = 5;
   currentPage: number = 1;
 
+  // Success popup properties
+  showSuccessPopup: boolean = false;
+  successMessage: string = '';
+
+
+   // NgxPagination properties
+  itemsPerPage: number = 5;
+  page: number = 1;
+
   constructor(private faqService: FaqService) {}
 
   ngOnInit(): void {
@@ -120,15 +129,37 @@ export class ChatbotAdminComponent implements OnInit {
     this.hideModal('faqModal');
   }
 
+  // Success popup methods
+  showSuccess(message: string) {
+    this.successMessage = message;
+    this.showSuccessPopup = true;
+    this.showModal('successModal');
+  }
+
+  closeSuccessModal() {
+    this.showSuccessPopup = false;
+    this.successMessage = '';
+    this.hideModal('successModal');
+  }
+
   saveFaq() {
     if (this.isEditing && this.selectedFaq) {
       this.faqService.updateFaq(this.selectedFaq.id, this.formFaq).subscribe({
-        next: () => { this.loadFaqs(); this.closeModal(); },
+        next: () => { 
+          this.loadFaqs(); 
+          this.closeModal(); 
+          this.showSuccess('FAQ updated successfully!');
+        },
         error: () => this.error = 'Failed to update FAQ'
       });
     } else {
       this.faqService.addFaq(this.formFaq).subscribe({
-        next: () => { this.loadFaqs(); this.ensureValidPage(); this.closeModal(); },
+        next: () => { 
+          this.loadFaqs(); 
+          this.ensureValidPage(); 
+          this.closeModal(); 
+          this.showSuccess('FAQ added successfully!');
+        },
         error: () => this.error = 'Failed to add FAQ'
       });
     }
@@ -137,7 +168,11 @@ export class ChatbotAdminComponent implements OnInit {
   deleteFaq(id: number) {
     if (confirm('Are you sure you want to delete this FAQ?')) {
       this.faqService.deleteFaq(id).subscribe({
-        next: () => { this.loadFaqs(); this.ensureValidPage(); },
+        next: () => { 
+          this.loadFaqs(); 
+          this.ensureValidPage(); 
+          this.showSuccess('FAQ deleted successfully!');
+        },
         error: () => this.error = 'Failed to delete FAQ'
       });
     }
@@ -161,4 +196,12 @@ export class ChatbotAdminComponent implements OnInit {
       if (modal) modal.hide();
     }
   }
-} 
+
+
+   // Go back function
+        goBack() {
+            // In a real Angular app, you would use Router.navigate
+            // For demo purposes, we'll just show an alert
+            window.history.back();
+        }
+}

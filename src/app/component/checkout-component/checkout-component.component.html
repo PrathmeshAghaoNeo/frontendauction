@@ -1,0 +1,137 @@
+<div class="checkout-page" *ngIf="asset">
+  <div class="checkout-container d-flex flex-wrap">
+    <!-- LEFT: Asset Details -->
+    <div class="checkout-left flex-fill me-4">
+      <!-- Header -->
+      <div
+        class="checkout-header d-flex justify-content-between align-items-center mb-4"
+      >
+        <h2 class="checkout-title mb-0">Your Checkout</h2>
+      </div>
+
+      <!-- Gallery -->
+      <div class="gallery mb-4">
+        <img
+          *ngFor="let image of asset.galleries"
+          [src]="environment.baseurl + image.filePath"
+          alt="Gallery Image"
+          class="gallery-image"
+        />
+      </div>
+
+      <!-- Asset Info -->
+      <div class="checkout-card p-4">
+        <h3 class="mb-2">{{ asset.title }}</h3>
+        <p class="text-muted mb-2">
+          <strong>Description:</strong> {{ asset.description }}
+        </p>
+        <p><strong>Final Price:</strong> BHD {{ asset.awardedPrice }}</p>
+        <p><strong>Location:</strong> {{ "-" }}</p>
+
+        <!-- Attributes -->
+        <div *ngIf="asset?.attributes?.length" class="attribute-section mt-4">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom-0">
+              <h5 class="mb-0 text-primary">Asset Attributes</h5>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-secondary">
+                  <tr>
+                    <th>Attribute Name</th>
+                    <th>Attribute Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let attr of asset.attributes">
+                    <td class="text-muted">{{ attr.attributeName }}</td>
+                    <td class="fw-semibold text-dark">
+                      {{ attr.attributeValue || "N/A" }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents -->
+        <div *ngIf="asset.documents?.length" class="mt-4">
+          <h5 class="mb-2">Documents</h5>
+          <ul class="list-unstyled">
+            <li *ngFor="let doc of asset.documents" class="mb-1">
+              <a
+                [href]="environment.baseurl + doc.filePath"
+                target="_blank"
+                rel="noopener"
+                class="text-decoration-none text-primary"
+              >
+                click here to check document- 📄
+                {{ doc.documentType || "Document" }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Checkout Box -->
+    <!-- Confirm Checkout Modal -->
+    <div class="checkout-right">
+      <div class="checkout-summary-card shadow-sm">
+        <h5 class="text-purple mb-3">Final Amount (1 item):</h5>
+        <h4 class="fw-bold mb-4">BHD {{ asset.awardedPrice }}</h4>
+        <button
+          type="button"
+          class="btn btn-primary btn-lg w-100"
+          (click)="openCheckoutModal()"
+        >
+          Proceed to Checkout →
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
+    id="confirmCheckoutModal"
+    tabindex="-1"
+    aria-labelledby="confirmCheckoutLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmCheckoutLabel">
+            Confirm Checkout
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to proceed to checkout?
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            No
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-dismiss="modal"
+            (click)="confirmCheckout()"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

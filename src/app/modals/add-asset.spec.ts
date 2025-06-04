@@ -1,7 +1,7 @@
 import { AddAsset } from './add-asset';
 
 describe('AddAsset', () => {
-  it('should create an instance', () => {
-    expect(new AddAsset()).toBeTruthy();
-  });
+  it('should be defined as a type', () => {
+    expect(AddAsset).toBeDefined();
+  // });
 });

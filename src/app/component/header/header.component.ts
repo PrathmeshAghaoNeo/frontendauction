@@ -9,11 +9,12 @@ import { SignalRService } from '../../services/signal-r.service';
 import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
 import { Notification } from '../../modals/user';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule, NgbDropdownModule, CommonModule],
+  imports: [RouterModule, NgbDropdownModule, CommonModule,TranslateModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -23,14 +24,15 @@ export class HeaderComponent implements OnInit {
   @Input() showCustomButtons = false;
 
   isLoggedIn = false;
+  currentLang: string = 'en';
   currentRoute = '';
   userId: number = 0;
   wishlistAssetIds: number[] = [];
-userProfileImageUrl: string = '';
+  userProfileImageUrl: string = '';
   cartAssetIds: number[] = [];
   notifications: Notification[] = [];
   unreadCount : number= 0;
-
+  userRole: string | null = null;
   constructor(
       private listService: ListService,
       public authService: AuthService, 
@@ -38,6 +40,7 @@ userProfileImageUrl: string = '';
       private winService: UserService, 
       private signalR: SignalRService,
       private userService: UserService,
+      private translate:TranslateService,
       private assetService: ManageAssetService) 
       {
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
@@ -61,6 +64,10 @@ userProfileImageUrl: string = '';
     this.signalR.winnerUpdates$.subscribe(data => {
       console.log(data);
     })
+    const user = this.authService.getRoleJwt();
+    this.userRole = user ?? null;
+    console.log('User role:', this.userRole);
+
   }
   // userProfileImageUrl = 'assets/images/default-profile.jpg';
   get showDefaultButtons(): boolean {
@@ -174,5 +181,26 @@ userProfileImageUrl: string = '';
         
       },
     });
+  }
+
+   switchLang(lang: string) {
+    this.translate.use(lang);
+    localStorage.setItem('lang', lang);
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    this.currentLang = lang;
+  }
+  toggleLang() {
+  if (this.currentLang === 'en') {
+    this.switchLang('ar');
+  } else {
+    this.switchLang('en');
+  }
+}
+
+
+   get homeRoute(): string {
+    if (!this.isLoggedIn) return '/landing-page';
+    if (this.userRole === 'Admin') return '/dashboard';
+    return '/reguserlandingpage';
   }
 }

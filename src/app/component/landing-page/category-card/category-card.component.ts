@@ -5,10 +5,11 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../constants/enviroments';
 import { ApiEndpoints } from '../../../constants/api-endpoints';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-category-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './category-card.component.html',
   styleUrl: './category-card.component.css',
 

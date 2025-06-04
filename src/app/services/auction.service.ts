@@ -24,6 +24,12 @@ export class AuctionService {
   getAuctionById(id:number): Observable<Auction> {
     return this.http.get<Auction>(`${ApiEndpoints.AUCTION}/${id}`)
   }
-  
+  getAuctionsByIds(auctionIds: number[]): Observable<Auction[]> {
+  const joinedIds = auctionIds.join(',');
+  return this.http.get<Auction[]>(`${ApiEndpoints.AUCTION}/get-by-ids`, {
+    params: { auctionIds: joinedIds }
+  });
+}
+
 
 }
