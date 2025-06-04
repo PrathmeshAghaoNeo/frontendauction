@@ -41,52 +41,27 @@
       <div class="image-gallery mb-4">
         <div id="assetCarousel" class="carousel slide" data-bs-ride="false">
           <div class="carousel-inner">
-            <div
-              class="carousel-item"
-              *ngFor="let image of asset?.galleries; let i = index"
-              [ngClass]="{ active: i === currentSlideIndex }"
-            >
-              <img
-                [src]="image.fileUrl"
-                class="d-block w-100"
-                [alt]="'Asset image ' + (i + 1)"
-              />
+            <div class="carousel-item" *ngFor="let image of asset?.galleries; let i = index"
+              [ngClass]="{ active: i === currentSlideIndex }">
+              <img [src]="image.fileUrl" class="d-block w-100" [alt]="'Asset image ' + (i + 1)" />
             </div>
           </div>
 
-          <button
-            class="carousel-control-prev"
-            type="button"
-            (click)="prevSlide()"
-            *ngIf="hasMultipleImages()"
-          >
+          <button class="carousel-control-prev" type="button" (click)="prevSlide()" *ngIf="hasMultipleImages()">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
           </button>
-          <button
-            class="carousel-control-next"
-            type="button"
-            (click)="nextSlide()"
-            *ngIf="hasMultipleImages()"
-          >
+          <button class="carousel-control-next" type="button" (click)="nextSlide()" *ngIf="hasMultipleImages()">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
           </button>
         </div>
 
         <!-- Carousel indicators for multiple images -->
-        <div
-          class="carousel-indicators position-relative mt-2"
-          *ngIf="hasMultipleImages()"
-        >
-          <button
-            type="button"
-            *ngFor="let image of asset?.galleries; let i = index"
-            [ngClass]="{ active: i === currentSlideIndex }"
-            (click)="setCurrentSlide(i)"
-            aria-current="true"
-            [attr.aria-label]="'Slide ' + (i + 1)"
-          ></button>
+        <div class="carousel-indicators position-relative mt-2" *ngIf="hasMultipleImages()">
+          <button type="button" *ngFor="let image of asset?.galleries; let i = index"
+            [ngClass]="{ active: i === currentSlideIndex }" (click)="setCurrentSlide(i)" aria-current="true"
+            [attr.aria-label]="'Slide ' + (i + 1)"></button>
         </div>
       </div>
     </div>
@@ -96,17 +71,9 @@
   <div class="row mb-4">
     <div class="col-12">
       <div class="d-flex overflow-auto pb-2">
-        <div
-          class="thumbnail-item me-2"
-          *ngFor="let image of asset?.galleries; let i = index"
-          [ngClass]="{ active: i === currentSlideIndex }"
-          (click)="setCurrentSlide(i)"
-        >
-          <img
-            [src]="image.fileUrl"
-            class="img-thumbnail"
-            [alt]="'Thumbnail ' + (i + 1)"
-          />
+        <div class="thumbnail-item me-2" *ngFor="let image of asset?.galleries; let i = index"
+          [ngClass]="{ active: i === currentSlideIndex }" (click)="setCurrentSlide(i)">
+          <img [src]="image.fileUrl" class="img-thumbnail" [alt]="'Thumbnail ' + (i + 1)" />
         </div>
       </div>
     </div>
@@ -120,18 +87,12 @@
         <div class="card-body p-0">
           <!-- Tab Navigation - No styles borders -->
           <div class="tabs-container">
-            <button
-              [ngClass]="{ 'tab-active': activeTab === 'details' }"
-              (click)="setActiveTab('details')"
-              class="tab-btn"
-            >
+            <button [ngClass]="{ 'tab-active': activeTab === 'details' }" (click)="setActiveTab('details')"
+              class="tab-btn">
               details
             </button>
-            <button
-              [ngClass]="{ 'tab-active': activeTab === 'description' }"
-              (click)="setActiveTab('description')"
-              class="tab-btn"
-            >
+            <button [ngClass]="{ 'tab-active': activeTab === 'description' }" (click)="setActiveTab('description')"
+              class="tab-btn">
               description
             </button>
           </div>
@@ -209,10 +170,8 @@
           <!-- Countdown Timer -->
           <div class="row mb-4">
             <div class="col-12">
-              <div
-                class="d-flex justify-content-center align-items-center countdown-container"
-                [ngClass]="{ warning: timeLeft.total <= 5 * 60 * 1000 }"
-              >
+              <div class="d-flex justify-content-center align-items-center countdown-container"
+                [ngClass]="{ warning: timeLeft.total <= 5 * 60 * 1000 }">
                 <div class="time-unit">
                   <div class="time-value">{{ timeLeft.days }}</div>
                   <div class="time-label">Days</div>
@@ -221,283 +180,210 @@
                 <div class="time-unit">
                   <div class="time-value">
                     {{
-                      timeLeft.hours < 10
-                        ? "0" + timeLeft.hours
-                        : timeLeft.hours
-                    }}
+                    timeLeft.hours < 10 ? "0" + timeLeft.hours : timeLeft.hours }} </div>
+                      <div class="time-label">Hours</div>
                   </div>
-                  <div class="time-label">Hours</div>
-                </div>
-                <div class="time-separator">:</div>
-                <div class="time-unit">
-                  <div class="time-value">
-                    {{
-                      timeLeft.minutes < 10
-                        ? "0" + timeLeft.minutes
-                        : timeLeft.minutes
-                    }}
+                  <div class="time-separator">:</div>
+                  <div class="time-unit">
+                    <div class="time-value">
+                      {{
+                      timeLeft.minutes < 10 ? "0" + timeLeft.minutes : timeLeft.minutes }} </div>
+                        <div class="time-label">Minutes</div>
+                    </div>
+                    <div class="time-separator">:</div>
+                    <div class="time-unit">
+                      <div class="time-value">
+                        {{ timeLeft.sec < 10 ? "0" + timeLeft.sec : timeLeft.sec }} </div>
+                          <div class="time-label">Seconds</div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="time-label">Minutes</div>
                 </div>
-                <div class="time-separator">:</div>
-                <div class="time-unit">
-                  <div class="time-value">
-                    {{ timeLeft.sec < 10 ? "0" + timeLeft.sec : timeLeft.sec }}
-                  </div>
-                  <div class="time-label">Seconds</div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Bid Information -->
-          <div class="row mb-4">
-            <div class="col-6 text-center border-end">
-              <div class="bid-amount">
-                {{
-                  bidData.highestBid > 0
-                    ? bidData.highestBid
-                    : asset?.startingPrice
-                }}
-              </div>
-              <div class="bid-label text-muted">
-                {{ bidData.highestBid > 0 ? "highest bid" : "starting price" }}
-              </div>
-            </div>
-            <div class="col-6 text-center">
-              <div class="bid-amount">{{ bidData.bidCount }}</div>
-              <div class="bid-label text-muted">bids made</div>
-            </div>
-          </div>
+                <!-- Bid Information -->
+                <div class="row mb-4">
+                  <div class="col-6 text-center border-end">
+                    <div class="bid-amount">
+                      {{
+                      bidData.highestBid > 0
+                      ? bidData.highestBid
+                      : asset?.startingPrice
+                      }}
+                    </div>
+                    <div class="bid-label text-muted">
+                      {{ bidData.highestBid > 0 ? "highest bid" : "starting price" }}
+                    </div>
+                  </div>
+                  <div class="col-6 text-center">
+                    <div class="bid-amount">{{ bidData.bidCount }}</div>
+                    <div class="bid-label text-muted">bids made</div>
+                  </div>
+                </div>
 
-          <!-- Vehicle Info and Auction Date -->
-          <div class="row mb-4">
-            <div class="col-12">
-              <div class="vehicle-info p-3 bg-light rounded-4">
-                <h5 class="mb-1">{{ asset?.title || "Asset" }}</h5>
-                <!-- <div class="d-flex align-items-center mb-2">
+                <!-- Vehicle Info and Auction Date -->
+                <div class="row mb-4">
+                  <div class="col-12">
+                    <div class="vehicle-info p-3 bg-light rounded-4">
+                      <h5 class="mb-1">{{ asset?.title || "Asset" }}</h5>
+                      <!-- <div class="d-flex align-items-center mb-2">
                     <i class="bi bi-eye me-2"></i>
                   <span class="text-muted small">{{ viewCount }}</span>
                 </div> -->
-                <div class="d-flex align-items-center">
-                  <i class="bi bi-calendar me-2"></i>
-                  <span class="text-muted small"
-                    >Asset Listed At :
-                    {{ asset?.createdAt | date : "dd-MM-yyyy" }}</span
-                  >
+                      <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar me-2"></i>
+                        <span class="text-muted small">Asset Listed At :
+                          {{ asset?.createdAt | date : "dd-MM-yyyy" }}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <!-- /////////////////////////////////  ///////////////////////////////////////////////////////// -->
+                <!-- /////////////////////////////////  ///////////////////////////////////////////////////////// -->
 
-          <div class="mb-2 d-flex justify-content-start align-items-center">
-            <span class="me-2 fw-semibold">Auto-Bid Status:</span>
-            <span
-              class="badge"
-              [ngClass]="{
+                <div class="mb-2 d-flex justify-content-start align-items-center">
+                  <span class="me-2 fw-semibold">Auto-Bid Status:</span>
+                  <span class="badge" [ngClass]="{
                 'bg-success': AutoBid.isActive,
                 'bg-secondary': !AutoBid.isActive
-              }"
-            >
-              {{ AutoBid.isActive ? "ON" : "OFF" }}
-            </span>
-          </div>
+              }">
+                    {{ AutoBid.isActive ? "ON" : "OFF" }}
+                  </span>
+                </div>
 
-          <div class="d-flex justify-content-end mb-3">
-            <div class="btn-group btn-toggle">
-              <button
-                class="btn btn-sm"
-                [ngClass]="{
+                <div class="d-flex justify-content-end mb-3">
+                  <div class="btn-group btn-toggle">
+                    <button class="btn btn-sm" [ngClass]="{
                   'btn-primary': AutoBid.isActive,
                   'btn-default': !AutoBid.isActive
-                }"
-                (click)="openConfirmationModal(true)"
-              >
-                ON
-              </button>
-              <button
-                class="btn btn-sm"
-                [ngClass]="{
+                }" (click)="openConfirmationModal(true)">
+                      ON
+                    </button>
+                    <button class="btn btn-sm" [ngClass]="{
                   'btn-primary': !AutoBid.isActive,
                   'btn-default': AutoBid.isActive
-                }"
-                (click)="openConfirmationModal(false)"
-              >
-                OFF
-              </button>
-            </div>
-          </div>
+                }" (click)="openConfirmationModal(false)">
+                      OFF
+                    </button>
+                  </div>
+                </div>
 
-          <!-- Using ng-template for the toggle content -->
-          <ng-template #offTemplate>
-            <div class="place-bid-section">
-              <!-- Your bid input and buttons here -->
-              <label for="placeBid">Your Bid</label>
-              <div class="bid-input-group">
-                <button class="btn-decrement" (click)="decrementBid()">
-                  -
-                </button>
+                <!-- Using ng-template for the toggle content -->
+                <ng-template #offTemplate>
+                  <div class="place-bid-section">
+                    <!-- Your bid input and buttons here -->
+                    <label for="placeBid">Your Bid</label>
+                    <div class="bid-input-group">
+                      <button class="btn-decrement" (click)="decrementBid()">
+                        -
+                      </button>
 
-                <input
-                  type="number"
-                  id="placeBid"
-                  [(ngModel)]="placeBid.bidAmount"
-                  [min]="
+                      <input type="number" id="placeBid" [(ngModel)]="placeBid.bidAmount" [min]="
                     bidData.highestBid > 0
                       ? bidData.highestBid
                       : asset?.startingPrice ?? 0
-                  "
-                  [step]="asset?.minIncrement ?? 10"
-                  required
-                  #bidAmount="ngModel"
-                  pattern="^\\d{1,10}(\\.\\d{1,2})?$"
-                />
+                  " [step]="asset?.minIncrement ?? 10" required #bidAmount="ngModel"
+                        pattern="^\\d{1,10}(\\.\\d{1,2})?$" />
 
-                <button class="btn-increment" (click)="incrementBid()">
-                  +
-                </button>
-              </div>
+                      <button class="btn-increment" (click)="incrementBid()">
+                        +
+                      </button>
+                    </div>
 
-              <div *ngIf="bidAmount.invalid && bidAmount.touched">
-                <div *ngIf="bidAmount.errors?.['required']" class="text-danger">
-                  Bid amount is required.
-                </div>
-                <div
-                  *ngIf="!bidAmount.errors?.['required'] && bidAmount.errors?.['min']"
-                  class="text-danger"
-                >
-                  Bid must be at least
-                  {{
-                    bidData.highestBid > 0
-                      ? bidData.highestBid
-                      : (asset?.startingPrice ?? 0) +
+                    <div *ngIf="bidAmount.invalid && bidAmount.touched">
+                      <div *ngIf="bidAmount.errors?.['required']" class="text-danger">
+                        Bid amount is required.
+                      </div>
+                      <div *ngIf="!bidAmount.errors?.['required'] && bidAmount.errors?.['min']" class="text-danger">
+                        Bid must be at least
+                        {{
+                        bidData.highestBid > 0
+                        ? bidData.highestBid
+                        : (asset?.startingPrice ?? 0) +
                         (asset?.minIncrement ?? 0)
-                  }}.
-                </div>
-              </div>
+                        }}.
+                      </div>
+                    </div>
 
-              <div class="row">
-                <div class="col-12">
-                  <button
-                    class="bid-button"
-                    (click)="onPlaceBid()"
-                    [disabled]="timeLeft.total <= 0"
-                  >
-                    <i class="fa fa-gavel"></i> bid now
-                  </button>
-                </div>
-              </div>
-            </div>
-          </ng-template>
+                    <div class="row">
+                      <div class="col-12">
+                        <button class="bid-button" (click)="onPlaceBid()" [disabled]="timeLeft.total <= 0">
+                          <i class="fa fa-gavel"></i> bid now
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
 
-          <ng-template #onTemplate>
-            <div class="place-bid-section">
-              <label for="setLimit">Set Limit</label>
-              <div class="bid-input-group">
-                <button class="btn-decrement" (click)="decrementLimit()">
-                  -
-                </button>
+                <ng-template #onTemplate>
+                  <div class="place-bid-section">
+                    <label for="setLimit">Set Limit</label>
+                    <div class="bid-input-group">
+                      <button class="btn-decrement" (click)="decrementLimit()">
+                        -
+                      </button>
 
-                <input
-                  type="number"
-                  [(ngModel)]="setLimitAmount"
-                  [min]="minValidLimit"
-                  [step]="asset?.minIncrement ?? 10"
-                  required
-                  #maxBidAmount="ngModel"
-                  class="form-control"
-                />
+                      <input type="number" [(ngModel)]="setLimitAmount" [min]="minValidLimit"
+                        [step]="asset?.minIncrement ?? 10" required #maxBidAmount="ngModel" class="form-control" />
 
-                <button class="btn-increment" (click)="incrementLimit()">
-                  +
-                </button>
-              </div>
+                      <button class="btn-increment" (click)="incrementLimit()">
+                        +
+                      </button>
+                    </div>
 
-              <div
-                *ngIf="
+                    <div *ngIf="
                   maxBidAmount.touched &&
                   (maxBidAmount.invalid || setLimitAmount < minValidLimit)
-                "
-              >
-                <div
-                  *ngIf="maxBidAmount.errors?.['required']"
-                  class="text-danger"
-                >
-                  Limit amount is required.
-                </div>
-                <div *ngIf="setLimitAmount < minValidLimit" class="text-danger">
-                  Limit must be at least {{ minValidLimit }}.
-                </div>
-              </div>
+                ">
+                      <div *ngIf="maxBidAmount.errors?.['required']" class="text-danger">
+                        Limit amount is required.
+                      </div>
+                      <div *ngIf="setLimitAmount < minValidLimit" class="text-danger">
+                        Limit must be at least {{ minValidLimit }}.
+                      </div>
+                    </div>
 
-              <div class="row">
-                <div class="col-12">
-                  <button
-                    class="bid-button-1"
-                    (click)="onSetLimit()"
-                    [disabled]="
+                    <div class="row">
+                      <div class="col-12">
+                        <button class="bid-button-1" (click)="onSetLimit()" [disabled]="
                       setLimitAmount < minValidLimit || timeLeft.total <= 0
-                    "
-                  >
-                    <i class="fa fa-check"></i> Set Limit
-                  </button>
-                </div>
+                    ">
+                          <i class="fa fa-check"></i> Set Limit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+
+                <!-- Container to render template based on toggle -->
+                <ng-container *ngTemplateOutlet="showRightPanel ? onTemplate : offTemplate"></ng-container>
               </div>
             </div>
-          </ng-template>
-
-          <!-- Container to render template based on toggle -->
-          <ng-container
-            *ngTemplateOutlet="showRightPanel ? onTemplate : offTemplate"
-          ></ng-container>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<!-- Auto-Bid Confirmation Modal -->
+      <!-- Auto-Bid Confirmation Modal -->
 
-<div
-  class="modal fade"
-  id="autoBidConfirmModal"
-  tabindex="-1"
-  aria-labelledby="autoBidConfirmLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border border-black border-1 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title pb-1" id="autoBidConfirmLabel">
-          Confirm Auto-Bid
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+      <div class="modal fade" id="autoBidConfirmModal" tabindex="-1" aria-labelledby="autoBidConfirmLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border border-black border-1 shadow">
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title pb-1" id="autoBidConfirmLabel">
+                Confirm Auto-Bid
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+              <p class="mb-0 fs-6 text-muted">{{ modalMessage }}</p>
+            </div>
+            <div class="modal-footer justify-content-center border-0 pt-0 pb-4">
+              <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                Cancel
+              </button>
+              <button type="button" class="btn btn-primary px-4" (click)="confirmAutoBid()">
+                Yes, Confirm
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="modal-body text-center py-4">
-        <p class="mb-0 fs-6 text-muted">{{ modalMessage }}</p>
-      </div>
-      <div class="modal-footer justify-content-center border-0 pt-0 pb-4">
-        <button
-          type="button"
-          class="btn btn-outline-secondary px-4"
-          data-bs-dismiss="modal"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary px-4"
-          (click)="confirmAutoBid()"
-        >
-          Yes, Confirm
-        </button>
-      </div>
-    </div>
-  </div>
-</div>

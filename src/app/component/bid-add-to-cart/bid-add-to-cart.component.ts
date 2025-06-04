@@ -78,12 +78,15 @@ export class BidAddToCartComponent implements AfterViewInit {
           'pk_test_51RRtikGY6ElyrgGUXgRRI22AYfGJLziO9q1H1xoPlBiG2PfQaFe4xspeDge5fvL2sUONWDvx9NgKiz2db79DX7Q300AGRBCUQk'
         ); // your publishable key
         await stripe?.redirectToCheckout({ sessionId: response.sessionId });
+        
       },
       error: () => {
         this.showToast('Stripe session creation failed.', 'Error', 'error');
       },
     });
   }
+
+
 
   showToast(
     message: string,

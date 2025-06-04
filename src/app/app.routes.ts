@@ -48,7 +48,7 @@ import { ReportsListComponent } from './component/reports-list/reports-list.comp
 import { RefundRequestComponent } from './component/profile/refund-request/refund-request.component';
 import { DepositPageComponent } from './component/deposit-page/deposit-page.component';
 import { MyDetailsComponent } from './component/profile/my-details/my-details.component';
-import {  UserTransactionsComponent } from './component/profile/transaction-history/transaction-history.component';
+import { UserTransactionsComponent } from './component/profile/transaction-history/transaction-history.component';
 import { MyPurchasesComponent } from './component/profile/my-purchases/my-purchases.component';
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
@@ -63,46 +63,158 @@ import { FilterComponent } from './component/filter/filter.component';
 import { NgModule } from '@angular/core';
 import { BidHistoryComponent } from './component/bid-history/bid-history.component';
 import { CheckoutComponentComponent } from './component/checkout-component/checkout-component.component';
-import { PaymentSuccessComponent } from './component/bid-add-to-cart/paymentSuccess.component';
+import { PaymentSuccessComponent } from './component/bid-add-to-cart/payment-success.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'landing-page', component: LandingPageComponent },
   { path: 'logintest', component: TestloginComponent },
-  { path: 'reguserlandingpage', component: RegUserLandingPageComponent, canActivate: [RoleGuard], data: { role: 'User' } },
+  {
+    path: 'reguserlandingpage',
+    component: RegUserLandingPageComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'User' },
+  },
 
   // Admin-only routes
-  { path: 'dashboard', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'assets', component: ManageAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'newAsset', component: AddAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'update-asset/:assetId', component: EditAssetComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'auctions', component: ManageAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'newAuction', component: AddAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'update-auction/:id', component: UpdateAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'assets',
+    component: ManageAssetComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'newAsset',
+    component: AddAssetComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'update-asset/:assetId',
+    component: EditAssetComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'auctions',
+    component: ManageAuctionComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'newAuction',
+    component: AddAuctionComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'update-auction/:id',
+    component: UpdateAuctionComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
   { path: 'assets', component: ManageAssetComponent },
+  { path: 'settings', component: SettingsComponent },
+
   { path: 'newAsset', component: AddAssetComponent },
   { path: 'update-asset/:assetId', component: EditAssetComponent },
-  { path: 'requests', component: ManageRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  {path:'users',component:ManageUserComponent,canActivate:[RoleGuard],data:{role:'Admin'}},
- {path:'newUser',component:AddUserComponent},
-  { path: 'updateUser', component: UpdateUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'detailsUser', component: DetailsUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'requestsnew', component: AddRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'request-detail/:id', component: EditRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'assetcategories', component: ManageAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'addassetcategories', component: AddAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'update-assetcategories/:id', component: UpdateAssetCategoriesComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'transactions', component: TransactionManagementComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'newTransaction', component: AddTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'update-transaction/:id', component: UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'categories', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'roles', component: ManageRolesComponent},
+  {
+    path: 'requests',
+    component: ManageRequestsComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'users',
+    component: ManageUserComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  { path: 'newUser', component: AddUserComponent },
+  {
+    path: 'updateUser',
+    component: UpdateUserComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'detailsUser',
+    component: DetailsUserComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'requestsnew',
+    component: AddRequestsComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'request-detail/:id',
+    component: EditRequestsComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'assetcategories',
+    component: ManageAssetCategoriesComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'addassetcategories',
+    component: AddAssetCategoriesComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'update-assetcategories/:id',
+    component: UpdateAssetCategoriesComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'transactions',
+    component: TransactionManagementComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'newTransaction',
+    component: AddTransactionComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'update-transaction/:id',
+    component: UpdateTransactionComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: 'categories',
+    component: DashboardComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
+  { path: 'roles', component: ManageRolesComponent },
   // {path:'reports', component:ReportsListComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
   { path: 'reports', component: ReportsListComponent },
-  { path: 'view-request', component: ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  {
+    path: 'view-request',
+    component: ViewRequestComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
   {
     path: 'user-profile',
-    component: UserProfileComponent,  
+    component: UserProfileComponent,
     canActivate: [RoleGuard],
     children: [
       { path: 'my-details', component: MyDetailsComponent },
@@ -121,12 +233,23 @@ export const routes: Routes = [
   { path: 'user-signup', component: UserSignupComponent },
   { path: 'asset-details', component: AssetDetailComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
-  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleAssetComponent},
+  {
+    path: 'direct-sale-assetpage/:assetId',
+    component: DirectSaleAssetComponent,
+  },
   { path: 'order-details/:assetId', component: GetOrderDetailsComponent },
-  { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
+  {
+    path: 'direct-sale-assets/:categoryId',
+    component: DirectSaleAssetsComponent,
+  },
   { path: 'auction-assets/:categoryId', component: AuctionAssetsComponent },
   { path: 'testing', component: ChartComponent },
-  { path: 'direct-bid', component: DirectBidComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  {
+    path: 'direct-bid',
+    component: DirectBidComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
   { path: 'signal', component: SignalrTestComponent },
   { path: 'direct-bid', component: DirectBidComponent },
   { path: 'bid-watchlist', component: BidWatchlistComponent },
@@ -138,15 +261,17 @@ export const routes: Routes = [
   { path: 'refund-request', component: RefundRequestComponent },
   { path: 'deposit-page', component: DepositPageComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
-  {path: 'bid-history', component: BidHistoryComponent},
-  { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'bid-history', component: BidHistoryComponent },
+  {
+    path: 'chatbot-admin',
+    component: ChatbotAdminComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'Admin' },
+  },
 
-  {path:"finalCheckout/:assetId" , component:CheckoutComponentComponent},
+  { path: 'finalCheckout/:assetId', component: CheckoutComponentComponent },
   // { path: 'filter', loadComponent: () => import('./component/filter/filter.component').then(m => m.FilterComponent) },
-  {path:'filter', component: FilterComponent}
+  { path: 'filter', component: FilterComponent },
+  { path: '**', redirectTo: 'page-not-found' } // ❌ This would block /payment-success if declared earlier
+
 ];
-
-
-
-
-

@@ -93,7 +93,7 @@
             
             <div class="bid-detail">
               <img src="chronometer.png" class="button-image2" alt="Time Icon" />
-              <span>{{"3d 18h" }}</span>
+              <span>{{asset }}</span>
             </div>
           </div>
         </ng-container>
@@ -146,11 +146,11 @@
           <div class="plate-name">
             <span class="plate-name-text">{{ asset.title }}</span>
           </div>
-          <div class="price1">BHD {{ asset.price }}</div>
+         <div class="price1">BHD {{ asset.highestbid ?? asset.price }}</div>
           <div class="bid-info">
             <div class="bid-detail">
               <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
-              <span>{{ 0 }}</span>
+              <span>{{ asset.bidCount }}</span>
             </div>
             <div class="bid-detail">
               <img
@@ -158,7 +158,7 @@
                 class="button-image2"
                 alt="Time Icon"
               />
-              <span>{{ "3d 18h" }}</span>
+              <span>{{ getTimeRemaining(asset.auctionEndTime)}}</span>
             </div>
           </div>
         </ng-template>

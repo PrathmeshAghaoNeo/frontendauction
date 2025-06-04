@@ -10,42 +10,50 @@ import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { Auction } from '../../modals/auctions';
 import { AuthService } from '../../services/auth.service';
+import { BidService } from '../../services/bid.service';
+import { bidStatsBulk } from '../../modals/bid-stats';
+import { AuctionService } from '../../services/auction.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
-declare var bootstrap: any; 
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-direct-bid',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './auction-assets.component.html',
   styleUrl: './auction-assets.component.css'
 })
-export class AuctionAssetsComponent implements OnInit , AfterViewInit {
+export class AuctionAssetsComponent implements OnInit, AfterViewInit {
 
- @ViewChild('liveToast') liveToast!: ElementRef;
-   toastInstance: any;
-  
+  @ViewChild('liveToast') liveToast!: ElementRef;
+  toastInstance: any;
+
   assets: DirectSaleAssetDto[] = [];
-  auction:Auction[] = [];
+  auction: Auction[] = [];
   originalAssets: DirectSaleAssetDto[] = [];
   layoutType: 'grid' | 'row' = 'grid';
   noAssetsFound: boolean = false;
   // TODO: Replace with actual user ID from auth context
-  userId: number |null = null;
-  environment=environment;
-   wishlistAssetIds: number[] = [];  
+  userId: number | null = null;
+  environment = environment;
+  wishlistAssetIds: number[] = [];
+  assetIds: number[] = [];
+  AuctionIds: number[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
+    private auctionService: AuctionService,
     private http: HttpClient,
-    private listService:ListService , 
+    private listService: ListService,
     private router: Router,
-    private authService : AuthService,
+    private authService: AuthService,
+    private bidService: BidService,
     private viewportScroller: ViewportScroller
-  ) {}
+  ) { }
 
 
   ngAfterViewInit() {
@@ -53,10 +61,10 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
   }
 
   showToast(message: string, header = 'Notification', type: 'success' | 'error' | 'info' = 'info') {
-   
+
     const toastEl = this.liveToast.nativeElement;
-    
-  
+
+
     toastEl.querySelector('.toast-header ').textContent = header;
 
     // Change toast body message
@@ -64,7 +72,7 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
 
     // Change header bg color depending on type
     const headerEl = toastEl.querySelector('.toast-header');
-    
+
     headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-white');
     if (type === 'success') {
       headerEl.classList.add('bg-success', 'text-white');
@@ -81,24 +89,57 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
-    console.log('in categorymethod', categoryId);
     if (!isNaN(categoryId)) {
-          console.log('inside categorymethod', categoryId);
-
       this.listService.getAuctionAssetsByCategory(categoryId).subscribe({
         next: (data) => {
           this.assets = data;
-          this.originalAssets = [...data]; 
+          this.originalAssets = [...data];
           this.loadWishlist();
           this.noAssetsFound = this.assets.length === 0;
-          console.log('Assets:', this.assets);
+          this.assetIds = this.assets.map(a => a.assetId);
+          this.AuctionIds = this.assets.map(a => a.auctionId);
+
+          // Step 1: Get bid stats
+          this.bidService.getBidStatsByAssetIds(this.assetIds).subscribe({
+            next: (bidStatsList: bidStatsBulk[]) => {
+              this.assets = this.assets.map(asset => {
+                const stats = bidStatsList.find(b => b.assetId === asset.assetId);
+                return {
+                  ...asset,
+                  bidCount: stats?.bidCount ?? 0,
+                  highestbid: stats?.highestBid,
+                };
+              });
+
+              // Step 2: Get auctions by IDs
+              this.auctionService.getAuctionsByIds(this.AuctionIds).subscribe({
+                next: (auctions: Auction[]) => {
+                  this.assets = this.assets.map(asset => {
+                    const auction = auctions.find(a => a.auctionId === asset.auctionId);
+                    return {
+                      ...asset,
+                      auctionEndTime: auction?.endDateTime ?? null,
+                    };
+                  });
+                  console.log("Final mapped assets with auction info:", this.assets);
+                },
+                error: err => console.error('Error fetching auctions:', err)
+              });
+
+            },
+            error: err => console.error('Error fetching bid stats:', err)
+          });
+
         },
-        error: (err) => console.error('Error fetching assets:', err)
+        error: err => console.error('Error fetching assets:', err)
       });
     } else {
       console.error('Invalid category ID');
     }
   }
+
+
+
 
   getFlagUrl(asset: Asset): string {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
@@ -108,48 +149,48 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     this.layoutType = this.layoutType === 'grid' ? 'row' : 'grid';
   }
 
- addToWishlist(assetId: number): void {
-  const payload = {
-    userId: this.userId,
-    assetId: assetId,
-    quantity: 1
-  };
+  addToWishlist(assetId: number): void {
+    const payload = {
+      userId: this.userId,
+      assetId: assetId,
+      quantity: 1
+    };
 
-  console.log(assetId);
+    console.log(assetId);
 
-  this.listService.addToWishlist(payload).subscribe({
-    next: () => {
-      Swal.fire({
-        icon: 'success',
-        title: 'Added to Wishlist',
-        text: 'This asset has been added to your wishlist.',
-        confirmButtonText: 'OK'
-      });
-    },
-    error: (err) => {
-      console.error('Error adding asset to wishlist:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: err.message || 'Something went wrong while adding to wishlist.',
-        confirmButtonText: 'OK'
-      });
-    }
-  });
-}
+    this.listService.addToWishlist(payload).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Added to Wishlist',
+          text: 'This asset has been added to your wishlist.',
+          confirmButtonText: 'OK'
+        });
+      },
+      error: (err) => {
+        console.error('Error adding asset to wishlist:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: err.message || 'Something went wrong while adding to wishlist.',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  }
 
 
- loadWishlist(): void {
-  this.listService.getWishlist(this.userId).subscribe({
-    next: (data) => {
-      this.wishlistAssetIds = data.map((item: any) => item.assetId);
-      console.log('Wishlist Asset IDs:', this.wishlistAssetIds);
-    },
-    error: (err) => {
-      console.error('Error loading wishlist:', err);
-    },
-  });
-}
+  loadWishlist(): void {
+    this.listService.getWishlist(this.userId).subscribe({
+      next: (data) => {
+        this.wishlistAssetIds = data.map((item: any) => item.assetId);
+        console.log('Wishlist Asset IDs:', this.wishlistAssetIds);
+      },
+      error: (err) => {
+        console.error('Error loading wishlist:', err);
+      },
+    });
+  }
 
   buyNow(assetId: number): void {
     const payload = {
@@ -168,13 +209,13 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     });
   }
 
-   isInWishlist(assetId: number): boolean {
+  isInWishlist(assetId: number): boolean {
     return this.wishlistAssetIds.includes(assetId);
   }
 
 
   toggleWishlist(assetId: number): void {
-     if (!this.userId) return;
+    if (!this.userId) return;
     if (this.isInWishlist(assetId)) {
       const payload = { userId: this.userId, assetId: assetId };
       this.listService.removeFromWishlist(payload).subscribe({
@@ -210,13 +251,26 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     }
   }
 
+  getTimeRemaining(endTime?: string | null): string {
+    if (!endTime) return '';
+    const utcTime = endTime.endsWith('Z') ? endTime : endTime + 'Z';
+    const end = Date.parse(utcTime);
+    const now = Date.now();
+    const diff = end - now;
+    if (diff <= 0) return 'Ended';
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return `${days}d ${hours}h`;
+  }
+
+
 
   navigateToAsset(assetId: number | undefined): void {
-  if (assetId) {
-    const encodedUserId = btoa(assetId.toString());
-    this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
+    if (assetId) {
+      const encodedUserId = btoa(assetId.toString());
+      this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
+    }
   }
-}
 
   goBack() {
     window.history.back();

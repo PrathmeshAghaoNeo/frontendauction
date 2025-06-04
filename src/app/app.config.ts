@@ -16,6 +16,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { provideTranslation } from './translation.config';
 
 
 
@@ -32,6 +33,6 @@ ChartJS.register(
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)
-    ,provideHttpClient(withInterceptorsFromDi()),{provide:HTTP_INTERCEPTORS,useClass:CustominterceptorService,multi:true}, provideAnimationsAsync('noop'), provideCharts(),
+    ,provideHttpClient(withInterceptorsFromDi()),{provide:HTTP_INTERCEPTORS,useClass:CustominterceptorService,multi:true}, provideAnimationsAsync('noop'),...provideTranslation(), provideCharts(),
   ]
 };

@@ -4,6 +4,11 @@ export interface bidStats {
     highestBid : number;
     bidCount : number
 }
+export interface bidStatsBulk {
+    assetId: number,
+    highestBid : number;
+    bidCount : number
+}
 
 export interface BidDto {
     auctionId: number;

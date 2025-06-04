@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AutoBidDto, BidDto, bidStats, WonBid } from '../modals/bid-stats';
+import { AutoBidDto, BidDto, bidStats, WonBid,bidStatsBulk } from '../modals/bid-stats';
 import { ApiEndpoints } from '../constants/api-endpoints';
 
 @Injectable({
@@ -13,6 +13,17 @@ export class BidService {
   getBidStatsById(assetId: number): Observable<bidStats> {
     return this.http.get<bidStats>(`${ApiEndpoints.Bid}/Assetstats/${assetId}`);
   }
+
+
+ getBidStatsByAssetIds(assetIds: number[]): Observable<bidStatsBulk[]> {
+  const joinedIds = assetIds.join(',');
+  return this.http.get<bidStatsBulk[]>(`${ApiEndpoints.Bid}/Assetstats/bulk`, {
+    params: { assetIds: joinedIds }
+  });
+}
+
+
+
   placeBid(bidData: BidDto): Observable<{ bidId: number }> {
     return this.http.post<{ bidId: number }>(
       `${ApiEndpoints.Bid}/place`,

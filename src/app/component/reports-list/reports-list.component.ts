@@ -8,19 +8,21 @@ import { AuctionService } from '../../services/auction.service';
 import { utc } from 'moment';
 import { Asset } from '../../modals/manage-asset';
 import { ManageAssetService } from '../../services/asset.service';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-reports-list',
   standalone: true,
-  imports: [FormsModule, CommonModule, NgbModalModule],
+  imports: [FormsModule, CommonModule, NgbModalModule,NgxPaginationModule],
   templateUrl: './reports-list.component.html',
   styleUrls: ['./reports-list.component.css'],
 })
 export class ReportsListComponent implements OnInit{
   @ViewChild('viewReportModal') viewReportModal!: TemplateRef<any>;
   searchTerm: string = '';
-  pageSize = 7;
-  currentPage = 1;
+  page = 1;
+  itemsPerPage = 7;
+  currentPage: number = 1;
   selectedReport: string | null = null;
   defaultAuctions: Auction[] = [];
   expiredAuctions: Auction[] = [];
@@ -68,19 +70,7 @@ export class ReportsListComponent implements OnInit{
     );
   }
 
-  get paginatedReports() {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredReports.slice(start, start + this.pageSize);
-  }
-
-  get totalPages() {
-    return Math.ceil(this.filteredReports.length / this.pageSize);
-  }
-
-  changePage(page: number) {
-    this.currentPage = page;
-  }
-
+  
   openViewModal(report: any): void {
     this.selectedReport = report;
     this.modalService.open(this.viewReportModal, {

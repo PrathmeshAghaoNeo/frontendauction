@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { ListService } from '../../services/list.service';
 import { AuthService } from '../../services/auth.service';
-
 @Component({
   selector: 'app-payment-success',
+  standalone:true,
+  imports: [],
   template: `<p>Payment successful! Creating order...</p>`,
   
 })
-export class PaymentSuccessComponent implements OnInit {
+export class PaymentSuccessComponent{
   userId: number | null = null;
 
   constructor(
