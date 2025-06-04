@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ListService } from '../../services/list.service';
 import { AuthService } from '../../services/auth.service';
-import { ToastrService } from 'ngx-toastr';
+import { ListService } from '../../services/list.service';
 
 @Component({
   selector: 'app-payment-success',
+  standalone:true,
+  imports: [],
   template: `<p>Payment successful! Creating order...</p>`,
 })
-export class PaymentSuccessComponent implements OnInit {
+export class PaymentSuccessComponent{
   userId: number | null = null;
 
   constructor(
@@ -16,7 +17,7 @@ export class PaymentSuccessComponent implements OnInit {
     private listservice: ListService,
     private router: Router,
     private authService: AuthService,
-    private toastr: ToastrService
+    // private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -32,16 +33,16 @@ export class PaymentSuccessComponent implements OnInit {
       localStorage.removeItem('paymentId');
       this.listservice.confirmPayment(payload).subscribe({
         next: () => {
-          this.toastr.success('Order created successfully!');
+          // this.toastr.success('Order created successfully!');
           this.router.navigate(['/orders']);
         },
         error: (err) => {
           console.error('Order creation failed:', err);
-          this.toastr.error('Failed to create order after payment.');
+          // this.toastr.error('Failed to create order after payment.');
         },
       });
     } else {
-      this.toastr.warning('Invalid payment confirmation data.');
+      // this.toastr.warning('Invalid payment confirmation data.');
     }
   }
 }

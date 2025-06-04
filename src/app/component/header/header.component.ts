@@ -26,11 +26,11 @@ export class HeaderComponent implements OnInit {
   currentRoute = '';
   userId: number = 0;
   wishlistAssetIds: number[] = [];
-userProfileImageUrl: string = '';
+  userProfileImageUrl: string = '';
   cartAssetIds: number[] = [];
   notifications: Notification[] = [];
   unreadCount : number= 0;
-
+  userRole: string | null = null;
   constructor(
       private listService: ListService,
       public authService: AuthService, 
@@ -61,6 +61,8 @@ userProfileImageUrl: string = '';
     this.signalR.winnerUpdates$.subscribe(data => {
       console.log(data);
     })
+    const user = this.authService.getRole();
+    this.userRole = user?.roleName || null;
   }
   // userProfileImageUrl = 'assets/images/default-profile.jpg';
   get showDefaultButtons(): boolean {
@@ -174,5 +176,11 @@ userProfileImageUrl: string = '';
         
       },
     });
+  }
+
+   get homeRoute(): string {
+    if (!this.isLoggedIn) return '/landing-page';
+    if (this.userRole === 'Admin') return '/dashboard';
+    return '/reguserlandingpage';
   }
 }
