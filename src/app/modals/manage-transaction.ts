@@ -63,5 +63,6 @@ export interface Transaction {
   status: string;               // e.g. "Completed", "Pending"
   approvedDateTime?: string | null;  // ISO datetime string or null
   approvedBy?: string | null;         // e.g. "Admin A" or null
-  notes?: string | null;              // e.g. "Deposit via bank" or null
+  notes?: string | null;  
+ 
 }

@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f4f6f9;
+  /* background-color: #f4f6f9; */
 }
 
 .cart-grid {
@@ -12,7 +12,7 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
   padding: 2rem;
-  background-color: #f4f6f9;
+  /* background-color: #f4f6f9; */
   font-family: 'Poppins', sans-serif;
 }
 
@@ -177,8 +177,9 @@
   display: flex;
   gap: 1rem;
   padding: 1rem 2rem;
-  background-color: #f4f6f9;
-  justify-content: space-evenly;
+  /* border-bottom: 2px solid #e0e0e0; */
+  /* background-color: #f4f6f9; */
+  justify-content: start;
 }
 
 .wishlist-tabs button {
@@ -207,4 +208,106 @@
 .back-btn-image {
   width: 32px;
   height: 32px;
+}
+
+
+.bid-tabs {
+  display: flex;
+  gap: 12px;
+  border-bottom: 2px solid #e0e0e0;
+  margin: 20px 0;
+  padding: 0 1rem;
+  width: 100%;
+}
+
+.bid-tabs .nav-link {
+  font-weight: 600;
+  color: #555;
+    width: 100%;
+  padding: 10px 20px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.bid-tabs .nav-link.active {
+   color: #6a1b9a;
+   border-radius: 7px;
+  border-bottom: 3px solid #6a1b9a;
+  background-color: #ede7f6;
+  font-weight: 700;
+}
+
+
+.bid-tabs .nav-link:hover {
+  border-radius: 7px;
+  background-color: #f3e5f5;
+  color: #6a1b9a;
+}
+.bid-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px;
+}
+
+.view-toggle i.active,
+.view-toggle i:hover {
+  color: #6a1b9a;
+  background-color: #ede7f6;
+}
+
+.view-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 20px;
+  gap: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.view-toggle i {
+  color: #999;
+  cursor: pointer;
+}
+
+.view-toggle i.active {
+  color: #007bff;
+}
+
+.watchlist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 1rem;
+}
+
+.watchlist-list-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.watchlist-list-image {
+  width: 140px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+}
+
+.watchlist-list-content {
+  flex: 1;
+}
+
+.watchlist-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }

@@ -120,10 +120,10 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/bid-add-to-cart',
     '/asset-details',
     '/orders',
-    '/bid-history'
-   
+    '/bid-history',
+    
   ];
- 
+  
   const dynamicPatterns = [
     '/direct-sale-assets/',
     '/auction-assets/',
@@ -131,6 +131,8 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/asset-details/',
     '/order-details/',
     '/user-profile/',
+    
+    '/finalCheckout/'
   ];
  
   if (exactRoutes.includes(this.currentRoute)) {

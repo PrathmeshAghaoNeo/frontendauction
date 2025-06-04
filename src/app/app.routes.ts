@@ -63,6 +63,7 @@ import { FilterComponent } from './component/filter/filter.component';
 
 import { NgModule } from '@angular/core';
 import { BidHistoryComponent } from './component/bid-history/bid-history.component';
+import { CheckoutComponentComponent } from './component/checkout-component/checkout-component.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -140,6 +141,8 @@ export const routes: Routes = [
   { path: 'audit-trial', component: AuditTrailComponent },
   {path: 'bid-history', component: BidHistoryComponent},
   { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+
+  {path:"finalCheckout/:assetId" , component:CheckoutComponentComponent},
   // { path: 'filter', loadComponent: () => import('./component/filter/filter.component').then(m => m.FilterComponent) },
   {path:'filter', component: FilterComponent}
 ];

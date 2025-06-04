@@ -67,6 +67,9 @@ export class BidAddToCartComponent implements AfterViewInit {
       email: this.email,
     };
 
+    console.log("payload",payload);
+    
+
     this.listservice.createStripeSession(payload).subscribe({
       next: async (response: { sessionId: string }) => {
         localStorage.setItem('paymentId', response.sessionId);

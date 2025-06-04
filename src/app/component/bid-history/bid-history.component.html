@@ -1,97 +1,160 @@
 <div class="my-bids-container">
+  <div class="cart-items">
+    <button class="back-btn" (click)="goBack()">
+      <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+    </button>
+    <h2 class="form-title">My Bids</h2>
 
-    <div class="cart-items">
-      <button class="back-btn" (click)="goBack()">
-        <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
-      </button>
-  <h2 class="form-title">My Bids</h2>
-
-  <!-- Tabs -->
-  <ul class="nav nav-tabs bid-tabs">
+    <!-- Tabs -->
+    <!-- <ul class="nav nav-tabs bid-tabs">
     <li class="nav-item">
       <a class="nav-link active" href="#">Ongoing Bids</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link">Bids Won</a>
+      <a class="nav-link" href="#">Bids Won</a>
     </li>
-  </ul>
+  </ul> -->
 
-  <!-- Search and View Toggle -->
-  <div class="bid-controls">
-    <input type="text" class="form-control bid-search" placeholder="Search" />
+    <!-- Tabs -->
+    <ul class="nav nav-tabs bid-tabs">
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [class.active]="selectedTab === 'ongoing'"
+          (click)="switchTab('ongoing')"
+          href="javascript:void(0)"
+        >
+          Ongoing Bids
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [class.active]="selectedTab === 'won'"
+          (click)="switchTab('won')"
+          href="javascript:void(0)"
+        >
+          Bids Won
+        </a>
+      </li>
+    </ul>
 
-    <div class="view-toggle" role="group" aria-label="Toggle view">
-      <i
-        class="fa fa-th"
-        [class.active]="isGridView"
-        title="Grid view"
-        (click)="isGridView = true"
-        style="cursor:pointer"
-        ></i>
-        <!-- aria-pressed="{{ isGridView }}" -->
+    <!-- Search and View Toggle -->
+    <div class="bid-controls">
+      <input type="text" class="form-control bid-search" placeholder="Search" />
+
+      <div class="view-toggle" role="group" aria-label="Toggle view">
         <i
-        class="fa fa-list"
-        [class.active]="!isGridView"
-        title="List view"
-        (click)="isGridView = false"
-        style="cursor:pointer"
+          class="fa fa-th"
+          [class.active]="isGridView"
+          title="Grid view"
+          (click)="isGridView = true"
+          style="cursor: pointer"
         ></i>
-        <!-- aria-pressed="{{ !isGridView }}" -->
+
+        <i
+          class="fa fa-list"
+          [class.active]="!isGridView"
+          title="List view"
+          (click)="isGridView = false"
+          style="cursor: pointer"
+        ></i>
+      </div>
     </div>
-</div>
 
-  <!-- Empty State -->
-  <div class="empty-bids" *ngIf="!bidHistory || bidHistory.length === 0">
-    <i class="fa fa-gavel"></i>
-    <p class="empty-title">Nothing Here</p>
-    <p>
-      <a href="#">Start bidding</a> and you will be able to keep an eye on all your bids from here
-    </p>
-  </div>
+    <!-- Empty State -->
+    <div class="empty-bids" *ngIf="!bidHistory || bidHistory.length === 0">
+      <i class="fa fa-gavel"></i>
+      <p class="empty-title">Nothing Here</p>
+      <p>
+        <a href="#">Start bidding</a> and you will be able to keep an eye on all
+        your bids from here
+      </p>
+    </div>
 
-  <!-- Grid view -->
-  <div *ngIf="bidHistory && bidHistory.length > 0 && isGridView" class="bids-grid">
-    <div class="bid-card" *ngFor="let bid of bidHistory" tabindex="0">
-      <img
-        [src]="
-          bid.asset?.galleries?.length
-            ? environment.baseurl + bid.asset.galleries[0].filePath
-            : 'assets/default.jpg'
-        "
-        alt="Bid Image"
-      />
-      <div class="card-body">
-        <h5 class="card-title">{{ bid.asset?.title || 'Untitled Asset' }}</h5>
-        <p class="card-price">BHD {{ bid.bidAmount }}</p>
-        <div class="card-meta">
-          <span>Status: <strong>{{ bid.status }}</strong></span>
-          <span>Short info</span>
+    <!-- Grid view -->
+    <div *ngIf="isGridView && getCurrentBids().length > 0" class="bids-grid">
+      <div
+        class="bid-card"
+        *ngFor="let bid of getCurrentBids()"
+        tabindex="0"
+        (click)="onBidCardClick(bid)"
+        [class.clickable]="selectedTab === 'won'"
+      >
+        
+      <div *ngIf="selectedTab === 'won'" class="bid-card-cta">
+           Click to Complete Payment
+        </div>
+
+
+        <img
+          [src]="
+            bid.asset?.galleries?.length
+              ? environment.baseurl + bid.asset.galleries[0].filePath
+              : 'assets/default.jpg'
+          "
+          alt="Bid Image"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{ bid.asset?.title || "Untitled Asset" }}</h5>
+          <p class="card-price">
+            BHD {{ bid.bidAmount ? bid.bidAmount : bid.awardedPrice }}
+          </p>
+          <div class="card-meta">
+            <span
+              >Status: <strong>{{ bid.status || "Pending" }}</strong></span
+            >
+            <span>Short info</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- List view -->
+    <div *ngIf="!isGridView && getCurrentBids().length > 0" class="bids-list">
+      <div
+        class="bid-card-list"
+        *ngFor="let bid of getCurrentBids()"
+        (click)="onBidCardClick(bid)"
+        [class.clickable]="selectedTab === 'won'"
+      >
+        <div *ngIf="selectedTab === 'won'" class="bid-card-cta-list">
+           Click here to buy this asset and complete your payment
+        </div>
+
+        <img
+          class="bid-image-list"
+          [src]="
+            bid.asset?.galleries?.length
+              ? environment.baseurl + bid.asset.galleries[0].filePath
+              : 'assets/default.jpg'
+          "
+          alt="Bid Image"
+        />
+        <div class="card-body-list">
+          <h5 class="card-title-list">
+            {{ bid.asset?.title || "Untitled Asset" }}
+          </h5>
+          <p class="card-price-list">
+            BHD {{ bid.bidAmount ? bid.bidAmount : bid.awardedPrice }}
+          </p>
+          <div class="card-meta-list">
+            <span
+              >Status: <strong>{{ bid.status || "Pending" }}</strong></span
+            >
+            <span>Short info</span>
+          </div>
+        </div>
+
+        <div class="empty-bids" *ngIf="getCurrentBids().length === 0">
+          <i class="fa fa-gavel"></i>
+          <p class="empty-title">Nothing Here</p>
+          <p>
+            <a href="#">Start bidding</a> and you will be able to keep an eye on
+            all your bids from here
+          </p>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- List view -->
-<div *ngIf="!isGridView" class="bids-list">
-  <div class="bid-card-list" *ngFor="let bid of bidHistory">
-    <img
-      class="bid-image-list"
-      [src]="
-        bid.asset?.galleries?.length
-          ? environment.baseurl + bid.asset.galleries[0].filePath
-          : 'assets/default.jpg'
-      "
-      alt="Bid Image"
-    />
-    <div class="card-body-list">
-      <h5 class="card-title-list">{{ bid.asset?.title || 'Untitled Asset' }}</h5>
-      <p class="card-price-list">BHD {{ bid.bidAmount }}</p>
-      <div class="card-meta-list">
-        <span>Status: <strong>{{ bid.status }}</strong></span>
-        <span>Short info</span>
-      </div>
-    </div>
-  </div>
-</div>
-
 </div>
