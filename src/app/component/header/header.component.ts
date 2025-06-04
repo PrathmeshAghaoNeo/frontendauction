@@ -64,8 +64,10 @@ export class HeaderComponent implements OnInit {
     this.signalR.winnerUpdates$.subscribe(data => {
       console.log(data);
     })
-    const user = this.authService.getRole();
-    this.userRole = user?.roleName || null;
+    const user = this.authService.getRoleJwt();
+    this.userRole = user ?? null;
+    console.log('User role:', this.userRole);
+
   }
   // userProfileImageUrl = 'assets/images/default-profile.jpg';
   get showDefaultButtons(): boolean {
