@@ -1,0 +1,61 @@
+{
+  "LOGIN": "Login",
+  "WELCOME": "Welcome to the Auction Platform",
+
+  "ENTER_EMAIL_PLACEHOLDER": "Enter email",
+  "EMAIL_REQUIRED": "Email is required.",
+  "EMAIL_INVALID": "Please enter a valid email.",
+  "SEND_OTP": "Send OTP",
+
+  "NOT_A_USER": "Not a user?",
+  "SIGN_UP": "Sign up",
+
+  "VERIFY_OTP": "Verify OTP",
+  "RESEND_OTP": "Resend OTP",
+  "RESEND_OTP_IN": "in {{seconds}}s",
+
+  "DIRECT_SALE": "Direct Sale",
+  "EXPLORE_AUCTIONS": "Explore Auctions",
+
+  "CART": "Cart",
+  "WATCHLIST": "Watchlist",
+  "BID": "Bid",
+  "PROFILE": "Profile",
+  "LOGOUT": "Logout",
+  "NEW_USER": "New User",
+  "NEW_AUCTION": "New Auction",
+  "NEW_ASSET": "New Asset",
+  "SETTINGS": "Settings",
+  "LANGUAGE_EN": "EN",
+  "LANGUAGE_AR": "AR",
+
+  "FOOTER_MAZAD": "MAZAD",
+  "FOOTER_CATEGORIES": "Categories",
+  "FOOTER_LIVE_AUCTIONS": "Live Auctions",
+
+  "FOOTER_HELP": "HELP",
+  "FOOTER_CONTACT_SUPPORT": "Contact Support",
+  "FOOTER_PRIVACY_POLICY": "Privacy Policy",
+  "FOOTER_TERMS": "Terms of Service",
+  "FOOTER_COOKIES": "Cookie Policy",
+
+  "FOOTER_RESOURCES": "RESOURCES",
+  "FOOTER_BLOG": "Blog",
+  "FOOTER_FAQ": "FAQ",
+  "FOOTER_GUIDES": "Guides",
+  "FOOTER_STATUS": "Status",
+
+  "FOOTER_COPYRIGHT": "© 2025 Your Company. All rights reserved.",
+
+  "TOGGLE_VIEW": "Toggle View",
+  "BACK_TO_BIDDING": "Back to Bidding",
+  "ADD_TO_WISHLIST": "Add to Wishlist",
+  "REMOVE_FROM_WISHLIST": "Remove from Wishlist",
+  "PLACE_BID": "Place Bid",
+  "HIGHEST_BID": "Highest Bid",
+  "BID_COUNT": "Bid Count",
+  "TIME_LEFT": "Time Left",
+  "PRICE": "Price",
+  "NOTIFICATION": "Notification",
+  "TOAST_SAMPLE_MESSAGE": "This is a toast message."
+}

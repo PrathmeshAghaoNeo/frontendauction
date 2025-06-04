@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, Input, OnInit } from '@angular/core';
 import {
   Router,
   NavigationEnd,
@@ -16,6 +16,7 @@ import { BackButtonComponent } from './component/back-button/back-button.compone
 import { SignalRService } from './services/signal-r.service';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { ElementRef, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var bootstrap: any;
 
@@ -36,9 +37,24 @@ declare var bootstrap: any;
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
+  private translate = inject(TranslateService);
   currentRoute: string = '';
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
+
+  readonly customHeaderRoutes: string[] = [
+    '/reguserlandingpage',
+    '/bid-watchlist',
+    '/bid-add-to-cart',
+    '/orders',
+    '/user-profile',
+    '/bid-history',
+    '/direct-bid',
+    '/finalCheckout',
+    '/direct-sale-assets',
+
+    // Add more routes as needed
+  ];
 
   constructor(
     private router: Router,
@@ -51,61 +67,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.currentRoute = event.urlAfterRedirects.split('?')[0];
         console.log(this.currentRoute);
       });
+    this.translate.setDefaultLang('en');
+    this.translate.use('en');
   }
-
-  readonly customHeaderRoutes: string[] = [
-    '/reguserlandingpage',
-    '/bid-watchlist',
-    '/bid-add-to-cart',
-    '/orders',
-    '/user-profile',
-    '/bid-history',
-    '/direct-bid',
-    '/finalCheckout',
-    '/direct-sale-assets'
-    // Add more routes as needed
-  ];
-
-  readonly sideBarRoutePrefixes: string[] = [
-    '/direct-sale-assets/',
-    '/auction-assets/',
-    '/direct-sale-assetpage/',
-    '/asset-details/',
-    '/order-details/',
-    '/user-profile/',
-    '/finalCheckout/',
-  ];
-
-  readonly sideBarExactRoutes: Set<string> = new Set([
-    '/landing-page',
-    '/reguserlandingpage',
-    '/login',
-    '/user-signup',
-    '/user-profile',
-    '/direct-bid',
-    '/bid-watchlist',
-    '/bid-add-to-cart',
-    '/asset-details',
-    '/orders',
-    '/bid-history',
-  ]);
-
-  readonly publicRoutesSet = new Set([
-    '/login',
-    '/',
-    '/user-signup',
-    '/landing-page',
-    '/start-page',
-  ]);
-
-  readonly noBackButtonRoutes: Set<string> = new Set([
-    '/login',
-    '/start-page',
-    '/landing-page',
-    '/reguserlandingpage',
-    '/',
-  ]);
-
   // @Input() showCustomButtons: boolean = false;
   ngOnInit(): void {
     this.signalR.startConnection();
@@ -169,6 +133,30 @@ export class AppComponent implements OnInit, AfterViewInit {
     return routes.includes(this.currentRoute);
   }
 
+  readonly sideBarRoutePrefixes: string[] = [
+    '/direct-sale-assets/',
+    '/auction-assets/',
+    '/direct-sale-assetpage/',
+    '/asset-details/',
+    '/order-details/',
+    '/user-profile/',
+    '/finalCheckout/',
+  ];
+
+  readonly sideBarExactRoutes: Set<string> = new Set([
+    '/landing-page',
+    '/reguserlandingpage',
+    '/login',
+    '/user-signup',
+    '/user-profile',
+    '/direct-bid',
+    '/bid-watchlist',
+    '/bid-add-to-cart',
+    '/asset-details',
+    '/orders',
+    '/bid-history',
+  ]);
+
   get needSideBar(): boolean {
     return (
       this.sideBarExactRoutes.has(this.currentRoute) ||
@@ -177,11 +165,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       )
     );
   }
-
   get isLoggedIn(): boolean {
     return this.authService.hasToken(); // example check
   }
-
   get showCustomHeaderButtons(): boolean {
     return (
       this.isLoggedIn &&
@@ -196,21 +182,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   get showHeaderAndFooter(): boolean {
-    return (
-      this.authService.hasToken() ||
-      !this.publicRoutesSet.has(this.currentRoute)
-    );
+    return !this.isCurrentRoute(['/login', '/']);
   }
-
-  sCurrentRoute(routes: (string | RegExp)[]): boolean {
-    return routes.some(route =>
-      typeof route === 'string'
-        ? this.currentRoute === route
-        : route.test(this.currentRoute)
-    );
-  }
-
   get showBackButton(): boolean {
-    return !this.noBackButtonRoutes.has(this.currentRoute);
+    return !this.isCurrentRoute([
+      '/login',
+      '/start-page',
+      '/landing-page',
+      '/reguserlandingpage',
+      '/',
+    ]);
   }
 }
