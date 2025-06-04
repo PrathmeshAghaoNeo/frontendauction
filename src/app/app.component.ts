@@ -119,8 +119,9 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/bid-watchlist',
     '/bid-add-to-cart',
     '/asset-details',
-    '/orders',
+    '/orders',  
     '/bid-history',
+    '/payment-success',
     
   ];
   
@@ -131,7 +132,6 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/asset-details/',
     '/order-details/',
     '/user-profile/',
-    
     '/finalCheckout/'
   ];
  

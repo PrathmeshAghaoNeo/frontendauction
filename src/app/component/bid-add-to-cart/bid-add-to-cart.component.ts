@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Asset, DirectSaleAssetDto } from '../../modals/manage-asset';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { loadStripe } from '@stripe/stripe-js';
 import { Stripe } from '@stripe/stripe-js';
 import { UserService } from '../../services/user.service';
@@ -13,7 +13,7 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-bid-add-to-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterModule],
   templateUrl: './bid-add-to-cart.component.html',
   styleUrl: './bid-add-to-cart.component.css',
 })
@@ -32,7 +32,8 @@ export class BidAddToCartComponent implements AfterViewInit {
     private listservice: ListService,
     private router: Router,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private viewportScroller: ViewportScroller
   ) {}
 
   confirmModal: any;
@@ -117,6 +118,7 @@ export class BidAddToCartComponent implements AfterViewInit {
   }
 
   ngOnInit() {
+    this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
 
     if (!this.userId) {

@@ -1,5 +1,11 @@
 .add-to-cart-container{
+  flex: 2;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.05); */
   min-height: 100vh;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 
 .cart-page {
@@ -10,6 +16,7 @@
   font-family: 'Poppins', sans-serif;
   background-color: #f7f8fa;
   min-height: 100vh;
+  border-radius: 10px;
 }
 
 
@@ -31,8 +38,11 @@
 .cart-title {
   font-size: 1.8rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #4a148c;
   margin-bottom: 1.5rem;
+  text-align: center;
+  /* border-bottom: 1px solid #eee; */
+  padding-bottom: 5px;
 }
 
 .cart-item {
@@ -145,4 +155,67 @@
 .back-btn-image {
   width: 32px;
   height: 32px;
+}
+
+
+.empty-bids {
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+  user-select: none;
+}
+
+.empty-bids i {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.15;
+}
+
+.empty-bids .empty-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #6a1b9a;
+  margin-bottom: 12px;
+}
+
+.empty-bids p {
+  font-size: 15px;
+  color: #666;
+}
+
+.empty-bids a {
+  color: #6a1b9a;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.empty-bids a:hover {
+  border-color: #6a1b9a;
+}
+
+.cart-header {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  position: relative;
+
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.cart-header .back-btn {
+  position: absolute;
+  left: 0;
+  top: 20px;
+}
+
+.header-btn{
+  display: block;
+  justify-content: start;
+  margin-top: 14px;
+  padding-left: 24px;
 }

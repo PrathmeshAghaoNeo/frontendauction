@@ -1,12 +1,7 @@
 import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+  AfterViewInit,Component,ElementRef, OnInit, ViewChild,} from '@angular/core';
 import { environment } from '../../constants/enviroments';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
 import { AuthService } from '../../services/auth.service';
@@ -22,7 +17,7 @@ import { BidDisplayModel, WonBid } from '../../modals/bid-stats';
 @Component({
   selector: 'app-bid-history',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './bid-history.component.html',
   styleUrl: './bid-history.component.css',
 })
@@ -133,16 +128,14 @@ export class BidHistoryComponent implements OnInit {
     return this.selectedTab === 'ongoing' ? this.bidHistory : this.wonBids;
   }
 
-
   onBidCardClick(bid: BidDisplayModel) {
-  if (this.selectedTab === 'won') {
-    // Navigate to the receipt or purchase detail page
-    console.log("asset ",bid);
-    
-    this.router.navigate(['/finalCheckout',bid.assetId]);
-  }
-}
+    if (this.selectedTab === 'won') {
+      // Navigate to the receipt or purchase detail page
+      console.log('asset ', bid);
 
+      this.router.navigate(['/finalCheckout', bid.assetId]);
+    }
+  }
 
   goBack() {
     window.history.back();

@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Asset, DirectSaleAssetDto } from '../../modals/manage-asset';
 import { ManageAssetService } from '../../services/asset.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { Router } from '@angular/router';
 import { ListService } from '../../services/list.service';
 import { environment } from '../../constants/enviroments';
@@ -36,7 +36,8 @@ export class BidWatchlistComponent implements AfterViewInit {
     private assetService: ManageAssetService,
     private authService: AuthService,
     private listService: ListService,
-    private router: Router
+    private router: Router,
+    private viewportScroller: ViewportScroller
   ) {}
 
   ngAfterViewInit() {
@@ -84,6 +85,7 @@ export class BidWatchlistComponent implements AfterViewInit {
   }
 
   ngOnInit() {
+    this.viewportScroller.scrollToPosition([0, 0]);
   this.userId = this.authService.getUserIdJwt();
   if (!this.userId) {
     this.showToast('User not authenticated.', 'Error', 'error');

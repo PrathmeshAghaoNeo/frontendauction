@@ -1,15 +1,18 @@
 .cart-items {
   flex: 2;
-  background-color: #fff;
+  /* background-color: #fff; */
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.05); */
+  min-height: 100vh;
 }
 
 .my-bids-container {
   padding: 20px 30px;
   min-height: 100vh;
+  border-radius: 10px;
   background-color: #fafafa;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -305,4 +308,24 @@
   font-weight: 500;
   z-index: 1;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.cart-header {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  position: relative;
+
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.cart-header .back-btn {
+  position: absolute;
+  left: 0;
+  top: 20px;
 }
