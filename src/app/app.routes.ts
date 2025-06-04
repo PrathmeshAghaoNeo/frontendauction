@@ -48,7 +48,7 @@ import { ReportsListComponent } from './component/reports-list/reports-list.comp
 import { RefundRequestComponent } from './component/profile/refund-request/refund-request.component';
 import { DepositPageComponent } from './component/deposit-page/deposit-page.component';
 import { MyDetailsComponent } from './component/profile/my-details/my-details.component';
-import {  UserTransactionsComponent } from './component/profile/transaction-history/transaction-history.component';
+import { UserTransactionsComponent } from './component/profile/transaction-history/transaction-history.component';
 import { MyPurchasesComponent } from './component/profile/my-purchases/my-purchases.component';
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
@@ -60,6 +60,8 @@ import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/dire
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/PaymentSuccessComponent';
 import { NgModule } from '@angular/core';
 import { BidHistoryComponent } from './component/bid-history/bid-history.component';
+import { RoleUpdateComponent } from './component/role-update-component/role-update-component';
+import { RoleCreateComponent } from './component/role-create-component/role-create-component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -79,8 +81,8 @@ export const routes: Routes = [
   { path: 'newAsset', component: AddAssetComponent },
   { path: 'update-asset/:assetId', component: EditAssetComponent },
   { path: 'requests', component: ManageRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  {path:'users',component:ManageUserComponent,canActivate:[RoleGuard],data:{role:'Admin'}},
- {path:'newUser',component:AddUserComponent},
+  { path: 'users', component: ManageUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
+  { path: 'newUser', component: AddUserComponent },
   { path: 'updateUser', component: UpdateUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'detailsUser', component: DetailsUserComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'requestsnew', component: AddRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
@@ -92,13 +94,12 @@ export const routes: Routes = [
   { path: 'newTransaction', component: AddTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'update-transaction/:id', component: UpdateTransactionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'categories', component: DashboardComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
-  { path: 'roles', component: ManageRolesComponent},
-  // {path:'reports', component:ReportsListComponent, canActivate: [RoleGuard], data: { role: 'Admin' }},
+  { path: 'roles', component: ManageRolesComponent },
   { path: 'reports', component: ReportsListComponent },
   { path: 'view-request', component: ViewRequestComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   {
     path: 'user-profile',
-    component: UserProfileComponent,  
+    component: UserProfileComponent,
     canActivate: [RoleGuard],
     children: [
       { path: 'my-details', component: MyDetailsComponent },
@@ -113,10 +114,12 @@ export const routes: Routes = [
   },
   { path: 'payment-success', component: PaymentSuccessComponent },
   { path: 'testing', component: ChartComponent },
+  { path: 'updateRole/:id', component: RoleUpdateComponent },
+  { path: 'createRole', component: RoleCreateComponent },
   { path: 'user-signup', component: UserSignupComponent },
   { path: 'asset-details', component: AssetDetailComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
-  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleAssetComponent},
+  { path: 'direct-sale-assetpage/:assetId', component: DirectSaleAssetComponent },
   { path: 'order-details/:assetId', component: GetOrderDetailsComponent },
   { path: 'direct-sale-assets/:categoryId', component: DirectSaleAssetsComponent },
   { path: 'auction-assets/:categoryId', component: AuctionAssetsComponent },
@@ -133,7 +136,7 @@ export const routes: Routes = [
   { path: 'refund-request', component: RefundRequestComponent },
   { path: 'deposit-page', component: DepositPageComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
-  {path: 'bid-history', component: BidHistoryComponent},
+  { path: 'bid-history', component: BidHistoryComponent },
   { path: 'chatbot-admin', component: ChatbotAdminComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
 
 ];

@@ -189,7 +189,10 @@ if (!form.valid) return;
 
 
 this.auth.verifyOtp(this.email, this.code).subscribe({
-  next: () => {
+  next: (res) => {
+    // ✅ Save role & user to AuthService
+   this.auth.setUser(res.user, res.role); 
+
     const role = this.auth.getRoleJwt();
 
     setTimeout(() => {
@@ -198,7 +201,7 @@ this.auth.verifyOtp(this.email, this.code).subscribe({
       } else if (role === 'User') {
         this.router.navigate(['/reguserlandingpage']);
       }
-    }, 500); 
+    }, 500);
   },
   error: () => {
     Swal.fire({
@@ -209,6 +212,7 @@ this.auth.verifyOtp(this.email, this.code).subscribe({
     });
   }
 });
+
 
 
 }
