@@ -79,6 +79,8 @@ export const routes: Routes = [
   { path: 'newAuction', component: AddAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'update-auction/:id', component: UpdateAuctionComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
   { path: 'assets', component: ManageAssetComponent },
+  { path: 'settings', component: SettingsComponent },
+
   { path: 'newAsset', component: AddAssetComponent },
   { path: 'update-asset/:assetId', component: EditAssetComponent },
   { path: 'requests', component: ManageRequestsComponent, canActivate: [RoleGuard], data: { role: 'Admin' } },
