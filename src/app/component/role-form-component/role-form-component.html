@@ -1,0 +1,43 @@
+<form [formGroup]="roleForm" (ngSubmit)="submitForm()" class="role-form-container">
+
+  <div class="form-header">
+    <label>Role Name:</label>
+    <input type="text" formControlName="roleName" required />
+    <div class="text-danger small" *ngIf="roleName?.touched && roleName?.invalid">
+      <span *ngIf="roleName?.errors?.['required']">Role name is required.</span>
+      <span *ngIf="roleName?.errors?.['maxlength']">Max 10 characters allowed.</span>
+    </div>
+  </div>
+
+  <div class="form-header">
+    <label>
+      <input type="checkbox" formControlName="isSeller" />
+      Is Seller
+    </label>
+  </div>
+
+  <div class="form-body">
+    <div class="column">
+      <label><input type="checkbox" formControlName="superAdmin" /> Super Admin</label>
+      <label><input type="checkbox" formControlName="accessAdminPanel" /> Access Admin Panel</label>
+      <label><input type="checkbox" formControlName="manageAuctions" /> Manage Auctions</label>
+      <label><input type="checkbox" formControlName="manageAssets" /> Manage Assets</label>
+      <label><input type="checkbox" formControlName="manageTransactions" /> Manage Transactions</label>
+      <label><input type="checkbox" formControlName="manageCategories" /> Manage Categories</label>
+      <label><input type="checkbox" formControlName="manageRoles" /> Manage Roles</label>
+    </div>
+
+    <div class="column">
+      <label><input type="checkbox" formControlName="manageUsers" /> Manage Users</label>
+      <label><input type="checkbox" formControlName="viewReports" /> View Reports</label>
+      <label><input type="checkbox" formControlName="exportReports" /> Export Reports</label>
+      <label><input type="checkbox" formControlName="manageRequests" /> Manage Requests</label>
+      <label><input type="checkbox" formControlName="viewAuditTrail" /> View Audit Trail</label>
+      <label><input type="checkbox" formControlName="changeCommission" /> Change Commission</label>
+    </div>
+  </div>
+
+  <div class="form-footer">
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>

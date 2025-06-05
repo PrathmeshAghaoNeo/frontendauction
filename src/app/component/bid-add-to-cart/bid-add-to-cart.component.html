@@ -1,119 +1,132 @@
-<div class ="add-to-cart-container">
+<div class="add-to-cart-container">
+  
+  <div class="header-btn">
+    <button class="back-btn" (click)="goBack()">
+      <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+    </button>
+  </div>
+  <div class="cart-header">
+    <h2 class="cart-title">Your Cart</h2>
+  </div>
 
   <div class="cart-page">
-    <!-- Left side: Cart items -->
-  <div class="cart-items">
-    <button class="back-btn" routerLink="/directbid">
-      <button class="back-btn" (click)="goBack()">
-        <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
-      </button>
-    </button>
+  
+    <div class="cart-items">
+      <div class="cart-item" *ngFor="let asset of cartAssets; let i = index">
+        <div class="cart-image">
+          <img
+            [src]="asset.thumbnailUrl ? asset.thumbnailUrl : 'default.jpg'"
+            alt="Asset"
+            />
+          </div>
 
-    <h2 class="cart-title">Your Cart</h2>
+        <div class="cart-info">
+          <div class="asset-title">{{ asset.title }}</div>
+          <div class="asset-number">Asset #: {{ asset.assetNumber }}</div>
+          <div class="asset-price">BHD {{ asset.price }}</div>
+        </div>
 
-    <div class="cart-item" *ngFor="let asset of cartAssets; let i = index">
-      <div class="cart-image">
-        <img
-          [src]="asset.thumbnailUrl ? asset.thumbnailUrl : 'default.jpg'"
-          alt="Asset"
-        />
+        <button
+          class="remove-btn"
+          (click)="removeFromCart(asset)"
+          title="Remove from cart"
+        >
+          <img src="trash.png" alt="Remove" class="remove-icon" />
+        </button>
       </div>
 
-      <div class="cart-info">
-        <div class="asset-title">{{ asset.title }}</div>
-        <div class="asset-number">Asset #: {{ asset.assetNumber }}</div>
-        <div class="asset-price">BHD {{ asset.price }}</div>
+      <div class="empty-bids" *ngIf="!cartAssets.length">
+        <i class="fa fa-gavel"></i>
+        <p class="empty-title">Your cart is empty</p>
+        <p>
+          <a routerLink="/reguserlandingpage">Start bidding</a>
+          and you will be able to add assets to your cart from here.
+        </p>
       </div>
 
+    </div>
+
+    <!-- Right side: Summary panel -->
+    <div class="cart-summary" *ngIf="cartAssets.length">
+      <h3>Subtotal ({{ cartAssets.length }} items):</h3>
+      <div class="summary-total">BHD {{ getSubtotal() }}</div>
       <button
-        class="remove-btn"
-        (click)="removeFromCart(asset)"
-        title="Remove from cart"
+        class="checkout-btn"
+        data-bs-dismiss="modal"
+        (click)="openCheckoutModal()"
       >
-        <img src="trash.png" alt="Remove" class="remove-icon" />
+        Proceed to Checkout →
       </button>
     </div>
-
-    <div *ngIf="!cartAssets.length" class="empty-cart-msg">
-      Your cart is empty 🛒
-    </div>
   </div>
 
-  <!-- Right side: Summary panel -->
-  <div class="cart-summary" *ngIf="cartAssets.length">
-    <h3>Subtotal ({{ cartAssets.length }} items):</h3>
-    <div class="summary-total">BHD {{ getSubtotal() }}</div>
-    <button
-      class="checkout-btn"
-      data-bs-dismiss="modal"
-      (click)="openCheckoutModal()"
+  <!-- Toast container -->
+  <div class="toast-container p-3" style="z-index: 9999">
+    <div
+      #liveToast
+      class="toast"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      data-bs-delay="4000"
     >
-      Proceed to Checkout →
-    </button>
-  </div>
-</div>
-
-<!-- Toast container -->
-<div class="toast-container p-3" style="z-index: 9999">
-  <div
-    #liveToast
-    class="toast"
-    role="alert"
-    aria-live="assertive"
-    aria-atomic="true"
-    data-bs-delay="4000"
-  >
-    <div class="toast-header bg-info text-white">
-      <strong class="me-auto">Notification</strong>
-      <small class="text-muted">Just now</small>
-      <button
-        type="button"
-        class="btn-close btn-close-white ms-2 mb-1"
-        data-bs-dismiss="toast"
-        aria-label="Close"
-      ></button>
-    </div>
-    <div class="toast-body">This is a toast message.</div>
-  </div>
-</div>
-
-<!-- Confirm Checkout Modal -->
-<!-- Confirmation Modal -->
-<div
-  class="modal fade"
-  id="confirmCheckoutModal"
-  tabindex="-1"
-  aria-labelledby="confirmCheckoutLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmCheckoutLabel">Confirm Checkout</h5>
+      <div class="toast-header bg-info text-white">
+        <strong class="me-auto">Notification</strong>
+        <small class="text-muted">Just now</small>
         <button
           type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
+          class="btn-close btn-close-white ms-2 mb-1"
+          data-bs-dismiss="toast"
           aria-label="Close"
         ></button>
       </div>
-      <div class="modal-body">
-        Are you sure you want to proceed to checkout?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          No
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-dismiss="modal"
-          (click)="confirmCheckout()"
-        >
-          Yes
-        </button>
+      <div class="toast-body">This is a toast message.</div>
+    </div>
+  </div>
+
+  <!-- Confirm Checkout Modal -->
+  <!-- Confirmation Modal -->
+  <div
+    class="modal fade"
+    id="confirmCheckoutModal"
+    tabindex="-1"
+    aria-labelledby="confirmCheckoutLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmCheckoutLabel">
+            Confirm Checkout
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to proceed to checkout?
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            No
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-dismiss="modal"
+            (click)="confirmCheckout()"
+          >
+            Yes
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>

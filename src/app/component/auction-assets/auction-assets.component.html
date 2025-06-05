@@ -144,21 +144,22 @@
                 </div>
               </div>
 
-              <!-- Bid Info Section -->
-              <div class="bid-info">
-                <div class="price">BHD {{ asset.price }}</div>
-                
-                <div class="bid-detail">
-                  <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
-                  <span>{{ 0 }}</span>
-                </div>
-                
-                <div class="bid-detail">
-                  <img src="chronometer.png" class="button-image2" alt="Time Icon" />
-                  <span>{{ asset }}</span>
-                </div>
-              </div>
-            </ng-container>
+          <!-- Bid Info Section -->
+          <div class="bid-info">
+            <div class="price">BHD {{ asset.price }}</div>
+            
+            <div class="bid-detail">
+              <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
+              <span>{{ 0 }}</span>
+            </div>
+            
+            
+            <div class="bid-detail">
+              <img src="chronometer.png" class="button-image2" alt="Time Icon" />
+              <span>{{asset }}</span>
+            </div>
+          </div>
+        </ng-container>
 
             <ng-template #gridView>
               <img
@@ -194,21 +195,25 @@
                 </button>
               </div>
 
-              <div class="plate-name">
-                <span class="plate-name-text">{{ asset.title }}</span>
-              </div>
-              <div class="price1">BHD {{ asset.highestbid ?? asset.price }}</div>
-              <div class="bid-info">
-                <div class="bid-detail">
-                  <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
-                  <span>{{ asset.bidCount }}</span>
-                </div>
-                <div class="bid-detail">
-                  <img src="chronometer.png" class="button-image2" alt="Time Icon" />
-                  <span>{{ getTimeRemaining(asset.auctionEndTime) }}</span>
-                </div>
-              </div>
-            </ng-template>
+          <div class="plate-name">
+            <span class="plate-name-text">{{ asset.title }}</span>
+          </div>
+         <div class="price1">BHD {{ asset.highestbid ?? asset.price }}</div>
+          <div class="bid-info">
+            <div class="bid-detail">
+              <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
+              <span>{{ asset.bidCount }}</span>
+            </div>
+            <div class="bid-detail">
+              <img
+                src="chronometer.png"
+                class="button-image2"
+                alt="Time Icon"
+              />
+              <span>{{ getTimeRemaining(asset.auctionEndTime ?? undefined) }}</span>
+            </div>
+          </div>
+        </ng-template>
           </div>
         </div>
       </div>

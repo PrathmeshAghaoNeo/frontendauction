@@ -132,11 +132,6 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
 
-    if (!this.userId) {
-      this.showToast('User not logged in.', 'Error', 'error');
-      this.router.navigate(['/login']);
-      return;
-    }
 
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     if (!isNaN(categoryId)) {
@@ -194,7 +189,11 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   }
 
   toggleWishlist(assetId: number): void {
-     if (!this.userId) return;
+     if (!this.userId) {
+           this.showToast('User not logged in.', 'Error', 'error');
+           this.router.navigate(['/login']);
+           return;
+         }else{
     if (this.isInWishlist(assetId)) {
       const payload = { userId: this.userId, assetId: assetId };
       this.listService.removeFromWishlist(payload).subscribe({
@@ -228,6 +227,7 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
         },
       });
     }
+  }
   }
 
   toCart() {
@@ -264,7 +264,11 @@ redirectToCart(): void {
 
 
   addToCart(assetId: number): void {
-     if (!this.userId) return;
+     if (!this.userId) {
+           this.showToast('User not logged in.', 'Error', 'error');
+           this.router.navigate(['/login']);
+           return;
+         }else{
     const payload = {
       userId: this.userId,
       assetId: assetId,
@@ -289,6 +293,7 @@ redirectToCart(): void {
         );
       },
     });
+  }
   }
 
   goBack() {

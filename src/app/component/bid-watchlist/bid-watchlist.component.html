@@ -1,16 +1,23 @@
 <div class="watchlist-page">
 
-  <div class="watchlist-container">
-    <button class="back-btn2">
+  <div class="header-btn">
     <button class="back-btn2" (click)="goBack()">
       <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
     </button>
-  </button>
+  </div>
+  <div class="cart-header">
+        <h2 class="watchlist-title">My Watchlist</h2>
+    </div>
   
+    <div class="wishlist-tabs">
+  <div class="watchlist-container">
+    <!-- <button class="back-btn2" (click)="goBack()">
+      <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+    </button>
   <h2 class="watchlist-title">My Watchlist</h2>
   
-  <div class="wishlist-tabs">
-    <button
+   -->
+    <!-- <button
       [class.active-tab]="selectedTab === 'auction'"
       (click)="selectedTab = 'auction'"
     >
@@ -21,11 +28,41 @@
       (click)="selectedTab = 'direct'"
     >
       Direct Sale
-    </button>
+    </button> -->
+    <ul class="nav nav-tabs bid-tabs">
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [class.active]="selectedTab === 'auction'"
+      (click)="switchTab('auction')"
+      href="javascript:void(0)"
+    >
+      Auctions
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [class.active]="selectedTab === 'direct'"
+      (click)="switchTab('direct')"
+      href="javascript:void(0)"
+    >
+      Direct Sale
+    </a>
+  </li>
+</ul>
+
   </div>
 </div>
 
-<div class="cart-grid">
+<div class="bid-controls">
+  <div class="view-toggle">
+    <i class="fa fa-th-large" [class.active]="isGridView" (click)="isGridView = true"></i>
+    <i class="fa fa-list" [class.active]="!isGridView" (click)="isGridView = false"></i>
+  </div>
+</div>
+
+<div class="cart-grid" *ngIf="isGridView">
   <!-- <div class="cart-card" *ngFor="let asset of watchlistAssets"> -->
   <div class="cart-card" *ngFor="let asset of filteredWatchlistAssets">
     <div class="cart-image-wrap">
@@ -73,6 +110,46 @@
     </div>
   </div>
 </div>
+
+ <div *ngIf="!isGridView" class="watchlist-list">
+    <div class="watchlist-list-card" *ngFor="let asset of filteredWatchlistAssets">
+      <img [src]="asset.thumbnailUrl" class="watchlist-list-image" />
+
+      <div class="watchlist-list-content">
+        <div class="cart-title">{{ asset.title }}</div>
+        <div class="cart-number">Asset #{{ asset.assetNumber }}</div>
+        <div class="price">BHD {{ asset.price }}</div>
+      </div>
+
+      <div class="watchlist-actions">
+        <button class="icon-btn" (click)="removeFromWatchlist(asset)">
+          <img src="trash.png" class="button-image1" />
+        </button>
+
+        <button
+          class="icon-btn"
+          (click)="addToCart(asset.assetId)"
+          [disabled]="isInCart(asset.assetId)"
+        >
+          <img
+            [src]="isInCart(asset.assetId) ? 'cart-added.png' : 'sell.png'"
+            class="button-image2"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State when no items in watchlist -->
+<div class="empty-bids" *ngIf="filteredWatchlistAssets.length === 0">
+  <i class="fa fa-gavel"></i>
+  <p class="empty-title">Nothing Here</p>
+  <p>
+    <a routerLink="/reguserlandingpage">Start browsing assets</a>
+    and you will be able to add them to your watchlist from here.
+  </p>
+</div>
+
 
 <!-- Toast container -->
 <div class="toast-container p-3" style="z-index: 9999">

@@ -18,6 +18,21 @@ export const MENU_CONFIG: MenuItem[] = [
     permission: 'manageUsers'
   },
   {
+    label: 'Manage Assets',
+    route: '/assets',
+    permission: 'manageAssets'
+  },
+  {
+    label: 'Manage Auctions',
+    route: '/auctions',
+    permission: 'manageAuctions'
+  },
+  {
+    label: 'Manage Requests',
+    route: '/requests',
+    permission: 'manageRequests'
+  },
+  {
     label: 'Manage Roles',
     route: '/roles',
     permission: 'manageRoles'
@@ -28,13 +43,23 @@ export const MENU_CONFIG: MenuItem[] = [
     permission: 'viewReports'
   },
   {
-    label: 'Commission Settings',
-    route: '/commission',
+    label: 'Manage Transactions',
+    route: '/transactions',
     permission: 'changeCommission'
   },
   {
     label: 'Audit Trail',
-    route: '/audit',
+    route: '/audit-trial',
     permission: 'viewAuditTrail'
-  }
+  },
+  // {
+  //   label: 'Audit Trail',
+  //   route: '/audit-trial',
+  //   permission: 'viewAuditTrail'
+  // },
+  // {
+  //   label: 'Audit Trail',
+  //   route: '/audit-trial',
+  //   permission: 'viewAuditTrail'
+  // }
 ];

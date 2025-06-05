@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { RoleWithPermissionsService } from '../../services/roles.service';
-import { MENU_CONFIG } from './menu.config';
+import { MENU_CONFIG, MenuItem } from './menu.config';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { PermissionKey, RoleWithPermissions } from '../../modals/roles';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -15,18 +18,30 @@ import { CommonModule } from '@angular/common';
       </li>
     </ul>
   `,
-  imports: [RouterModule,FormsModule,CommonModule],
+  imports: [RouterModule, FormsModule, CommonModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent implements OnInit {
-  filteredMenu: any[] = [];
-
-  constructor(private permissionService: RoleWithPermissionsService) {}
+  visibleMenuItems: MenuItem[] = [];
+  private roleSubscription?: Subscription;
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.filteredMenu = MENU_CONFIG.filter(item =>
-      this.permissionService.hasPermission(item.permission)
-    );
+    // Subscribe to role changes
+    this.roleSubscription = this.authService.getRoleObservable().subscribe(role => {
+      if (role) {
+        const permissions = this.authService.getPermissions();
+        this.visibleMenuItems = MENU_CONFIG.filter(menu =>
+          permissions.includes(menu.permission)
+        );
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.roleSubscription?.unsubscribe(); // prevent memory leaks
   }
 }
+
+

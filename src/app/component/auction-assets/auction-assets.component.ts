@@ -11,8 +11,14 @@ import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { Auction } from '../../modals/auctions';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { BidService } from '../../services/bid.service';
+import { bidStatsBulk } from '../../modals/bid-stats';
+import { AuctionService } from '../../services/auction.service';
+import { TranslateModule } from '@ngx-translate/core';
 
-declare var bootstrap: any; 
+
+
+declare var bootstrap: any;
 
 // Update the DirectSaleAssetDto interface
 interface ExtendedDirectSaleAssetDto extends DirectSaleAssetDto {
@@ -24,23 +30,25 @@ interface ExtendedDirectSaleAssetDto extends DirectSaleAssetDto {
 @Component({
   selector: 'app-direct-bid',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,TranslateModule],
   templateUrl: './auction-assets.component.html',
   styleUrl: './auction-assets.component.css'
 })
 export class AuctionAssetsComponent implements OnInit, AfterViewInit {
-  @ViewChild('liveToast') liveToast!: ElementRef;
+   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
-  
-  assets: ExtendedDirectSaleAssetDto[] = [];
+
+  assets: DirectSaleAssetDto[] = [];
   auction: Auction[] = [];
-  originalAssets: ExtendedDirectSaleAssetDto[] = [];
+  originalAssets: DirectSaleAssetDto[] = [];
   layoutType: 'grid' | 'row' = 'grid';
   noAssetsFound: boolean = false;
+  // TODO: Replace with actual user ID from auth context
   userId: number | null = null;
   environment = environment;
   wishlistAssetIds: number[] = [];
-
+  assetIds: number[] = [];
+  AuctionIds: number[] = [];
   searchQuery: string = '';
   searchTimeout: any;
 
@@ -78,26 +86,30 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
+    private auctionService: AuctionService,
     private http: HttpClient,
     private listService: ListService,
     private router: Router,
     private authService: AuthService,
+    private bidService: BidService,
     private viewportScroller: ViewportScroller
-  ) {}
+  ) { }
 
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
   }
 
   showToast(message: string, header = 'Notification', type: 'success' | 'error' | 'info' = 'info') {
+
     const toastEl = this.liveToast.nativeElement;
-    
+
+
     toastEl.querySelector('.toast-header ').textContent = header;
 
     toastEl.querySelector('.toast-body').textContent = message;
 
     const headerEl = toastEl.querySelector('.toast-header');
-    
+
     headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-white');
     if (type === 'success') {
       headerEl.classList.add('bg-success', 'text-white');
@@ -114,24 +126,57 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
-    console.log('in categorymethod', categoryId);
     if (!isNaN(categoryId)) {
-          console.log('inside categorymethod', categoryId);
-
       this.listService.getAuctionAssetsByCategory(categoryId).subscribe({
         next: (data) => {
           this.assets = data;
-          this.originalAssets = [...data]; 
+          this.originalAssets = [...data];
           this.loadWishlist();
           this.noAssetsFound = this.assets.length === 0;
-          console.log('Assets:', this.assets);
+          this.assetIds = this.assets.map(a => a.assetId);
+          this.AuctionIds = this.assets.map(a => a.auctionId);
+
+          // Step 1: Get bid stats
+          this.bidService.getBidStatsByAssetIds(this.assetIds).subscribe({
+            next: (bidStatsList: bidStatsBulk[]) => {
+              this.assets = this.assets.map(asset => {
+                const stats = bidStatsList.find(b => b.assetId === asset.assetId);
+                return {
+                  ...asset,
+                  bidCount: stats?.bidCount ?? 0,
+                  highestbid: stats?.highestBid,
+                };
+              });
+
+              // Step 2: Get auctions by IDs
+              this.auctionService.getAuctionsByIds(this.AuctionIds).subscribe({
+                next: (auctions: Auction[]) => {
+                  this.assets = this.assets.map(asset => {
+                    const auction = auctions.find(a => a.auctionId === asset.auctionId);
+                    return {
+                      ...asset,
+                      auctionEndTime: auction?.endDateTime ?? null,
+                    };
+                  });
+                  console.log("Final mapped assets with auction info:", this.assets);
+                },
+                error: err => console.error('Error fetching auctions:', err)
+              });
+
+            },
+            error: err => console.error('Error fetching bid stats:', err)
+          });
+
         },
-        error: (err) => console.error('Error fetching assets:', err)
+        error: err => console.error('Error fetching assets:', err)
       });
     } else {
       console.error('Invalid category ID');
     }
   }
+
+
+
 
   getFlagUrl(asset: Asset): string {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
@@ -240,6 +285,9 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
       });
     }
   }
+
+
+
 
   navigateToAsset(assetId: number | undefined): void {
     if (assetId) {

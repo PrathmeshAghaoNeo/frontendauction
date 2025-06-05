@@ -62,6 +62,7 @@ export interface AssetDetailDto {
 export interface DirectSaleAssetDto {
   assetId: number;
   title: string;
+  auctionId: number;
   categoryId: number;
   deposit: number;
   minIncrement: number;
@@ -72,8 +73,12 @@ export interface DirectSaleAssetDto {
   thumbnailUrl: string | null;
   categoryName: string;
   isAvailableForDirectSale: boolean;
-  galleries: AssetGalleryDto[];
   createdAt?: string;
   assetNumber: string;
+  galleries: AssetGalleryDto[]; 
+   bidCount?: number;
+  highestbid?: number;
+  auctionEndTime?: string | null;
+
 }
  

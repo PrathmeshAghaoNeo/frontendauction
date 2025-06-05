@@ -7,7 +7,7 @@ header {
   z-index: 1030;
   
 
-    padding: 0.5rem 1rem;
+    /* padding: 0.5rem 1rem; */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     
     .navbar-brand img {
@@ -93,4 +93,28 @@ header {
   height: 24px;
   width: 24px;
   object-fit: contain;
+}
+
+
+.btn-toggle-lang {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.3s ease;
+  user-select: none;
+}
+
+.btn-toggle-lang:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.btn-toggle-lang:focus {
+  outline: none;
+  text-decoration: underline;
 }

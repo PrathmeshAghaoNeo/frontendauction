@@ -61,16 +61,16 @@ export interface Role {
     totalCount: number;   
   }
   
-  export interface Notification {
-  id: string
-  userId: any
-  title: string
-  message: string
-  isRead: boolean
-  createdAt: string
-  expiresAt: string
-  auctionId: any
-  assetId: any
+export interface Notification {
+  id: string;
+  userId: any;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string | Date; 
+  expiresAt: string;
+  auctionId: any;
+  assetId: any;
 }
 
 export interface DepositLimits{

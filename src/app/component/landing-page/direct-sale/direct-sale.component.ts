@@ -6,11 +6,12 @@ import { environment } from '../../../constants/enviroments';
 import { ApiEndpoints } from '../../../constants/api-endpoints';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
    selector: 'app-direct-sale',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './direct-sale.component.html',
   styleUrl: './direct-sale.component.css',
 
