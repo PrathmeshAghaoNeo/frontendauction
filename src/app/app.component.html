@@ -11,14 +11,18 @@
     <main class="app-content"  [ngClass]="{ 'auth-bg': isCurrentRoute(['/login','/']) }">
       <!-- <app-back-button *ngIf="showBackButton"></app-back-button> -->
 
-     <app-chat-bot></app-chat-bot>
+
+     <!-- <app-chat-bot></app-chat-bot> -->
       <router-outlet></router-outlet>
 
     </main>
+
+    
   </div>
   
 
   <app-footer *ngIf="showHeaderAndFooter" class="app-footer"></app-footer>
+   <app-chat-bot></app-chat-bot>
   
    <div class="toast-container p-3 position-fixed bottom-0 end-0" style="z-index: 9999;">
 

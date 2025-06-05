@@ -72,7 +72,8 @@ export interface DirectSaleAssetDto {
   thumbnailUrl: string | null;
   categoryName: string;
   isAvailableForDirectSale: boolean;
-  galleries: AssetGalleryDto[]; 
- 
+  galleries: AssetGalleryDto[];
+  createdAt?: string;
+  assetNumber: string;
 }
  

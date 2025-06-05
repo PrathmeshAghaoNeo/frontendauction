@@ -1,167 +1,216 @@
-<div class="auction-asset-container">
-
-  <div class="grid-main">
-    <div class="top-toolbar">
-      <div class="toolbar-left">
-      <button class="back-btn" routerLink="/directbid">
-        <button class="back-btn" (click)="goBack()">
-          <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
-        </button>
-      </button>
+<div class="Grid-container" [class.filter-open]="isFilterOpen">
+  <div *ngIf="isFilterOpen" class="filter-panel">
+    <div class="filter-header">
+      <h3>Filters</h3>
+      <button class="close-filter" (click)="toggleFilter()">×</button>
     </div>
-    <div class="toolbar-right">
-      <img
-        [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
-        alt="Toggle View"
-        class="toolbar-icon grid"
-        (click)="toggleLayout()"
-      />
+    <div class="filter-content">
+      <!-- Asset Names Section -->
+      <div class="filter-section">
+        <h4>Asset Names</h4>
+        <div class="checkbox-list">
+          <div class="checkbox-item" *ngFor="let name of filteredAssetNames">
+            <input type="checkbox" [id]="'asset-' + name" 
+                   [checked]="filters.assetNames.selected.has(name)"
+                   (change)="onAssetNameChange(name, $event)">
+            <label [for]="'asset-' + name">{{ name }}</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Ranges Section -->
+      <div class="filter-section">
+        <h4>Price Ranges</h4>
+        <div class="checkbox-list">
+          <div class="checkbox-item" *ngFor="let range of filters.prices.ranges; let i = index">
+            <input type="checkbox" [id]="'price-' + i" 
+                   [(ngModel)]="range.selected"
+                   (ngModelChange)="onPriceRangeChange()">
+            <label [for]="'price-' + i">
+              {{ range.min | currency:'BHD ' }}
+              {{ range.max ? ' - ' + (range.max | currency:'BHD ') : ' & Above' }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Sorting Section -->
+      <div class="price-sorting">
+        <h4>Price Sorting</h4>
+        <div class="price-range-slider">
+          <div class="slider-labels">
+            <span>Low to High</span>
+            <span>High to Low</span>
+          </div>
+          <input type="range" min="0" max="100" [(ngModel)]="priceRange" 
+                 (input)="onPriceSortingChange()" class="slider">
+          <div class="price-labels">
+            <span>{{ selectedPriceRange.min | currency:'BHD ' }}</span>
+            <span>{{ selectedPriceRange.max | currency:'BHD ' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Filters Section -->
+      <div class="active-filters" *ngIf="hasActiveFilters()">
+        <h4>Active Filters</h4>
+        <div class="active-filter-tags">
+          <span class="filter-tag" *ngFor="let filter of getActiveFilters()">
+            {{ filter.label }}
+            <button class="remove-filter" (click)="removeFilter(filter.type, filter.value)">×</button>
+          </span>
+          <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="plates-container" [ngClass]="layoutType + '-view'" >
-    <div class="plate-card" *ngFor="let asset of assets">
-      <div class="plate-display" (click)="navigateToAsset(asset.assetId)"
-      >
-        <ng-container *ngIf="layoutType === 'row'; else gridView">
-          <!-- Row View for Bid Page -->
-          <div class="plate-display-row" >
-            <img
-              *ngIf="asset.galleries?.length"
-              [src]="environment.baseurl + asset.galleries[0]?.filePath"
-              alt="Asset Image"
-              class="plate-main-image"
-              (click)="navigateToAsset(asset?.assetId)"
-            />
+  <div class="auction-asset-container">
+    <div class="grid-main">
+      <div class="top-toolbar">
+        <div class="toolbar-left">
+          <button class="back-btn" (click)="goBack()">
+            <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+          </button>
+        </div>
+        
+        <!-- Search Box -->
+        <div class="search-box-centered">
+          <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search assets..." [(ngModel)]="searchQuery">
+            <i class="fas fa-search search-icon-inside"></i>
+          </div>
+        </div>
 
-            <div class="plate-name-view">
-              <span class="plate-name-text">{{ asset.title }}</span>
-            </div>
+        <div class="toolbar-right">
+          <button class="filter-btn-icon" (click)="toggleFilter()">
+            <img src="filter.png" alt="Filter" class="toolbar-icon" />
+          </button>
+          <img
+            [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
+            alt="Toggle View"
+            class="toolbar-icon grid"
+            (click)="toggleLayout()"
+          />
+        </div>
+      </div>
 
-            <div class="plate-footer">
-              
+      <div class="plates-container" [ngClass]="layoutType + '-view'" >
+        <div class="plate-card" *ngFor="let asset of assets">
+          <div class="plate-display" (click)="navigateToAsset(asset.assetId)">
+            <ng-container *ngIf="layoutType === 'row'; else gridView">
+              <!-- Row View for Bid Page -->
+              <div class="plate-display-row">
+                <img
+                  *ngIf="asset.galleries?.length"
+                  [src]="environment.baseurl + asset.galleries[0]?.filePath"
+                  alt="Asset Image"
+                  class="plate-main-image"
+                  (click)="navigateToAsset(asset?.assetId)"
+                />
+
+                <div class="plate-name-view">
+                  <span class="plate-name-text">{{ asset.title }}</span>
+                </div>
+
+                <div class="plate-footer">
+                  <div class="icons icons-top">
+                    <!-- Wishlist Button -->
+                    <button
+                      class="icon-btn-1 icon-btn"
+                      [title]="isInWishlist(asset.assetId) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                      (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
+                    >
+                      <img
+                        [src]="isInWishlist(asset.assetId) ? 'bookmark.png' : 'wishlist.png'"
+                        alt="Wishlist Toggle"
+                        class="button-image1"
+                        [ngClass]="{'active-wishlist': isInWishlist(asset.assetId)}"
+                      />
+                    </button>
+
+                    <!-- Bid Button -->
+                    <button
+                      class="icon-btn-1 icon-btn"
+                      (click)="navigateToAsset(asset?.assetId)"
+                    >
+                      <img
+                        src="Bidauction1.png"
+                        alt="Bid Toggle"
+                        class="button-image2"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bid Info Section -->
+              <div class="bid-info">
+                <div class="price">BHD {{ asset.price }}</div>
+                
+                <div class="bid-detail">
+                  <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
+                  <span>{{ 0 }}</span>
+                </div>
+                
+                <div class="bid-detail">
+                  <img src="chronometer.png" class="button-image2" alt="Time Icon" />
+                  <span>{{ asset }}</span>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-template #gridView>
+              <img
+                *ngIf="asset.galleries?.length"
+                [src]="environment.baseurl + asset.galleries[0]?.filePath"
+                alt="Asset Image"
+                class="plate-main-image"
+                (click)="navigateToAsset(asset?.assetId)"
+              />
               <div class="icons icons-top">
-                <!-- Wishlist Button -->
-                <button
-                  class="icon-btn-1 icon-btn"
-                  [title]="
-                    isInWishlist(asset.assetId)
-                      ? 'Remove from Wishlist'
-                      : 'Add to Wishlist'
-                  "
-                   (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
+                <button 
+                  class="icon-btn icon-btn-1"
+                  [title]="isInWishlist(asset.assetId) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                  (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
                 >
-                <!-- (click)="toggleWishlist(asset.assetId)" -->
                   <img
-                    [src]="
-                      isInWishlist(asset.assetId)
-                        ? 'bookmark.png'
-                        : 'wishlist.png'
-                    "
+                    [src]="isInWishlist(asset.assetId) ? 'bookmark.png' : 'wishlist.png'"
                     alt="Wishlist Toggle"
                     class="button-image1"
-                    [ngClass]="{
-                      'active-wishlist': isInWishlist(asset.assetId)
-                    }"
+                    [ngClass]="{'active-wishlist': isInWishlist(asset.assetId)}"
                   />
                 </button>
-
-                <!-- Bid Button -->
                 <button
-                  class="icon-btn-1 icon-btn"
+                  class="icon-btn icon-btn-1"
+                  title="Bid"
                   (click)="navigateToAsset(asset?.assetId)"
-                  >
+                >
                   <img
                     src="Bidauction1.png"
-                    alt="Bid Toggle"
+                    alt="bid Toggle"
                     class="button-image2"
                   />
                 </button>
               </div>
-            </div>
-          </div>
 
-          <!-- Bid Info Section -->
-          <div class="bid-info">
-            <div class="price">BHD {{ asset.price }}</div>
-            
-            <div class="bid-detail">
-              <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
-              <span>{{ 0 }}</span>
-            </div>
-            
-            
-            <div class="bid-detail">
-              <img src="chronometer.png" class="button-image2" alt="Time Icon" />
-              <span>{{"3d 18h" }}</span>
-            </div>
+              <div class="plate-name">
+                <span class="plate-name-text">{{ asset.title }}</span>
+              </div>
+              <div class="price1">BHD {{ asset.highestbid ?? asset.price }}</div>
+              <div class="bid-info">
+                <div class="bid-detail">
+                  <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
+                  <span>{{ asset.bidCount }}</span>
+                </div>
+                <div class="bid-detail">
+                  <img src="chronometer.png" class="button-image2" alt="Time Icon" />
+                  <span>{{ getTimeRemaining(asset.auctionEndTime) }}</span>
+                </div>
+              </div>
+            </ng-template>
           </div>
-        </ng-container>
-
-        <ng-template #gridView>
-          <img
-            *ngIf="asset.galleries?.length"
-            [src]="environment.baseurl + asset.galleries[0]?.filePath"
-            alt="Asset Image"
-            class="plate-main-image"
-            (click)="navigateToAsset(asset?.assetId)"
-          />
-          <div class="icons icons-top">
-            <button class="icon-btn icon-btn-1" 
-            [title]="
-                    isInWishlist(asset.assetId)
-                      ? 'Remove from Wishlist'
-                      : 'Add to Wishlist'
-                  "
-             (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
-            >
-              <!-- (click)="addToWishlist(asset.assetId)" -->
-              <img
-                [src]="
-                      isInWishlist(asset.assetId)
-                        ? 'bookmark.png'
-                        : 'wishlist.png'
-                    "
-                    alt="Wishlist Toggle"
-                    class="button-image1"
-                    [ngClass]="{
-                      'active-wishlist': isInWishlist(asset.assetId)
-                    }"
-              />
-            </button>
-            <button
-              class="icon-btn icon-btn-1"
-              title="Bid"
-              (click)="navigateToAsset(asset?.assetId)"
-            >
-              <!-- (click)="addToCart(asset.assetId)" -->
-              <img
-                src="Bidauction1.png"
-                alt="bid Toggle"
-                class="button-image2"
-              />
-            </button>
-          </div>
-
-          <div class="plate-name">
-            <span class="plate-name-text">{{ asset.title }}</span>
-          </div>
-          <div class="price1">BHD {{ asset.price }}</div>
-          <div class="bid-info">
-            <div class="bid-detail">
-              <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
-              <span>{{ 0 }}</span>
-            </div>
-            <div class="bid-detail">
-              <img
-                src="chronometer.png"
-                class="button-image2"
-                alt="Time Icon"
-              />
-              <span>{{ "3d 18h" }}</span>
-            </div>
-          </div>
-        </ng-template>
+        </div>
       </div>
     </div>
   </div>
@@ -177,7 +226,7 @@
     aria-atomic="true"
     data-bs-delay="4000"
   >
-  <div class="toast-header bg-info text-white">
+    <div class="toast-header bg-info text-white">
       <strong class="me-auto">Notification</strong>
       <small class="text-muted">Just now</small>
       <button
@@ -190,4 +239,4 @@
     <div class="toast-body">This is a toast message.</div>
   </div>
 </div>
-</div>
+

@@ -1,37 +1,44 @@
-<!-- Side Panel Overlay -->
-<div class="sidepanel-overlay" *ngIf="isPanelOpen" (click)="closePanel()"></div>
+<ng-container *ngIf="assets && assets.length > 0; else noAssets">
+  <!-- Side Panel Overlay -->
+  <div class="sidepanel-overlay" *ngIf="isPanelOpen" (click)="closePanel()"></div>
 
-<!-- Side Panel Content -->
-<div class="sidepanel-content" *ngIf="isPanelOpen" (click)="$event.stopPropagation()">
-  <button class="close-btn" (click)="closePanel()">&times;</button>
-  <h2>Filter Assets</h2>
+  <!-- Side Panel Content -->
+  <div class="sidepanel-content" *ngIf="isPanelOpen" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closePanel()">&times;</button>
+    <h2>Filter Assets</h2>
 
-  <!-- Asset Name Filter -->
-  <div class="filter-section">
-    <h3>Asset Name</h3>
-    <div *ngFor="let name of assetNames">
-      <input type="checkbox" [id]="'name-' + name" [(ngModel)]="selectedAssetNames[name]">
-      <label [for]="'name-' + name">{{ name }}</label>
+    <!-- Asset Name Filter -->
+    <div class="filter-section">
+      <h3>Asset Name</h3>
+      <div *ngFor="let name of assetNames">
+        <input type="checkbox" [id]="'name-' + name" [(ngModel)]="selectedAssetNames[name]">
+        <label [for]="'name-' + name">{{ name }}</label>
+      </div>
     </div>
-  </div>
 
-  <!-- Price Filter -->
-  <div class="filter-section">
-    <h3>Price</h3>
-    <div *ngFor="let price of priceRanges">
-      <input type="checkbox" [id]="'price-' + price" [(ngModel)]="selectedPriceRanges[price]">
-      <label [for]="'price-' + price">BHD {{ price }}</label>
+    <!-- Price Filter -->
+    <div class="filter-section">
+      <h3>Price</h3>
+      <div *ngFor="let price of priceRanges">
+        <input type="checkbox" [id]="'price-' + price" [(ngModel)]="selectedPriceRanges[price]">
+        <label [for]="'price-' + price">BHD {{ price }}</label>
+      </div>
     </div>
-  </div>
 
-  <!-- Duration Filter -->
-  <div class="filter-section">
-    <h3>Duration</h3>
-    <div *ngFor="let duration of durations">
-      <input type="checkbox" [id]="'duration-' + duration" [(ngModel)]="selectedDurations[duration]">
-      <label [for]="'duration-' + duration">{{ duration }}</label>
+    <!-- Duration Filter -->
+    <div class="filter-section">
+      <h3>Duration</h3>
+      <div *ngFor="let duration of durations">
+        <input type="checkbox" [id]="'duration-' + duration" [(ngModel)]="selectedDurations[duration]">
+        <label [for]="'duration-' + duration">{{ duration }}</label>
+      </div>
     </div>
-  </div>
 
-  <button class="apply-btn" (click)="applyFilter()">Apply Filter</button>
-</div> 
+    <button class="apply-btn" (click)="applyFilter()">Apply Filter</button>
+  </div>
+</ng-container>
+<ng-template #noAssets>
+  <div style="padding: 2rem; text-align: center; color: #888;">
+    No assets available to filter.
+  </div>
+</ng-template> 

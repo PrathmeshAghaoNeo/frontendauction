@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
 import { Asset, } from '../../modals/manage-asset';
 import { HttpClient } from '@angular/common/http';
 import { ManageAssetService } from '../../services/asset.service';
@@ -10,59 +10,92 @@ import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { Auction } from '../../modals/auctions';
 import { AuthService } from '../../services/auth.service';
-
-
+import { FormsModule } from '@angular/forms';
 
 declare var bootstrap: any; 
+
+// Update the DirectSaleAssetDto interface
+interface ExtendedDirectSaleAssetDto extends DirectSaleAssetDto {
+  highestbid?: number;
+  bidCount?: number;
+  auctionEndTime?: string;
+}
 
 @Component({
   selector: 'app-direct-bid',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './auction-assets.component.html',
   styleUrl: './auction-assets.component.css'
 })
-export class AuctionAssetsComponent implements OnInit , AfterViewInit {
-
- @ViewChild('liveToast') liveToast!: ElementRef;
-   toastInstance: any;
+export class AuctionAssetsComponent implements OnInit, AfterViewInit {
+  @ViewChild('liveToast') liveToast!: ElementRef;
+  toastInstance: any;
   
-  assets: DirectSaleAssetDto[] = [];
-  auction:Auction[] = [];
-  originalAssets: DirectSaleAssetDto[] = [];
+  assets: ExtendedDirectSaleAssetDto[] = [];
+  auction: Auction[] = [];
+  originalAssets: ExtendedDirectSaleAssetDto[] = [];
   layoutType: 'grid' | 'row' = 'grid';
   noAssetsFound: boolean = false;
-  // TODO: Replace with actual user ID from auth context
-  userId: number |null = null;
-  environment=environment;
-   wishlistAssetIds: number[] = [];  
+  userId: number | null = null;
+  environment = environment;
+  wishlistAssetIds: number[] = [];
+
+  searchQuery: string = '';
+  searchTimeout: any;
+
+  isFilterOpen = false;
+  priceRange = 0;
+  selectedPriceRange = { min: 0, max: 100 };
+  filteredAssetNames: string[] = [];
+
+  filters = {
+    assetNames: {
+      enabled: true,
+      selected: new Set<string>()
+    },
+    prices: {
+      enabled: true,
+      ranges: [
+        { min: 0, max: 100, selected: false },
+        { min: 101, max: 500, selected: false },
+        { min: 501, max: 1000, selected: false },
+        { min: 1001, max: 5000, selected: false },
+        { min: 5001, max: null, selected: false }
+      ]
+    },
+    durations: {
+      enabled: true,
+      options: [
+        { days: 1, label: '1 Day', selected: false },
+        { days: 7, label: '7 Days', selected: false },
+        { days: 30, label: '30 Days', selected: false },
+        { days: 90, label: '90 Days', selected: false }
+      ]
+    }
+  };
 
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
     private http: HttpClient,
-    private listService:ListService , 
+    private listService: ListService,
     private router: Router,
-    private authService : AuthService,
+    private authService: AuthService,
     private viewportScroller: ViewportScroller
   ) {}
-
 
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
   }
 
   showToast(message: string, header = 'Notification', type: 'success' | 'error' | 'info' = 'info') {
-   
     const toastEl = this.liveToast.nativeElement;
     
-  
     toastEl.querySelector('.toast-header ').textContent = header;
 
-    // Change toast body message
     toastEl.querySelector('.toast-body').textContent = message;
 
-    // Change header bg color depending on type
     const headerEl = toastEl.querySelector('.toast-header');
     
     headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-white');
@@ -108,48 +141,47 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     this.layoutType = this.layoutType === 'grid' ? 'row' : 'grid';
   }
 
- addToWishlist(assetId: number): void {
-  const payload = {
-    userId: this.userId,
-    assetId: assetId,
-    quantity: 1
-  };
+  addToWishlist(assetId: number): void {
+    const payload = {
+      userId: this.userId,
+      assetId: assetId,
+      quantity: 1
+    };
 
-  console.log(assetId);
+    console.log(assetId);
 
-  this.listService.addToWishlist(payload).subscribe({
-    next: () => {
-      Swal.fire({
-        icon: 'success',
-        title: 'Added to Wishlist',
-        text: 'This asset has been added to your wishlist.',
-        confirmButtonText: 'OK'
-      });
-    },
-    error: (err) => {
-      console.error('Error adding asset to wishlist:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: err.message || 'Something went wrong while adding to wishlist.',
-        confirmButtonText: 'OK'
-      });
-    }
-  });
-}
+    this.listService.addToWishlist(payload).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Added to Wishlist',
+          text: 'This asset has been added to your wishlist.',
+          confirmButtonText: 'OK'
+        });
+      },
+      error: (err) => {
+        console.error('Error adding asset to wishlist:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: err.message || 'Something went wrong while adding to wishlist.',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  }
 
-
- loadWishlist(): void {
-  this.listService.getWishlist(this.userId).subscribe({
-    next: (data) => {
-      this.wishlistAssetIds = data.map((item: any) => item.assetId);
-      console.log('Wishlist Asset IDs:', this.wishlistAssetIds);
-    },
-    error: (err) => {
-      console.error('Error loading wishlist:', err);
-    },
-  });
-}
+  loadWishlist(): void {
+    this.listService.getWishlist(this.userId).subscribe({
+      next: (data) => {
+        this.wishlistAssetIds = data.map((item: any) => item.assetId);
+        console.log('Wishlist Asset IDs:', this.wishlistAssetIds);
+      },
+      error: (err) => {
+        console.error('Error loading wishlist:', err);
+      },
+    });
+  }
 
   buyNow(assetId: number): void {
     const payload = {
@@ -168,13 +200,12 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     });
   }
 
-   isInWishlist(assetId: number): boolean {
+  isInWishlist(assetId: number): boolean {
     return this.wishlistAssetIds.includes(assetId);
   }
 
-
   toggleWishlist(assetId: number): void {
-     if (!this.userId) return;
+    if (!this.userId) return;
     if (this.isInWishlist(assetId)) {
       const payload = { userId: this.userId, assetId: assetId };
       this.listService.removeFromWishlist(payload).subscribe({
@@ -210,16 +241,196 @@ export class AuctionAssetsComponent implements OnInit , AfterViewInit {
     }
   }
 
-
   navigateToAsset(assetId: number | undefined): void {
-  if (assetId) {
-    const encodedUserId = btoa(assetId.toString());
-    this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
+    if (assetId) {
+      const encodedUserId = btoa(assetId.toString());
+      this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
+    }
   }
-}
 
   goBack() {
     window.history.back();
+  }
+
+  toggleFilter() {
+    this.isFilterOpen = !this.isFilterOpen;
+    const container = document.querySelector('.Grid-container');
+    if (this.isFilterOpen) {
+      container?.classList.add('filter-open');
+    } else {
+      container?.classList.remove('filter-open');
+    }
+  }
+
+  onAssetNameChange(name: string, event: any) {
+    if (event.target.checked) {
+      this.filters.assetNames.selected.add(name);
+    } else {
+      this.filters.assetNames.selected.delete(name);
+    }
+    this.applyFilters();
+  }
+
+  onPriceRangeChange() {
+    this.applyFilters();
+  }
+
+  onPriceSortingChange() {
+    const maxPrice = Math.max(...this.originalAssets.map(asset => asset.price || 0));
+    this.selectedPriceRange = {
+      min: 0,
+      max: maxPrice
+    };
+    this.applyFilters();
+  }
+
+  hasActiveFilters(): boolean {
+    return (
+      this.filters.assetNames.selected.size > 0 ||
+      this.filters.prices.ranges.some(range => range.selected) ||
+      this.filters.durations.options.some(option => option.selected)
+    );
+  }
+
+  getActiveFilters(): { type: string; value: any; label: string }[] {
+    const activeFilters: { type: string; value: any; label: string }[] = [];
+
+    this.filters.assetNames.selected.forEach(name => {
+      activeFilters.push({
+        type: 'asset',
+        value: name,
+        label: name
+      });
+    });
+
+    this.filters.prices.ranges.forEach(range => {
+      if (range.selected) {
+        const label = range.max 
+          ? `${range.min} - ${range.max} BHD`
+          : `${range.min}+ BHD`;
+        activeFilters.push({
+          type: 'price',
+          value: range,
+          label: label
+        });
+      }
+    });
+
+    this.filters.durations.options.forEach(option => {
+      if (option.selected) {
+        activeFilters.push({
+          type: 'duration',
+          value: option.days,
+          label: option.label
+        });
+      }
+    });
+
+    return activeFilters;
+  }
+
+  removeFilter(type: string, value: any) {
+    switch (type) {
+      case 'asset':
+        this.filters.assetNames.selected.delete(value);
+        break;
+      case 'price':
+        const priceRange = this.filters.prices.ranges.find(r => r.min === value.min && r.max === value.max);
+        if (priceRange) {
+          priceRange.selected = false;
+        }
+        break;
+      case 'duration':
+        const duration = this.filters.durations.options.find(d => d.days === value);
+        if (duration) {
+          duration.selected = false;
+        }
+        break;
+    }
+    this.applyFilters();
+  }
+
+  clearAllFilters() {
+    this.filters.assetNames.selected.clear();
+    this.filters.prices.ranges.forEach(range => range.selected = false);
+    this.filters.durations.options.forEach(option => option.selected = false);
+    this.priceRange = 0;
+    this.selectedPriceRange = { min: 0, max: 100 };
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    let filteredAssets = [...this.originalAssets];
+
+    // Apply search filter first if there's a search query
+    if (this.searchQuery.trim()) {
+      const searchTerm = this.searchQuery.toLowerCase().trim();
+      filteredAssets = filteredAssets.filter(asset => 
+        asset.title?.toLowerCase().includes(searchTerm) ||
+        asset.description?.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    if (this.filters.assetNames.enabled && this.filters.assetNames.selected.size > 0) {
+      filteredAssets = filteredAssets.filter(asset => 
+        this.filters.assetNames.selected.has(asset.title)
+      );
+    }
+
+    if (this.filters.prices.enabled) {
+      const selectedRanges = this.filters.prices.ranges.filter(range => range.selected);
+      if (selectedRanges.length > 0) {
+        filteredAssets = filteredAssets.filter(asset => {
+          return selectedRanges.some(range => {
+            const price = asset.price || 0;
+            if (range.max === null) {
+              return price >= range.min;
+            }
+            return price >= range.min && price <= range.max;
+          });
+        });
+      }
+    }
+
+    if (this.filters.durations.enabled) {
+      const selectedDurations = this.filters.durations.options.filter(opt => opt.selected);
+      if (selectedDurations.length > 0) {
+        const currentDate = new Date();
+        filteredAssets = filteredAssets.filter(asset => {
+          if (!asset.createdAt) return false;
+          const assetDate = new Date(asset.createdAt);
+          if (isNaN(assetDate.getTime())) return false;
+          const diffDays = Math.ceil((currentDate.getTime() - assetDate.getTime()) / (1000 * 60 * 60 * 24));
+          return selectedDurations.some(duration => diffDays <= duration.days);
+        });
+      }
+    }
+
+    this.assets = filteredAssets;
+  }
+
+  getTimeRemaining(endTime: string | undefined): string {
+    if (!endTime) return 'N/A';
+    
+    const end = new Date(endTime).getTime();
+    const now = new Date().getTime();
+    const distance = end - now;
+    
+    if (distance < 0) {
+      return 'Ended';
+    }
+    
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (days > 0) {
+      return `${days}d ${hours}h`;
+    } else if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    } else {
+      return `${minutes}m`;
+    }
   }
 }
 

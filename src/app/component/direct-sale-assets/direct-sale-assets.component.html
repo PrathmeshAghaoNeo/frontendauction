@@ -1,12 +1,108 @@
-<div class="Grid-container">
+<div class="Grid-container" [class.filter-open]="isFilterOpen">
+  <div *ngIf="isFilterOpen" class="filter-panel">
+    <div class="filter-header">
+      <h3>Filters</h3>
+      <button class="close-filter" (click)="toggleFilter()">×</button>
+    </div>
+    <div class="filter-content">
+      <!-- Asset Names Section -->
+      <div class="filter-section">
+        <h4>Asset Names</h4>
+        <!-- <div class="search-box">
+          <input type="text" placeholder="Search assets..." #searchInput (input)="filterAssetNames(searchInput.value)">
+        </div> -->
+        <div class="checkbox-list">
+          <div class="checkbox-item" *ngFor="let name of filteredAssetNames">
+            <input type="checkbox" [id]="'asset-' + name" 
+                   [checked]="filters.assetNames.selected.has(name)"
+                   (change)="onAssetNameChange(name, $event)">
+            <label [for]="'asset-' + name">{{ name }}</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Ranges Section -->
+      <div class="filter-section">
+        <h4>Price Ranges</h4>
+        <div class="checkbox-list">
+          <div class="checkbox-item" *ngFor="let range of filters.prices.ranges; let i = index">
+            <input type="checkbox" [id]="'price-' + i" 
+                   [(ngModel)]="range.selected"
+                   (ngModelChange)="onPriceRangeChange()">
+            <label [for]="'price-' + i">
+              {{ range.min | currency:'BHD ' }}
+              {{ range.max ? ' - ' + (range.max | currency:'BHD ') : ' & Above' }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Duration Section -->
+      <!--
+      <div class="filter-section">
+        <h4>Duration</h4>
+        <div class="checkbox-list">
+          <div class="checkbox-item" *ngFor="let option of filters.durations.options">
+            <input type="checkbox" [id]="'duration-' + option.days" 
+                   [(ngModel)]="option.selected"
+                   (ngModelChange)="onDurationChange()">
+            <label [for]="'duration-' + option.days">{{ option.label }}</label>
+          </div>
+        </div>
+      </div>
+      -->
+
+      <!-- Price Sorting Section -->
+      <div class="price-sorting">
+        <h4>Price Sorting</h4>
+        <div class="price-range-slider">
+          <div class="slider-labels">
+            <span>Low to High</span>
+            <span>High to Low</span>
+          </div>
+          <input type="range" min="0" max="100" [(ngModel)]="priceRange" 
+                 (input)="onPriceSortingChange()" class="slider">
+          <div class="price-labels">
+            <span>{{ selectedPriceRange.min | currency:'BHD ' }}</span>
+            <span>{{ selectedPriceRange.max | currency:'BHD ' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Filters Section -->
+      <div class="active-filters" *ngIf="hasActiveFilters()">
+        <h4>Active Filters</h4>
+        <div class="active-filter-tags">
+          <span class="filter-tag" *ngFor="let filter of getActiveFilters()">
+            {{ filter.label }}
+            <button class="remove-filter" (click)="removeFilter(filter.type, filter.value)">×</button>
+          </span>
+          <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="top-toolbar">
     <div class="toolbar-left">
-      <button class="back-btn" routerLink="/directbid">
         <button class="back-btn" (click)="goBack()">
           <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
         </button>
+    </div>
+
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        (input)="onSearchInput()"
+        placeholder="Search..."
+        class="search-input"
+      >
+      <button class="search-button" (click)="filterAssetsBySearch()">
+        <i class="bi bi-search"></i>
       </button>
     </div>
+
     <div class="toolbar-right">
       <img
         [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
@@ -15,11 +111,14 @@
         (click)="toggleLayout()"
       />
 
-      <!-- <img src="sort.png" alt="Filter" class="toolbar-icon sort" /> -->
-
-
-
-
+      <button class="btn filter-btn-icon me-4" (click)="toggleFilter()" title="Filter">
+        <svg width="43" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="7" width="16" height="2" rx="1" fill="currentColor"/>
+          <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/>
+          <rect x="8" y="15" width="8" height="2" rx="1" fill="currentColor"/>
+        </svg>
+        <span class="filter-tooltip">Apply Filter</span>
+      </button>
 
       <button
         class="btn btn-outline-success me-2"

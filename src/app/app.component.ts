@@ -120,7 +120,8 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/bid-add-to-cart',
     '/asset-details',
     '/orders',
-    '/bid-history'
+    '/bid-history',
+    '/page-not-found'
    
   ];
  

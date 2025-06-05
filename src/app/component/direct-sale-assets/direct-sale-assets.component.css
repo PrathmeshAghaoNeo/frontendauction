@@ -1,5 +1,13 @@
 .Grid-container{
   min-height: 100vh;
+  position: relative;
+  padding-left: 0;
+  transition: padding-left 0.3s ease;
+  padding-bottom: 140px; /* Space for footer */
+}
+
+.Grid-container.filter-open {
+  padding-left: 320px;
 }
 
 .top-toolbar {
@@ -10,6 +18,8 @@
   background-color: white;
   /* border-bottom: 1px solid #e0e0e0; */
   margin-bottom: 20px;
+  position: relative;
+  z-index: 10;
 }
 
 .icon-main{
@@ -327,9 +337,10 @@
 
 .toast-container{
   position: fixed;
-  bottom: 45px;
+  bottom: 150px;
   right: 20px;
-  z-index: 9999;
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 .flag-icon {
   width: 32px;
@@ -460,4 +471,655 @@
 .back-btn-image {
   width: 32px;
   height: 32px;
+}
+
+.filter-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 10px;
+}
+
+/* Sidebar filter panel (not fixed, no overlay) */
+.filter-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 100%; /* Fill content area, not the whole viewport */
+  background: linear-gradient(135deg, #fdf9ff, #f3ecff);
+  border-radius: 0 16px 16px 0;
+  border: 2px solid #6f42c1;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05);
+  transition: left 0.3s ease-in-out, box-shadow 0.3s;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 2;
+  display: none;
+}
+
+/* Show sidebar when filter is open */
+.Grid-container.filter-open .filter-panel {
+  display: block;
+}
+
+.filter-header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.close-filter {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  color: #666;
+}
+
+.filter-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: 140px; /* Space for footer when scrolling */
+}
+
+.filter-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-section:last-child {
+  border-bottom: none;
+}
+
+.filter-section h4 {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* .search-box {
+  position: relative;
+  width: 400px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  overflow: hidden;
+  background: white;
+  margin-left: auto;
+  margin-right: 30px;
+} */
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.search-button {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.search-button:hover {
+  color: #333;
+}
+
+.search-button i {
+  font-size: 16px;
+}
+
+.checkbox-list {
+  max-height: 150px;
+  overflow-y: auto;
+  margin: 10px 0;
+  padding-right: 5px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  accent-color: #9b59b6;
+}
+
+.checkbox-item label {
+  font-size: 0.9rem;
+  color: #444;
+  cursor: pointer;
+}
+
+.price-sorting {
+  margin-top: 20px;
+  padding-top: 20px;
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
+}
+
+.price-sorting h4 {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 600;
+}
+
+.price-range-slider {
+  padding: 15px 0;
+  overflow-x: hidden;
+}
+
+.slider-labels, .price-labels {
+  overflow-x: hidden;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: #ddd;
+  outline: none;
+  margin: 15px 0;
+}
+
+.slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #9b59b6;
+  cursor: pointer;
+  margin-top: -6px;
+  border: 2px solid white;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+.slider {
+  background: linear-gradient(to right, #9b59b6 0%, #9b59b6 50%, #ddd 50%, #ddd 100%);
+}
+
+.slider::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #9b59b6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+.filter-actions {
+  flex-shrink: 0;
+  padding: 15px 20px;
+  background: white;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary.apply-filter,
+.btn-secondary.reset-filter {
+  flex: 1;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+}
+
+.btn-primary.apply-filter {
+  background-color: #9b59b6;
+  color: white;
+}
+
+.btn-primary.apply-filter:hover {
+  background-color: #8e44ad;
+}
+
+.btn-secondary.reset-filter {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.btn-secondary.reset-filter:hover {
+  background-color: #ebebeb;
+  color: #333;
+}
+
+.btn-primary.apply-filter i,
+.btn-secondary.reset-filter i {
+  font-size: 14px;
+}
+
+/* New Filter Panel Fixes - Add these at the end of your file */
+.filter-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.filter-header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+}
+
+.filter-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.filter-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 320px;
+  background: white;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  z-index: 2;
+}
+
+.btn-primary.apply-filter,
+.btn-secondary.reset-filter {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 15px;
+  font-size: 14px;
+}
+
+/* Filter Icon Button Styles */
+.filter-btn-icon {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.filter-btn-icon:hover {
+  opacity: 1;
+}
+
+.filter-btn-icon svg {
+  width: 43px;
+  height: 45px;
+  color: #302e2e;
+}
+
+.filter-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+}
+
+.filter-btn-icon:hover .filter-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Active Filters Styles */
+.active-filters {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.active-filters h4 {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.active-filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #f0e6f6;
+  color: #9b59b6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.remove-filter {
+  background: none;
+  border: none;
+  color: #9b59b6;
+  margin-left: 6px;
+  padding: 0 2px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.remove-filter:hover {
+  color: #8e44ad;
+}
+
+.clear-all-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 13px;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.clear-all-btn:hover {
+  color: #333;
+}
+
+/* Update filter panel styles */
+.filter-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  accent-color: #9b59b6;
+}
+
+.checkbox-item:hover {
+  background-color: #f9f4fc;
+  border-radius: 4px;
+}
+
+/* Search Box Styles */
+.search-container {
+  margin-right: 20px;
+  width: 300px;
+}
+
+.search-box {
+  position: relative;
+  width: 500px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  overflow: hidden;
+  background: white;
+   margin-left: auto;
+  margin-right: 30px;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.search-button {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.search-button:hover {
+  color: #333;
+}
+
+.search-button i {
+  font-size: 16px;
+}
+
+/* Update toolbar spacing */
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Add these footer styles */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* .Grid-container {
+  flex: 1;
+  padding-bottom: 180px; 
+  position: relative;
+} */
+
+
+.Grid-container {
+  min-height: 100vh;
+  position: relative;
+  padding-left: 0;
+  transition: padding-left 0.3s ease;
+  padding-bottom: 140px; /* Space for footer */
+}
+
+.Grid-container.filter-open {
+  padding-left: 320px;
+}
+
+/* Footer remains at the bottom, not moved or hidden */
+footer {
+  position: relative;
+  width: 100%;
+  background: white;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+  z-index: 1;
+  min-height: 120px;
+  margin-top: auto;
+  transition: none;
+  left: 0;
+  right: 0;
+}
+
+/* Chat bot positioning - stays above footer */
+.chat-bot-container {
+  position: fixed !important;
+  bottom: 150px !important; /* Above footer */
+  right: 20px !important;
+  z-index: 9999 !important;
+  transition: all 0.3s ease;
+}
+
+/* Adjust chatbot when filter is open */
+.Grid-container.filter-open .chat-bot-container {
+  right: 20px !important; /* Keep same position */
+}
+
+/* Toast container positioning */
+.toast-container {
+  position: fixed;
+  bottom: 150px; /* Above footer */
+  right: 20px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* Adjust toast when filter is open */
+.Grid-container.filter-open .toast-container {
+  right: 20px; /* Keep same position */
+}
+
+/* Plates container - ensure proper spacing */
+.plates-container {
+  padding-bottom: 40px; /* Extra space above footer */
+  min-height: calc(100vh - 200px); /* Account for toolbar and footer */
+}
+
+/* Additional fix for main content */
+.top-toolbar {
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure proper layering */
+.main-content {
+  position: relative;
+  z-index: 5;
+}
+
+/* Footer content styling remains the same */
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-content h3 {
+  color: #9b59b6;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.footer-content a {
+  display: block;
+  color: #666;
+  text-decoration: none;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.footer-content a:hover {
+  color: #9b59b6;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.social-links a {
+  color: #666;
+  font-size: 18px;
+}
+
+.social-links a:hover {
+  color: #9b59b6;
+}
+
+.copyright {
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+/* Ensure filter panel stays above footer */
+.filter-panel.active {
+  bottom: 120px; /* Match footer height */
+}
+
+/* Plates container */
+.plates-container {
+  padding-bottom: 20px;
+  min-height: 100%;
 }
