@@ -49,7 +49,6 @@ import { RefundRequestComponent } from './component/profile/refund-request/refun
 import { DepositPageComponent } from './component/deposit-page/deposit-page.component';
 import { MyDetailsComponent } from './component/profile/my-details/my-details.component';
 import { UserTransactionsComponent } from './component/profile/transaction-history/transaction-history.component';
-import { UserTransactionsComponent } from './component/profile/transaction-history/transaction-history.component';
 import { MyPurchasesComponent } from './component/profile/my-purchases/my-purchases.component';
 import { NotificationsComponent } from './component/profile/notifications/notifications.component';
 import { SettingsPrivacyComponent } from './component/profile/settings-privacy/settings-privacy.component';
@@ -218,7 +217,6 @@ export const routes: Routes = [
   {
     path: 'user-profile',
     component: UserProfileComponent,
-    component: UserProfileComponent,
     canActivate: [RoleGuard],
     children: [
       { path: 'my-details', component: MyDetailsComponent },
@@ -268,6 +266,8 @@ export const routes: Routes = [
   { path: 'deposit-page', component: DepositPageComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
   {  path: 'bid-history', component: BidHistoryComponent  },
+  {  path: 'createRole', component: RoleCreateComponent  },
+  {  path: 'updateRole', component: RoleUpdateComponent  },
   {
     path: 'chatbot-admin',
     component: ChatbotAdminComponent,

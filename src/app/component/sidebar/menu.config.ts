@@ -7,6 +7,7 @@ export interface MenuItem {
 }
 
 export const MENU_CONFIG: MenuItem[] = [
+ 
   {
     label: 'Dashboard',
     route: '/dashboard',

@@ -61,6 +61,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private signalR: SignalRService
   ) {
+    this.authService.initializeAuth();
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -73,7 +74,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   // @Input() showCustomButtons: boolean = false;
   ngOnInit(): void {
     this.signalR.startConnection();
-
+    // this.authService.initializeAuth();
     this.signalR.bidUpdates$.subscribe((data) => {
       console.log('Bid update received in AppComponent:', data);
       // Optional: use a shared event bus to broadcast

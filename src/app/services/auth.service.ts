@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ApiEndpoints } from '../constants/api-endpoints';
@@ -10,32 +10,48 @@ import { User } from '../modals/user';
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUser: User | null = null;
-  private currentRole: RoleWithPermissions | null = null;
-
+  public currentUser: User | null = null;
+  public currentRole: RoleWithPermissions | null = null;
   private roleSubject = new BehaviorSubject<RoleWithPermissions | null>(null);
-  role$ = this.roleSubject.asObservable();
-
+  public role$ = this.roleSubject.asObservable();
+  private _isReady = new BehaviorSubject<boolean>(false);
+  isReady$ = this._isReady.asObservable();
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   constructor(private router: Router, private http: HttpClient) {
+  }
+
+  public restoreUserFromStorage(): void {
     const storedUser = localStorage.getItem('user');
     const storedRole = localStorage.getItem('role');
 
     if (storedUser && storedUser !== 'undefined' && storedRole && storedRole !== 'undefined') {
       try {
         this.currentUser = JSON.parse(storedUser);
-        const role = JSON.parse(storedRole);
-        this.currentRole = role;
-        this.roleSubject.next(role);
+        this.currentRole = JSON.parse(storedRole);
+        this.roleSubject.next(this.currentRole);
       } catch (e) {
         console.error("Error parsing stored user/role:", e);
         localStorage.removeItem('user');
         localStorage.removeItem('role');
       }
+    } else {
+      this.roleSubject.next(this.currentRole);
     }
   }
+
+  initializeAuth(): void {
+    const storedRoleJson = localStorage.getItem('role'); // ✅ match this to `setUser`
+    if (storedRoleJson) {
+      const parsedRole = JSON.parse(storedRoleJson);
+      this.currentRole = parsedRole;
+      this.roleSubject.next(parsedRole); // ✅ emit role
+      console.log('[AuthService] initializeAuth() role emitted:', parsedRole); // ✅ add log
+    }
+  }
+
+
 
   sendOtp(email: string): Observable<any> {
     return this.http.post(`${ApiEndpoints.Auth}/generate-otp`, { email });
@@ -58,6 +74,7 @@ export class AuthService {
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('role', JSON.stringify(role));
     this.roleSubject.next(role);
+
   }
 
   hasPermission(permission: PermissionKey): boolean {
@@ -66,12 +83,12 @@ export class AuthService {
   }
 
   getRole(): RoleWithPermissions | null {
-    return this.roleSubject.getValue();
+    return this.currentRole;
   }
 
-  getRoleObservable(): Observable<RoleWithPermissions | null> {
-    return this.role$;
-  }
+  // getRoleObservable(): Observable<RoleWithPermissions | null> {
+  //   return this.role$;
+  // }
 
   getUserIdJwt(): number | null {
     const token = localStorage.getItem('token');
@@ -97,13 +114,14 @@ export class AuthService {
     const payload = JSON.parse(atob(token.split('.')[1]));
     return payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || null;
   }
-  getPermissions(): string[] {
-  return this.currentRole
-    ? Object.entries(this.currentRole)
-        .filter(([key, value]) => value === true && key !== 'roleId' && key !== 'roleName')
-        .map(([key]) => key)
-    : [];
-}
+  getPermissions(): PermissionKey[] {
+    const role = this.getRole();
+    if (!role) return [];
+
+    return Object.entries(role)
+      .filter(([_, value]) => value === true)
+      .map(([key]) => key as PermissionKey);
+  }
 
 
   isLoggedIn(): boolean {

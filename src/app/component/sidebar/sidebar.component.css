@@ -1,12 +1,11 @@
 .sidebar-nav {
-  padding: 10px;
-  background: linear-gradient(135deg, #fdf9ff, #f3ecff);
+  padding: 20px;
+  background: linear-gradient(145deg, #f6f0ff, #ece4fc);
   border-radius: 0 16px 16px 0;
-  border: 2px solid #6f42c1;
-  height: calc(90vh - 0px); 
-  overflow-y: hidden; 
-  overflow-x: hidden;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05);
+  border-right: 3px solid #b197fc;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: 4px 0 18px rgba(111, 66, 193, 0.1);
   transition: all 0.3s ease-in-out;
 }
 
@@ -17,39 +16,39 @@
 }
 
 .nav-item {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .nav-item:last-child {
-  margin-bottom: 0; /* Remove bottom space after last item */
+  margin-bottom: 0;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 12px;
-  /* padding: 12px 14px; */
-  font-size: 16px;
+  gap: 10px;
+  padding: 12px 16px;
+  font-size: 15.5px;
   font-weight: 500;
-  color: #6f42c1;
-  background-color: #fff;
-  border-radius: 12px;
+  color: #5a2c91;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
   text-decoration: none;
-  border: 2px solid #e0cfff;
   transition: all 0.25s ease-in-out;
 }
 
 .nav-link i {
-  font-size: 18px;
-  color: #6f42c1;
+  font-size: 17px;
+  color: inherit;
   transition: transform 0.3s ease;
 }
 
 .nav-link:hover {
-  background-color: #f6e9ff;
-  border-color: #d3b9ff;
-  box-shadow: 0 4px 10px rgba(111, 66, 193, 0.15);
-  transform: translateY(-2px);
+  background-color: #f2e6ff;
+  border-color: #d2b9fc;
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.08);
+  transform: translateY(-1px);
 }
 
 .nav-link:hover i {
@@ -59,10 +58,22 @@
 .nav-link.active {
   background-color: #6f42c1;
   color: white;
-  border-color: #6f42c1;
   font-weight: 600;
+  border-color: #6f42c1;
 }
 
 .nav-link.active i {
   color: white;
+}
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: #cbb4ff;
+  border-radius: 10px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
 }
