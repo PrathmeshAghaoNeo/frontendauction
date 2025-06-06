@@ -41,7 +41,7 @@
           <label for="transactionTypeId" class="form-label required-label">Transaction Type</label>
           <select formControlName="transactionTypeId" id="transactionTypeId" class="form-select">
             <option value="" disabled>Select Type</option>
-            <option *ngFor="let type of transactionTypes" [value]="type.id">{{ type.name }}</option>
+            <option *ngFor="let type of transactionTypes" [value]="type.transactionTypeId">{{ type.transactionTypeName }}</option>
           </select>
           <div *ngIf="transactionForm.get('transactionTypeId')?.invalid && transactionForm.get('transactionTypeId')?.touched" class="text-danger">
             Transaction type is required.
@@ -53,7 +53,7 @@
           <label for="paymentMethodId" class="form-label required-label">Payment Method</label>
           <select formControlName="paymentMethodId" id="paymentMethodId" class="form-select">
             <option value="" disabled>Select Payment Method</option>
-            <option *ngFor="let method of paymentMethods" [value]="method.id">{{ method.name }}</option>
+            <option *ngFor="let method of paymentMethods" [value]="method.paymentMethodId">{{ method.paymentMethodName }}</option>
           </select>
           <div *ngIf="transactionForm.get('paymentMethodId')?.invalid && transactionForm.get('paymentMethodId')?.touched" class="text-danger">
             Payment method is required.
@@ -65,7 +65,7 @@
           <label for="cardTypeId" class="form-label required-label">Card Type</label>
           <select formControlName="cardTypeId" id="cardTypeId" class="form-select">
             <option value="" disabled>Select Card Type</option>
-            <option *ngFor="let card of cardTypes" [value]="card.id">{{ card.name }}</option>
+            <option *ngFor="let card of cardTypes" [value]="card.cardTypeId">{{ card.cardTypeName }}</option>
           </select>
           <div *ngIf="transactionForm.get('cardTypeId')?.invalid && transactionForm.get('cardTypeId')?.touched" class="text-danger">
             Card type is required.
@@ -74,7 +74,7 @@
   
         <!-- Merchant Transaction ID Field -->
         <div class="col-md-6 mb-2">
-            <label for="merchantTransactionId" class="form-label required-label">Merchant Transaction ID</label>
+            <label for="merchantTransactionId" class="form-label">Merchant Transaction ID</label>
             <input
               type="text"
               formControlName="merchantTransactionId"
@@ -84,9 +84,9 @@
               placeholder="Start with 'MERC' followed by up to 8 digits"
             />
             <div *ngIf="transactionForm.get('merchantTransactionId')?.touched && transactionForm.get('merchantTransactionId')?.invalid" class="text-danger">
-              <div *ngIf="transactionForm.get('merchantTransactionId')?.errors?.['required']">
+              <!-- <div *ngIf="transactionForm.get('merchantTransactionId')?.errors?.['required']">
                 Merchant Transaction ID is required
-              </div>
+              </div> -->
               <div *ngIf="transactionForm.get('merchantTransactionId')?.errors?.['pattern']">
                 Must start with "MERC" followed by up to 8 digits
               </div>
@@ -118,7 +118,7 @@
           <label for="statusId" class="form-label required-label">Status</label>
           <select formControlName="statusId" id="statusId" class="form-select">
             <option value="" disabled>Select Status</option>
-            <option *ngFor="let status of statuses" [value]="status.id">{{ status.name }}</option>
+            <option *ngFor="let status of statuses" [value]="status.statusId">{{ status.statusName }}</option>
           </select>
           <div *ngIf="transactionForm.get('statusId')?.invalid && transactionForm.get('statusId')?.touched" class="text-danger">
             Status is required.

@@ -1,13 +1,13 @@
 <div class="container my-4">
   <!-- Breadcrumb -->
-  <nav aria-label="breadcrumb" class="mb-3">
+  <!-- <nav aria-label="breadcrumb" class="mb-3">
     <ol class="breadcrumb bg-light p-2 rounded">
       <li class="breadcrumb-item">
         <a href="#" class="text-decoration-none">Home</a>
       </li>
       <li class="breadcrumb-item active" aria-current="page">Reports</li>
     </ol>
-  </nav>
+  </nav> -->
 
   <!-- Page Header -->
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -33,20 +33,37 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let report of reports | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
-
+        <tr
+          *ngFor="
+            let report of reports
+              | paginate
+                : { itemsPerPage: itemsPerPage, currentPage: currentPage }
+          "
+        >
           <td>
             <i class="bi bi-file-earmark-text me-2 text-primary"></i
             >{{ report }}
           </td>
           <td class="text-center">
-            <button
-              class="btn btn-outline-primary btn-sm"
-              (click)="openViewModal(report)"
-              title="View Report"
-            >
-              <i class="bi bi-eye"></i>
-            </button>
+            <div class="d-flex justify-content-center gap-2">
+              <!-- View Button -->
+              <button
+                class="btn btn-outline-primary btn-sm"
+                (click)="openViewModal(report)"
+                title="View Report"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+
+              <!-- Download Button -->
+              <button
+                class="btn btn-outline-success btn-sm"
+                (click)="downloadReport(report)"
+                title="Download Report"
+              >
+                <i class="bi bi-download"></i>
+              </button>
+            </div>
           </td>
         </tr>
         <tr *ngIf="reports.length === 0">
@@ -57,8 +74,9 @@
   </div>
 
   <!-- Pagination -->
-  <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-
+  <pagination-controls
+    (pageChange)="currentPage = $event"
+  ></pagination-controls>
 
   <!-- View Report Modal -->
   <ng-template #viewReportModal let-modal>
@@ -75,13 +93,27 @@
       <!-- Render based on selected report -->
       <ng-container [ngSwitch]="selectedReport">
         <!-- Chart Example -->
-        <div
-          *ngSwitchCase="
-            'Revenue Generated via Auctions – Bar chart (Duration filter)'
-          "
-        >
-          <p>📊 Bar Chart: Revenue via Auctions</p>
-          <!-- <app-bar-chart [reportType]="selectedReport"></app-bar-chart> -->
+        <div *ngSwitchCase="'Revenue Generated via Auctions – Bar chart (Duration filter)'">
+          <ngx-charts-bar-vertical
+            [results]="auctionRevenue"
+            [xAxis]="true"
+            [yAxis]="true" 
+            [legend]="false"
+            [showDataLabel]="true"
+            [roundEdges]="true"
+            [customColors]="{ domain: ['#5AA454'] }"
+            [xAxisLabel]="'Month/Year'"
+            [yAxisLabel]="'Revenue Amount'"
+            [animations]="true"
+            [view]="[700, 400]"
+          >
+          </ngx-charts-bar-vertical>
+          <div
+            *ngIf="auctionRevenue.length === 0"
+            class="text-center text-muted mt-3"
+          >
+            No auction revenue data available.
+          </div>
         </div>
 
         <!-- Count + List -->
@@ -117,7 +149,7 @@
           <ul *ngIf="expiredAuctions.length > 0">
             <li *ngFor="let auction of expiredAuctions">
               {{ auction.title }} (Ended on
-              {{ auction.endDateTime| date : "short" }})
+              {{ auction.endDateTime | date : "short" }})
             </li>
           </ul>
           <p *ngIf="expiredAuctions.length === 0">No expired auctions found.</p>
@@ -147,9 +179,8 @@
           <p *ngIf="ongoingAuctions.length === 0">No ongoing auctions found.</p>
         </div>
 
-        <div *ngSwitchCase="'Active Direct Sale Listings – Count and List'">
-          
-        </div>
+        <div *ngSwitchCase="'Active Direct Sale Listings – Count and List'"
+        ></div>
         <!-- Fallback -->
         <div *ngSwitchDefault>
           <p class="text-muted">No specific view available for this report.</p>

@@ -12,6 +12,7 @@ import {
 } from '../../../services/transaction-meta.service';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-deposit-limit',
@@ -48,7 +49,6 @@ export class DepositLimitComponent implements OnInit {
   cardTypesMeta: CardType[] = [];
   paymentMethods: { label: string; value: string }[] = [];
 
-
   uploadedDocumentPath = '';
   currentUserId: number = 0; // TODO: Replace with actual logged-in user ID
 
@@ -66,7 +66,7 @@ export class DepositLimitComponent implements OnInit {
     this.setCurrentLocation();
     const userId = this.authService.getUserIdJwt();
     if (userId === null) {
-      alert('User not authenticated. Cannot proceed.');
+      Swal.fire('User not authenticated', 'Cannot proceed.', 'warning');
       return;
     }
     this.currentUserId = userId;
@@ -83,19 +83,23 @@ export class DepositLimitComponent implements OnInit {
   }
 
   populateMetadata(data: {
-  paymentMethods: PaymentMethod[];
-  transactionTypes: TransactionType[];
-  cardTypes: CardType[];
-}): void {
-  this.paymentMethodsMeta = data.paymentMethods;
-  this.transactionTypesMeta = data.transactionTypes;
-  this.cardTypesMeta = data.cardTypes;
+    paymentMethods: PaymentMethod[];
+    transactionTypes: TransactionType[];
+    cardTypes: CardType[];
+  }): void {
+    this.paymentMethodsMeta = data.paymentMethods;
+    this.transactionTypesMeta = data.transactionTypes;
+    this.cardTypesMeta = data.cardTypes;
 
-  this.paymentMethods = data.paymentMethods.map(pm => ({
-    label: pm.paymentMethodName,
-    value: this.mapPaymentMethodNameToValue(pm.paymentMethodName),
-  }));
-}
+    this.paymentMethods = data.paymentMethods.map((pm) => ({
+      label: pm.paymentMethodName,
+      value: this.mapPaymentMethodNameToValue(pm.paymentMethodName),
+    }));
+
+    // ✅ Log the payment methods here
+    console.log('Mapped Payment Methods:', this.paymentMethods);
+  }
+
   setCurrentLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -140,7 +144,7 @@ export class DepositLimitComponent implements OnInit {
       const file = input.files[0];
 
       if (file.size > 5 * 1024 * 1024) {
-        alert('File is too large. Maximum allowed size is 5MB.');
+        Swal.fire('File is too large', 'Maximum allowed size is 5MB.', 'error');
         this.selectedFile = null;
         input.value = ''; // Reset file input
         return;
@@ -167,7 +171,7 @@ export class DepositLimitComponent implements OnInit {
 
   addTransaction(): void {
     if (!this.selectedPaymentMethod) {
-      alert('Please select a payment method.');
+      Swal.fire('Please select a payment method.', '', 'warning');
       return;
     }
 
@@ -194,12 +198,24 @@ export class DepositLimitComponent implements OnInit {
     this.transactionService.addTransaction(transactionBody).subscribe({
       next: (res) => {
         console.log('Transaction created:', res);
-        alert('Transaction successfully added!');
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Transaction successfully added!',
+          confirmButtonText: 'OK',
+        });
         // Optionally reset form here or update UI accordingly
       },
       error: (err) => {
         console.error('Transaction failed:', err);
-        alert('Failed to add transaction.');
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Transaction Failed',
+          text: 'Failed to add transaction. Please try again later.',
+          confirmButtonText: 'OK',
+        });
       },
     });
   }
@@ -208,9 +224,9 @@ export class DepositLimitComponent implements OnInit {
     const lower = name.toLowerCase();
     if (lower.includes('bank')) return 'bank';
     if (lower.includes('cheque')) return 'cheque';
-    if (lower.includes('credit')) return 'card';
-    if (lower.includes('debit')) return 'card';
-    if (lower.includes('benefit')) return 'benefit';
+    if (lower.includes('credit')) return 'credit_card';
+    if (lower.includes('debit')) return 'debit_card';
+    if (lower.includes('card')) return 'card';
     if (lower.includes('apple')) return 'apple';
     if (lower.includes('google')) return 'google';
     if (lower.includes('paypal')) return 'paypal';
@@ -252,7 +268,11 @@ export class DepositLimitComponent implements OnInit {
   }
 
   get consumedPercentage(): number {
-    return ((this.totalLimit - this.availableLimit) / this.totalLimit) * 100;
+    return (
+      Math.trunc(
+        ((this.totalLimit - this.availableLimit) / this.totalLimit) * 100 * 100
+      ) / 100
+    );
   }
 
   getProgressColor(percentage: number): string {
@@ -270,7 +290,13 @@ export class DepositLimitComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to fetch deposit limits', err);
-        alert('Unable to fetch deposit limit info.');
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Unable to fetch deposit limit info.',
+          confirmButtonText: 'OK',
+        });
       },
     });
   }
