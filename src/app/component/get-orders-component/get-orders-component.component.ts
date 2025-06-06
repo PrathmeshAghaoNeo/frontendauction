@@ -16,9 +16,17 @@ export class GetOrdersComponentComponent {
   userId: number | null = null;
   orders: DirectSaleAssetDto[] = [];
   isLoading = false;
+  auctionOrders: DirectSaleAssetDto[] = [];
+directSaleOrders: DirectSaleAssetDto[] = [];
+
   errorMessage = '';
   @Input() showGoBackButton: boolean = true;
 
+
+  selectedTab: 'auction' | 'direct' = 'auction';
+
+  
+  
   constructor(
     private ordersService: ListService,
     private router: Router,
@@ -34,9 +42,15 @@ export class GetOrdersComponentComponent {
       return;
     }
 
+    console.log(this.userId);
+    
+
     this.fetchOrders();
   }
-
+  
+  switchTab(tab: 'auction' | 'direct') {
+    this.selectedTab = tab;
+  }
   fetchOrders(): void {
     this.isLoading = true;
     this.ordersService.getCheckoutOrders(this.userId).subscribe({
@@ -44,6 +58,9 @@ export class GetOrdersComponentComponent {
         this.orders = data;
         this.isLoading = false;
         console.log('Orders:', this.orders);
+        
+        this.auctionOrders = this.orders.filter(order => order.isAvailableForDirectSale === false);
+        this.directSaleOrders = this.orders.filter(order => order.isAvailableForDirectSale === true);
       },
       error: (err) => {
         this.errorMessage = 'Failed to load orders.';
@@ -60,4 +77,11 @@ export class GetOrdersComponentComponent {
   viewOrder(orderId: number) {
     this.router.navigate(['/order-details/', orderId]);
   }
+  getCurrentOrders() {
+    return this.selectedTab === 'auction'
+      ? this.auctionOrders
+      : this.directSaleOrders;
+    }
+    
+    
 }
