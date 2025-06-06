@@ -1,10 +1,12 @@
-<nav class="sidebar-nav">
-
-  <ul class="nav flex-column">
-    <li *ngIf="visibleMenuItems.length === 0">No menu items found</li>
-    <li class="nav-item" *ngFor="let item of visibleMenuItems">
-      <a class="nav-link" [routerLink]="item.route" routerLinkActive="active">{{ item.label }}</a>
-    </li>
-  </ul>
-
+<nav class="modern-sidebar" [class.expanded]="isExpanded">
+  <div class="sidebar-inner" (mouseenter)="isExpanded = true" (mouseleave)="isExpanded = false">
+    <ul>
+      <li *ngFor="let item of visibleMenuItems" class="sidebar-item">
+        <a [routerLink]="item.route" routerLinkActive="active">
+          <i [class]="item.icon"></i>
+          <span class="label" *ngIf="isExpanded">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </nav>

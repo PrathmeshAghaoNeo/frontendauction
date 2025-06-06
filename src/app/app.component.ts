@@ -61,6 +61,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private signalR: SignalRService
   ) {
+
     this.authService.initializeAuth();
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -72,6 +73,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.use('en');
   }
   // @Input() showCustomButtons: boolean = false;
+  sidebarExpanded = true;
   ngOnInit(): void {
     this.signalR.startConnection();
     // this.authService.initializeAuth();
@@ -94,7 +96,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   //toaster message
-
+  toggleSidebar(): void {
+    this.sidebarExpanded = !this.sidebarExpanded;
+  }
   showToast(
     message: string,
     header = 'Notification',
@@ -154,13 +158,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/bid-watchlist',
     '/bid-add-to-cart',
     '/asset-details',
-    '/orders',  
+    '/orders',
     '/bid-history',
     '/payment-success',
-    
+
   ]);
-  
- get needSideBar(): boolean {
+
+  get needSideBar(): boolean {
     return (
       this.sideBarExactRoutes.has(this.currentRoute) ||
       this.sideBarRoutePrefixes.some((prefix) =>
@@ -179,11 +183,11 @@ export class AppComponent implements OnInit, AfterViewInit {
       )
     );
   }
- 
+
   get showSidebar(): boolean {
     return !this.isStartPage && !this.needSideBar;
   }
- 
+
   get showHeaderAndFooter(): boolean {
     return !this.isCurrentRoute(['/login', '/']);
   }

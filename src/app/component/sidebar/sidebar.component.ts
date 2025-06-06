@@ -11,72 +11,52 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
- templateUrl: './sidebar.component.html',
+  templateUrl: './sidebar.component.html',
   imports: [RouterModule, FormsModule, CommonModule],
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent implements OnInit {
+  isExpanded = false;
   visibleMenuItems: MenuItem[] = [];
   private roleSubscription?: Subscription;
   constructor(private authService: AuthService) { }
+  ngOnInit(): void {
+    console.log('%c[Sidebar] ngOnInit triggered', 'color: green');
 
-  // ngOnInit(): void {
-  //   // Attempt immediate restore from getRole()
-  //   const currentRole = this.authService.getRole();
+    // First try to restore from sync value
+    const currentRole = this.authService.getRole();
+    if (currentRole) {
+      console.log('[Sidebar] Synchronously received role:', currentRole);
+      this.updateMenu(currentRole);
+    }
 
-  //   if (currentRole) {
-  //     this.updateMenu(currentRole);
-  //   }
+    this.roleSubscription = this.authService.role$.subscribe((role) => {
+      console.log('[Sidebar] Received role from role$:', role); // ✅ confirm this prints!
+      if (role) {
+        this.updateMenu(role);
+      } else {
+        this.visibleMenuItems = [];
+      }
+    });
 
-  //   // Subscribe to future changes
-  //   console.log('%c[Sidebar] ngOnInit triggered', 'color: green');
-  //   this.roleSubscription = this.authService.getRoleObservable().subscribe(role => {
-  //     console.log('[Sidebar] Received role from subject:', role);
-  //     if (role) {
-
-  //       this.updateMenu(role);
-  //     } else {
-  //       this.visibleMenuItems = []; // clear menu if logged out
-  //     }
-  //   });
-  // }
- ngOnInit(): void {
-  console.log('%c[Sidebar] ngOnInit triggered', 'color: green');
-
-  // First try to restore from sync value
-  const currentRole = this.authService.getRole();
-  if (currentRole) {
-    console.log('[Sidebar] Synchronously received role:', currentRole);
-    this.updateMenu(currentRole);
   }
-
-  this.roleSubscription = this.authService.role$.subscribe((role) => {
-  console.log('[Sidebar] Received role from role$:', role); // ✅ confirm this prints!
-  if (role) {
-    this.updateMenu(role);
-  } else {
-    this.visibleMenuItems = [];
-  }
-});
-
-}
 
 
 
   private updateMenu(role: RoleWithPermissions): void {
-  console.log('[Sidebar] Updating menu for role:', role);
+    console.log('[Sidebar] Updating menu for role:', role);
 
-  const permissions = this.authService.getPermissions();
-  console.log('[Sidebar] Extracted permissions:', permissions);
-  console.log('[Sidebar] Menu Permissions Needed:', MENU_CONFIG.map(m => m.permission));
-  console.log('[Sidebar] MENU_CONFIG before filtering:', MENU_CONFIG);
+    const permissions = this.authService.getPermissions();
+    console.log('[Sidebar] Extracted permissions:', permissions);
+    console.log('[Sidebar] Menu Permissions Needed:', MENU_CONFIG.map(m => m.permission));
+    console.log('[Sidebar] MENU_CONFIG before filtering:', MENU_CONFIG);
 
-  this.visibleMenuItems = MENU_CONFIG.filter(menu =>
-    permissions.includes(menu.permission)
-  );
+    this.visibleMenuItems = MENU_CONFIG.filter(menu =>
+      permissions.includes(menu.permission)
+    );
 
-  console.log('[Sidebar] Filtered visibleMenuItems:', this.visibleMenuItems);
-}
+    console.log('[Sidebar] Filtered visibleMenuItems:', this.visibleMenuItems);
+  }
 
 
 
