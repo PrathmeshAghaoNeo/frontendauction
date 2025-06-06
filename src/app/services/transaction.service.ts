@@ -97,5 +97,6 @@ export class TransactionService {
   getUserTransactions(userId: number): Observable<UserTransaction[]> {
     return this.http.get<UserTransaction[]>(`${this.apiUrl}/user/1/transactions`);
   }
+ 
 }
 
