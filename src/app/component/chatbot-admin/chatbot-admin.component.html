@@ -41,13 +41,13 @@
 
   <!-- View Modal -->
   <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header" style="background: #bca4e6;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content faq-modal-content">
+        <div class="modal-header faq-modal-header">
           <h5 class="modal-title text-white" id="viewModalLabel">FAQ Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeViewModal()"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" (click)="closeViewModal()"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body faq-modal-body">
           <div class="row">
             <div class="col-md-6">
               <p><span class="fw-bold text-primary">Question:</span><br>{{ viewFaqObj?.question }}</p>

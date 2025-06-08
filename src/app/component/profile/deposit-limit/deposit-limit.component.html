@@ -11,11 +11,11 @@
         </option>
       </select>
     </div> -->
-
+ 
     <!-- Consumed Limit Progress -->
     <div class="form-group mb-3">
       <label class="form-label">Consumed Limit</label>
-
+ 
       <div class="progress-bar-container">
         <div
           class="progress-bar-fill"
@@ -23,10 +23,10 @@
           [style.background-color]="getProgressColor(consumedPercentage)"
         ></div>
       </div>
-
+ 
       <div class="text-muted medium mt-1">{{ consumedPercentage }}% used</div>
     </div>
-
+ 
     <!-- Deposit Summary -->
     <div class="form-group mb-3">
       <label class="form-label">Deposit Summary</label>
@@ -45,11 +45,11 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- Top-Up Controls -->
     <div class="form-group text-center">
       <label class="form-label mb-2">Top-Up Limit</label>
-
+ 
       <div class="d-flex justify-content-center align-items-center gap-3 mb-2">
         <!-- Decrease Button -->
         <button
@@ -59,7 +59,7 @@
         >
           −
         </button>
-
+ 
         <!-- Input Group -->
         <div
           class="input-group input-group-lg shadow-sm rounded align-items-center"
@@ -80,7 +80,7 @@
             style="border-radius: 0 0.5rem 0.5rem 0"
           />
         </div>
-
+ 
         <!-- Increase Button -->
         <button
           type="button"
@@ -90,13 +90,13 @@
           +
         </button>
       </div>
-
+ 
       <div class="deposit-hint small text-muted">
         You pay a deposit of: <strong>BHD {{ depositAmount | number }}</strong>
       </div>
     </div>
   </div>
-
+ 
   <!-- Right Section -->
   <div class="box right-section">
     <!-- Payment Summary -->
@@ -113,7 +113,7 @@
       <span>Total Amount</span>
       <span>BHD {{ totalAmount | number }}</span>
     </div>
-
+ 
     <div class="payment-summary-container">
       <div
         *ngFor="let method of paymentMethods"
@@ -129,7 +129,7 @@
           />
           <span>{{ method.label }}</span>
         </div>
-
+ 
         <div
           *ngIf="selectedPaymentMethod === method.value"
           class="payment-details"
@@ -144,7 +144,7 @@
                 <i class="bi bi-info-circle-fill me-1"></i>
                 Please allow up to 24hrs before the deposit is reflected.
               </p>
-
+ 
               <div class="mb-2">
                 <label class="form-label mb-1">Upload Cheque</label>
                 <input
@@ -153,7 +153,7 @@
                   (click)="$event.stopPropagation()"
                 />
               </div>
-
+ 
               <div class="mb-3">
                 <label class="form-label mb-1">Date</label>
                 <input
@@ -162,7 +162,7 @@
                   (click)="$event.stopPropagation()"
                 />
               </div>
-
+ 
               <div class="border rounded p-2 bg-white shadow-sm small">
                 <strong class="d-block mb-2">Bank Account Details</strong>
                 <p class="mb-1">
@@ -181,7 +181,7 @@
                 </p>
               </div>
             </div>
-
+ 
             <!-- Cheque -->
             <div
               *ngSwitchCase="'cheque'"
@@ -191,7 +191,7 @@
                 <i class="bi bi-info-circle-fill me-1"></i>
                 Please visit any of our branches or upload cheque image.
               </p>
-
+ 
               <div class="mb-2">
                 <label class="form-label mb-1">Upload Cheque</label>
                 <input
@@ -200,7 +200,7 @@
                   (click)="$event.stopPropagation()"
                 />
               </div>
-
+ 
               <div class="mb-3">
                 <label class="form-label mb-1">Date</label>
                 <input
@@ -209,7 +209,7 @@
                   (click)="$event.stopPropagation()"
                 />
               </div>
-
+ 
               <div class="border rounded p-2 bg-white shadow-sm small">
                 <strong class="d-block mb-2">Branch Details</strong>
                 <p class="mb-1">
@@ -220,7 +220,7 @@
                   <strong>Timings:</strong> Sun – Thur, 8 AM – 4 PM (+3 GMT)
                 </p>
               </div>
-
+ 
               <google-map
                 height="300px"
                 width="100%"
@@ -232,17 +232,17 @@
                 <map-marker [position]="markerPosition"></map-marker>
               </google-map>
             </div>
-
+ 
             <!-- Others -->
             <div *ngSwitchDefault>
               <p>Proceed with {{ method.label }}.</p>
             </div>
           </ng-container>
-
+ 
           <div class="total-box">
             <p><strong>Total Amount:</strong> BHD {{ totalAmount | number }}</p>
           </div>
-
+ 
           <button
             class="btn btn=danger btn-block btn-primary"
             (click)="addTransaction()"
@@ -255,3 +255,4 @@
     </div>
   </div>
 </div>
+ 

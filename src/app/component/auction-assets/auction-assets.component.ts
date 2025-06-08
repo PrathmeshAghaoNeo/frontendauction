@@ -55,6 +55,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   isFilterOpen = false;
   priceRange = 0;
   selectedPriceRange = { min: 0, max: 100 };
+  uniqueAssetNames: string[] = [];
   filteredAssetNames: string[] = [];
 
   filters = {
@@ -135,6 +136,8 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
           this.noAssetsFound = this.assets.length === 0;
           this.assetIds = this.assets.map(a => a.assetId);
           this.AuctionIds = this.assets.map(a => a.auctionId);
+          this.updateUniqueAssetNames();
+          this.filteredAssetNames = [...this.uniqueAssetNames];
 
           // Step 1: Get bid stats
           this.bidService.getBidStatsByAssetIds(this.assetIds).subscribe({
@@ -175,8 +178,43 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  updateUniqueAssetNames() {
+    this.uniqueAssetNames = Array.from(new Set(this.assets.map(asset => asset.title)));
+  }
 
+  filterAssetNames(searchText: string) {
+    if (!searchText) {
+      this.filteredAssetNames = [...this.uniqueAssetNames];
+    } else {
+      const search = searchText.toLowerCase();
+      this.filteredAssetNames = this.uniqueAssetNames.filter(name => 
+        name.toLowerCase().includes(search)
+      );
+    }
+  }
 
+  onSearchInput() {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    this.searchTimeout = setTimeout(() => {
+      this.filterAssetsBySearch();
+    }, 300);
+  }
+
+  filterAssetsBySearch() {
+    if (!this.searchQuery.trim()) {
+      this.applyFilters();
+      return;
+    }
+    const searchTerm = this.searchQuery.toLowerCase().trim();
+    let filteredAssets = [...this.originalAssets];
+    filteredAssets = filteredAssets.filter(asset => 
+      (asset.title || '').toLowerCase().includes(searchTerm) ||
+      (asset.description || '').toLowerCase().includes(searchTerm)
+    );
+    this.assets = filteredAssets;
+  }
 
   getFlagUrl(asset: Asset): string {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
@@ -414,17 +452,19 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     if (this.searchQuery.trim()) {
       const searchTerm = this.searchQuery.toLowerCase().trim();
       filteredAssets = filteredAssets.filter(asset => 
-        asset.title?.toLowerCase().includes(searchTerm) ||
-        asset.description?.toLowerCase().includes(searchTerm)
+        (asset.title || '').toLowerCase().includes(searchTerm) ||
+        (asset.description || '').toLowerCase().includes(searchTerm)
       );
     }
 
+    // Filter by selected asset names
     if (this.filters.assetNames.enabled && this.filters.assetNames.selected.size > 0) {
       filteredAssets = filteredAssets.filter(asset => 
         this.filters.assetNames.selected.has(asset.title)
       );
     }
 
+    // Filter by selected price ranges
     if (this.filters.prices.enabled) {
       const selectedRanges = this.filters.prices.ranges.filter(range => range.selected);
       if (selectedRanges.length > 0) {
@@ -440,6 +480,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
       }
     }
 
+    // Filter by selected durations
     if (this.filters.durations.enabled) {
       const selectedDurations = this.filters.durations.options.filter(opt => opt.selected);
       if (selectedDurations.length > 0) {

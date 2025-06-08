@@ -75,11 +75,17 @@
         </div>
         
         <!-- Search Box -->
-        <div class="search-box-centered">
-          <div class="search-box">
-            <input type="text" class="search-input" placeholder="Search assets..." [(ngModel)]="searchQuery">
-            <i class="fas fa-search search-icon-inside"></i>
-          </div>
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (input)="onSearchInput()"
+            placeholder="Search..."
+            class="search-input"
+          >
+          <button class="search-button" (click)="filterAssetsBySearch()">
+            <i class="bi bi-search"></i>
+          </button>
         </div>
 
         <div class="toolbar-right">
@@ -113,35 +119,7 @@
                   <span class="plate-name-text">{{ asset.title }}</span>
                 </div>
 
-                <div class="plate-footer">
-                  <div class="icons icons-top">
-                    <!-- Wishlist Button -->
-                    <button
-                      class="icon-btn-1 icon-btn"
-                      [title]="isInWishlist(asset.assetId) ? 'Remove from Wishlist' : 'Add to Wishlist'"
-                      (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
-                    >
-                      <img
-                        [src]="isInWishlist(asset.assetId) ? 'bookmark.png' : 'wishlist.png'"
-                        alt="Wishlist Toggle"
-                        class="button-image1"
-                        [ngClass]="{'active-wishlist': isInWishlist(asset.assetId)}"
-                      />
-                    </button>
-
-                    <!-- Bid Button -->
-                    <button
-                      class="icon-btn-1 icon-btn"
-                      (click)="navigateToAsset(asset?.assetId)"
-                    >
-                      <img
-                        src="Bidauction1.png"
-                        alt="Bid Toggle"
-                        class="button-image2"
-                      />
-                    </button>
-                  </div>
-                </div>
+               
               </div>
 
           <!-- Bid Info Section -->

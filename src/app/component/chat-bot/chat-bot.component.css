@@ -162,6 +162,8 @@
 .arrow-icon {
   color: #7c3aed;
   margin-left: 10px;
+  display: flex;
+  align-items: center;
 }
 
 /* Help topics */
@@ -897,6 +899,8 @@
   margin-bottom: 8px;
   box-shadow: 0 2px 8px rgba(124,58,237,0.05);
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
 }
 .faq-question:hover {
   background: #f3e8ff;

@@ -12,7 +12,7 @@ import {
 } from '../../../services/transaction-meta.service';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
-
+ 
 @Component({
   selector: 'app-deposit-limit',
   standalone: true,
@@ -28,30 +28,30 @@ export class DepositLimitComponent implements OnInit {
     center: this.center,
     zoom: 14,
   };
-
+ 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-
+ 
   selectedFile: File | null = null;
   categories: any[] = [];
   selectedCategory: number | null = null;
-
+ 
   totalLimit = 0;
   currentDeposit = 0;
   topUpLimit = 0;
   availableLimit = 0;
-
+ 
   topUpAmount = 400;
   selectedPaymentMethod = '';
-
+ 
   paymentMethodsMeta: PaymentMethod[] = [];
   transactionTypesMeta: TransactionType[] = [];
   cardTypesMeta: CardType[] = [];
   paymentMethods: { label: string; value: string }[] = [];
-
-
+ 
+ 
   uploadedDocumentPath = '';
   currentUserId: number = 0; // TODO: Replace with actual logged-in user ID
-
+ 
   constructor(
     private assetCategoriesService: AssetCategoriesService,
     private fb: FormBuilder,
@@ -60,7 +60,7 @@ export class DepositLimitComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService
   ) {}
-
+ 
   ngOnInit(): void {
     this.fetchCategories();
     this.setCurrentLocation();
@@ -81,7 +81,7 @@ export class DepositLimitComponent implements OnInit {
       });
     }
   }
-
+ 
   populateMetadata(data: {
   paymentMethods: PaymentMethod[];
   transactionTypes: TransactionType[];
@@ -90,7 +90,7 @@ export class DepositLimitComponent implements OnInit {
   this.paymentMethodsMeta = data.paymentMethods;
   this.transactionTypesMeta = data.transactionTypes;
   this.cardTypesMeta = data.cardTypes;
-
+ 
   this.paymentMethods = data.paymentMethods.map(pm => ({
     label: pm.paymentMethodName,
     value: this.mapPaymentMethodNameToValue(pm.paymentMethodName),
@@ -117,67 +117,67 @@ export class DepositLimitComponent implements OnInit {
       alert('Geolocation is not supported by this browser.');
     }
   }
-
+ 
   fetchCategories(): void {
     this.assetCategoriesService.getAll().subscribe({
       next: (res) => (this.categories = res),
       error: (err) => console.error('Failed to load categories', err),
     });
   }
-
+ 
   selectPaymentMethod(method: string): void {
     this.selectedPaymentMethod =
       this.selectedPaymentMethod === method ? '' : method;
   }
-
+ 
   uploadDeposit(): void {
     this.fileInput.nativeElement.click();
   }
-
+ 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-
+ 
       if (file.size > 5 * 1024 * 1024) {
         alert('File is too large. Maximum allowed size is 5MB.');
         this.selectedFile = null;
         input.value = ''; // Reset file input
         return;
       }
-
+ 
       this.selectedFile = file;
       console.log('Selected file:', file);
-
+ 
       // TODO: Implement real file upload logic here.
       // For now, simulate upload success:
       this.uploadedDocumentPath = `uploads/${file.name}`;
     }
   }
-
+ 
   increaseLimit(): void {
     this.topUpAmount += 5000;
   }
-
+ 
   decreaseLimit(): void {
     if (this.topUpAmount > 5000) {
       this.topUpAmount -= 5000;
     }
   }
-
+ 
   addTransaction(): void {
     if (!this.selectedPaymentMethod) {
       alert('Please select a payment method.');
       return;
     }
-
+ 
     // Determine if admin approval is required
     const adminApprovalRequiredMethods = ['bank', 'cheque']; // use values matching the keys
     const isManualMethod = adminApprovalRequiredMethods.includes(
       this.selectedPaymentMethod
     );
     const statusId = isManualMethod ? 1 : 2; // 1 = Pending, 3 = Completed
-
+ 
     const transactionBody = {
       amount: this.totalAmount,
       userId: this.currentUserId,
@@ -190,7 +190,7 @@ export class DepositLimitComponent implements OnInit {
       notes: `Top-up via ${this.selectedPaymentMethod}`,
       documentPath: this.uploadedDocumentPath || '',
     };
-
+ 
     this.transactionService.addTransaction(transactionBody).subscribe({
       next: (res) => {
         console.log('Transaction created:', res);
@@ -203,7 +203,7 @@ export class DepositLimitComponent implements OnInit {
       },
     });
   }
-
+ 
   mapPaymentMethodNameToValue(name: string): string {
     const lower = name.toLowerCase();
     if (lower.includes('bank')) return 'bank';
@@ -217,7 +217,7 @@ export class DepositLimitComponent implements OnInit {
     if (lower.includes('cash')) return 'cash';
     return lower;
   }
-
+ 
   getPaymentMethodId(methodValue: string): number {
     const match = this.paymentMethodsMeta.find(
       (pm) =>
@@ -225,7 +225,7 @@ export class DepositLimitComponent implements OnInit {
     );
     return match?.paymentMethodId ?? 0;
   }
-
+ 
   generateMerchantTransactionId(): string {
     return (
       'MERC' +
@@ -234,33 +234,33 @@ export class DepositLimitComponent implements OnInit {
         .padStart(9, '0')
     );
   }
-
+ 
   onCategoryChange(categoryId: number): void {
     this.selectedCategory = categoryId;
   }
-
+ 
   get depositAmount(): number {
     return this.topUpAmount * 0.1;
   }
-
+ 
   get vatAmount(): number {
     return this.depositAmount * 0.1;
   }
-
+ 
   get totalAmount(): number {
     return this.depositAmount + this.vatAmount;
   }
-
+ 
   get consumedPercentage(): number {
     return ((this.totalLimit - this.availableLimit) / this.totalLimit) * 100;
   }
-
+ 
   getProgressColor(percentage: number): string {
     if (percentage < 50) return 'yellow';
     else if (percentage < 80) return 'green';
     else return 'red';
   }
-
+ 
   loadUserDepositLimit(userId: number): void {
     this.userService.getUserDepositLimits(userId).subscribe({
       next: (res) => {

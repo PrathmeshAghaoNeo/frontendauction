@@ -54,6 +54,7 @@ export class ChatBotComponent implements OnInit {
   
   mainMenuOptions: QuickReply[] = [];
   isEndOfChat: boolean = false;
+  expandedFaqIndexes: Set<number> = new Set(); // Track expanded FAQ indices
 
   // Updated API URL - removed https for localhost development
   private apiUrl = (`${ApiEndpoints.CHATBOT}`);
@@ -185,7 +186,6 @@ private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | nul
   backToMain(): void {
     this.isMessageView = false;
     this.currentHelpPage = null;
-    this.currentFaqAnswer = null;
     this.isMaximized = false;
   }
 
@@ -334,9 +334,12 @@ filterFaq() {
   this.filteredFaqs = this.faqs.filter(f => f.question.toLowerCase().includes(search));
 }
 
-showFaqAnswer(faq: any) {
-  this.currentFaqAnswer = faq;
-  this.currentHelpPage = 'faq';
+toggleFaq(index: number): void {
+  if (this.expandedFaqIndexes.has(index)) {
+    this.expandedFaqIndexes.delete(index);
+  } else {
+    this.expandedFaqIndexes.add(index);
+  }
 }
 
 get homeFaqs() {

@@ -23,12 +23,19 @@
 
       <!-- Help Topics -->
       <div class="help-topics">
-        <div *ngFor="let q of homeFaqs" class="help-topic-card" (click)="showFaqAnswer(q)">
-          <p>{{q.question}}</p>
-          <div class="arrow-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 18l6-6-6-6"></path>
-            </svg>
+        <div *ngFor="let q of homeFaqs; let i = index">
+          <div class="help-topic-card" (click)="toggleFaq(i)">
+            <span class="arrow-icon" [style.transform]="expandedFaqIndexes.has(i) ? 'rotate(90deg)' : 'rotate(0deg)'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </span>
+            <span>{{q.question}}</span>
+          </div>
+          <div *ngIf="expandedFaqIndexes.has(i)" class="faq-answer formatted-faq-answer">
+            <ng-container *ngFor="let line of (q.answer | linebreaks).split('<br>')">
+              <div class="faq-answer-line">{{ line.trim() }}</div>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -72,8 +79,20 @@
         <input type="text" placeholder="Search for help" [(ngModel)]="helpSearch" (input)="filterFaq()">
       </div>
       <div class="help-content">
-        <div *ngFor="let q of filteredFaqs" class="faq-question" (click)="showFaqAnswer(q)">
-          {{q.question}}
+        <div *ngFor="let q of filteredFaqs; let i = index">
+          <div class="faq-question" (click)="toggleFaq(i)">
+            <span class="arrow-icon" [style.transform]="expandedFaqIndexes.has(i) ? 'rotate(90deg)' : 'rotate(0deg)'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </span>
+            <span>{{q.question}}</span>
+          </div>
+          <div *ngIf="expandedFaqIndexes.has(i)" class="faq-answer formatted-faq-answer">
+            <ng-container *ngFor="let line of (q.answer | linebreaks).split('<br>')">
+              <div class="faq-answer-line">{{ line.trim() }}</div>
+            </ng-container>
+          </div>
         </div>
       </div>
     </div>
@@ -243,31 +262,6 @@
         </div>
       </div>
 
-      <div class="help-content">
-        <h1>How to Enable Auto-Bid?</h1>
-        <p class="help-description">Learn how to use the auto-bid feature to stay in the lead.</p>
-        <p class="help-updated"></p>
-
-        <div class="table-of-contents">
-          <div class="toc-header">
-            <p>Table of contents</p>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-        </div>
-
-        <div class="help-steps">
-          <h2>Step 1: Explore available auctions and select the asset you're interested in.</h2>
-          <p>Once you've reached the asset page, tap on "Bid Now" button at the bottom of the screen to place your bid.</p>
-          
-          <h2>Step 2: Set your maximum bid limit</h2>
-          <p>After placing your initial bid, you can enable the auto-bid feature by setting a maximum amount you're willing to spend.</p>
-          
-          <h2>Step 3: Enable auto-bidding</h2>
-          <p>Toggle the "Auto-Bid" switch to ON and confirm your maximum bid amount. The system will automatically place bids on your behalf up to your specified limit.</p>
-        </div>
-      </div>
     </div>
 
     <!-- Register Help Page -->
@@ -278,7 +272,6 @@
             <path d="M19 12H5M12 19l-7-7 7-7"></path>
           </svg>
         </div>
-        <h2 class="help-page-title">How to register in the App?</h2>
         <div class="maximize-button" (click)="toggleMaximize()">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 3 21 3 21 9"></polyline>
@@ -289,37 +282,7 @@
         </div>
       </div>
 
-      <div class="help-content">
-        <h1>How to register in the App?</h1>
-        <p class="help-description">Follow these simple steps to create your account and start bidding.</p>
-        <p class="help-updated"></p>
-
-        <div class="table-of-contents">
-          <div class="toc-header">
-            <p>Table of contents</p>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-        </div>
-
-        <div class="help-steps">
-          <h2>Step 1: Download the App</h2>
-          <p>First, download our app from the Apple App Store or Google Play Store.</p>
-          
-          <h2>Step 2: Open the App and click "Sign Up"</h2>
-          <p>On the welcome screen, tap on the "Sign Up" button to begin the registration process.</p>
-          
-          <h2>Step 3: Enter your details</h2>
-          <p>Fill in your personal information, including name, email address, and phone number. Create a strong password for your account.</p>
-          
-          <h2>Step 4: Verify your account</h2>
-          <p>A verification code will be sent to your email or phone number. Enter this code to verify your account.</p>
-          
-          <h2>Step 5: Complete your profile</h2>
-          <p>Add your profile picture and any additional required information to complete your registration.</p>
-        </div>
-      </div>
+    
     </div>
 
     <!-- Plate Number Help Page -->
@@ -330,7 +293,7 @@
             <path d="M19 12H5M12 19l-7-7 7-7"></path>
           </svg>
         </div>
-        <h2 class="help-page-title">How to Purchase a Plate Number?</h2>
+
         <div class="maximize-button" (click)="toggleMaximize()">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 3 21 3 21 9"></polyline>
@@ -341,37 +304,7 @@
         </div>
       </div>
 
-      <div class="help-content">
-        <h1>How to Purchase a Plate Number?</h1>
-        <p class="help-description">Learn the process of acquiring your desired vehicle plate number.</p>
-        <p class="help-updated"></p>
-
-        <div class="table-of-contents">
-          <div class="toc-header">
-            <p>Table of contents</p>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-        </div>
-
-        <div class="help-steps">
-          <h2>Step 1: Browse available plate numbers</h2>
-          <p>Navigate to the "Plate Numbers" section in the app and browse through available options. You can filter by type, price range, and specific numbers or letters.</p>
-          
-          <h2>Step 2: Select your desired plate number</h2>
-          <p>Click on a plate number to view detailed information, including pricing and any special conditions.</p>
-          
-          <h2>Step 3: Place a bid or purchase directly</h2>
-          <p>Depending on the plate, you can either place a bid in an active auction or purchase it immediately at a fixed price.</p>
-          
-          <h2>Step 4: Complete payment</h2>
-          <p>Once you've won an auction or decided to purchase directly, follow the payment instructions to complete your transaction.</p>
-          
-          <h2>Step 5: Plate registration</h2>
-          <p>After successful payment, follow the instructions to register the plate number to your vehicle through the relevant local authority.</p>
-        </div>
-      </div>
+      
     </div>
 
     <!-- Navigation Bar with updated icons and badge -->

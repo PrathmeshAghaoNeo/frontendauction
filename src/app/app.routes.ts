@@ -56,6 +56,8 @@ import { SettingsPrivacyComponent } from './component/profile/settings-privacy/s
 import { DepositLimitComponent } from './component/profile/deposit-limit/deposit-limit.component';
 import { ChatbotAdminComponent } from './component/chatbot-admin/chatbot-admin.component';
 
+
+
 import { ManageRolesComponent } from './component/manage-roles/manage-roles.component';
 import { DirectSaleAssetComponent } from './component/direct-sale-assetpage/direct-sale-assetpage.component';
 import { FilterComponent } from './component/filter/filter.component';
@@ -67,6 +69,8 @@ import { CheckoutComponentComponent } from './component/checkout-component/check
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/payment-success.component';
 import { RoleUpdateComponent } from './component/role-update-component/role-update-component';
 import { RoleCreateComponent } from './component/role-create-component/role-create-component';
+import { ChatbotAdminEditComponent } from './component/chatbot-admin-edit/chatbot-admin-edit.component';
+import { ChatbotAdminViewComponent } from './component/chatbot-admin-view/chatbot-admin-view.component';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -273,10 +277,13 @@ export const routes: Routes = [
     canActivate: [RoleGuard],
     data: { role: 'Admin' },
   },
+{ path: 'chatbot-admin/edit/:id', component: ChatbotAdminEditComponent },
+{ path: 'chatbot-admin/view/:id', component: ChatbotAdminViewComponent },
+
 
   { path: 'finalCheckout/:assetId', component: CheckoutComponentComponent },
   // { path: 'filter', loadComponent: () => import('./component/filter/filter.component').then(m => m.FilterComponent) },
   { path: 'filter', component: FilterComponent },
-  { path: '**', redirectTo: 'page-not-found' } // ❌ This would block /payment-success if declared earlier
+  { path: '**', redirectTo: 'page-not-found' } ,// ❌ This would block /payment-success if declared earlier
 
 ];

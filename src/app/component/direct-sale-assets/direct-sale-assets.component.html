@@ -166,56 +166,6 @@
               <!-- <span class="plate-name-text">{{ asset.description }}</span> -->
             </div>
 
-            <div class="plate-footer">
-              <div class="icons icons-top">
-                <button
-                  class="icon-btn-1 icon-btn"
-                  [title]="
-                    isInWishlist(asset.assetId)
-                      ? 'Remove from Wishlist'
-                      : 'Add to Wishlist'
-                  "
-                  (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
-                >
-                  <img
-                    [src]="
-                      isInWishlist(asset.assetId)
-                        ? 'bookmark.png'
-                        : 'wishlist.png'
-                    "
-                    alt="Wishlist Toggle"
-                    class="button-image1"
-                    [ngClass]="{
-                      'active-wishlist': isInWishlist(asset.assetId)
-                    }"
-                  />
-                </button>
-
-                <ng-container *ngIf="isInCart(asset.assetId); else notInCart">
-                  <button
-                    class="icon-btn-1 icon-btn"
-                    title="Already in Cart"
-                    (click)="redirectToCart()"
-                  >
-                    <img src="c.png" alt="Cart Toggle" class="button-image2" />
-                  </button>
-                </ng-container>
-
-                <ng-template #notInCart>
-                  <button
-                    class="icon-btn-1 icon-btn"
-                    title="Add to Cart"
-                    (click)="addToCart(asset.assetId); $event.stopPropagation()"
-                  >
-                    <img
-                      src="sell.png"
-                      alt="Cart Toggle"
-                      class="button-image2"
-                    />
-                  </button>
-                </ng-template>
-              </div>
-            </div>
           </div>
           <div class="price">BHD {{ asset.price }}</div>
         </ng-container>

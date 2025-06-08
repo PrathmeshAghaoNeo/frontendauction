@@ -48,9 +48,11 @@ export class AddRequestsComponent implements OnInit {
     this.requestService.getNewTemplate().subscribe({
       next: template => {
         this.newRequest = template;
-        // Initialize as numbers to ensure correct data types
-        this.newRequest.requestStatusId = 1;
-        this.newRequest.requestTypeId = 1;
+        // Initialize with empty values for proper placeholder display
+        this.newRequest.userId = null as any; // This will show placeholder
+        this.newRequest.requestStatusId = null as any; // This will show placeholder
+        this.newRequest.requestTypeId = null as any; // This will show placeholder
+        this.newRequest.assetId = null as any; // This will show placeholder
         this.newRequest.transactionId = null;
         this.newRequest.createdByAdmin = false;
         
