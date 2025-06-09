@@ -210,6 +210,7 @@
   body {
   padding-top: 70px; /* Adjust depending on header height */
   overflow-x: hidden;
+  
 }
 
 /* html, body { height: 100%;} */
@@ -220,4 +221,34 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
 /* Fix for Bootstrap modal backdrop so modals are interactive and not fully opaque */
 .modal-backdrop.show {
   opacity: var(--bs-backdrop-opacity, 0.5) !important;
+}
+
+
+/* ============================scrollbar */
+
+.scrollbar-custom {
+  overflow-y: auto;
+  height: 200px;
+  scrollbar-width: initial;
+  scrollbar-color: #a4508b #fcf9f9; 
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: linear-gradient(to bottom, #eee, #ddd);
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom right, #a4508b, #5f0a87);
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom right, #7f00ff, #e100ff);
 }

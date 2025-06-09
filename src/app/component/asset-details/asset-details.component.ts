@@ -385,66 +385,6 @@ onSetLimit(): void {
 }
 
 
-// toggleAutoBid(value: boolean) {
-//   if (value) {
-//     const confirmed = window.confirm('Are you sure you want to enable auto-bid?');
-//     if (!confirmed) {
-//       // User cancelled, so don't enable auto-bid
-//       return;
-//     }
-//   }
-
-//   this.AutoBid.isActive = value;
-//   this.showRightPanel = value;
-
-//   if (value === true) {
-//     this.AutoBid.maxBidAmount = this.setLimitAmount;
-//     const payload = {
-//       userId: this.userId,
-//       auctionId: this.auctionId,
-//       assetId: this.assetId,
-//       maxBidAmount: this.setLimitAmount,
-//     };
-//     console.log("payload", payload);
-//     this.bidService.placeAutoBid(payload).subscribe({
-//       next: (response) => {
-//         console.log('AutoBid placed:', response);
-//         Swal.fire({
-//           icon: 'success',
-//           title: 'Auto-Bid Set',
-//           text: `Your auto-bid has been set successfully!`,
-//           timer: 2000,
-//           showConfirmButton: false
-//         });
-//       },
-//       error: (err) => {
-//         console.error('Failed to place AutoBid:', err);
-//         Swal.fire({
-//           icon: 'error',
-//           title: 'Auto-Bid Failed',
-//           text: 'Failed to set auto-bid. Please try again.',
-//           timer: 2000,
-//           showConfirmButton: false
-//         });
-//       }
-//     });
-//   } else {
-//     const payload = {
-//       userId: this.userId,
-//       auctionId: this.auctionId,
-//       assetId: this.assetId
-//     };
-//     this.bidService.removeAutoBid(payload).subscribe({
-//       next: (response) => {
-//         console.log('AutoBid removed:', response);
-//       },
-//       error: (err) => {
-//         console.error('Failed to remove AutoBid:', err);
-//       }
-//     });
-//   }
-// }
-
 openConfirmationModal(value: boolean) {
     this.pendingValue = value;
     this.modalMessage = value
@@ -500,3 +440,63 @@ openConfirmationModal(value: boolean) {
   }
 
 }
+        
+        // toggleAutoBid(value: boolean) {
+        //   if (value) {
+        //     const confirmed = window.confirm('Are you sure you want to enable auto-bid?');
+        //     if (!confirmed) {
+        //       // User cancelled, so don't enable auto-bid
+        //       return;
+        //     }
+        //   }
+        
+        //   this.AutoBid.isActive = value;
+        //   this.showRightPanel = value;
+        
+        //   if (value === true) {
+        //     this.AutoBid.maxBidAmount = this.setLimitAmount;
+        //     const payload = {
+        //       userId: this.userId,
+        //       auctionId: this.auctionId,
+        //       assetId: this.assetId,
+        //       maxBidAmount: this.setLimitAmount,
+        //     };
+        //     console.log("payload", payload);
+        //     this.bidService.placeAutoBid(payload).subscribe({
+        //       next: (response) => {
+        //         console.log('AutoBid placed:', response);
+        //         Swal.fire({
+        //           icon: 'success',
+        //           title: 'Auto-Bid Set',
+        //           text: `Your auto-bid has been set successfully!`,
+        //           timer: 2000,
+        //           showConfirmButton: false
+        //         });
+        //       },
+        //       error: (err) => {
+        //         console.error('Failed to place AutoBid:', err);
+        //         Swal.fire({
+        //           icon: 'error',
+        //           title: 'Auto-Bid Failed',
+        //           text: 'Failed to set auto-bid. Please try again.',
+        //           timer: 2000,
+        //           showConfirmButton: false
+        //         });
+        //       }
+        //     });
+        //   } else {
+        //     const payload = {
+        //       userId: this.userId,
+        //       auctionId: this.auctionId,
+        //       assetId: this.assetId
+        //     };
+        //     this.bidService.removeAutoBid(payload).subscribe({
+        //       next: (response) => {
+        //         console.log('AutoBid removed:', response);
+        //       },
+        //       error: (err) => {
+        //         console.error('Failed to remove AutoBid:', err);
+        //       }
+        //     });
+        //   }
+        // }

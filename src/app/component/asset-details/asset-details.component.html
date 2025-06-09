@@ -313,45 +313,45 @@
                   </div>
                 </ng-template>
 
-                <ng-template #onTemplate>
-                  <div class="place-bid-section">
-                    <label for="setLimit">Set Limit</label>
-                    <div class="bid-input-group">
-                      <button class="btn-decrement" (click)="decrementLimit()">
-                        -
-                      </button>
+                  <ng-template #onTemplate>
+                    <div class="place-bid-section">
+                      <label for="setLimit">Set Limit</label>
+                      <div class="bid-input-group">
+                        <button class="btn-decrement" (click)="decrementLimit()">
+                          -
+                        </button>
 
-                      <input type="number" [(ngModel)]="setLimitAmount" [min]="minValidLimit"
-                        [step]="asset?.minIncrement ?? 10" required #maxBidAmount="ngModel" class="form-control" />
+                        <input type="number" [(ngModel)]="setLimitAmount" [min]="minValidLimit"
+                          [step]="asset?.minIncrement ?? 10" required #maxBidAmount="ngModel" class="form-control" />
 
-                      <button class="btn-increment" (click)="incrementLimit()">
-                        +
-                      </button>
-                    </div>
-
-                    <div *ngIf="
-                  maxBidAmount.touched &&
-                  (maxBidAmount.invalid || setLimitAmount < minValidLimit)
-                ">
-                      <div *ngIf="maxBidAmount.errors?.['required']" class="text-danger">
-                        Limit amount is required.
-                      </div>
-                      <div *ngIf="setLimitAmount < minValidLimit" class="text-danger">
-                        Limit must be at least {{ minValidLimit }}.
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12">
-                        <button class="bid-button-1" (click)="onSetLimit()" [disabled]="
-                      setLimitAmount < minValidLimit || timeLeft.total <= 0
-                    ">
-                          <i class="fa fa-check"></i> Set Limit
+                        <button class="btn-increment" (click)="incrementLimit()">
+                          +
                         </button>
                       </div>
+
+                      <div *ngIf="
+                    maxBidAmount.touched &&
+                    (maxBidAmount.invalid || setLimitAmount < minValidLimit)
+                  ">
+                        <div *ngIf="maxBidAmount.errors?.['required']" class="text-danger">
+                          Limit amount is required.
+                        </div>
+                        <div *ngIf="setLimitAmount < minValidLimit" class="text-danger">
+                          Limit must be at least {{ minValidLimit }}.
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-12">
+                          <button class="bid-button-1" (click)="onSetLimit()" [disabled]="
+                        setLimitAmount < minValidLimit || timeLeft.total <= 0
+                      ">
+                            <i class="fa fa-check"></i> Set Limit
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </ng-template>
+                  </ng-template>
 
                 <!-- Container to render template based on toggle -->
                 <ng-container *ngTemplateOutlet="showRightPanel ? onTemplate : offTemplate"></ng-container>
