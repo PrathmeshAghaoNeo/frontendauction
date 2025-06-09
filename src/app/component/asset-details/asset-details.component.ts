@@ -279,7 +279,7 @@ loadAutoBid() {
         Swal.fire({
           icon: 'error',
           title: 'Bid Failed',
-          text: 'Failed to place bid. Please try again or check your input.',
+          text: error?.error?.message ||'Failed to place bid. Please try again or check your input.',
           timer: 2000,
           showConfirmButton: false
         });

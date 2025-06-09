@@ -52,6 +52,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/direct-bid',
     '/finalCheckout',
     '/direct-sale-assets',
+    '/asset-details'
 
     // Add more routes as needed
   ];
