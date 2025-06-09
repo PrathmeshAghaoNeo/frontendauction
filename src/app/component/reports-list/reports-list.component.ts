@@ -19,7 +19,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ReportsService } from '../../services/reports.service';
 import { User } from '../../modals/user';
 import { Transaction } from '../../modals/manage-transaction';
-import { HighBiddingCustomer, RequestTransaction } from '../../modals/reports';
+import { AuctionReport, HighBiddingCustomer, RequestTransaction, StatementOfAccountResponse } from '../../modals/reports';
 
 @Component({
   selector: 'app-reports-list',
@@ -39,14 +39,14 @@ export class ReportsListComponent implements OnInit {
 
   searchTerm: string = '';
   page = 1;
-  itemsPerPage = 7;
+  itemsPerPage = 6;
   currentPage: number = 1;
   selectedReport: string | null = null;
 
-  defaultAuctions: Auction[] = [];
-  expiredAuctions: Auction[] = [];
-  upcomingAuctions: Auction[] = [];
-  ongoingAuctions: Auction[] = [];
+  defaultAuctions: AuctionReport[] = [];
+  expiredAuctions: AuctionReport[] = [];
+  upcomingAuctions: AuctionReport[] = [];
+  ongoingAuctions: AuctionReport[] = [];
   activeDirectSaleAssets: Asset[] = [];
   assetsdata: Asset[] = [];
 
@@ -58,7 +58,7 @@ export class ReportsListComponent implements OnInit {
   refundRequests: RequestTransaction[] = [];
   highBidders: HighBiddingCustomer[] = [];
   supplierAuctions: User[] = [];
-  accountStatements: Transaction[] = [];
+  accountStatements: StatementOfAccountResponse[] = [];
 
   auctionRevenueRaw: any[] = [];
   directSalesRevenueRaw: any[] = [];
@@ -71,12 +71,12 @@ export class ReportsListComponent implements OnInit {
     'Current Ongoing Auctions – Count and List',
     'Upcoming Auctions – Count and List',
     'Active Direct Sale Listings – Count and List',
-    'Pending Complete Registration – Count and List',
-    'Pending Sale Approval – Count and List',
+    // 'Pending Complete Registration – Count and List',
+    // 'Pending Sale Approval – Count and List',
     'Latest Deposits – Count and List',
     'Refund Requests – Count and List',
     'High Bidding Limit Customers – Count and List',
-    'Supplier Auctions – Count and List',
+    // 'Supplier Auctions – Count and List',
     'Statement of Account – Count and List',
   ];
 
@@ -87,14 +87,19 @@ export class ReportsListComponent implements OnInit {
     private reportsService: ReportsService
   ) {}
 
-  ngOnInit(): void {
-    // Load all auctions and categorize them
-    this.fetchAuctions();
+   ngOnInit(): void {
+    this.loadAllData();
+  }
 
-    // Load all assets and categorize direct sale ones
+  get filteredReports() {
+    return this.reports.filter((report) =>
+      report.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
+
+  loadAllData(): void {
+    this.loadAuctions();
     this.fetchAssets();
-
-    // Load report-related data
     this.fetchAuctionRevenue();
     this.fetchDirectSalesRevenue();
     this.fetchActiveDirectSales();
@@ -102,12 +107,6 @@ export class ReportsListComponent implements OnInit {
     this.fetchLatestDeposits();
     this.fetchHighBidders();
     this.fetchAccountStatements();
-  }
-
-  get filteredReports() {
-    return this.reports.filter((report) =>
-      report.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
   }
 
   openViewModal(report: string): void {
@@ -144,17 +143,48 @@ export class ReportsListComponent implements OnInit {
     });
   }
 
-  fetchAuctions(): void {
-    this.auctionService.getAllAuctions().subscribe({
-      next: (data) => {
-        this.defaultAuctions = data;
-        this.categorizeAuctions();
+  // fetchAuctions(): void {
+  //   this.reports.().subscribe({
+  //     next: (auctions: AuctionReport[]) => {
+  //       this.defaultAuctions = auctions;
+  //       this.categorizeAuctions();
+  //     },
+  //     error: (err) => {
+  //       console.error('Failed to fetch auctions:', err);
+  //       this.defaultAuctions = [];
+  //       this.expiredAuctions = [];
+  //       this.upcomingAuctions = [];
+  //       this.ongoingAuctions = [];
+  //     },
+  //   });
+  // }
+
+  loadAuctions(): void {
+  const reportMappings = [
+    { type: 'Total', key: 'defaultAuctions' },
+    { type: 'Past', key: 'expiredAuctions' },
+    { type: 'Upcoming', key: 'upcomingAuctions' },
+    { type: 'Current', key: 'ongoingAuctions' }
+  ];
+
+  reportMappings.forEach((mapping) => {
+    this.reportsService.getAuctionsReport(mapping.type).subscribe({
+      next: (response) => {
+        if (Array.isArray(response.auctions)) {
+          (this as any)[mapping.key] = response.auctions;
+        } else {
+          console.warn(`Invalid response for ${mapping.type} auctions`, response);
+          (this as any)[mapping.key] = [];
+        }
       },
-      error: (err) => {
-        console.error('Failed to load auctions', err);
-      },
+      error: (error) => {
+        console.error(`Failed to load ${mapping.type} auctions:`, error);
+        (this as any)[mapping.key] = [];
+      }
     });
-  }
+  });
+}
+
 
   fetchAssets(): void {
     this.assetService.getAssets().subscribe({
@@ -311,7 +341,7 @@ export class ReportsListComponent implements OnInit {
           '#': index + 1,
           Title: a.title,
           Type: a.type,
-          Status: a.statusName,
+          Status: a.statusId,
         }));
         break;
 

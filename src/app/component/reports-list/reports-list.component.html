@@ -12,7 +12,7 @@
   <!-- Page Header -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="h4 mb-0">Reports</h2>
-    <div class="input-group w-auto">
+    <!-- <div class="input-group w-auto">
       <input
         type="text"
         class="form-control form-control-sm"
@@ -20,7 +20,7 @@
         [(ngModel)]="searchTerm"
       />
       <span class="input-group-text"><i class="bi bi-search"></i></span>
-    </div>
+    </div> -->
   </div>
 
   <!-- Reports Table -->
@@ -148,66 +148,170 @@
         </div>
 
         <!-- Count + List -->
+        <!-- TOTAL AUCTIONS -->
         <div *ngSwitchCase="'Total Auctions – Count and List'">
-          <p><strong>Total Auctions:</strong> {{ defaultAuctions.length }}</p>
+          <h4 class="mb-3">
+            Total Auctions
+            <span class="badge bg-primary ms-2">{{
+              defaultAuctions.length
+            }}</span>
+          </h4>
 
-          <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-              <thead class="thead-dark">
+          <div class="table-responsive" *ngIf="defaultAuctions.length > 0">
+            <table class="table table-bordered table-hover">
+              <thead class="table-light">
                 <tr>
                   <th>#</th>
                   <th>Title</th>
                   <th>Type</th>
                   <th>Status</th>
-                  <!-- <th>Price</th> -->
+                  <th>categoryName</th>
+                  <th>End Date</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let auction of defaultAuctions; let i = index">
+                <tr *ngFor="let auction of ongoingAuctions; let i = index">
                   <td>{{ i + 1 }}</td>
                   <td>{{ auction.title }}</td>
                   <td>{{ auction.type }}</td>
-                  <!-- <td>{{ getStatusName(auction.statusId) }}</td> -->
                   <td>{{ auction.statusName }}</td>
+                  <td>{{ auction.categoryName }}</td>
+                  <td>{{ auction.endDateTime | date : "short" }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
+          <div
+            *ngIf="defaultAuctions.length === 0"
+            class="text-muted text-center mt-3"
+          >
+            <i class="bi bi-info-circle-fill me-2"></i>No auctions found.
+          </div>
         </div>
 
+        <!-- PAST AUCTIONS -->
         <div *ngSwitchCase="'Past Auctions – Count and List'">
-          <h4>Expired Auctions ({{ expiredAuctions.length }})</h4>
-          <ul *ngIf="expiredAuctions.length > 0">
-            <li *ngFor="let auction of expiredAuctions">
-              {{ auction.title }} (Ended on
-              {{ auction.endDateTime | date : "short" }})
-            </li>
-          </ul>
-          <p *ngIf="expiredAuctions.length === 0">No expired auctions found.</p>
+          <h4 class="mb-3">
+            Expired Auctions
+            <span class="badge bg-secondary ms-2">{{
+              expiredAuctions.length
+            }}</span>
+          </h4>
+
+          <div class="table-responsive" *ngIf="expiredAuctions.length > 0">
+            <table class="table table-bordered table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>categoryName</th>
+                  <th>End Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let auction of ongoingAuctions; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ auction.title }}</td>
+                  <td>{{ auction.type }}</td>
+                  <td>{{ auction.statusName }}</td>
+                  <td>{{ auction.categoryName }}</td>
+                  <td>{{ auction.endDateTime | date : "short" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            *ngIf="expiredAuctions.length === 0"
+            class="text-muted text-center mt-3"
+          >
+            <i class="bi bi-calendar-x-fill me-2"></i>No expired auctions found.
+          </div>
         </div>
 
+        <!-- UPCOMING AUCTIONS -->
         <div *ngSwitchCase="'Upcoming Auctions – Count and List'">
-          <h4>Upcoming Auctions ({{ upcomingAuctions.length }})</h4>
-          <ul *ngIf="upcomingAuctions.length > 0">
-            <li *ngFor="let auction of upcomingAuctions">
-              {{ auction.title }} (Starts on
-              {{ auction.startDateTime | date : "short" }})
-            </li>
-          </ul>
-          <p *ngIf="upcomingAuctions.length === 0">
-            No upcoming auctions found.
-          </p>
+          <h4 class="mb-3">
+            Upcoming Auctions
+            <span class="badge bg-warning text-dark ms-2">{{
+              upcomingAuctions.length
+            }}</span>
+          </h4>
+
+          <div class="table-responsive" *ngIf="upcomingAuctions.length > 0">
+            <table class="table table-bordered table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>categoryName</th>
+                  <th>End Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let auction of ongoingAuctions; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ auction.title }}</td>
+                  <td>{{ auction.type }}</td>
+                  <td>{{ auction.statusName }}</td>
+                  <td>{{ auction.categoryName }}</td>
+                  <td>{{ auction.endDateTime | date : "short" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            *ngIf="upcomingAuctions.length === 0"
+            class="text-muted text-center mt-3"
+          >
+            <i class="bi bi-calendar-event-fill me-2"></i>No upcoming auctions
+            found.
+          </div>
         </div>
 
+        <!-- ONGOING AUCTIONS -->
         <div *ngSwitchCase="'Current Ongoing Auctions – Count and List'">
-          <h4>Ongoing Auctions ({{ ongoingAuctions.length }})</h4>
-          <ul *ngIf="ongoingAuctions.length > 0">
-            <li *ngFor="let auction of ongoingAuctions">
-              {{ auction.title }} (Ends on
-              {{ auction.endDateTime | date : "short" }})
-            </li>
-          </ul>
-          <p *ngIf="ongoingAuctions.length === 0">No ongoing auctions found.</p>
+          called
+          <h4 class="mb-3">
+            Ongoing Auctions
+            <span class="badge bg-success ms-2">{{
+              ongoingAuctions.length
+            }}</span>
+          </h4>
+
+          <div class="table-responsive" *ngIf="ongoingAuctions.length > 0">
+            <table class="table table-bordered table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>categoryName</th>
+                  <th>End Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let auction of ongoingAuctions; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ auction.title }}</td>
+                  <td>{{ auction.type }}</td>
+                  <td>{{ auction.statusName }}</td>
+                  <td>{{ auction.categoryName }}</td>
+                  <td>{{ auction.endDateTime | date : "short" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            *ngIf="ongoingAuctions.length === 0"
+            class="text-muted text-center mt-3"
+          >
+            <i class="bi bi-clock-fill me-2"></i>No ongoing auctions found.
+          </div>
         </div>
 
         <!-- Active Direct Sale Listings -->
@@ -298,16 +402,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let deposit of latestDeposits; let i = index">
+                <tr *ngFor="let refund of refundRequests; let i = index">
                   <td>{{ i + 1 }}</td>
-                  <td>{{ deposit.transactionNumber }}</td>
-                  <td>{{ deposit.userId || "N/A" }}</td>
-                  <td>
-                    {{ deposit.amount | currency : "BHD" : "symbol" : "1.2-2" }}
-                  </td>
-                  <td>{{ deposit.paymentMethodId || "N/A" }}</td>
-                  <td>{{ deposit.statusId || "N/A" }}</td>
-                  <td>{{ deposit.transactionDateTime | date : "short" }}</td>
+                  <td>{{ refund.transactionNumber }}</td>
+                  <td>{{ refund.userName || "N/A" }}</td>
+                  <td>{{ refund.amount | currency }}</td>
+                  <td>{{ refund.paymentMethodName || "N/A" }}</td>
+                  <td>{{ refund.statusName || refund.statusId }}</td>
+                  <td>{{ refund.transactionDateTime | date : "short" }}</td>
                 </tr>
               </tbody>
             </table>
@@ -337,10 +439,10 @@
                 <tr *ngFor="let refund of refundRequests; let i = index">
                   <td>{{ i + 1 }}</td>
                   <td>{{ refund.transactionNumber }}</td>
-                  <td>{{ refund.userId || "N/A" }}</td>
+                  <td>{{ refund.userName || "N/A" }}</td>
                   <td>{{ refund.amount | currency }}</td>
-                  <td>{{ refund.paymentMethodId || "N/A" }}</td>
-                  <td>{{ refund.statusId || refund.statusId }}</td>
+                  <td>{{ refund.paymentMethodName || "N/A" }}</td>
+                  <td>{{ refund.statusName || refund.statusId }}</td>
                   <td>{{ refund.transactionDateTime | date : "short" }}</td>
                 </tr>
               </tbody>
@@ -422,7 +524,7 @@
                 <td>{{ i + 1 }}</td>
                 <td>{{ txn.transactionDateTime | date : "short" }}</td>
                 <td>{{ txn.transactionNumber }}</td>
-                <td>{{ txn.userId }}</td>
+                <td>{{ txn.userName }}</td>
                 <td>{{ txn.amount | currency }}</td>
                 <td>{{ txn.transactionTypeName }}</td>
                 <td>{{ txn.paymentMethodName }}</td>

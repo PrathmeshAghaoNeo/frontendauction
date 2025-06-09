@@ -38,4 +38,8 @@ export class ReportsService {
   getLatestDepositRequests(): Observable<any> {
     return this.http.get(`${this.baseUrl}/get-latest-deposit`);
   }
+
+  getAuctionsReport(reportType: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/report-auction?reportType=${encodeURIComponent(reportType)}`);
+  }
 }
