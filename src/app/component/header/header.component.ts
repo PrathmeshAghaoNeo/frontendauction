@@ -56,6 +56,7 @@ export class HeaderComponent implements OnInit {
   }
   @Output() toggleSidebar = new EventEmitter<void>();
   ngOnInit(): void {
+    this.startTypingEffect();
     const userId = this.authService.getUserIdJwt();
     if (userId) {
       this.loadNotifications(userId);
@@ -88,9 +89,47 @@ export class HeaderComponent implements OnInit {
       },
     });
   }
-  onToggleSidebar(): void {
-  this.toggleSidebar.emit();
+  startTypingEffect() {
+  const phrases = [
+    " AUCTION MANAGEMENT PLATFORM",
+    " BID SMART, WIN BIG",
+    " DISCOVER. BID. WIN.",
+    " YOUR TRUSTED AUCTION HUB"
+  ];
+
+  let currentPhraseIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  const element = document.querySelector('.typing-title') as HTMLElement;
+
+  const type = () => {
+    const currentPhrase = phrases[currentPhraseIndex];
+    const updatedText = isDeleting
+      ? currentPhrase.substring(0, charIndex--)
+      : currentPhrase.substring(0, charIndex++);
+
+    if (element) {
+      element.textContent = updatedText;
+    }
+
+    let delay = 100;
+
+    if (!isDeleting && charIndex === currentPhrase.length + 1) {
+      delay = 1200;
+      isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+      delay = 500;
+    }
+
+    setTimeout(type, delay);
+  };
+
+  type();
 }
+
 
   toCart() {
     this.router.navigate(['/bid-add-to-cart']);
