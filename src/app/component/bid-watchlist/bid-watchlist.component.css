@@ -1,4 +1,9 @@
-.watchlist-page {
+.watchlist-page { 
+  flex: 2;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -40,7 +45,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #2c3e50;
+  color: #4a148c;
   padding: 0 1rem;
   text-align: center;
 }
@@ -204,6 +209,7 @@
   background: none;
   border: none;
   cursor: pointer;
+  
 }
 .back-btn-image {
   width: 32px;
@@ -248,7 +254,7 @@
 }
 .bid-controls {
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
   margin-bottom: 25px;
   gap: 15px;
@@ -310,4 +316,66 @@
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+
+.empty-bids {
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+  user-select: none;
+}
+
+.empty-bids i {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.15;
+}
+
+.empty-bids .empty-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #6a1b9a;
+  margin-bottom: 12px;
+}
+
+.empty-bids p {
+  font-size: 15px;
+  color: #666;
+}
+
+.empty-bids a {
+  color: #6a1b9a;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.empty-bids a:hover {
+  border-color: #6a1b9a;
+}
+
+.cart-header {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  position: relative;
+
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.cart-header .back-btn2 {
+  position: absolute;
+  left: 0;
+  top: 20px;
+}
+
+.header-btn{
+  display: block;
+  justify-content: start;
+  padding: 20px;
 }

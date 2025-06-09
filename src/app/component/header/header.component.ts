@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule, NgbDropdownModule, CommonModule,TranslateModule],
+  imports: [RouterModule, NgbDropdownModule, CommonModule, TranslateModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -28,25 +28,24 @@ export class HeaderComponent implements OnInit {
   currentRoute = '';
   userId: number = 0;
   wishlistAssetIds: number[] = [];
-userProfileImageUrl: string = '';
+  userProfileImageUrl: string = '';
   cartAssetIds: number[] = [];
   notifications: Notification[] = [];
-  unreadCount : number= 0;
-
+  unreadCount: number = 0;
+  userRole: string | null = null;
   constructor(
-      private listService: ListService,
-      public authService: AuthService, 
-      private router: Router, 
-      private winService: UserService, 
-      private signalR: SignalRService,
-      private userService: UserService,
-      private translate:TranslateService,
-      private assetService: ManageAssetService) 
-      {
+    private listService: ListService,
+    public authService: AuthService,
+    private router: Router,
+    private winService: UserService,
+    private signalR: SignalRService,
+    private userService: UserService,
+    private translate: TranslateService,
+    private assetService: ManageAssetService) {
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = !!isLoggedIn;
     });
-    
+
     this.currentRoute = this.router.url;
 
     this.router.events.pipe(
@@ -55,6 +54,7 @@ userProfileImageUrl: string = '';
       this.currentRoute = (event as NavigationEnd).urlAfterRedirects;
     });
   }
+  @Output() toggleSidebar = new EventEmitter<void>();
   ngOnInit(): void {
     const userId = this.authService.getUserIdJwt();
     if (userId) {
@@ -64,12 +64,16 @@ userProfileImageUrl: string = '';
     this.signalR.winnerUpdates$.subscribe(data => {
       console.log(data);
     })
+    const user = this.authService.getRoleJwt();
+    this.userRole = user ?? null;
+    console.log('User role:', this.userRole);
+
   }
   // userProfileImageUrl = 'assets/images/default-profile.jpg';
   get showDefaultButtons(): boolean {
     return !this.showCustomButtons;
   }
-  navigatetoallthebidsbythatuser(){
+  navigatetoallthebidsbythatuser() {
     this.router.navigate(['/bid-history'])
   }
   loadWishlist(): void {
@@ -84,12 +88,16 @@ userProfileImageUrl: string = '';
       },
     });
   }
-   toCart() {
+  onToggleSidebar(): void {
+  this.toggleSidebar.emit();
+}
+
+  toCart() {
     this.router.navigate(['/bid-add-to-cart']);
   }
   navigateToUserProfile() {
-  this.router.navigate(['/user-profile']); // Update route as needed
-}
+    this.router.navigate(['/user-profile']); // Update route as needed
+  }
   toWatchlist() {
     this.router.navigate(['/bid-watchlist']);
   }
@@ -161,8 +169,8 @@ userProfileImageUrl: string = '';
 
 
   //Notfication Code 
-   loadNotifications(userId:number): void {
-   
+  loadNotifications(userId: number): void {
+
     if (!userId) return;
 
     this.userService.getNotificationByUserId(userId).subscribe({
@@ -170,27 +178,33 @@ userProfileImageUrl: string = '';
         this.notifications = data;
         console.log(this.notifications)
         this.unreadCount = this.notifications.filter(n => !n.isRead).length;
-      console.log('Unread Count:', this.unreadCount);
+        console.log('Unread Count:', this.unreadCount);
       },
       error: (err) => {
         console.error('Failed to load notifications:', err);
-        
+
       },
     });
   }
 
-   switchLang(lang: string) {
+  switchLang(lang: string) {
     this.translate.use(lang);
     localStorage.setItem('lang', lang);
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     this.currentLang = lang;
   }
   toggleLang() {
-  if (this.currentLang === 'en') {
-    this.switchLang('ar');
-  } else {
-    this.switchLang('en');
+    if (this.currentLang === 'en') {
+      this.switchLang('ar');
+    } else {
+      this.switchLang('en');
+    }
   }
-}
 
+
+  get homeRoute(): string {
+    if (!this.isLoggedIn) return '/landing-page';
+    if (this.userRole === 'Admin') return '/dashboard';
+    return '/reguserlandingpage';
+  }
 }

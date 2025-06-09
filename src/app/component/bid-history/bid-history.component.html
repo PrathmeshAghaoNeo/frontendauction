@@ -63,14 +63,14 @@
     </div>
 
     <!-- Empty State -->
-    <div class="empty-bids" *ngIf="!bidHistory || bidHistory.length === 0">
+    <!-- <div class="empty-bids" *ngIf="!bidHistory || bidHistory.length === 0">
       <i class="fa fa-gavel"></i>
       <p class="empty-title">Nothing Here</p>
       <p>
         <a href="#">Start bidding</a> and you will be able to keep an eye on all
         your bids from here
       </p>
-    </div>
+    </div> -->
 
     <!-- Grid view -->
     <div *ngIf="isGridView && getCurrentBids().length > 0" class="bids-grid">
@@ -81,11 +81,9 @@
         (click)="onBidCardClick(bid)"
         [class.clickable]="selectedTab === 'won'"
       >
-        
-      <div *ngIf="selectedTab === 'won'" class="bid-card-cta">
-           Click to Complete Payment
+        <div *ngIf="selectedTab === 'won'" class="bid-card-cta">
+          Click to Complete Payment
         </div>
-
 
         <img
           [src]="
@@ -119,7 +117,7 @@
         [class.clickable]="selectedTab === 'won'"
       >
         <div *ngIf="selectedTab === 'won'" class="bid-card-cta-list">
-           Click here to buy this asset and complete your payment
+          Click here to buy this asset and complete your payment
         </div>
 
         <img
@@ -145,16 +143,18 @@
             <span>Short info</span>
           </div>
         </div>
-
-        <div class="empty-bids" *ngIf="getCurrentBids().length === 0">
-          <i class="fa fa-gavel"></i>
-          <p class="empty-title">Nothing Here</p>
-          <p>
-            <a href="#">Start bidding</a> and you will be able to keep an eye on
-            all your bids from here
-          </p>
-        </div>
       </div>
     </div>
+
+    <!-- Empty State -->
+    <div class="empty-bids" *ngIf="getCurrentBids().length === 0">
+      <i class="fa fa-gavel"></i>
+      <p class="empty-title">Nothing Here</p>
+      <p>
+        <a routerLink="/reguserlandingpage">Start bidding</a>
+        and you will be able to keep an eye on all your bids from here
+      </p>
+    </div>
+    
   </div>
 </div>

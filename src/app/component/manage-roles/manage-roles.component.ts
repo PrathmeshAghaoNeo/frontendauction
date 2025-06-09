@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { RoleWithPermissions } from '../../modals/roles';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RoleWithPermissionsService } from '../../services/roles.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-manage-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './manage-roles.component.html',
-  styleUrls: ['./manage-roles.component.css']  // ✅ fixed `styleUrl` typo
+  styleUrls: ['./manage-roles.component.css']
 })
 export class ManageRolesComponent implements OnInit {
   roles: RoleWithPermissions[] = [];
@@ -26,15 +27,16 @@ export class ManageRolesComponent implements OnInit {
   itemsPerPage = 10;
 
   @ViewChild('viewRoleModal') viewRoleModal: any;
-  @ViewChild('deleteRoleModal') deleteRoleModal: any;
-
+  @ViewChild('deleteRoleModal') deleteRoleModal!: TemplateRef<any>;
+  private modalRef!: NgbModalRef;
   constructor(
     private roleService: RoleWithPermissionsService,
     private modalService: NgbModal
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.fetchRoles();
+    this.loadRoles();
   }
 
   fetchRoles(): void {
@@ -51,29 +53,29 @@ export class ManageRolesComponent implements OnInit {
     });
   }
   getPermissionList(role: RoleWithPermissions): string {
-  const permissionsMap: { [key: string]: string } = {
-    superAdmin: 'Super Admin',
-    accessAdminPanel: 'Access Admin Panel',
-    manageAuctions: 'Manage Auctions',
-    manageAssets: 'Manage Assets',
-    manageTransactions: 'Manage Transactions',
-    manageCategories: 'Manage Categories',
-    manageRoles: 'Manage Roles',
-    manageUsers: 'Manage Users',
-    viewReports: 'View Reports',
-    exportReports: 'Export Reports',
-    manageRequests: 'Manage Requests',
-    viewAuditTrail: 'View Audit Trail',
-    changeCommission: 'Change Commission',
-  };
+    const permissionsMap: { [key: string]: string } = {
+      superAdmin: 'Super Admin',
+      accessAdminPanel: 'Access Admin Panel',
+      manageAuctions: 'Manage Auctions',
+      manageAssets: 'Manage Assets',
+      manageTransactions: 'Manage Transactions',
+      manageCategories: 'Manage Categories',
+      manageRoles: 'Manage Roles',
+      manageUsers: 'Manage Users',
+      viewReports: 'View Reports',
+      exportReports: 'Export Reports',
+      manageRequests: 'Manage Requests',
+      viewAuditTrail: 'View Audit Trail',
+      changeCommission: 'Change Commission',
+    };
 
-  const permissions = Object.entries(permissionsMap)
-    .filter(([key]) => role[key as keyof RoleWithPermissions])
-    .map(([, label]) => label);
+    const permissions = Object.entries(permissionsMap)
+      .filter(([key]) => role[key as keyof RoleWithPermissions])
+      .map(([, label]) => label);
 
-  return permissions.length ? permissions.join(', ') : 'No Permissions';
-}
-getEnabledPermissions(role: RoleWithPermissions): string[] {
+    return permissions.length ? permissions.join(', ') : 'No Permissions';
+  }
+  getEnabledPermissions(role: RoleWithPermissions): string[] {
     const permissionKeys = Object.keys(role) as (keyof RoleWithPermissions)[];
     return permissionKeys.filter(key => typeof role[key] === 'boolean' && role[key] === true && key !== 'roleId' && key !== 'roleName');
   }
@@ -108,18 +110,43 @@ getEnabledPermissions(role: RoleWithPermissions): string[] {
     this.modalService.open(this.viewRoleModal, { centered: true });
   }
 
-  openDeleteModal(role: RoleWithPermissions): void {
+  loadRoles() {
+  this.loading = true;
+  this.roleService.getAllRoleWithPermissionss().subscribe({
+    next: (data) => {
+      this.roles = data;
+      this.filteredRoles = [...data];  // sync filtered list
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('Failed to load roles', err);
+      this.loading = false;
+    }
+  });
+}
+
+
+  openDeleteModal(role: RoleWithPermissions) {
     this.selectedRole = role;
-    this.modalService.open(this.deleteRoleModal, { centered: true });
+    this.modalRef = this.modalService.open(this.deleteRoleModal, { centered: true });
   }
 
-  deleteRoleConfirmed(): void {
+
+  deleteRoleConfirmed(modal: NgbModalRef) {
     if (!this.selectedRole) return;
 
-    // this.roleService.deleteRole(this.selectedRole.roleId).subscribe(() => {
-    //   this.fetchRoles();
-    // });
+    this.roleService.deleteRoleWithPermissions(this.selectedRole.roleId).subscribe({
+      next: () => {
+        this.loadRoles();
+        this.selectedRole = null;
+        modal.close();
+      },
+      error: (err) => console.error('Delete failed', err)
+    });
   }
+
+
+
 
   // exportToExcel(): void {
   //   console.log('Exporting roles...');

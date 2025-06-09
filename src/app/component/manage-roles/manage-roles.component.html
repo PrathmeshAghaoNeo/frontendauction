@@ -6,9 +6,10 @@
         <!-- <button class="btn custom-purple-btn" (click)="exportToExcel()" id="export">
       <i class="bi bi-file-earmark-excel"></i> Export
     </button> -->
-        <button class="btn custom-purple-btn" routerLinkActive="active">
-            Add Role
+        <button class="btn custom-purple-btn" [routerLink]="'/createRole'" routerLinkActive="active">
+            <i class="bi bi-plus-circle"></i> Add Role
         </button>
+
     </div>
 </div>
 
@@ -45,7 +46,8 @@
                         <button class="btn btn-sm btn-outline-danger me-1" (click)="openDeleteModal(role)">
                             <i class="bi bi-trash"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-primary">
+
+                        <button class="btn btn-sm btn-outline-primary" [routerLink]="['/updateRole', role.roleId]">
                             <i class="bi bi-pencil"></i>
                         </button>
                     </td>
@@ -90,17 +92,16 @@
     </div>
 </ng-template>
 
-<!-- Delete Confirmation Modal -->
 <ng-template #deleteRoleModal let-modal>
-    <div class="modal-header">
-        <h5 class="modal-title text-danger fw-semibold">Confirm Delete</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
-    </div>
-    <div class="modal-body">
-        Are you sure you want to delete the role: <strong>{{ selectedRole?.roleName }}</strong>?
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-outline-secondary" (click)="modal.dismiss()">Cancel</button>
-        <button class="btn btn-danger" (click)="deleteRoleConfirmed(); modal.close()">Delete</button>
-    </div>
+  <div class="modal-header">
+    <h5 class="modal-title text-danger fw-semibold">Confirm Delete</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete the role: <strong>{{ selectedRole?.roleName }}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary" (click)="modal.dismiss()">Cancel</button>
+    <button class="btn btn-danger" (click)="deleteRoleConfirmed(modal)">Delete</button>
+  </div>
 </ng-template>

@@ -99,6 +99,6 @@ export class UserService {
   }
 
   getUserDepositLimits(userId: number): Observable<DepositLimits> {
-    return this.http.get<DepositLimits>(`https://localhost:62627/api/User/${userId}/deposit-limits`);
+    return this.http.get<DepositLimits>(`${ApiEndpoints.USER}/deposit-limits?userId=${userId}`);
   }
 }

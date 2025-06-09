@@ -1,12 +1,15 @@
 <header class="navbar navbar-expand-lg navbar-light bg-light border-bottom rounded">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">
-      <img src="/assets/mazadlogo.png" alt="Admin Logo" height="40" class="d-inline-block align-top rounded" />
+    <a class="navbar-brand" [routerLink]="homeRoute">
+      <img src="/assets/mazadlogo.png" alt="Mazad Logo" height="40" class="d-inline-block align-top rounded" />
     </a>
+    <!-- Sidebar Toggle Icon
+    <button class="btn btn-link sidebar-toggle" (click)="onToggleSidebar()">
+      <i class="bi bi-list" style="font-size: 1.5rem;"></i>
+    </button> -->
 
     <div class="d-flex align-items-center">
-
-      <!-- 🎯 Custom Register User Landing Page Buttons -->
+      <!-- Custom Register User Landing Page Buttons -->
       <ng-container *ngIf="showCustomButtons">
         <!-- Cart Button -->
         <button class="icon-btn btn-light me-2" type="button" (click)="toCart()" [title]="'CART' | translate">
@@ -68,7 +71,9 @@
         <button *ngIf="!isLoggedIn" class="btn btn-outline-dark rounded-pill" routerLink="/login">
           <i class="bi bi-person-circle me-1"></i> {{ 'LOGIN' | translate }}
         </button>
-        
+
+        <!-- Language Switch -->
+
       </ng-container>
       <button class="btn-toggle-lang" (click)="toggleLang()">
         {{ currentLang === 'en' ? ('العربية') : ('English') }}

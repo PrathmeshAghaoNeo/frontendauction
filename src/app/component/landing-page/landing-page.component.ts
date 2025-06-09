@@ -4,6 +4,7 @@ import { PromotionsComponent } from './promotions/promotions.component';
 import { CategoryCardComponent } from './category-card/category-card.component';
 import { DirectSaleComponentLP } from './direct-sale/direct-sale.component';
 import { FooterComponent } from "../footer/footer.component";
+import { HeaderComponent } from "../header/header.component";
 
 @Component({
   selector: 'app-landing-page',
@@ -12,7 +13,7 @@ import { FooterComponent } from "../footer/footer.component";
     PromotionsComponent,
     DirectSaleComponentLP,
     CategoryCardComponent,
-    FooterComponent
+    FooterComponent,
 ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css']

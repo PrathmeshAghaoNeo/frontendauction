@@ -4,94 +4,113 @@ import {
   FormGroup,
   Validators,
   FormsModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiEndpoints } from '../../constants/api-endpoints';
 import { Location, CommonModule } from '@angular/common';
+import {
+  TransactionMetadataService,
+  CardType,
+  PaymentMethod,
+  TransactionType,
+  TransactionStatus,
+} from '../../services/transaction-meta.service';
 
 @Component({
   selector: 'app-add-transaction',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
   templateUrl: './add-transaction.component.html',
-  styleUrls: ['./add-transaction.component.css']
+  styleUrls: ['./add-transaction.component.css'],
 })
 export class AddTransactionComponent implements OnInit {
   transactionForm!: FormGroup;
   minDateTime: string = '';
-
-  transactionTypes = [
-    { id: 1, name: 'Receipt' },
-    { id: 2, name: 'Deposit' },
-    { id: 3, name: 'Refund' },
-    { id: 4, name: 'Invoice' }
-  ];
-  
-  paymentMethods = [
-    { id: 1, name: 'Cash' },
-    { id: 2, name: 'Bank Transfer' },
-    { id: 3, name: 'Credit Card' },
-    { id: 4, name: 'Debit Card' },
-    { id: 5, name: 'Online Wallet' }
-  ];
-  
-  cardTypes = [
-    { id: 1, name: 'Visa' },
-    { id: 2, name: 'MasterCard' },
-    { id: 3, name: 'American Express' },
-    { id: 4, name: 'AMEX' },
-    { id: 5, name: 'Debit' }
-  ];
-  
-  statuses = [
-    { id: 1, name: 'Pending' },
-    { id: 2, name: 'Completed' },
-    { id: 3, name: 'Cancelled' },
-    { id: 4, name: 'Failed' }
-  ];
-  
+  submitting = false;
+  cardTypes: CardType[] = [];
+  paymentMethods: PaymentMethod[] = [];
+  transactionTypes: TransactionType[] = [];
+  statuses: TransactionStatus[] = [];
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private metadataService: TransactionMetadataService
   ) {}
 
   ngOnInit(): void {
     this.setMinDateTime();
     this.initializeForm();
+    this.setupCardValidation();
+    this.loadMetadata(); // ← Add this
   }
 
   private setMinDateTime(): void {
     const now = new Date();
     const istOffset = 5.5 * 60 * 60 * 1000;
     const istNow = new Date(now.getTime() + istOffset);
-    this.minDateTime = istNow.toISOString().slice(0, 16); // format for datetime-local
+    this.minDateTime = istNow.toISOString().slice(0, 16);
   }
 
   private initializeForm(): void {
     this.transactionForm = this.fb.group({
-      amount: [null, [Validators.required, Validators.min(0.01), Validators.max(99999999)]],
-      userId: [null, [Validators.required, Validators.min(1), Validators.max(99999)]],
-      transactionTypeId: [null, Validators.required],
+      amount: [
+        null,
+        [Validators.required, Validators.min(0.01), Validators.max(99999999)],
+      ],
+      userId: [
+        null,
+        [Validators.required, Validators.min(1), Validators.max(99999)],
+      ],
       paymentMethodId: [null, Validators.required],
-      cardTypeId: [null, Validators.required],
-      merchantTransactionId: ['', [
-        Validators.required,
-        Validators.maxLength(12),
-        Validators.pattern(/^MERC\d{0,8}$/)
-      ]],
-      
+      cardTypeId: [null], // will be required conditionally
+      transactionTypeId: [null, Validators.required],
+      merchantTransactionId: [
+        '',
+        [Validators.maxLength(12), Validators.pattern(/^MERC\d{0,8}$/)],
+      ],
       transactionDateTime: [null, Validators.required],
       statusId: [null, Validators.required],
-      notes: ['', Validators.maxLength(100)]
+      notes: ['', Validators.maxLength(100)],
     });
   }
 
+  private setupCardValidation(): void {
+    this.transactionForm
+      .get('paymentMethodId')
+      ?.valueChanges.subscribe((val) => {
+        const cardControl = this.transactionForm.get('cardTypeId');
+        if (val === 3 || val === 4) {
+          cardControl?.setValidators([Validators.required]);
+        } else {
+          cardControl?.clearValidators();
+        }
+        cardControl?.updateValueAndValidity();
+      });
+  }
+
+  loadMetadata(): void {
+    const cached = this.metadataService.getCachedMetadata();
+    if (cached) {
+      this.populateDropdowns(cached);
+    } else {
+      this.metadataService
+        .fetchMetadata()
+        .subscribe((data) => this.populateDropdowns(data));
+    }
+  }
+
+  populateDropdowns(data: any): void {
+    this.transactionTypes = data.transactionTypes;
+    this.paymentMethods = data.paymentMethods;
+    this.cardTypes = data.cardTypes;
+    this.statuses = data.statuses;
+  }
   allowedSevenDigits(event: Event): void {
     const input = event.target as HTMLInputElement;
     const [integerPart, decimalPart] = input.value.split('.');
@@ -109,18 +128,32 @@ export class AddTransactionComponent implements OnInit {
 
   onSubmit(): void {
     this.transactionForm.markAllAsTouched();
-
     if (this.transactionForm.invalid) return;
 
+    this.submitting = true;
     const formData = this.transactionForm.value;
+
+    // Auto-generate merchantTransactionId if needed
+    if (
+      !formData.merchantTransactionId &&
+      (formData.paymentMethodId === 3 || formData.paymentMethodId === 4)
+    ) {
+      formData.merchantTransactionId =
+        'MERC' +
+        Math.floor(Math.random() * 1_000_000_000)
+          .toString()
+          .padStart(8, '0');
+    }
+
+    // Clean notes
+    formData.notes = formData.notes?.trim();
 
     this.http.post(ApiEndpoints.TRANSACTIONS, formData).subscribe({
       next: (response: any) => {
         Swal.fire({
           icon: 'success',
           title: 'Transaction Added Successfully',
-          // text: `Transaction Number: ${response}`,
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
         }).then(() => this.router.navigate(['/transactions']));
       },
       error: (err) => {
@@ -128,9 +161,12 @@ export class AddTransactionComponent implements OnInit {
           icon: 'error',
           title: 'Error',
           text: err.message || 'An error occurred. Please try again.',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
         });
-      }
+      },
+      complete: () => {
+        this.submitting = false;
+      },
     });
   }
 }

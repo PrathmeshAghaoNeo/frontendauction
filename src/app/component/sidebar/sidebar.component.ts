@@ -1,32 +1,69 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { RoleWithPermissionsService } from '../../services/roles.service';
-import { MENU_CONFIG } from './menu.config';
+import { MENU_CONFIG, MenuItem } from './menu.config';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { PermissionKey, RoleWithPermissions } from '../../modals/roles';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  template: `
-    <ul>
-      <li *ngFor="let item of filteredMenu">
-        <a [routerLink]="item.route">{{ item.label }}</a>
-      </li>
-    </ul>
-  `,
-  imports: [RouterModule,FormsModule,CommonModule],
   templateUrl: './sidebar.component.html',
+  imports: [RouterModule, FormsModule, CommonModule],
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent implements OnInit {
-  filteredMenu: any[] = [];
-
-  constructor(private permissionService: RoleWithPermissionsService) {}
-
+  isExpanded = false;
+  visibleMenuItems: MenuItem[] = [];
+  private roleSubscription?: Subscription;
+  constructor(private authService: AuthService) { }
   ngOnInit(): void {
-    this.filteredMenu = MENU_CONFIG.filter(item =>
-      this.permissionService.hasPermission(item.permission)
+    console.log('%c[Sidebar] ngOnInit triggered', 'color: green');
+
+    // First try to restore from sync value
+    const currentRole = this.authService.getRole();
+    if (currentRole) {
+      console.log('[Sidebar] Synchronously received role:', currentRole);
+      this.updateMenu(currentRole);
+    }
+
+    this.roleSubscription = this.authService.role$.subscribe((role) => {
+      console.log('[Sidebar] Received role from role$:', role); // ✅ confirm this prints!
+      if (role) {
+        this.updateMenu(role);
+      } else {
+        this.visibleMenuItems = [];
+      }
+    });
+
+  }
+
+
+
+  private updateMenu(role: RoleWithPermissions): void {
+    console.log('[Sidebar] Updating menu for role:', role);
+
+    const permissions = this.authService.getPermissions();
+    console.log('[Sidebar] Extracted permissions:', permissions);
+    console.log('[Sidebar] Menu Permissions Needed:', MENU_CONFIG.map(m => m.permission));
+    console.log('[Sidebar] MENU_CONFIG before filtering:', MENU_CONFIG);
+
+    this.visibleMenuItems = MENU_CONFIG.filter(menu =>
+      permissions.includes(menu.permission)
     );
+
+    console.log('[Sidebar] Filtered visibleMenuItems:', this.visibleMenuItems);
+  }
+
+
+
+
+  ngOnDestroy(): void {
+    this.roleSubscription?.unsubscribe(); // prevent memory leaks
   }
 }
+
+

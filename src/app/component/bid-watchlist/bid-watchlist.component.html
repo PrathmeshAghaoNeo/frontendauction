@@ -1,13 +1,22 @@
 <div class="watchlist-page">
 
-  <div class="watchlist-container">
+  <div class="header-btn">
     <button class="back-btn2" (click)="goBack()">
       <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
     </button>
+  </div>
+  <div class="cart-header">
+        <h2 class="watchlist-title">My Watchlist</h2>
+    </div>
   
+    <div class="wishlist-tabs">
+  <div class="watchlist-container">
+    <!-- <button class="back-btn2" (click)="goBack()">
+      <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+    </button>
   <h2 class="watchlist-title">My Watchlist</h2>
   
-  <div class="wishlist-tabs">
+   -->
     <!-- <button
       [class.active-tab]="selectedTab === 'auction'"
       (click)="selectedTab = 'auction'"
@@ -130,6 +139,17 @@
       </div>
     </div>
   </div>
+
+  <!-- Empty State when no items in watchlist -->
+<div class="empty-bids" *ngIf="filteredWatchlistAssets.length === 0">
+  <i class="fa fa-gavel"></i>
+  <p class="empty-title">Nothing Here</p>
+  <p>
+    <a routerLink="/reguserlandingpage">Start browsing assets</a>
+    and you will be able to add them to your watchlist from here.
+  </p>
+</div>
+
 
 <!-- Toast container -->
 <div class="toast-container p-3" style="z-index: 9999">

@@ -1,24 +1,58 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { ApiEndpoints } from '../constants/api-endpoints';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { RoleWithPermissions } from '../modals/roles';
+import { ApiEndpoints } from '../constants/api-endpoints';
+import { RoleWithPermissions, PermissionKey } from '../modals/roles';
+import { User } from '../modals/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUser: any = null;
-  private currentRole: RoleWithPermissions | null = null;
+  public currentUser: User | null = null;
+  public currentRole: RoleWithPermissions | null = null;
+  private roleSubject = new BehaviorSubject<RoleWithPermissions | null>(null);
+  public role$ = this.roleSubject.asObservable();
+  private _isReady = new BehaviorSubject<boolean>(false);
+  isReady$ = this._isReady.asObservable();
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   constructor(private router: Router, private http: HttpClient) {
-    this.monitorTokenChange(); 
   }
-  
+
+  public restoreUserFromStorage(): void {
+    const storedUser = localStorage.getItem('user');
+    const storedRole = localStorage.getItem('role');
+
+    if (storedUser && storedUser !== 'undefined' && storedRole && storedRole !== 'undefined') {
+      try {
+        this.currentUser = JSON.parse(storedUser);
+        this.currentRole = JSON.parse(storedRole);
+        this.roleSubject.next(this.currentRole);
+      } catch (e) {
+        console.error("Error parsing stored user/role:", e);
+        localStorage.removeItem('user');
+        localStorage.removeItem('role');
+      }
+    } else {
+      this.roleSubject.next(this.currentRole);
+    }
+  }
+
+  initializeAuth(): void {
+    const storedRoleJson = localStorage.getItem('role'); // ✅ match this to `setUser`
+    if (storedRoleJson) {
+      const parsedRole = JSON.parse(storedRoleJson);
+      this.currentRole = parsedRole;
+      this.roleSubject.next(parsedRole); // ✅ emit role
+      console.log('[AuthService] initializeAuth() role emitted:', parsedRole); // ✅ add log
+    }
+  }
+
+
+
   sendOtp(email: string): Observable<any> {
     return this.http.post(`${ApiEndpoints.Auth}/generate-otp`, { email });
   }
@@ -33,63 +67,82 @@ export class AuthService {
       })
     );
   }
-  
-  hasToken(): boolean { 
-    return !!localStorage.getItem('token');
-  }
-  setUser(user: any, role: RoleWithPermissions) {
+
+  setUser(user: User, role: RoleWithPermissions): void {
     this.currentUser = user;
     this.currentRole = role;
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('role', JSON.stringify(role));
+    this.roleSubject.next(role);
+
   }
 
-  getRoleJwt(): string | null {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
-  
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || null;
+  hasPermission(permission: PermissionKey): boolean {
+    const role = this.getRole();
+    return !!(role && role[permission]);
   }
-  
+
+  getRole(): RoleWithPermissions | null {
+    return this.currentRole;
+  }
+
+  // getRoleObservable(): Observable<RoleWithPermissions | null> {
+  //   return this.role$;
+  // }
+
   getUserIdJwt(): number | null {
     const token = localStorage.getItem('token');
     if (!token) return null;
-    
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      
-      // Check multiple possible claim names for user ID
-      const userId = payload["userId"] || 
-                    payload["sub"] || 
-                    payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-      
+      const userId = payload["userId"] ||
+        payload["sub"] ||
+        payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+
       return userId ? Number(userId) : null;
     } catch (error) {
       console.error("Error parsing JWT token:", error);
       return null;
     }
   }
-  
-  private monitorTokenChange() {
-    window.addEventListener('storage', () => {
-      const token = this.hasToken();
-      this.isLoggedInSubject.next(token);
-      if (!token) {
-        this.router.navigate(['/login']);
-      }
-    });
+
+  getRoleJwt(): string | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || null;
   }
-  getRole(): RoleWithPermissions | null {
-    return this.currentRole;
+  getPermissions(): PermissionKey[] {
+    const role = this.getRole();
+    if (!role) return [];
+
+    return Object.entries(role)
+      .filter(([_, value]) => value === true)
+      .map(([key]) => key as PermissionKey);
   }
 
+
   isLoggedIn(): boolean {
-    return !!this.currentUser;
+    return this.hasToken();
   }
+
+  hasToken(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('role');
+
+    this.roleSubject.next(null);
     this.isLoggedInSubject.next(false);
-    this.router.navigate(['/login']);
+
     this.currentUser = null;
     this.currentRole = null;
+
+    this.router.navigate(['/login']);
   }
 }
