@@ -16,6 +16,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ReportsService } from '../../services/reports.service';
+import { User } from '../../modals/user';
+import { Transaction } from '../../modals/manage-transaction';
+import { HighBiddingCustomer, RequestTransaction } from '../../modals/reports';
 
 @Component({
   selector: 'app-reports-list',
@@ -48,6 +52,16 @@ export class ReportsListComponent implements OnInit {
 
   auctionRevenue: any[] = []; // Auction revenue for bar chart
   directSalesRevenue: any[] = []; // Direct Sales revenue for bar chart
+  pendingRegistrations: User[] = [];
+  pendingSales: Asset[] = [];
+  latestDeposits: RequestTransaction[] = [];
+  refundRequests: RequestTransaction[] = [];
+  highBidders: HighBiddingCustomer[] = [];
+  supplierAuctions: User[] = [];
+  accountStatements: Transaction[] = [];
+
+  auctionRevenueRaw: any[] = [];
+  directSalesRevenueRaw: any[] = [];
 
   reports = [
     'Revenue Generated via Auctions – Bar chart (Duration filter)',
@@ -69,12 +83,25 @@ export class ReportsListComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private auctionService: AuctionService,
-    private assetService: ManageAssetService
+    private assetService: ManageAssetService,
+    private reportsService: ReportsService
   ) {}
 
   ngOnInit(): void {
+    // Load all auctions and categorize them
     this.fetchAuctions();
+
+    // Load all assets and categorize direct sale ones
     this.fetchAssets();
+
+    // Load report-related data
+    this.fetchAuctionRevenue();
+    this.fetchDirectSalesRevenue();
+    this.fetchActiveDirectSales();
+    this.fetchRefundRequests();
+    this.fetchLatestDeposits();
+    this.fetchHighBidders();
+    this.fetchAccountStatements();
   }
 
   get filteredReports() {
@@ -86,15 +113,28 @@ export class ReportsListComponent implements OnInit {
   openViewModal(report: string): void {
     this.selectedReport = report;
 
-    if (
-      report === 'Revenue Generated via Auctions – Bar chart (Duration filter)'
-    ) {
-      this.fetchAuctionRevenue();
-    } else if (
-      report ===
-      'Revenue Generated via Direct Sales – Bar chart (Duration filter)'
-    ) {
-      // this.fetchDirectSalesRevenue();
+    switch (report) {
+      case 'Revenue Generated via Auctions – Bar chart (Duration filter)':
+        this.fetchAuctionRevenue();
+        break;
+      case 'Revenue Generated via Direct Sales – Bar chart (Duration filter)':
+        this.fetchDirectSalesRevenue();
+        break;
+      case 'Active Direct Sale Listings – Count and List':
+        this.fetchActiveDirectSales();
+        break;
+      case 'Refund Requests – Count and List':
+        this.fetchRefundRequests();
+        break;
+      case 'Latest Deposits – Count and List':
+        this.fetchLatestDeposits();
+        break;
+      case 'High Bidding Limit Customers – Count and List':
+        this.fetchHighBidders();
+        break;
+      case 'Statement of Account – Count and List':
+        this.fetchAccountStatements();
+        break;
     }
 
     this.modalService.open(this.viewReportModal, {
@@ -103,30 +143,6 @@ export class ReportsListComponent implements OnInit {
       backdrop: 'static',
     });
   }
-
-  fetchAuctionRevenue(): void {
-    this.auctionService.getRevenueGroupedByMonth().subscribe({
-      next: (data) => {
-        this.auctionRevenue = data;
-        console.log('Auction revenue data:', this.auctionRevenue);
-      },
-      error: (err) => {
-        console.error('Failed to load auction revenue', err);
-      },
-    });
-  }
-
-  // fetchDirectSalesRevenue(): void {
-  //   this.assetService.getDirectSalesRevenueGroupedByMonth().subscribe({
-  //     next: (data) => {
-  //       this.directSalesRevenue = data;
-  //       console.log('Direct Sales revenue data:', this.directSalesRevenue);
-  //     },
-  //     error: (err) => {
-  //       console.error('Failed to load direct sales revenue', err);
-  //     },
-  //   });
-  // }
 
   fetchAuctions(): void {
     this.auctionService.getAllAuctions().subscribe({
@@ -151,6 +167,116 @@ export class ReportsListComponent implements OnInit {
       },
     });
   }
+
+  fetchAuctionRevenue(): void {
+    this.reportsService.getMonthlyAuctionRevenue().subscribe({
+      next: (data) => {
+        this.auctionRevenueRaw = data;
+        this.auctionRevenue = this.transformRevenueData(this.auctionRevenueRaw);
+      },
+      error: (err) => {
+        console.error('Failed to fetch auction revenue', err);
+      },
+    });
+  }
+
+  fetchDirectSalesRevenue(): void {
+    this.reportsService.getMonthlyDirectSaleRevenue().subscribe({
+      next: (data) => {
+        this.directSalesRevenueRaw = data;
+        this.directSalesRevenue = this.transformRevenueData(
+          this.directSalesRevenueRaw
+        );
+      },
+      error: (err) => {
+        console.error('Failed to fetch direct sale revenue', err);
+      },
+    });
+  }
+
+  private transformRevenueData(data: any[]): any[] {
+    return data.map((item) => {
+      const monthName = new Date(item.year, item.month - 1).toLocaleString(
+        'default',
+        { month: 'short' }
+      );
+      return {
+        name: `${monthName} ${item.year}`,
+        value: item.totalAmount,
+      };
+    });
+  }
+
+  fetchActiveDirectSales(): void {
+    this.reportsService.getDirectSaleAssets().subscribe({
+      next: (data) => {
+        this.activeDirectSaleAssets = data;
+      },
+      error: (err) => {
+        console.error('Failed to fetch active direct sale listings', err);
+      },
+    });
+  }
+
+  fetchRefundRequests(): void {
+    this.reportsService.getRefundRequests().subscribe({
+      next: (data) => {
+        this.refundRequests = data.transactions; // Extract the transactions array
+        console.log('Refund Requests:', this.refundRequests);
+      },
+      error: (err) => {
+        console.error('Failed to fetch refund requests', err);
+      },
+    });
+  }
+
+  fetchLatestDeposits(): void {
+    this.reportsService.getLatestDepositRequests().subscribe({
+      next: (data) => {
+        this.latestDeposits = data.transactions; // extract the array
+        console.log('fetch latest deposit');
+        console.log('Transactions:', this.latestDeposits);
+        console.log('Count:', data.depositTransactionCount);
+      },
+      error: (err) => {
+        console.error('Failed to fetch latest deposits', err);
+      },
+    });
+  }
+
+  fetchHighBidders(): void {
+    this.reportsService.getHighBiddingCustomers().subscribe({
+      next: (data) => {
+        this.highBidders = data;
+      },
+      error: (err) => {
+        console.error('Failed to fetch high bidding customers', err);
+      },
+    });
+  }
+
+  fetchAccountStatements(): void {
+  // this.isLoadingStatements = true; // Optional loading indicator
+  this.reportsService.getAccountStatement().subscribe({
+    next: (response) => {
+      if (response && Array.isArray(response.transactions)) {
+        this.accountStatements = response.transactions;
+        console.log('✅ Account statements fetched:', this.accountStatements);
+      } else {
+        console.warn('⚠️ Unexpected account statement response format', response);
+        this.accountStatements = [];
+      }
+    },
+    error: (err) => {
+      console.error('❌ Failed to fetch account statements:', err);
+      this.accountStatements = [];
+    }
+    // complete: () => {
+    //   this.isLoadingStatements = false; // Optional loading indicator reset
+    // }
+  });
+}
+
 
   categorizeAssets(): void {
     this.activeDirectSaleAssets = this.assetsdata.filter(
@@ -210,6 +336,80 @@ export class ReportsListComponent implements OnInit {
           '#': index + 1,
           Title: a.title,
           'Ends On': this.formatDate(a.endDateTime),
+        }));
+        break;
+
+      case 'Active Direct Sale Listings – Count and List':
+        data = this.activeDirectSaleAssets.map((a, index) => ({
+          '#': index + 1,
+          Name: a.title,
+          Price: a.startingPrice,
+          Category: a.categoryName,
+        }));
+        break;
+
+      case 'Pending Complete Registration – Count and List':
+        data = this.pendingRegistrations.map((u: any, index) => ({
+          '#': index + 1,
+          Name: u.name,
+          Email: u.email,
+          Phone: u.phone,
+        }));
+        break;
+
+      case 'Pending Sale Approval – Count and List':
+        data = this.pendingSales.map((s: any, index) => ({
+          '#': index + 1,
+          Title: s.title,
+          SubmittedBy: s.supplierName,
+          Status: s.status,
+        }));
+        break;
+
+      case 'Latest Deposits – Count and List':
+        data = this.latestDeposits.map((d: any, index) => ({
+          '#': index + 1,
+          Name: d.userName,
+          Amount: d.amount,
+          Date: this.formatDate(d.date),
+        }));
+        break;
+
+      case 'Refund Requests – Count and List':
+        data = this.refundRequests.map((r: any, index) => ({
+          '#': index + 1,
+          TransactionID: r.transactionNumber,
+          Amount: r.amount,
+          Status: r.status,
+          Date: r.transactionDateTime,
+        }));
+        break;
+
+      case 'High Bidding Limit Customers – Count and List':
+        data = this.highBidders.map((b: any, index) => ({
+          '#': index + 1,
+          Name: b.name,
+          Email: b.email,
+          Limit: b.limit,
+        }));
+        break;
+
+      case 'Supplier Auctions – Count and List':
+        data = this.supplierAuctions.map((a: any, index) => ({
+          '#': index + 1,
+          Title: a.title,
+          Supplier: a.supplierName,
+          Status: a.status,
+        }));
+        break;
+
+      case 'Statement of Account – Count and List':
+        data = this.accountStatements.map((s: any, index) => ({
+          '#': index + 1,
+          Date: this.formatDate(s.date),
+          Description: s.description,
+          Amount: s.amount,
+          Type: s.type,
         }));
         break;
 
