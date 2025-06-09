@@ -19,7 +19,12 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ReportsService } from '../../services/reports.service';
 import { User } from '../../modals/user';
 import { Transaction } from '../../modals/manage-transaction';
-import { AuctionReport, HighBiddingCustomer, RequestTransaction, StatementOfAccountResponse } from '../../modals/reports';
+import {
+  AuctionReport,
+  HighBiddingCustomer,
+  RequestTransaction,
+  StatementOfAccountResponse,
+} from '../../modals/reports';
 
 @Component({
   selector: 'app-reports-list',
@@ -36,7 +41,8 @@ import { AuctionReport, HighBiddingCustomer, RequestTransaction, StatementOfAcco
 })
 export class ReportsListComponent implements OnInit {
   @ViewChild('viewReportModal') viewReportModal!: TemplateRef<any>;
-
+  searchUserId: number | undefined;
+  viewByMode: 'Monthly' | 'Yearly' = 'Monthly';
   searchTerm: string = '';
   page = 1;
   itemsPerPage = 6;
@@ -87,7 +93,7 @@ export class ReportsListComponent implements OnInit {
     private reportsService: ReportsService
   ) {}
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     this.loadAllData();
   }
 
@@ -107,11 +113,16 @@ export class ReportsListComponent implements OnInit {
     this.fetchLatestDeposits();
     this.fetchHighBidders();
     this.fetchAccountStatements();
+    // this.switchView();
   }
 
   openViewModal(report: string): void {
     this.selectedReport = report;
 
+    if (report === 'Statement of Account – Count and List') {
+      this.searchUserId = undefined;
+      this.accountStatements = [];
+    }
     switch (report) {
       case 'Revenue Generated via Auctions – Bar chart (Duration filter)':
         this.fetchAuctionRevenue();
@@ -159,32 +170,44 @@ export class ReportsListComponent implements OnInit {
   //   });
   // }
 
+  switchView(mode: 'Monthly' | 'Yearly'): void {
+    // console.log("switched mode");
+    if (this.viewByMode == mode) {
+      this.viewByMode = mode;
+      this.fetchDirectSalesRevenue(this.viewByMode);
+      this.fetchAuctionRevenue(this.viewByMode);
+      // console.log("switched confiremd");
+    }
+  }
+
   loadAuctions(): void {
-  const reportMappings = [
-    { type: 'Total', key: 'defaultAuctions' },
-    { type: 'Past', key: 'expiredAuctions' },
-    { type: 'Upcoming', key: 'upcomingAuctions' },
-    { type: 'Current', key: 'ongoingAuctions' }
-  ];
+    const reportMappings = [
+      { type: 'Total', key: 'defaultAuctions' },
+      { type: 'Past', key: 'expiredAuctions' },
+      { type: 'Upcoming', key: 'upcomingAuctions' },
+      { type: 'Current', key: 'ongoingAuctions' },
+    ];
 
-  reportMappings.forEach((mapping) => {
-    this.reportsService.getAuctionsReport(mapping.type).subscribe({
-      next: (response) => {
-        if (Array.isArray(response.auctions)) {
-          (this as any)[mapping.key] = response.auctions;
-        } else {
-          console.warn(`Invalid response for ${mapping.type} auctions`, response);
+    reportMappings.forEach((mapping) => {
+      this.reportsService.getAuctionsReport(mapping.type).subscribe({
+        next: (response) => {
+          if (Array.isArray(response.auctions)) {
+            (this as any)[mapping.key] = response.auctions;
+          } else {
+            console.warn(
+              `Invalid response for ${mapping.type} auctions`,
+              response
+            );
+            (this as any)[mapping.key] = [];
+          }
+        },
+        error: (error) => {
+          console.error(`Failed to load ${mapping.type} auctions:`, error);
           (this as any)[mapping.key] = [];
-        }
-      },
-      error: (error) => {
-        console.error(`Failed to load ${mapping.type} auctions:`, error);
-        (this as any)[mapping.key] = [];
-      }
+        },
+      });
     });
-  });
-}
-
+  }
 
   fetchAssets(): void {
     this.assetService.getAssets().subscribe({
@@ -198,11 +221,12 @@ export class ReportsListComponent implements OnInit {
     });
   }
 
-  fetchAuctionRevenue(): void {
-    this.reportsService.getMonthlyAuctionRevenue().subscribe({
+  fetchAuctionRevenue(viewByMode: 'Monthly' | 'Yearly' = 'Monthly'): void {
+    this.reportsService.getMonthlyAuctionRevenue(viewByMode).subscribe({
       next: (data) => {
         this.auctionRevenueRaw = data;
         this.auctionRevenue = this.transformRevenueData(this.auctionRevenueRaw);
+        console.log(this.auctionRevenue);
       },
       error: (err) => {
         console.error('Failed to fetch auction revenue', err);
@@ -210,13 +234,27 @@ export class ReportsListComponent implements OnInit {
     });
   }
 
-  fetchDirectSalesRevenue(): void {
-    this.reportsService.getMonthlyDirectSaleRevenue().subscribe({
+  // fetchDirectSalesRevenue(): void {
+  //   this.reportsService.getMonthlyDirectSaleRevenue().subscribe({
+  //     next: (data) => {
+  //       this.directSalesRevenueRaw = data;
+  //       this.directSalesRevenue = this.transformRevenueData(
+  //         this.directSalesRevenueRaw
+  //       );
+  //     },
+  //     error: (err) => {
+  //       console.error('Failed to fetch direct sale revenue', err);
+  //     },
+  //   });
+  // }
+  fetchDirectSalesRevenue(viewByMode: 'Monthly' | 'Yearly' = 'Monthly'): void {
+    this.reportsService.getMonthlyDirectSaleRevenue(viewByMode).subscribe({
       next: (data) => {
         this.directSalesRevenueRaw = data;
         this.directSalesRevenue = this.transformRevenueData(
           this.directSalesRevenueRaw
         );
+        console.log(this.directSalesRevenue);
       },
       error: (err) => {
         console.error('Failed to fetch direct sale revenue', err);
@@ -224,15 +262,40 @@ export class ReportsListComponent implements OnInit {
     });
   }
 
+  // private transformRevenueData(data: any[]): any[] {
+  //   return data.map((item) => {
+  //     const monthName = new Date(item.year, item.month - 1).toLocaleString(
+  //       'default',
+  //       { month: 'short' }
+  //     );
+  //     return {
+  //       name: `${monthName} ${item.year}`,
+  //       value: item.totalAmount,
+  //     };
+  //   });
+  // }
+
   private transformRevenueData(data: any[]): any[] {
     return data.map((item) => {
-      const monthName = new Date(item.year, item.month - 1).toLocaleString(
-        'default',
-        { month: 'short' }
-      );
+      let name = '';
+
+      if (item.month != null) {
+        // Monthly
+        const monthName = new Date(item.year, item.month - 1).toLocaleString(
+          'default',
+          {
+            month: 'short',
+          }
+        );
+        name = `${monthName} ${item.year}`;
+      } else {
+        // Yearly
+        name = `${item.year}`;
+      }
+
       return {
-        name: `${monthName} ${item.year}`,
-        value: item.totalAmount,
+        name,
+        value: item.totalAmount ?? 0,
       };
     });
   }
@@ -286,27 +349,25 @@ export class ReportsListComponent implements OnInit {
   }
 
   fetchAccountStatements(): void {
-  // this.isLoadingStatements = true; // Optional loading indicator
-  this.reportsService.getAccountStatement().subscribe({
-    next: (response) => {
-      if (response && Array.isArray(response.transactions)) {
-        this.accountStatements = response.transactions;
-        console.log('✅ Account statements fetched:', this.accountStatements);
-      } else {
-        console.warn('⚠️ Unexpected account statement response format', response);
+    this.reportsService.getAccountStatement(this.searchUserId).subscribe({
+      next: (response) => {
+        if (response && Array.isArray(response.transactions)) {
+          this.accountStatements = response.transactions;
+          console.log('✅ Account statements fetched:', this.accountStatements);
+        } else {
+          console.warn(
+            '⚠️ Unexpected account statement response format',
+            response
+          );
+          this.accountStatements = [];
+        }
+      },
+      error: (err) => {
+        console.error('❌ Failed to fetch account statements:', err);
         this.accountStatements = [];
-      }
-    },
-    error: (err) => {
-      console.error('❌ Failed to fetch account statements:', err);
-      this.accountStatements = [];
-    }
-    // complete: () => {
-    //   this.isLoadingStatements = false; // Optional loading indicator reset
-    // }
-  });
-}
-
+      },
+    });
+  }
 
   categorizeAssets(): void {
     this.activeDirectSaleAssets = this.assetsdata.filter(
@@ -440,6 +501,22 @@ export class ReportsListComponent implements OnInit {
           Description: s.description,
           Amount: s.amount,
           Type: s.type,
+        }));
+        break;
+
+      case 'Revenue Generated via Auctions – Bar chart (Duration filter)':
+        data = this.auctionRevenue.map((item, index) => ({
+          '#': index + 1,
+          Month: item.name,
+          Amount: item.value,
+        }));
+        break;
+
+      case 'Revenue Generated via Direct Sales – Bar chart (Duration filter)':
+        data = this.directSalesRevenue.map((item, index) => ({
+          '#': index + 1,
+          Month: item.name,
+          Amount: item.value,
         }));
         break;
 
