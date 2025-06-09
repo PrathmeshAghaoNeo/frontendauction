@@ -1,11 +1,7 @@
 <div class="app-container">
-  <app-header 
-  *ngIf="showHeaderAndFooter" 
-  [showCustomButtons]="showCustomHeaderButtons" 
-  class="app-header">
-</app-header>
+  <app-header *ngIf="showHeaderAndFooter" [showCustomButtons]="showCustomHeaderButtons" class="app-header"></app-header>
 
-  <div class="app-body" [ngClass]="{ 'no-sidebar': !showSidebar }">
+  <div class="app-body">
     <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
     
     <main class="app-content"  [ngClass]="{ 'auth-bg': isCurrentRoute(['/login','/']) }">
@@ -14,12 +10,10 @@
 
      <!-- <app-chat-bot></app-chat-bot> -->
       <router-outlet></router-outlet>
-
     </main>
 
     
   </div>
-  
 
   <app-footer *ngIf="showHeaderAndFooter" class="app-footer"></app-footer>
    <app-chat-bot></app-chat-bot>
@@ -47,6 +41,4 @@
       <div class="toast-body">This is a toast message.</div>
     </div>
   </div>
-   
 </div>
-

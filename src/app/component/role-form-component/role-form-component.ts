@@ -67,10 +67,6 @@ export class RoleFormComponent implements OnChanges {
     const checkedPermissions = Object.entries(this.roleForm.value)
       .filter(([key, val]) => typeof val === 'boolean' && val === true);
 
-    if (checkedPermissions.length === 0) {
-      alert('Please select at least one permission.');
-      return;
-    }
 
     if (this.roleForm.valid) {
       this.formSubmit.emit(this.roleForm.value);

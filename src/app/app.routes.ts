@@ -271,6 +271,8 @@ export const routes: Routes = [
   { path: 'deposit-page', component: DepositPageComponent },
   { path: 'audit-trial', component: AuditTrailComponent },
   {  path: 'bid-history', component: BidHistoryComponent  },
+  {  path: 'createRole', component: RoleCreateComponent  },
+  {  path: 'updateRole', component: RoleUpdateComponent  },
   {
     path: 'chatbot-admin',
     component: ChatbotAdminComponent,

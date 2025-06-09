@@ -1,4 +1,85 @@
-<div class="orders-container mt-4">
+<div class="orders-container">
+  <div class="mb-3">
+    <button class="btn btn-outline-secondary" *ngIf="showGoBackButton" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i> Back
+    </button>
+  </div>
+  <h2>My Orders</h2>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs bid-tabs">
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [class.active]="selectedTab === 'auction'"
+        (click)="switchTab('auction')"
+        href="javascript:void(0)"
+      >
+        Auction Orders
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [class.active]="selectedTab === 'direct'"
+        (click)="switchTab('direct')"
+        href="javascript:void(0)"
+      >
+        Direct Sale Orders
+      </a>
+    </li>
+  </ul>
+
+  <!-- Loading / Error Messages -->
+  <div *ngIf="isLoading" class="alert alert-info mt-3">Loading orders...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && getCurrentOrders().length === 0" class="alert alert-warning mt-3">
+    No orders found.
+  </div>
+
+  <!-- Order Cards -->
+  <div *ngIf="getCurrentOrders().length > 0" class="order-grid mt-3">
+    <div class="order-card" *ngFor="let order of getCurrentOrders()">
+      <img [src]="order.thumbnailUrl" alt="{{ order.title }}" class="order-image" />
+      <div class="order-info">
+        <h5 class="order-title">{{ order.title }}</h5>
+        <p class="order-description">{{ order.description }}</p>
+        <p class="order-price">BHD {{ order.price }}</p>
+      </div>
+      <button class="view-more-btn" (click)="viewOrder(order.assetId)">View More</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="orders-container mt-4">
    <div class="mb-3">
     <button class="btn btn-outline-secondary" *ngIf="showGoBackButton" (click)="goBack()">
       <i class="bi bi-arrow-left"></i> Back
@@ -24,4 +105,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

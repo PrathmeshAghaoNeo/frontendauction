@@ -1,37 +1,27 @@
 /* app.component.css */
 
-/* Base setup */
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Container for entire app */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Header section */
+/* Header */
 .app-header {
   flex-shrink: 0;
   position: relative;
   z-index: 8000; /* Below filter but above content */
 }
 
-/* Main body: contains sidebar and content */
+/* Body layout with sidebar + main content */
 .app-body {
   display: flex;
-  flex: 1 0 auto;
-  min-height: 0;
+  flex-direction: row;
+  min-height: 100vh;
+  transition: all 0.3s ease;
 }
 
-/* Sidebar setup */
+/* Sidebar (basic shell) */
 .app-sidebar {
   width: 250px;
   background-color: #f8f9fa;
@@ -42,7 +32,7 @@ body {
   z-index: 2;
 }
 
-/* Main content area */
+/* Main content */
 .app-content {
   flex: 1;
   display: flex;
@@ -104,5 +94,13 @@ app-chat-bot {
     margin-left: 0;
     width: 100%;
   }
+.app-sidebar:hover ~ .app-content {
+  margin-left: 180px; /* 200 - 60 */
+}
+.sidebar-collapsed .app-sidebar {
+  width: 60px;
 }
 
+.sidebar-collapsed .app-content {
+  margin-left: 60px;
+}
