@@ -30,4 +30,10 @@ export class AssetCategoriesService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${ApiEndpoints.ASSETCATEGORIES}/${id}`);
   }
+  fetchCategoryTranslations(langCode: string) {
+  return this.http.get<{ categoryId: number, translatedName: string }[]>(
+    `${ApiEndpoints.ASSETCATEGORIES}/lang/${langCode}`
+  );
+}
+
 }

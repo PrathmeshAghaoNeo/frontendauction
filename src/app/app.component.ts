@@ -134,7 +134,6 @@ export class AppComponent implements OnInit,AfterViewInit {
     '/asset-details/',
     '/order-details/',
     '/user-profile/',
-    
     '/finalCheckout/'
   ];
  

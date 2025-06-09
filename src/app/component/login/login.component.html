@@ -1,15 +1,18 @@
 <div class="form-page-container">
 
+
+  
   <div class="loading-overlay" *ngIf="isLoading">
     <div class="loader">
       <img src=" assets/legal.png" alt="Loading..." />
     </div>
   </div>
-
+  
   <div class="login-form">
     <div class="d-flex align-items-center justify-content-center mb-4 position-relative">
       <h2 class="form-title m-0">{{ 'LOGIN' | translate }}</h2>
     </div>
+    
 
     <!-- Step 1: Enter Email -->
     <form #emailForm="ngForm" *ngIf="step === 1" (ngSubmit)="sendOtp(emailForm)">
@@ -42,6 +45,11 @@
             {{ 'SIGN_UP' | translate }}
           </a>
         </p>
+        <div class="d-flex justify-content-end p-2">
+     <button class="btn-toggle-lang" (click)="toggleLang()">
+       {{ currentLang === 'en' ? 'العربية' : 'English' }}
+     </button>
+   </div>
       </div>
     </form>
 

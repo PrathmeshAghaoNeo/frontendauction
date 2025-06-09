@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AssetCategory } from '../../../modals/assetcategories';
+import { AssetCategory, CategoryTranslation } from '../../../modals/assetcategories';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../constants/enviroments';
 import { ApiEndpoints } from '../../../constants/api-endpoints';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { TranslateModule } from '@ngx-translate/core';
+import { AssetCategoriesService } from '../../../services/assetcategories.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
    selector: 'app-direct-sale',
@@ -22,23 +24,42 @@ export class DirectSaleComponentLP implements OnInit {
   selectedAssetCategory: AssetCategory | null = null;
   assetBaseUrl: string = `${environment.imgUrl}`;
 
-  constructor(private http: HttpClient,private router:Router) {}
+  constructor(private http: HttpClient,private router:Router,private assetcategoriesService : AssetCategoriesService) {}
 
   ngOnInit(): void {
     this.fetchCategories();
   }
 
-  fetchCategories(): void {
-    this.http.get<AssetCategory[]>(ApiEndpoints.ASSETCATEGORIES).subscribe({
-      next: (data) => {
-        this.categories = data;
-        console.log('Fetched Categories:', this.categories);
-      },
-      error: (error) => {
-        console.error('Error fetching categories:', error);
-      }
-    });
-  }
+ fetchCategories(): void {
+  const langCode = 'ar'; 
+
+  forkJoin([
+    this.http.get<AssetCategory[]>(ApiEndpoints.ASSETCATEGORIES),
+    this.assetcategoriesService.fetchCategoryTranslations(langCode)
+  ]).subscribe({
+    next: ([categories, translations]: [AssetCategory[], CategoryTranslation[]]) => {
+      console.log('Translations:', translations);
+
+      const translationsMap = new Map<number, string>();
+      translations.forEach(t => translationsMap.set(Number(t.categoryId), t.translatedName));
+
+      this.categories = categories.map(cat => {
+        const translatedName = translationsMap.get(Number(cat.categoryId)) ?? null;
+        return {
+          ...cat,
+          categoryName: translatedName ?? cat.categoryName,
+          translatedName
+        };
+      });
+
+      console.log('Fetched Categories with Translations:', this.categories);
+    },
+    error: (err) => {
+      console.error('Error fetching categories or translations', err);
+    }
+  });
+}
+
 
   onCardClick(categoryId: number): void {
     console.log('Category ID from direct:', categoryId);
