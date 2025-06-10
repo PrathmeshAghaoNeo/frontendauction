@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  
 }
 
 /* Header */
@@ -18,12 +19,15 @@
   min-height: 100vh;
   transition: all 0.3s ease;
 }
-
+.app-main{
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
 /* Sidebar (basic shell) */
 .app-sidebar {
   width: 60px;
   min-width: 60px;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
   background-color: white;
   z-index: 100;
   transition: all 0.3s ease;
@@ -52,3 +56,7 @@
 .sidebar-collapsed .app-content {
   margin-left: 60px;
 }
+
+
+
+

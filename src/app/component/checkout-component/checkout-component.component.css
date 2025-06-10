@@ -6,6 +6,7 @@
 
 .checkout-container {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
 }
@@ -90,4 +91,10 @@
 
 .attribute-section .fw-semibold {
   font-weight: 600;
+}
+
+.main-checkout-container{
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
 }
