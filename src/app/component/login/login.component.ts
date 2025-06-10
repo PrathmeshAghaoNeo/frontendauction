@@ -191,9 +191,10 @@ export class LoginComponent implements OnInit {
 
 
     this.auth.verifyOtp(this.email, this.code).subscribe({
-      next: () => {
+      next: (res) => {
+         this.auth.setUser(res.user, res.role);
         const role = this.auth.getRoleJwt();
-
+        
         setTimeout(() => {
           if (role === 'Admin') {
             this.router.navigate(['/dashboard']);

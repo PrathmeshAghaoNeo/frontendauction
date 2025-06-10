@@ -84,6 +84,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   sidebarExpanded = true;
   ngOnInit(): void {
     this.signalR.startConnection();
+    this.authService.initializeAuth();
     // this.authService.initializeAuth();
     this.signalR.bidUpdates$.subscribe((data) => {
       console.log('Bid update received in AppComponent:', data);
