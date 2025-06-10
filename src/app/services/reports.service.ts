@@ -11,13 +11,26 @@ export class ReportsService {
 
   constructor(private http: HttpClient) {}
 
-  getMonthlyAuctionRevenue(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/monthly-auction-revenue`);
-  }
+  // getMonthlyAuctionRevenue(): Observable<any> {
+  //   return this.http.get(`${this.baseUrl}/monthly-auction-revenue`);
+  // }
 
-  getMonthlyDirectSaleRevenue(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/monthly-directsale-revenue`);
-  }
+  // getMonthlyDirectSaleRevenue(): Observable<any> {
+  //   return this.http.get(`${this.baseUrl}/monthly-directsale-revenue`);
+  // }
+
+  getMonthlyAuctionRevenue(viewByMode: 'Monthly' | 'Yearly'): Observable<any> {
+  return this.http.get(`${this.baseUrl}/auction-revenue`, {
+    params: { viewByMode }
+  });
+}
+
+  getMonthlyDirectSaleRevenue(viewByMode: 'Monthly' | 'Yearly'): Observable<any> {
+  return this.http.get(`${this.baseUrl}/directsale-revenue`, {
+    params: { viewByMode }
+  });
+}
+
 
   getHighBiddingCustomers(): Observable<any> {
     return this.http.get(`${this.baseUrl}/high-bidding-customers`);
@@ -27,8 +40,12 @@ export class ReportsService {
     return this.http.get(`${this.baseUrl}/get-directsale-assets`);
   }
 
-  getAccountStatement(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/account-statement`);
+  getAccountStatement(userId?: number): Observable<any> {
+    let url = 'https://localhost:62627/api/Reports/account-statement';
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    return this.http.get<any>(url);
   }
 
   getRefundRequests(): Observable<any> {
@@ -37,5 +54,13 @@ export class ReportsService {
 
   getLatestDepositRequests(): Observable<any> {
     return this.http.get(`${this.baseUrl}/get-latest-deposit`);
+  }
+
+  getAuctionsReport(reportType: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/report-auction?reportType=${encodeURIComponent(
+        reportType
+      )}`
+    );
   }
 }
