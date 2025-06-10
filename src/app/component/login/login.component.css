@@ -180,9 +180,9 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+/* button:hover {
   background-color: var(--primary-dark);
-}
+} */
 
 button:disabled {
   background-color: #d3c6e2;
@@ -197,4 +197,29 @@ button:disabled {
 .text-danger {
   color: red;
   font-size: 12px;
+}
+
+
+
+
+.btn-toggle-lang {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.3s ease;
+  user-select: none;
+}
+
+.btn-toggle-lang:hover {
+  text-decoration: underline;
+}
+
+.btn-toggle-lang:focus {
+  outline: none;
+  text-decoration: underline;
 }
