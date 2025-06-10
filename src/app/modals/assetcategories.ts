@@ -21,6 +21,8 @@
   translatedName: string |null;
 }
 export interface CategoryTranslation {
-  categoryId: number;
-  translatedName: string;
+  categoryId: number,
+    translatedCategoryName: string,
+    translatedSubcategory: number | null,
+    translatedDetails: string,
 }

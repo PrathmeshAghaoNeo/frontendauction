@@ -6,6 +6,7 @@ import { ManageAssetService } from '../../services/asset.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service'; // <-- Import AuthService
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-get-order-details',
@@ -22,6 +23,8 @@ export class GetOrderDetailsComponent implements OnInit {
   currency = 'BHD';
   userId: number |null= null; // <-- Initially 0
   plateNumber = '';
+  langCode: string |null = "en";
+
 
   currentSlideIndex: number = 0;
   activeTab: string = 'details';
@@ -31,6 +34,7 @@ export class GetOrderDetailsComponent implements OnInit {
     private assetService: ManageAssetService,
     private listService: ListService,
     private router: Router,
+    private languageService:LanguageService,
     private authService: AuthService // <-- Injected AuthService
   ) {}
 
@@ -49,7 +53,10 @@ export class GetOrderDetailsComponent implements OnInit {
       if (!isNaN(idNum)) {
         this.assetId = idNum;
         console.log('Asset ID from route:', this.assetId);
-        this.loadAssetDetails();
+         this.languageService.lang$.subscribe(lang => {
+    this.langCode = lang;
+    this.loadAssetDetails();
+  });
       } else {
         console.error('Invalid asset ID in route params:', idStr);
         this.isLoading = false;
@@ -67,7 +74,7 @@ export class GetOrderDetailsComponent implements OnInit {
     this.isLoading = true;
     console.log('Fetching data for asset ID:', this.assetId);
 
-    this.assetService.getAssetById(this.assetId).subscribe({
+    this.assetService.getAssetById(this.assetId,this.langCode).subscribe({
       next: (asset) => {
         if (asset) {
           this.asset = asset;

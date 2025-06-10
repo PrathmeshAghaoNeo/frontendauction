@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { TranslateModule } from '@ngx-translate/core';
 import { AssetCategoriesService } from '../../../services/assetcategories.service';
 import { forkJoin } from 'rxjs';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
    selector: 'app-direct-sale',
@@ -23,25 +24,27 @@ export class DirectSaleComponentLP implements OnInit {
   categories: AssetCategory[] = [];
   selectedAssetCategory: AssetCategory | null = null;
   assetBaseUrl: string = `${environment.imgUrl}`;
+  langCode: string |null = "en";
 
-  constructor(private http: HttpClient,private router:Router,private assetcategoriesService : AssetCategoriesService) {}
+  constructor(private http: HttpClient,private router:Router,private assetcategoriesService : AssetCategoriesService,private languageService: LanguageService,) {}
 
   ngOnInit(): void {
+    // this.fetchCategories();
+    this.languageService.lang$.subscribe(lang => {
+    this.langCode = lang;
     this.fetchCategories();
+  });
   }
 
  fetchCategories(): void {
-  const langCode = 'ar'; 
-
-  forkJoin([
+  forkJoin([  
     this.http.get<AssetCategory[]>(ApiEndpoints.ASSETCATEGORIES),
-    this.assetcategoriesService.fetchCategoryTranslations(langCode)
+    this.assetcategoriesService.fetchCategoryTranslations(this.langCode)
   ]).subscribe({
     next: ([categories, translations]: [AssetCategory[], CategoryTranslation[]]) => {
-      console.log('Translations:', translations);
 
       const translationsMap = new Map<number, string>();
-      translations.forEach(t => translationsMap.set(Number(t.categoryId), t.translatedName));
+      translations.forEach(t => translationsMap.set(Number(t.categoryId), t.translatedCategoryName));
 
       this.categories = categories.map(cat => {
         const translatedName = translationsMap.get(Number(cat.categoryId)) ?? null;
@@ -51,8 +54,6 @@ export class DirectSaleComponentLP implements OnInit {
           translatedName
         };
       });
-
-      console.log('Fetched Categories with Translations:', this.categories);
     },
     error: (err) => {
       console.error('Error fetching categories or translations', err);
