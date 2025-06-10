@@ -9,6 +9,7 @@ import { ListService } from '../../services/list.service';
 import { AuthService } from '../../services/auth.service';
 import { loadStripe } from '@stripe/stripe-js';
 import { UserService } from '../../services/user.service';
+import { LanguageService } from '../../services/language.service';
 declare var bootstrap: any;
 
 @Component({
@@ -30,6 +31,7 @@ export class CheckoutComponentComponent implements OnInit , AfterViewInit  {
   email: string | null = null;
   amount: number = 10;
   sessionID: string | null = null;
+  langCode: string |null = "en";
 
   constructor(
     private route: ActivatedRoute,
@@ -37,6 +39,7 @@ export class CheckoutComponentComponent implements OnInit , AfterViewInit  {
     private router:Router,
      private listservice: ListService,
      private authService : AuthService,
+     private languageService: LanguageService,
      private userService: UserService,
   ) {}
 
@@ -78,8 +81,11 @@ export class CheckoutComponentComponent implements OnInit , AfterViewInit  {
       },
     });
     this.assetId = Number(this.route.snapshot.paramMap.get('assetId'));
+     this.languageService.lang$.subscribe(lang => {
+    this.langCode = lang;
+    
     if (this.assetId) {
-      this.assetService.getAssetById(this.assetId).subscribe({
+      this.assetService.getAssetById(this.assetId,this.langCode).subscribe({
         next: (asset) => {
           this.asset = asset;
           console.log("data is added",asset);
@@ -88,6 +94,7 @@ export class CheckoutComponentComponent implements OnInit , AfterViewInit  {
         error: (err) => console.error('Failed to fetch asset:', err)
       });
     }
+  });
   }
 
   checkout() {
