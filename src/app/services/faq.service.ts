@@ -11,7 +11,7 @@ export class FaqService {
   constructor(private http: HttpClient) {}
 
   getFaqs(): Observable<ChatbotAdminFaq[]> {
-    return this.http.get<ChatbotAdminFaq[]>(ApiEndpoints.FAQ);
+    return this.http.get<ChatbotAdminFaq[]>(`${ApiEndpoints.FAQ}/GetAllFaq`);
   }
 
   getFaq(id: number): Observable<ChatbotAdminFaq> {

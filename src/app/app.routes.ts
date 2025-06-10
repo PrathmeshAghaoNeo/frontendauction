@@ -286,6 +286,6 @@ export const routes: Routes = [
   { path: 'finalCheckout/:assetId', component: CheckoutComponentComponent },
   // { path: 'filter', loadComponent: () => import('./component/filter/filter.component').then(m => m.FilterComponent) },
   { path: 'filter', component: FilterComponent },
-  { path: '**', redirectTo: 'page-not-found' } ,// ❌ This would block /payment-success if declared earlier
+  { path: '**', redirectTo: 'page-not-found'  } ,// ❌ This would block /payment-success if declared earlier
 
 ];

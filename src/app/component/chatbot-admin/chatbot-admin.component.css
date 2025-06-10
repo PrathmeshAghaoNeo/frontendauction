@@ -1,490 +1,582 @@
- /* Fix for Bootstrap modal backdrop so modals are interactive and not fully opaque */
-        /* .modal-backdrop.show {
-          opacity: var(--bs-backdrop-opacity, 0.5) !important;
-        } */
-        /* Minimal styling, relies on Bootstrap */
+/* Bootstrap modal backdrop fix - CORRECTED */
+/* .modal-backdrop.show {
+  opacity: 0.5 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
 
-        .table td, .table th {
-          vertical-align: middle;
-        } 
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  opacity: 1 !important;
+} */
 
-        /* FAQ Row Styles */
-        .faq-row {
-          width: 100%;
-          min-width: 0;
-          transition: background 0.2s, box-shadow 0.2s;
-          border-radius: 8px;
-          /* Optionally increase padding for better hover effect */
-          /* padding: 1.25rem !important; */
-        }
-        .faq-row:hover {
-          background: #3e148b; /* much darker for visibility */
-          box-shadow: 0 2px 8px #9d7dd7;
-        }
-        .faq-question-text {
-          font-weight: 400;
-          transition: none;
-        }
-        .faq-question-area:hover .faq-question-text {
-          color: inherit;
-          text-decoration: none;
-        }
+/* Ensure proper z-index stacking */
+/* .modal-backdrop {
+  z-index: 1040;
+} */
 
-        /* FAQ Action Button Styles */
-        .faq-action-btn {
-          border: 2px solid #bca4e6;
-          background: #fff;
-          border-radius: 8px;
-          width: 32px;
-          height: 32px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          transition: box-shadow 0.2s, background 0.2s, border-color 0.2s;
-          margin-right: 4px;
-          padding: 0;
-        }
-        .faq-action-btn:last-child {
-          margin-right: 0;
-        }
-        .faq-action-btn i {
-          font-size: 1rem;
-          color: #7c3aed;
-          transition: color 0.2s;
-        }
-        .faq-action-btn.view:hover, .faq-action-btn.edit:hover {
-          background: #7c3aed;
-          border-color: #7c3aed;
-        }
-        .faq-action-btn.view:hover i, .faq-action-btn.edit:hover i {
-          color: #fff;
-        }
-        .faq-action-btn.edit {
-          border-color: #bca4e6;
-        }
-        .faq-action-btn.delete {
-          border-color: #ff4d4f;
-        }
-        .faq-action-btn.delete i {
-          color: #ff4d4f;
-        }
-        .faq-action-btn.delete:hover {
-          background: #ff4d4f;
-          border-color: #ff4d4f;
-        }
-        .faq-action-btn.delete:hover i {
-          color: #fff;
-        }
-        .faq-action-btn:focus {
-          box-shadow: 0 0 0 2px #bca4e6;
-        } 
+/* .modal {
+  z-index: 1050;
+} */
 
-        .justify-content-start{
-          color: #ff4d4f;
-        }
 
-        /* NgxPagination Custom Styles */
-        .ngx-pagination {
-          margin: 1rem 0;
-          padding: 0;
-        }
+/* Fix modal backdrop */
 
-        .ngx-pagination li {
-          display: inline-block;
-          margin: 0 2px;
-        }
 
-        .ngx-pagination li a,
-        .ngx-pagination li span {
-          display: block;
-          padding: 8px 12px;
-          text-decoration: none;
-          border: 1px solid #dee2e6;
-          border-radius: 4px;
-          color: #7c3aed;
-          background-color: #fff;
-          transition: all 0.2s;
-        }
 
-        .ngx-pagination li a:hover {
-          background-color: #f8f9fa;
-          border-color: #bca4e6;
-        }
 
-        .ngx-pagination li.current a,
-        .ngx-pagination li.current span {
-          background-color: #7c3aed;
-          border-color: #7c3aed;
-          color: #fff;
-        }
+/* Minimal styling, relies on Bootstrap */
+.table td, .table th {
+  vertical-align: middle;
+} 
 
-        .ngx-pagination li.disabled a,
-        .ngx-pagination li.disabled span {
-          color: #6c757d;
-          background-color: #fff;
-          border-color: #dee2e6;
-          cursor: not-allowed;
-        }
+/* FAQ Row Styles */
+.faq-row {
+  width: 100%;
+  min-width: 0;
+  transition: background 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+}
 
-        .ngx-pagination li.disabled a:hover {
-          background-color: #fff;
-          border-color: #dee2e6;
-        }
+.faq-row:hover {
+  background: #3e148b; /* much darker for visibility */
+  box-shadow: 0 2px 8px #9d7dd7;
+}
 
-        /* FAQ Modal Styles - Applied to both Add/Edit and View modals */
-        .faq-modal-content {
-          border: none;
-          border-radius: 16px;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-          overflow: hidden;
-        }
+.faq-question-text {
+  font-weight: 400;
+  transition: none;
+}
 
-        .faq-modal-header {
-          background: linear-gradient(135deg, #7c3aed, #a855f7);
-          border: none;
-          padding: 1.5rem 2rem;
-          position: relative;
-        }
 
-        .faq-modal-header::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(135deg, #bca4e6, #9d7dd7);
-          opacity: 0.1;
-        }
 
-        .faq-modal-header .modal-title {
-          font-size: 1.5rem;
-          font-weight: 600;
-          position: relative;
-          z-index: 1;
-          color: white;
-        }
+.faq-question-area:hover .faq-question-text {
+  color: inherit;
+  text-decoration: none;
+}
 
-        .faq-modal-body {
-          padding: 2rem;
-          background: #fafafa;
-        }
+/* FAQ Action Button Styles */
+.faq-action-btn {
+  border: 2px solid #bca4e6;
+  background: #fff;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.2s, background 0.2s, border-color 0.2s;
+  margin-right: 4px;
+  padding: 0;
+}
 
-        .form-section {
-          background: white;
-          border-radius: 12px;
-          padding: 2rem;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
+.faq-action-btn:last-child {
+  margin-right: 0;
+}
 
-        /* View Modal Specific Styles */
-        .view-section {
-          background: white;
-          border-radius: 12px;
-          padding: 2rem;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
+.faq-action-btn i {
+  font-size: 1rem;
+  color: #7c3aed;
+  transition: color 0.2s;
+}
 
-        .view-field {
-          margin-bottom: 1.5rem;
-        }
+.faq-action-btn.view:hover, .faq-action-btn.edit:hover {
+  background: #7c3aed;
+  border-color: #7c3aed;
+}
 
-        .view-field:last-child {
-          margin-bottom: 0;
-        }
+.faq-action-btn.view:hover i, .faq-action-btn.edit:hover i {
+  color: #fff;
+}
 
-        .view-label {
-          font-size: 1rem;
-          margin-bottom: 0.5rem;
-          display: flex;
-          align-items: center;
-          color: #7c3aed;
-          font-weight: 600;
-        }
+.faq-action-btn.edit {
+  border-color: #bca4e6;
+}
 
-        .view-label i {
-          font-size: 1.1rem;
-          margin-right: 0.5rem;
-        }
+.faq-action-btn.delete {
+  border-color: #ff4d4f;
+}
 
-        .view-content {
-          background: #f8f9fa;
-          border: 1px solid #e9ecef;
-          border-radius: 8px;
-          padding: 1rem;
-          font-size: 1rem;
-          color: #495057;
-          line-height: 1.5;
-          min-height: 2.5rem;
-          display: flex;
-          align-items: center;
-        }
+.faq-action-btn.delete i {
+  color: #ff4d4f;
+}
 
-        .form-group {
-          margin-bottom: 1.5rem;
-        }
+.faq-action-btn.delete:hover {
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+}
 
-        .form-group:last-child {
-          margin-bottom: 0;
-        }
+.faq-action-btn.delete:hover i {
+  color: #fff;
+}
 
-        .form-label {
-          font-size: 1rem;
-          margin-bottom: 0.75rem;
-          display: flex;
-          align-items: center;
-          color: #7c3aed;
-        }
+.faq-action-btn:focus {
+  box-shadow: 0 0 0 2px #bca4e6;
+} 
 
-        .form-label i {
-          font-size: 1.1rem;
-        }
+.justify-content-start{
+  color: #ff4d4f;
+}
 
-        .required-star {
-          color: #ef4444;
-          font-weight: bold;
-          margin-left: 0.25rem;
-        }
+/* NgxPagination Custom Styles */
+.ngx-pagination {
+  margin: 1rem 0;
+  padding: 0;
+}
 
-        .modern-input,
-        .modern-textarea {
-          border: 2px solid #e5e7eb;
-          border-radius: 10px;
-          padding: 0.875rem 1rem;
-          font-size: 1rem;
-          transition: all 0.3s ease;
-          background: #fff;
-        }
+.ngx-pagination li {
+  display: inline-block;
+  margin: 0 2px;
+}
 
-        .modern-input:focus,
-        .modern-textarea:focus {
-          border-color: #7c3aed;
-          box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-          outline: none;
-        }
+.ngx-pagination li a,
+.ngx-pagination li span {
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  color: #7c3aed;
+  background-color: #fff;
+  transition: all 0.2s;
+}
 
-        .modern-input::placeholder,
-        .modern-textarea::placeholder {
-          color: #9ca3af;
-          font-style: italic;
-        }
+.ngx-pagination li a:hover {
+  background-color: #f8f9fa;
+  border-color: #bca4e6;
+}
 
-        .modern-textarea {
-          resize: vertical;
-          min-height: 120px;
-        }
+.ngx-pagination li.current a,
+.ngx-pagination li.current span {
+  background-color: #7c3aed;
+  border-color: #7c3aed;
+  color: #fff;
+}
 
-        .form-text {
-          font-size: 0.875rem;
-          color: #6b7280;
-          margin-top: 0.5rem;
-          display: flex;
-          align-items: center;
-        }
+.ngx-pagination li.disabled a,
+.ngx-pagination li.disabled span {
+  color: #6c757d;
+  background-color: #fff;
+  border-color: #dee2e6;
+  cursor: not-allowed;
+}
 
-        .error-messages {
-          margin-top: 0.75rem;
-        }
+.ngx-pagination li.disabled a:hover {
+  background-color: #fff;
+  border-color: #dee2e6;
+}
 
-        .error-message {
-          background: #fef2f2;
-          border: 1px solid #fecaca;
-          color: #dc2626;
-          padding: 0.5rem 0.75rem;
-          border-radius: 6px;
-          font-size: 0.875rem;
-          margin-bottom: 0.5rem;
-          display: flex;
-          align-items: center;
-        }
+/* FAQ Modal Styles - Applied to both Add/Edit and View modals */
+.faq-modal-content {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
 
-        .error-message:last-child {
-          margin-bottom: 0;
-        }
+.faq-modal-header {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: none;
+  padding: 1.25rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-        .error-message i {
-          color: #dc2626;
-          font-size: 0.875rem;
-        }
+.faq-modal-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #bca4e6, #9d7dd7);
+  opacity: 0.1;
+}
 
-        .faq-modal-footer {
-          padding: 1.5rem 2rem;
-          border: none;
-          background: #f9fafb;
-          display: flex;
-          justify-content: flex-end;
-          gap: 0.75rem;
-        }
+.faq-modal-header .modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  color: white;
+}
 
-        .faq-modal-footer .btn {
-          padding: 0.75rem 1.5rem;
-          font-weight: 500;
-          border-radius: 8px;
-          font-size: 1rem;
-          display: flex;
-          align-items: center;
-          transition: all 0.2s ease;
-        }
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+  opacity: 1;
+  /* background: transparent; */
+  border: none;
+  width: 32px;
+  height: 32px;
+  position: relative;
+  z-index: 3;
+  padding: 0;
+  margin-left: auto;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto;
+  position: relative;
+  z-index: 3;
+}
 
-        .faq-modal-footer .btn-primary {
-          background: linear-gradient(135deg, #7c3aed, #a855f7);
-          border: none;
-          color: white;
-        }
+.custom-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
 
-        .faq-modal-footer .btn-primary:hover {
-          background: linear-gradient(135deg, #6d28d9, #9333ea);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-        }
+.custom-close-btn i {
+  color: white;
+  font-weight: bold;
+}
 
-        .faq-modal-footer .btn-outline-secondary {
-          border: 2px solid #e5e7eb;
-          color: #6b7280;
-          background: white;
-        }
+.faq-modal-body {
+  padding: 1.5rem;
+  background: #fafafa;
+  max-height: 60vh;
+  overflow-y: auto;
+}
 
-        .faq-modal-footer .btn-outline-secondary:hover {
-          border-color: #d1d5db;
-          background: #f9fafb;
-          color: #374151;
-          transform: translateY(-1px);
-        }
+.form-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
 
-        .faq-modal-footer .btn i {
-          font-size: 0.875rem;
-        }
+/* View Modal Specific Styles */
+.view-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-          .faq-modal-body {
-            padding: 1rem;
-          }
-          
-          .form-section, .view-section {
-            padding: 1.5rem;
-          }
-          
-          .faq-modal-footer {
-            padding: 1rem;
-            flex-direction: column;
-          }
-          
-          .faq-modal-footer .btn {
-            width: 100%;
-            justify-content: center;
-          }
-        }
+.view-field {
+  margin-bottom: 1.5rem;
+}
 
-        /* Success Modal Styles */
-        .success-modal-content {
-          border: none;
-          border-radius: 16px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        }
+.view-field:last-child {
+  margin-bottom: 0;
+}
 
-        .success-icon-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
+.view-label {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  color: #7c3aed;
+  font-weight: 600;
+}
 
-        .success-icon {
-          width: 80px;
-          height: 80px;
-          background: linear-gradient(135deg, #4ade80, #22c55e);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          animation: successPulse 0.6s ease-out;
-        }
+.view-label i {
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
 
-        .success-icon i {
-          font-size: 2.5rem;
-          color: white;
-          font-weight: bold;
-        }
+.view-content {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #495057;
+  line-height: 1.5;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+}
 
-        .success-title {
-          font-size: 1.75rem;
-          font-weight: 600;
-          color: #1f2937;
-          margin-bottom: 1rem;
-        }
+.form-group {
+  margin-bottom: 1.5rem;
+}
 
-        .success-message {
-          font-size: 1.1rem;
-          color: #6b7280;
-          margin-bottom: 1.5rem;
-          line-height: 1.5;
-        }
+.form-group:last-child {
+  margin-bottom: 0;
+}
 
-        .success-modal-content .btn-primary {
-          background-color: #3b82f6;
-          border-color: #3b82f6;
-          border-radius: 8px;
-          padding: 0.75rem 2rem;
-          font-weight: 500;
-          font-size: 1rem;
-          transition: all 0.2s;
-        }
+.form-label {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  color: #7c3aed;
+}
 
-        .success-modal-content .btn-primary:hover {
-          background-color: #2563eb;
-          border-color: #2563eb;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
+.form-label i {
+  font-size: 1.1rem;
+}
 
-        .success-modal-content .btn-primary:focus {
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
+.required-star {
+  color: #ef4444;
+  font-weight: bold;
+  margin-left: 0.25rem;
+}
 
-        /* Success pulse animation */
-        @keyframes successPulse {
-          0% {
-            transform: scale(0.8);
-            opacity: 0;
-          }
-          50% {
-            transform: scale(1.1);
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
+.modern-input,
+.modern-textarea {
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #fff;
+}
 
-        /* Modal backdrop customization for success modal */
-        #successModal .modal-backdrop {
-          background-color: rgba(0, 0, 0, 0.4);
-        }
+.modern-input:focus,
+.modern-textarea:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  outline: none;
+}
 
-        /* Ensure modal appears above other content */
-        #successModal {
-          z-index: 1060;
-        }
+.modern-input::placeholder,
+.modern-textarea::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
 
-        #successModal .modal-backdrop {
-          z-index: 1055;
-        }
+.modern-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
 
-        #viewModal .modal-backdrop {
-          background-color: rgba(0, 0, 0, 0.4);
-        }
+.form-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+}
 
-        #viewModal .modal-dialog {
-          max-width: 900px;
-          margin: 1.75rem auto;
-        }
+.error-messages {
+  margin-top: 0.75rem;
+}
 
-        #viewModal .modal-content {
-          border-radius: 12px;
-          box-shadow: 0 4px 32px rgba(0,0,0,0.18), 0 1.5px 8px rgba(106,27,154,0.08);
-          background: #fff;
-        }
+.error-message {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
 
-        #viewModal .modal-backdrop {
-          background-color: rgba(0,0,0,0.35) !important;
-        }
+.error-message:last-child {
+  margin-bottom: 0;
+}
+
+.error-message i {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+/* .faq-modal-footer {
+  padding: 1.5rem 2rem;
+  border: none;
+  background: #f9fafb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.faq-modal-footer .btn {
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  border-radius: 8px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.faq-modal-footer .btn-primary {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: none;
+  color: white;
+}
+
+.faq-modal-footer .btn-primary:hover {
+  background: linear-gradient(135deg, #6d28d9, #9333ea);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.faq-modal-footer .btn-outline-secondary {
+  border: 2px solid #e5e7eb;
+  color: #6b7280;
+  background: white;
+}
+
+.faq-modal-footer .btn-outline-secondary:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+  color: #374151;
+  transform: translateY(-1px);
+}
+
+.faq-modal-footer .btn i {
+  font-size: 0.875rem;
+} */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .faq-modal-body {
+    padding: 1rem;
+  }
+  
+  .form-section, .view-section {
+    padding: 1.5rem;
+  }
+  
+ 
+  
+}
+
+/* Success Modal Styles */
+.success-modal-content {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: successPulse 0.6s ease-out;
+}
+
+.success-icon i {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: bold;
+}
+
+.success-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.success-modal-content .btn-primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.success-modal-content .btn-primary:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.success-modal-content .btn-primary:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Success pulse animation */
+@keyframes successPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* View Modal Specific Styling */
+#viewModal .modal-dialog {
+  max-width: 900px;
+  margin: 1.75rem auto;
+}
+
+#viewModal .modal-content {
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18), 0 1.5px 8px rgba(106,27,154,0.08);
+  background: #fff;
+}
+
+.blurred-bg {
+  filter: blur(6px);
+  transition: filter 0.3s;
+}
+
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  max-width: 800px;
+  width: 95vw;
+  padding: 0;
+  z-index: 2100;
+  position: relative;
+  margin: 0 16px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 92px;
+}

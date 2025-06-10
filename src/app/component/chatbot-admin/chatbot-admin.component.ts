@@ -1,5 +1,4 @@
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FaqService } from '../../services/faq.service';
 import { ChatbotAdminFaq } from '../../modals/chatbot-admin';
 import { FormsModule } from '@angular/forms';
@@ -35,6 +34,13 @@ export class ChatbotAdminComponent implements OnInit {
    // NgxPagination properties
   itemsPerPage: number = 5;
   page: number = 1;
+
+  isModalOpen: boolean = false;
+
+  showViewModal: boolean = false;
+  showAddEditModal: boolean = false;
+
+  @Output() modalState = new EventEmitter<boolean>();
 
   constructor(private faqService: FaqService) {}
 
@@ -102,44 +108,56 @@ export class ChatbotAdminComponent implements OnInit {
 
   openViewModal(faq: ChatbotAdminFaq) {
     this.viewFaqObj = faq;
-    this.showModal('viewModal');
+    this.showViewModal = true;
+    this.isModalOpen = true;
+    this.modalState.emit(true);
   }
 
   closeViewModal() {
     this.viewFaqObj = null;
-    this.hideModal('viewModal');
+    this.showViewModal = false;
+    this.isModalOpen = false;
+    this.modalState.emit(false);
   }
 
   openAddModal() {
     this.isEditing = false;
     this.formFaq = {};
-    this.showModal('faqModal');
+    this.showAddEditModal = true;
+    this.isModalOpen = true;
+    this.modalState.emit(true);
   }
 
   openEditModal(faq: ChatbotAdminFaq) {
     this.isEditing = true;
     this.selectedFaq = { ...faq };
     this.formFaq = this.selectedFaq;
-    this.showModal('faqModal');
+    this.showAddEditModal = true;
+    this.isModalOpen = true;
+    this.modalState.emit(true);
   }
 
   closeModal() {
     this.isEditing = false;
     this.selectedFaq = null;
     this.formFaq = {};
-    this.hideModal('faqModal');
+    this.showAddEditModal = false;
+    this.isModalOpen = false;
+    this.modalState.emit(false);
   }
 
   // Success popup methods
   showSuccess(message: string) {
     this.successMessage = message;
     this.showSuccessPopup = true;
+    this.isModalOpen = true;
     this.showModal('successModal');
   }
 
   closeSuccessModal() {
     this.showSuccessPopup = false;
     this.successMessage = '';
+    this.isModalOpen = false;
     this.hideModal('successModal');
   }
 
@@ -166,6 +184,14 @@ export class ChatbotAdminComponent implements OnInit {
     }
   }
 
+  getAllFaq(){
+    this.faqService.getFaqs().subscribe((res)=>{
+      console.log(res);
+      this.faqs = res;
+    })
+
+  }
+
   deleteFaq(id: number) {
     if (confirm('Are you sure you want to delete this FAQ?')) {
       this.faqService.deleteFaq(id).subscribe({
@@ -179,12 +205,16 @@ export class ChatbotAdminComponent implements OnInit {
     }
   }
 
-  // Helper methods for Bootstrap modal
+  // Helper methods for Bootstrap modal - CORRECTED
   private showModal(id: string) {
     const modalEl = document.getElementById(id);
     if (modalEl) {
+      // Enable default backdrop
       // @ts-ignore
-      const modal = new window.bootstrap.Modal(modalEl, { backdrop: false });
+      const modal = new window.bootstrap.Modal(modalEl, { 
+        backdrop: true,  // MUST be true for backdrop
+        keyboard: true
+      });
       modal.show();
     }
   }

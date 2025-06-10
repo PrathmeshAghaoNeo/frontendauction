@@ -9,13 +9,18 @@
 
 
      <!-- <app-chat-bot></app-chat-bot> -->
-      <router-outlet></router-outlet>
+      <ng-container *ngIf="currentRoute === '/chatbot-admin'">
+        <app-chatbot-admin (modalState)="onChatbotAdminModalState($event)"></app-chatbot-admin>
+      </ng-container>
+      <ng-container *ngIf="currentRoute !== '/chatbot-admin'">
+        <router-outlet></router-outlet>
+      </ng-container>
     </main>
 
     
   </div>
-
-  <app-footer *ngIf="showHeaderAndFooter" class="app-footer"></app-footer>
+  <!-- <app-footer *ngIf="showHeaderAndFooter" class="app-footer"></app-footer> -->
+  <app-footer *ngIf="showHeaderAndFooter && !hideFooter" class="app-footer"></app-footer>
    <app-chat-bot></app-chat-bot>
   
    <div class="toast-container p-3 position-fixed bottom-0 end-0" style="z-index: 9999;">
@@ -37,7 +42,7 @@
           data-bs-dismiss="toast"
           aria-label="Close"
         ></button>
-      </div>
+      </div>  
       <div class="toast-body">This is a toast message.</div>
     </div>
   </div>

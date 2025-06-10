@@ -17,6 +17,7 @@ import { SignalRService } from './services/signal-r.service';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { ChatbotAdminComponent } from './component/chatbot-admin/chatbot-admin.component';
 
 declare var bootstrap: any;
 
@@ -32,6 +33,7 @@ declare var bootstrap: any;
     SidebarComponent,
     NgIf,
     ChatBotComponent,
+    ChatbotAdminComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
@@ -41,6 +43,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   currentRoute: string = '';
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
+  hideFooter: boolean = false;
 
   readonly customHeaderRoutes: string[] = [
     '/reguserlandingpage',
@@ -200,5 +203,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       '/reguserlandingpage',
       '/',
     ]);
+  }
+
+  // Method to handle modal state from chatbot-admin
+  onChatbotAdminModalState(isOpen: boolean) {
+    this.hideFooter = isOpen;
   }
 }
