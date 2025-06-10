@@ -89,6 +89,7 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
 
+
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     if (!isNaN(categoryId)) {
       this.assetService.getDirectAssets(categoryId).subscribe({

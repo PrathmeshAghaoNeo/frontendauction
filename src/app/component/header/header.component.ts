@@ -10,7 +10,6 @@ import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
 import { Notification } from '../../modals/user';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-header',
@@ -38,7 +37,6 @@ export class HeaderComponent implements OnInit {
     private listService: ListService,
     public authService: AuthService,
     private router: Router,
-    private languageService: LanguageService,
     private winService: UserService,
     private signalR: SignalRService,
     private userService: UserService,
@@ -230,7 +228,6 @@ export class HeaderComponent implements OnInit {
 
   switchLang(lang: string) {
     this.translate.use(lang);
-     this.languageService.setLanguage(lang);
     localStorage.setItem('lang', lang);
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     this.currentLang = lang;

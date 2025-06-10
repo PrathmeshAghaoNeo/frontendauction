@@ -1,45 +1,35 @@
-.header-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative; /* Ensure relative positioning for the button */
-}
-
-.back-btn {
-  position: absolute; /* To pin it to the left */
-  top: 0; /* Align at the top */
-  left: 0; /* Align at the left corner */
-  background: none;
-  border: none;
-  color: #333;
-  cursor: pointer;
-  padding: 5px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.back-btn i {
-  font-size: 1.8rem;
-}
-
-.back-btn:hover {
-  color: #333; 
-}
-
-.auction-form-title {
-  text-align: center;
-  font-size: 29px;
-  margin-left: 375px; /* Give space for the back button */
-}
-
-.text-muted.mb-3 {
-  text-align: center;
-}
-
 .required-label::after {
-  content: "* ";
-  color: red;
-  font-weight: bold;
-}
+    content: "* ";
+    color: red;
+    font-weight: bold;
+  }
+
+  .text-muted.mb-3 {
+    text-align: center;
+  }
+  
+  .auction-form-title{
+    text-align: center;
+    font-size: 29px;
+  }
+
+  .back-btn {
+    left: 0;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .back-btn i {
+    font-size: 1.8rem;
+  }
+  
+  .back-btn:hover {
+    color: #333; 
+  }

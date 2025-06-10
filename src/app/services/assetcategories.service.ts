@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiEndpoints } from '../constants/api-endpoints';
-import { AssetCategory, CategoryTranslation } from '../modals/assetcategories';
+import { AssetCategory } from '../modals/assetcategories';
 
 @Injectable({
   providedIn: 'root'
@@ -30,10 +30,4 @@ export class AssetCategoriesService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${ApiEndpoints.ASSETCATEGORIES}/${id}`);
   }
-  fetchCategoryTranslations(langCode: string | null): Observable<CategoryTranslation[]> {
-  return this.http.get<CategoryTranslation[]>(
-    `${ApiEndpoints.ASSETCATEGORIES}/langCat/${langCode}`
-  );
-}
-
 }

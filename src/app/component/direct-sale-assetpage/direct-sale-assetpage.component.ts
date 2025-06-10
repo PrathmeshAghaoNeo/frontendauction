@@ -8,7 +8,6 @@ import { Asset, Gallery } from '../../modals/manage-asset';
 import { ListService } from '../../services/list.service';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
-import { LanguageService } from '../../services/language.service';
 
 declare var bootstrap: any; 
 
@@ -33,7 +32,7 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
   currency = 'BHD';
    userId: number |null = null;
   plateNumber = '';
-  langCode: string |null = "en";
+
   wishlistAssetIds: number[] = [];  
 
   
@@ -46,7 +45,6 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
     private assetService: ManageAssetService,
     private listService: ListService,
     private authService:AuthService,
-    private languageService:LanguageService,
     private router:Router
   ) {}
 
@@ -83,11 +81,7 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
   ngOnInit(): void {
     this.userId = this.authService.getUserIdJwt();
 
-    if (!this.userId) {
-      this.showToast('User not logged in.', 'Error', 'error');
-      this.router.navigate(['/login']);
-      return;
-    }
+    
 
     this.route.paramMap.subscribe((params: ParamMap) => {
       // Try both keys in case your route is /:id or /:assetId
@@ -97,11 +91,7 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
       if (!isNaN(idNum)) {
         this.assetId = idNum;
         console.log('Asset ID from route:', this.assetId);
-        this.languageService.lang$.subscribe(lang => {
-    this.langCode = lang;
-    // this.fetchCategories();
-    this.loadAssetDetails();
-  });
+        this.loadAssetDetails();
         this.loadCartItems();
       } else {
         console.error('Invalid asset ID in route params:', idStr);
@@ -133,7 +123,7 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
     console.log('Fetching data for asset ID:', this.assetId);
 
     // Get asset details
-    this.assetService.getAssetById(this.assetId,this.langCode).subscribe({
+    this.assetService.getAssetById(this.assetId).subscribe({
       next: (asset) => {
         if (asset) {
           this.asset = asset;

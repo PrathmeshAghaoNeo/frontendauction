@@ -30,7 +30,6 @@ export class ManageAssetComponent implements OnInit {
   environment = environment;
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' | '' = '';
-  langCode: string |null = "en";
 
   @ViewChild('viewAssetModal') viewAssetModal!: TemplateRef<any>;
 
@@ -83,7 +82,7 @@ export class ManageAssetComponent implements OnInit {
   }
 
   viewAsset(assetId: number): void {
-    this.assetService.getAssetById(assetId,this.langCode).subscribe(
+    this.assetService.getAssetById(assetId).subscribe(
       (data) => {
         this.selectedAsset = data;
         console.log('Selected Asset:', this.selectedAsset);

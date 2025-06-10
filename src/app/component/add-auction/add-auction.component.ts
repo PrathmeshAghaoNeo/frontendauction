@@ -16,7 +16,6 @@ import { formatToDateTimeLocalFormat, normalizeDateTime, futureDateValidator, en
 import { Location } from '@angular/common';
 import { AssetCategory } from '../../modals/assetcategories';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
-import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'app-add-auction',
@@ -36,65 +35,51 @@ export class AddAuctionComponent implements OnInit {
     { statusId: 4, statusName: 'Cancelled' }
   ];
 
-  categories: AssetCategory[] = [];
+    categories: AssetCategory[] = [];
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
     private assetCategoriesService: AssetCategoriesService,
-    private auctionSettingsService: SettingsService,
-    private location: Location) {
-    this.currentDateTime = formatToDateTimeLocalFormat(new Date());
+    private location: Location  ) {
+    this.currentDateTime = formatToDateTimeLocalFormat(new Date()); 
 
     this.auctionForm = this.fb.group(
       {
-        auctionNumber: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
+        auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
         title: ['', [Validators.required, Validators.maxLength(40)]],
         type: ['', Validators.required],
         startDateTime: ['', futureDateValidator],
-        endDateTime: ['', [Validators.required, futureDateValidator]],
+        endDateTime: ['', [Validators.required, futureDateValidator]], 
         statusId: ['', Validators.required],
-        incrementalTime: [{ value: '', disabled: true }, Validators.required],
+        incrementalTime: ['', Validators.required],
         categoryId: ['', Validators.required]
       },
-      { validators: endDateAfterStartDateValidator }
+      { validators: endDateAfterStartDateValidator } 
     );
   }
-  generatedAuctionNumber: string | null = null;
 
   ngOnInit() {
     const now = new Date();
     const formattedNow = formatToDateTimeLocalFormat(now);
     this.auctionForm.patchValue({
-      startDateTime: formattedNow,
-      endDateTime: formattedNow
-    });
-    this.assetCategoriesService.getAll().subscribe({
-      next: (data) => {
-        this.categories = data;
-      },
-      error: (err) => {
-        console.error('Failed to load categories', err);
-      }
-    });
+    startDateTime: formattedNow,
+    endDateTime: formattedNow
+});
+this.assetCategoriesService.getAll().subscribe({
+    next: (data) => {
+      this.categories = data;
+    },
+    error: (err) => {
+      console.error('Failed to load categories', err);
+    }
+  });
 
     console.log('Init datetime:', this.auctionForm.getRawValue());
-    this.auctionSettingsService.getAuctionSettings().subscribe({
-      next: (settings) => {
-        this.auctionForm.patchValue({
-          incrementalTime: settings.globalIncrementalTimeInMinutes
-        });
-      },
-      error: (err) => {
-        console.error('Failed to load auction settings', err);
-      }
-    });
-
-
 
   }
-
+    
 
 
   goBack(): void {
@@ -114,17 +99,17 @@ export class AddAuctionComponent implements OnInit {
       });
       return;
     }
-
+  
     const formValue = this.auctionForm.getRawValue();  // <-- FIXED
-
+  
     console.log('Raw startDateTime:', formValue.startDateTime);
     console.log('Raw endDateTime:', formValue.endDateTime);
-
+  
     const normalizedStartDateTime = normalizeDateTime(formValue.startDateTime);
     const normalizedEndDateTime = normalizeDateTime(formValue.endDateTime);
-
+  
     const payload = {
-      // auctionNumber: formValue.auctionNumber,
+      auctionNumber: formValue.auctionNumber,
       title: formValue.title,
       type: formValue.type,
       startDateTime: new Date(normalizedStartDateTime).toISOString(),
@@ -133,7 +118,7 @@ export class AddAuctionComponent implements OnInit {
       incrementalTime: +formValue.incrementalTime,
       categoryId: +formValue.categoryId
     };
-
+  
     console.log('Payload:', payload);
 
     this.http.post(ApiEndpoints.AUCTION, payload).subscribe({
@@ -153,7 +138,7 @@ export class AddAuctionComponent implements OnInit {
       error: (err) => {
         console.error('Full error:', err);
         let errorMessage = 'Something went wrong. Please try again.';
-
+      
         if (err.status === 409) {
           errorMessage = 'Auction number already exists. Please choose a different one.';
         } else if (err.error?.message) {
@@ -163,7 +148,7 @@ export class AddAuctionComponent implements OnInit {
         } else if (err.error?.errors && Array.isArray(err.error.errors)) {
           errorMessage = err.error.errors.join('\n');
         }
-
+      
         Swal.fire({
           icon: 'error',
           title: 'Error',
