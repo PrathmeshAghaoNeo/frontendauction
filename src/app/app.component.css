@@ -19,7 +19,10 @@
   min-height: 100vh;
   transition: all 0.3s ease;
 }
-
+.app-main{
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
 /* Sidebar (basic shell) */
 .app-sidebar {
   width: 60px;
@@ -53,3 +56,7 @@
 .sidebar-collapsed .app-content {
   margin-left: 60px;
 }
+
+
+
+

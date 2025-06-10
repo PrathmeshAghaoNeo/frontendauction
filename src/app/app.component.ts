@@ -63,6 +63,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     private signalR: SignalRService
   ) {
 
+     this.router.events.subscribe(event => {
+    if (event instanceof NavigationEnd) {
+      document.querySelector('.app-main')?.scrollTo(0, 0);
+    }
+    });
+
+
     this.authService.initializeAuth();
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
