@@ -35,11 +35,14 @@ export class ManageAssetService {
     const deleteUrl = `${ApiEndpoints.ASSETS}/${assetId}`;
     return this.http.delete<void>(deleteUrl);
   }
+getAssetById(assetId: number, langCode: string | null): Observable<Asset> {
+  const lang = langCode ?? 'en'; 
+  const url = `${ApiEndpoints.ASSETS}/${assetId}?Lang=${lang}`;
+  console.log(url)
+  return this.http.get<Asset>(url);
+}
 
-  getAssetById(assetId: number): Observable<Asset> {
-    const url = `${ApiEndpoints.ASSETS}/${assetId}`;
-    return this.http.get<Asset>(url);
-  }
+
  
 
   deleteAssetGallery(galleryId: string): Observable<void> {
