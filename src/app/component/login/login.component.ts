@@ -189,32 +189,40 @@ verifyOtp(form: NgForm): void {
 if (!form.valid) return;
 
 
-this.auth.verifyOtp(this.email, this.code).subscribe({
-  next: (res) => {
-    // ✅ Save role & user to AuthService
-   this.auth.setUser(res.user, res.role); 
-
-    const role = this.auth.getRoleJwt();
-
-    setTimeout(() => {
-      if (role === 'Admin') {
-        this.router.navigate(['/dashboard']);
-      } else if (role === 'User') {
-        this.router.navigate(['/reguserlandingpage']);
+    this.auth.verifyOtp(this.email, this.code).subscribe({
+      next: (res) => {
+         this.auth.setUser(res.user, res.role);
+        const role = this.auth.getRoleJwt();
+        
+        setTimeout(() => {
+          if (role === 'Admin') {
+            this.router.navigate(['/dashboard']);
+          } else if (role === 'User') {
+            this.router.navigate(['/reguserlandingpage']);
+          }
+        }, 500);
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid OTP',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
-    }, 500);
-  },
-  error: () => {
-    Swal.fire({
-      icon: 'error',
-      title: 'Invalid OTP',
-      showConfirmButton: false,
-      timer: 1000
     });
   }
-});
-
-
-
-}
+  switchLang(lang: string) {
+      this.translate.use(lang);
+      localStorage.setItem('lang', lang);
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      this.currentLang = lang;
+    }
+    toggleLang() {
+      if (this.currentLang === 'en') {
+        this.switchLang('ar');
+      } else {
+        this.switchLang('en');
+      }
+    }
 }

@@ -35,11 +35,14 @@ export class ManageAssetService {
     const deleteUrl = `${ApiEndpoints.ASSETS}/${assetId}`;
     return this.http.delete<void>(deleteUrl);
   }
+getAssetById(assetId: number, langCode: string | null): Observable<Asset> {
+  const lang = langCode ?? 'en'; 
+  const url = `${ApiEndpoints.ASSETS}/${assetId}?Lang=${lang}`;
+  console.log(url)
+  return this.http.get<Asset>(url);
+}
 
-  getAssetById(assetId: number): Observable<Asset> {
-    const url = `${ApiEndpoints.ASSETS}/${assetId}`;
-    return this.http.get<Asset>(url);
-  }
+
  
 
   deleteAssetGallery(galleryId: string): Observable<void> {
@@ -60,9 +63,10 @@ export class ManageAssetService {
     return this.http.put(`${ApiEndpoints.ASSETS}/update-asset-all`, formData);
   }
 
-  getDirectAssets(categoryId: number): Observable<DirectSaleAssetDto[]> {
+  getDirectAssets(categoryId: number,langCode:string |null): Observable<DirectSaleAssetDto[]> {
+    const lang = langCode ?? 'en'; 
     return this.http.get<DirectSaleAssetDto[]>(
-      `${ApiEndpoints.ASSETS}/directsaleasset?categoryId=${categoryId}`
+      `${ApiEndpoints.ASSETS}/directsaleasset?categoryId=${categoryId}&lang=${lang}`
     );
   }
    getAssetGallery(assetId: number): Observable<Gallery[]> {

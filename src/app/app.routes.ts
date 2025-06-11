@@ -35,7 +35,7 @@ import { AssetDetailComponent } from './component/asset-details/asset-details.co
 import { DirectSaleAssetsComponent } from './component/direct-sale-assets/direct-sale-assets.component';
 import { AuctionAssetsComponent } from './component/auction-assets/auction-assets.component';
 import { EditAssetComponent } from './component/edit-asset/edit-asset.component';
-import { DirectBidComponent } from './component/direct-bid/direct-bid.component';
+// import { DirectBidComponent } from './component/direct-bid/direct-bid.component';
 import { SignalrTestComponent } from './component/signalr-test/signalr-test.component';
 import { BidWatchlistComponent } from './component/bid-watchlist/bid-watchlist.component';
 import { BidAddToCartComponent } from './component/bid-add-to-cart/bid-add-to-cart.component';
@@ -66,9 +66,10 @@ import { CheckoutComponentComponent } from './component/checkout-component/check
 import { PaymentSuccessComponent } from './component/bid-add-to-cart/payment-success.component';
 import { RoleUpdateComponent } from './component/role-update-component/role-update-component';
 import { RoleCreateComponent } from './component/role-create-component/role-create-component';
+import { LoginGuard } from './services/login-guard.service';
 export const routes: Routes = [
   { path: '', component: StartPageComponent, pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, canActivate: [LoginGuard]  },
   { path: 'landing-page', component: LandingPageComponent },
   { path: 'logintest', component: TestloginComponent },
   {
@@ -248,14 +249,8 @@ export const routes: Routes = [
   },
   { path: 'auction-assets/:categoryId', component: AuctionAssetsComponent },
   { path: 'testing', component: ChartComponent },
-  {
-    path: 'direct-bid',
-    component: DirectBidComponent,
-    canActivate: [RoleGuard],
-    data: { role: 'Admin' },
-  },
   { path: 'signal', component: SignalrTestComponent },
-  { path: 'direct-bid', component: DirectBidComponent },
+  // { path: 'direct-bid', component: DirectBidComponent },
   { path: 'bid-watchlist', component: BidWatchlistComponent },
   { path: 'bid-add-to-cart', component: BidAddToCartComponent },
   { path: 'page-not-found', component: PageNotFoundComponent },

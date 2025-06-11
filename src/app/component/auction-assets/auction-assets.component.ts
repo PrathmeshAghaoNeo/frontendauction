@@ -14,6 +14,7 @@ import { BidService } from '../../services/bid.service';
 import { bidStatsBulk } from '../../modals/bid-stats';
 import { AuctionService } from '../../services/auction.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 
 
@@ -42,7 +43,8 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   wishlistAssetIds: number[] = [];
   assetIds: number[] = [];
   AuctionIds: number[] = [];
-
+  langCode: string | null = "en";
+  isRtl: boolean= false;
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
@@ -52,6 +54,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     private router: Router,
     private authService: AuthService,
     private bidService: BidService,
+    private languageService: LanguageService,
     private viewportScroller: ViewportScroller
   ) { }
 
@@ -88,9 +91,14 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
+    this.languageService.lang$.subscribe(lang => {
+        this.langCode = lang;
+         this.isRtl = lang === 'ar';
+        // this.fetchCategories(); 
+      
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     if (!isNaN(categoryId)) {
-      this.listService.getAuctionAssetsByCategory(categoryId).subscribe({
+      this.listService.getAuctionAssetsByCategory(categoryId,this.langCode).subscribe({
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data];
@@ -136,6 +144,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     } else {
       console.error('Invalid category ID');
     }
+    });
   }
 
 
