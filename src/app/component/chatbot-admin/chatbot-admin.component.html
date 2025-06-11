@@ -105,13 +105,18 @@
                   <i class="bi bi-tag me-2"></i>Category 
                   <span class="required-star">*</span>
                 </label>
-                <input class="form-control modern-input" 
-                       [(ngModel)]="formFaq.category" 
-                       name="category" 
-                       required 
-                       maxlength="30" 
-                       #category="ngModel"
-                       placeholder="Enter category...">
+                <div class="position-relative">
+                  <select class="form-control modern-input"
+                          [(ngModel)]="formFaq.category"
+                          name="category"
+                          required
+                          maxlength="30"
+                          #category="ngModel">
+                    <option value="" disabled selected>Select category...</option>
+                    <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+                  </select>
+                  <i class="bi bi-chevron-down dropdown-chevron"></i>
+                </div>
                 <div class="form-text">Maximum 30 characters</div>
                 <div *ngIf="faqForm.submitted && category.errors" class="error-messages">
                   <div class="error-message" *ngIf="category.errors['required']">

@@ -580,3 +580,13 @@
   flex-direction: column;
   margin-top: 92px;
 }
+
+.dropdown-chevron {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #7c3aed;
+  font-size: 1.2rem;
+}

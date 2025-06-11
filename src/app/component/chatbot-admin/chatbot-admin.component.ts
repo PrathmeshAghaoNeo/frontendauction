@@ -42,10 +42,13 @@ export class ChatbotAdminComponent implements OnInit {
 
   @Output() modalState = new EventEmitter<boolean>();
 
+  categories: string[] = [];
+
   constructor(private faqService: FaqService) {}
 
   ngOnInit(): void {
     this.loadFaqs();
+    this.loadCategories();
   }
 
   loadFaqs() {
@@ -56,6 +59,17 @@ export class ChatbotAdminComponent implements OnInit {
         this.ensureValidPage();
       },
       error: (err) => this.error = 'Failed to load FAQs'
+    });
+  }
+
+  loadCategories() {
+    this.faqService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data.map((item: any) => item.category);
+      },
+      error: (err) => {
+        this.categories = [];
+      }
     });
   }
 

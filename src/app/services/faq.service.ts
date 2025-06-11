@@ -29,4 +29,8 @@ export class FaqService {
   deleteFaq(id: number): Observable<any> {
     return this.http.delete(`${ApiEndpoints.FAQ}/${id}`);
   }
+
+  getCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`https://localhost:62627/api/Faq/GetCategory`);
+  }
 } 

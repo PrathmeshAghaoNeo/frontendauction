@@ -76,11 +76,27 @@ export class ChatBotComponent implements OnInit {
     });
     this.activeNavItem = 'home';
     // Fetch FAQs from backend
-    this.http.get<any[]>('https://localhost:62627/api/Faq').subscribe(faqs => {
+    this.http.get<any[]>('https://localhost:62627/api/Faq/GetAllFaq').subscribe(faqs => {
       this.faqs = faqs;
       this.filteredFaqs = faqs;
     });
   }
+
+  //  ngOnInit() {
+  //   this.router.events.subscribe((event) => {
+  //     if (event instanceof NavigationEnd) {
+  //       this.showChatbotButton = true;
+  //     }
+  //   });
+
+  //   this.activeNavItem = 'home';
+
+  //   // Fetch FAQs from backend using dynamic base URL
+  //   this.http.get<any[]>(`${this.apiUrl}/GetAllFaq`).subscribe(faqs => {
+  //     this.faqs = faqs;
+  //     this.filteredFaqs = faqs;
+  //   });
+  // }
 
 private callChatbotApi(userMessage: string): Observable<ChatbotApiResponse | null> {
   return this.chatbotService.sendMessage(userMessage).pipe(
@@ -374,7 +390,7 @@ handleSuggestedArticle(article: SuggestedArticle) {
   console.log('Suggested article clicked:', article);
 }
 
-}
+
+  }
 
 
-// jkjjkj
