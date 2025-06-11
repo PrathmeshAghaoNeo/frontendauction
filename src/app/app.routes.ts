@@ -288,4 +288,5 @@ export const routes: Routes = [
   { path: 'filter', component: FilterComponent },
   //{ path: '**', redirectTo: 'page-not-found'  } ,// ❌ This would block /payment-success if declared earlier
   { path: '**', component: PageNotFoundComponent  }
+  { path: '**', redirectTo: 'page-not-found' } 
 ];

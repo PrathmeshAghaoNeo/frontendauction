@@ -11,6 +11,8 @@ import { AuctionService } from '../../services/auction.service';
 import { FormsModule, NgModel } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
+import { LanguageService } from '../../services/language.service';
+import { ApiEndpoints } from '../../constants/api-endpoints';
 
 
 declare var bootstrap: any;
@@ -41,6 +43,7 @@ pendingValue: boolean = false;
   User: number |null = null;
   asset: Asset | null = null;
   auction!: Auction;
+  langCode: string |null = "en";
 
   countdown: string = '';
   private countdownInterval: any;
@@ -80,7 +83,7 @@ pendingValue: boolean = false;
   auctionEnded = false;
 
   constructor(
-    private signalR: SignalRService, private bidService: BidService, private auctionService: AuctionService,private router: Router,
+    private signalR: SignalRService,private languageService:LanguageService, private bidService: BidService, private auctionService: AuctionService,private router: Router,
     private assetService: ManageAssetService,private route: ActivatedRoute,private authService: AuthService
   ) { }
 
@@ -93,6 +96,7 @@ pendingValue: boolean = false;
     if(paramsId != null) {
       this.assetId = paramsId
     }
+    console.log("xyz")
     this.signalR.bidUpdates$.subscribe(data => {
       console.log(data);
       if (data.assetId === this.assetId) {
@@ -102,7 +106,13 @@ pendingValue: boolean = false;
     this.signalR.winnerUpdates$.subscribe(data => {
       console.log(data);
     })
+    this.languageService.lang$.subscribe(lang => {
+    this.langCode = lang;
+    // this.fetchCategories();
+    console.log('Asset API URL:', `${ApiEndpoints.ASSETS}/${this.assetId}?Lang=${this.langCode}`);
+
     this.loadAssetDetails();
+   });
     this.loadAutoBid();
     console.log("loadautobidData");
     
@@ -142,7 +152,7 @@ loadAutoBid() {
 
   loadAssetDetails(): void {
     this.isLoading = true;
-    this.assetService.getAssetById(this.assetId).subscribe({
+    this.assetService.getAssetById(this.assetId,this.langCode).subscribe({
       next: (asset) => {
         this.asset = asset;
         this.auctionId = this.asset?.auctionIds[0];
@@ -385,66 +395,6 @@ onSetLimit(): void {
 }
 
 
-// toggleAutoBid(value: boolean) {
-//   if (value) {
-//     const confirmed = window.confirm('Are you sure you want to enable auto-bid?');
-//     if (!confirmed) {
-//       // User cancelled, so don't enable auto-bid
-//       return;
-//     }
-//   }
-
-//   this.AutoBid.isActive = value;
-//   this.showRightPanel = value;
-
-//   if (value === true) {
-//     this.AutoBid.maxBidAmount = this.setLimitAmount;
-//     const payload = {
-//       userId: this.userId,
-//       auctionId: this.auctionId,
-//       assetId: this.assetId,
-//       maxBidAmount: this.setLimitAmount,
-//     };
-//     console.log("payload", payload);
-//     this.bidService.placeAutoBid(payload).subscribe({
-//       next: (response) => {
-//         console.log('AutoBid placed:', response);
-//         Swal.fire({
-//           icon: 'success',
-//           title: 'Auto-Bid Set',
-//           text: `Your auto-bid has been set successfully!`,
-//           timer: 2000,
-//           showConfirmButton: false
-//         });
-//       },
-//       error: (err) => {
-//         console.error('Failed to place AutoBid:', err);
-//         Swal.fire({
-//           icon: 'error',
-//           title: 'Auto-Bid Failed',
-//           text: 'Failed to set auto-bid. Please try again.',
-//           timer: 2000,
-//           showConfirmButton: false
-//         });
-//       }
-//     });
-//   } else {
-//     const payload = {
-//       userId: this.userId,
-//       auctionId: this.auctionId,
-//       assetId: this.assetId
-//     };
-//     this.bidService.removeAutoBid(payload).subscribe({
-//       next: (response) => {
-//         console.log('AutoBid removed:', response);
-//       },
-//       error: (err) => {
-//         console.error('Failed to remove AutoBid:', err);
-//       }
-//     });
-//   }
-// }
-
 openConfirmationModal(value: boolean) {
     this.pendingValue = value;
     this.modalMessage = value
@@ -500,3 +450,63 @@ openConfirmationModal(value: boolean) {
   }
 
 }
+        
+        // toggleAutoBid(value: boolean) {
+        //   if (value) {
+        //     const confirmed = window.confirm('Are you sure you want to enable auto-bid?');
+        //     if (!confirmed) {
+        //       // User cancelled, so don't enable auto-bid
+        //       return;
+        //     }
+        //   }
+        
+        //   this.AutoBid.isActive = value;
+        //   this.showRightPanel = value;
+        
+        //   if (value === true) {
+        //     this.AutoBid.maxBidAmount = this.setLimitAmount;
+        //     const payload = {
+        //       userId: this.userId,
+        //       auctionId: this.auctionId,
+        //       assetId: this.assetId,
+        //       maxBidAmount: this.setLimitAmount,
+        //     };
+        //     console.log("payload", payload);
+        //     this.bidService.placeAutoBid(payload).subscribe({
+        //       next: (response) => {
+        //         console.log('AutoBid placed:', response);
+        //         Swal.fire({
+        //           icon: 'success',
+        //           title: 'Auto-Bid Set',
+        //           text: `Your auto-bid has been set successfully!`,
+        //           timer: 2000,
+        //           showConfirmButton: false
+        //         });
+        //       },
+        //       error: (err) => {
+        //         console.error('Failed to place AutoBid:', err);
+        //         Swal.fire({
+        //           icon: 'error',
+        //           title: 'Auto-Bid Failed',
+        //           text: 'Failed to set auto-bid. Please try again.',
+        //           timer: 2000,
+        //           showConfirmButton: false
+        //         });
+        //       }
+        //     });
+        //   } else {
+        //     const payload = {
+        //       userId: this.userId,
+        //       auctionId: this.auctionId,
+        //       assetId: this.assetId
+        //     };
+        //     this.bidService.removeAutoBid(payload).subscribe({
+        //       next: (response) => {
+        //         console.log('AutoBid removed:', response);
+        //       },
+        //       error: (err) => {
+        //         console.error('Failed to remove AutoBid:', err);
+        //       }
+        //     });
+        //   }
+        // }

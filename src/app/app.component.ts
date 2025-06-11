@@ -66,6 +66,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     private signalR: SignalRService
   ) {
 
+     this.router.events.subscribe(event => {
+    if (event instanceof NavigationEnd) {
+      document.querySelector('.app-main')?.scrollTo(0, 0);
+    }
+    });
+
+
     this.authService.initializeAuth();
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -80,6 +87,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   sidebarExpanded = true;
   ngOnInit(): void {
     this.signalR.startConnection();
+    this.authService.initializeAuth();
     // this.authService.initializeAuth();
     this.signalR.bidUpdates$.subscribe((data) => {
       console.log('Bid update received in AppComponent:', data);

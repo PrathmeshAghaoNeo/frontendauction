@@ -1,6 +1,7 @@
 .start-page-container {
   min-height: 100vh;
   background: #fff;
+  border-radius: 12px;
   animation: fadeIn 0.8s ease-in;
   padding: 2rem;
 }

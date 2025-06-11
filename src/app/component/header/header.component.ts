@@ -10,6 +10,7 @@ import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
 import { Notification } from '../../modals/user';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-header',
@@ -37,6 +38,7 @@ export class HeaderComponent implements OnInit {
     private listService: ListService,
     public authService: AuthService,
     private router: Router,
+    private languageService: LanguageService,
     private winService: UserService,
     private signalR: SignalRService,
     private userService: UserService,
@@ -56,6 +58,7 @@ export class HeaderComponent implements OnInit {
   }
   @Output() toggleSidebar = new EventEmitter<void>();
   ngOnInit(): void {
+    this.startTypingEffect();
     const userId = this.authService.getUserIdJwt();
     if (userId) {
       this.loadNotifications(userId);
@@ -88,9 +91,47 @@ export class HeaderComponent implements OnInit {
       },
     });
   }
-  onToggleSidebar(): void {
-  this.toggleSidebar.emit();
+  startTypingEffect() {
+  const phrases = [
+    " AUCTION MANAGEMENT PLATFORM",
+    " BID SMART, WIN BIG",
+    " DISCOVER. BID. WIN.",
+    " YOUR TRUSTED AUCTION HUB"
+  ];
+
+  let currentPhraseIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  const element = document.querySelector('.typing-title') as HTMLElement;
+
+  const type = () => {
+    const currentPhrase = phrases[currentPhraseIndex];
+    const updatedText = isDeleting
+      ? currentPhrase.substring(0, charIndex--)
+      : currentPhrase.substring(0, charIndex++);
+
+    if (element) {
+      element.textContent = updatedText;
+    }
+
+    let delay = 100;
+
+    if (!isDeleting && charIndex === currentPhrase.length + 1) {
+      delay = 1200;
+      isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+      delay = 500;
+    }
+
+    setTimeout(type, delay);
+  };
+
+  type();
 }
+
 
   toCart() {
     this.router.navigate(['/bid-add-to-cart']);
@@ -189,6 +230,7 @@ export class HeaderComponent implements OnInit {
 
   switchLang(lang: string) {
     this.translate.use(lang);
+     this.languageService.setLanguage(lang);
     localStorage.setItem('lang', lang);
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     this.currentLang = lang;

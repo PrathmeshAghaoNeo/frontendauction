@@ -128,13 +128,13 @@
             
             <div class="bid-detail">
               <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
-              <span>{{ 0 }}</span>
+              <span>{{ asset.bidCount }}</span>
             </div>
             
             
             <div class="bid-detail">
               <img src="chronometer.png" class="button-image2" alt="Time Icon" />
-              <span>{{asset }}</span>
+              <span>{{getTimeRemaining(asset.auctionEndTime)}}</span>
             </div>
           </div>
         </ng-container>
