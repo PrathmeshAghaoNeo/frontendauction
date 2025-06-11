@@ -70,6 +70,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/finalCheckout',
     '/direct-sale-assets',
     '/asset-details',
+    'auction-assets',
     '/landing-page'
     
   ];
