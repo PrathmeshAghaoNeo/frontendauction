@@ -45,8 +45,9 @@ confirmPayment(payload:{sessionId: string ; userId:number}) {
     return this.http.get(`${this.baseUrl}/Orders/user/${userId}`);
   }
 
- getAuctionAssetsByCategory(categoryId: number): Observable<any> {
-  return this.http.get(`${this.baseUrl}/Assets/auctionasset?categoryId=${categoryId}`);
+ getAuctionAssetsByCategory(categoryId: number,langCode:string |null): Observable<any> {
+   const lang = langCode ?? 'en';
+  return this.http.get(`${this.baseUrl}/Assets/auctionasset?categoryId=${categoryId}&lang=${lang}`);
 }
 
 

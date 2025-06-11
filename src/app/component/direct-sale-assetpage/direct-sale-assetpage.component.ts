@@ -83,12 +83,6 @@ export class DirectSaleAssetComponent implements OnInit , AfterViewInit {
   ngOnInit(): void {
     this.userId = this.authService.getUserIdJwt();
 
-    if (!this.userId) {
-      this.showToast('User not logged in.', 'Error', 'error');
-      this.router.navigate(['/login']);
-      return;
-    }
-
     this.route.paramMap.subscribe((params: ParamMap) => {
       // Try both keys in case your route is /:id or /:assetId
       const idStr = params.get('id') ?? params.get('assetId');

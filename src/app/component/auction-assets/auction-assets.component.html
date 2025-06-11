@@ -5,7 +5,7 @@
       <div class="toolbar-left">
       <button class="back-btn" routerLink="/directbid">
         <button class="back-btn" (click)="goBack()">
-          <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+          <img src="back.png" alt="Back to Bidding" class="back-btn-image"  [class.rtl-rotate]="isRtl" />
         </button>
       </button>
     </div>

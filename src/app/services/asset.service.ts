@@ -63,9 +63,10 @@ getAssetById(assetId: number, langCode: string | null): Observable<Asset> {
     return this.http.put(`${ApiEndpoints.ASSETS}/update-asset-all`, formData);
   }
 
-  getDirectAssets(categoryId: number): Observable<DirectSaleAssetDto[]> {
+  getDirectAssets(categoryId: number,langCode:string |null): Observable<DirectSaleAssetDto[]> {
+    const lang = langCode ?? 'en'; 
     return this.http.get<DirectSaleAssetDto[]>(
-      `${ApiEndpoints.ASSETS}/directsaleasset?categoryId=${categoryId}`
+      `${ApiEndpoints.ASSETS}/directsaleasset?categoryId=${categoryId}&lang=${lang}`
     );
   }
    getAssetGallery(assetId: number): Observable<Gallery[]> {

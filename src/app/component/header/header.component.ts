@@ -23,6 +23,7 @@ export class HeaderComponent implements OnInit {
   @Input() showLandingButtons: boolean = false;
   // @Input() showDefaultButtons: boolean = true;
   @Input() showCustomButtons = false;
+  @Input() showLangButton = false;
 
   isLoggedIn = false;
   currentLang: string = 'en';
