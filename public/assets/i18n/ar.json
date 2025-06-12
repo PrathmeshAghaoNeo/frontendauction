@@ -57,5 +57,9 @@
   "TIME_LEFT": "الوقت المتبقي",
   "PRICE": "السعر",
   "NOTIFICATION": "إشعار",
-  "TOAST_SAMPLE_MESSAGE": "هذه رسالة إشعار."
+  "TOAST_SAMPLE_MESSAGE": "هذه رسالة إشعار.",
+   "WELCOME_USER": "مرحبًا، {{username}}",
+  "WHAT_DO_YOU_WANT": "ماذا تود أن تفعل اليوم؟",
+  "BROWSE_AUCTIONS": "تصفح المزادات",
+  "MY_ACCOUNT": "حسابي"
 }
