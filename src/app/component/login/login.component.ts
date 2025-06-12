@@ -10,17 +10,18 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [FormsModule, CommonModule, TranslateModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   email: string = '';
+   currentLang: string = 'en';
   code: string = '';
   step = 1;
   error = '';
@@ -33,7 +34,7 @@ export class LoginComponent implements OnInit {
 
   @ViewChildren('otpInputRef') inputs!: QueryList<ElementRef>;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router,private translate:TranslateService) { }
 
   ngOnInit(): void {
     this.auth.logout();
@@ -48,6 +49,7 @@ export class LoginComponent implements OnInit {
   sendOtp(form: NgForm): void {
     if (!form.valid) return;
 
+
     this.isLoading = true;
     this.email = this.email.trim();
 
@@ -58,7 +60,7 @@ export class LoginComponent implements OnInit {
           title: 'OTP Sent',
           text: 'OTP has been sent to your email',
           timer: 500,
-          showConfirmButton: false,
+          showConfirmButton: false
         });
 
         setTimeout(() => {
@@ -80,11 +82,14 @@ export class LoginComponent implements OnInit {
           icon: 'error',
           title: 'Failed to send OTP',
           showConfirmButton: false,
-          timer: 1500,
+          timer: 1500
         });
-      },
+      }
     });
+
+
   }
+
 
   resendOtp(): void {
     this.isResending = true;
@@ -100,7 +105,7 @@ export class LoginComponent implements OnInit {
           title: 'OTP Resent',
           text: 'A new OTP has been sent to your email',
           timer: 1500,
-          showConfirmButton: false,
+          showConfirmButton: false
         });
 
         // Clear OTP inputs and refocus
@@ -117,9 +122,9 @@ export class LoginComponent implements OnInit {
           title: 'Failed to resend OTP',
           text: 'Please try again later',
           timer: 1500,
-          showConfirmButton: false,
+          showConfirmButton: false
         });
-      },
+      }
     });
   }
   startResendCountdown(duration: number = 30): void {
@@ -140,7 +145,7 @@ export class LoginComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const value = input.value;
     const isValidInput = value.match(/[0-9a-z]/i);
-    input.value = isValidInput ? value[0] : '';
+    input.value = isValidInput ? value[0] : "";
 
     const inputsArray = this.inputs.toArray();
 
@@ -160,6 +165,7 @@ export class LoginComponent implements OnInit {
     const pastedData = event.clipboardData?.getData('text') || '';
     const pastedChars = pastedData.slice(0, 6).split('');
 
+
     const inputsArray = this.inputs.toArray();
     pastedChars.forEach((char, i) => {
       if (inputsArray[i]) {
@@ -168,6 +174,8 @@ export class LoginComponent implements OnInit {
     });
 
     this.submitOtpCode();
+
+
   }
 
   submitOtpCode(): void {
@@ -175,21 +183,24 @@ export class LoginComponent implements OnInit {
     this.inputs.forEach((inputRef) => {
       const input = inputRef.nativeElement as HTMLInputElement;
       otp += input.value;
+
     });
 
+
     this.code = otp;
+
+
   }
 
   verifyOtp(form: NgForm): void {
     if (!form.valid) return;
 
+
     this.auth.verifyOtp(this.email, this.code).subscribe({
       next: (res) => {
-        // ✅ Save role & user to AuthService
-        this.auth.setUser(res.user, res.role);
-
+         this.auth.setUser(res.user, res.role);
         const role = this.auth.getRoleJwt();
-
+        
         setTimeout(() => {
           if (role === 'Admin') {
             this.router.navigate(['/dashboard']);
@@ -203,9 +214,22 @@ export class LoginComponent implements OnInit {
           icon: 'error',
           title: 'Invalid OTP',
           showConfirmButton: false,
-          timer: 1000,
+          timer: 1000
         });
-      },
+      }
     });
   }
+  switchLang(lang: string) {
+      this.translate.use(lang);
+      localStorage.setItem('lang', lang);
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      this.currentLang = lang;
+    }
+    toggleLang() {
+      if (this.currentLang === 'en') {
+        this.switchLang('ar');
+      } else {
+        this.switchLang('en');
+      }
+    }
 }

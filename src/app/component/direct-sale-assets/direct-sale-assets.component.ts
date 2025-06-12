@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Directionality } from '@angular/cdk/bidi';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { ManageAssetService } from '../../services/asset.service';
 import { ListService } from '../../services/list.service';
@@ -13,6 +14,7 @@ import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { AuthService } from '../../services/auth.service';
+import { LanguageService } from '../../services/language.service';
 
 declare var bootstrap: any;
 
@@ -37,17 +39,20 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   userId: number | null = null;
   environment = environment;
   wishlistAssetIds: number[] = [];
-
+  langCode:string |null = 'en';
   cartAssetIds: number[] = [];
-
+  isRtl:boolean = false; 
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
     private listService: ListService,
     private router: Router,
+    private languageService:LanguageService,
     private authService: AuthService,
+    private dir: Directionality,
     private viewportScroller: ViewportScroller
-  ) {}
+  ) {
+  }
 
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
@@ -101,11 +106,15 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
 
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
-
-
+    this.languageService.lang$.subscribe(lang => {
+        this.langCode = lang;
+         this.isRtl = lang === 'ar';
+        // this.fetchCategories(); 
+      
+      console.log("string",this.langCode)   
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     if (!isNaN(categoryId)) {
-      this.assetService.getDirectAssets(categoryId).subscribe({
+      this.assetService.getDirectAssets(categoryId,this.langCode).subscribe({
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data];
@@ -120,6 +129,7 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
     } else {
       Swal.fire('Error!', 'Invalid category ID');
     }
+    });
   }
 
   loadWishlist(): void {
@@ -269,4 +279,5 @@ redirectToCart(): void {
     localStorage.removeItem('layoutType');
     window.history.back();
   }
+  
 }

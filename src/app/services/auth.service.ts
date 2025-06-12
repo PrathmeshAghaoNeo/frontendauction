@@ -63,6 +63,7 @@ export class AuthService {
         if (res?.token) {
           localStorage.setItem('token', res.token);
           this.isLoggedInSubject.next(true);
+          
         }
       })
     );

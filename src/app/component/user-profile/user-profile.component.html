@@ -14,7 +14,10 @@
         </a>
  
         <a class="list-group-item list-group-item-action" routerLink="notifications" routerLinkActive="active">
-          Notifications
+          Notifications <span *ngIf="unreadCount > 0"
+            class="badge rounded-pill bg-danger">
+            {{ unreadCount }}
+          </span>
         </a>
  
         <a class="list-group-item list-group-item-action" routerLink="settings-privacy" routerLinkActive="active">

@@ -12,6 +12,7 @@ import { AuctionService } from '../../services/auction.service';
 import { environment } from '../../constants/enviroments';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { AssetCategory } from '../../modals/assetcategories';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-edit-asset',
@@ -34,6 +35,7 @@ export class EditAssetComponent implements OnInit {
   auctionIds: number[] = [];
   selectedAuctions: Auction[] = [];
   sellers : Seller[] = [];
+  langCode: string |null = "en";
   
   imagePreviews: string[] = [];
   existingDocuments: string[] = [];
@@ -164,6 +166,7 @@ getRequestLabel(value: Number | undefined) {
     private router: Router,
     private location: Location,
     private auctionService: AuctionService,
+    private languageService:LanguageService,
     private assetCategoriesService: AssetCategoriesService,
   ) {
   }
@@ -246,7 +249,7 @@ getRequestLabel(value: Number | undefined) {
     this.isLoading = true;
     this.error = null;
 
-    this.assetService.getAssetById(assetId).subscribe({
+    this.assetService.getAssetById(assetId,this.langCode).subscribe({
       next: (response: Asset) => {
         this.asset = response;
         this.isLoading = false;
