@@ -80,9 +80,12 @@ export const MENU_CONFIG: MenuItem[] = [
     icon: 'fas fa-cog'
 
   },
-  // {
-  //   label: 'Audit Trail',
-  //   route: '/audit-trial',
-  //   permission: 'viewAuditTrail'
-  // }
+  
+  {
+    label: 'Manage Chat-Bot',
+    route: '/chatbot-admin',
+    permission: 'viewAuditTrail',
+    icon: 'fas fa-robot'
+
+  }
 ];

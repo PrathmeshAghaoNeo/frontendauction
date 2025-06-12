@@ -1,5 +1,8 @@
 .auction-asset-container{
-  height: 100vh;
+  min-height: 100vh;
+  background-color: white;
+  border-radius: 12px;
+  margin-bottom: 10px;
 }
 
 
@@ -7,6 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-radius: 12px;
   padding: 16px 30px 0; 
   background-color: white;
   /* border-bottom: 1px solid #e0e0e0; */
@@ -686,7 +690,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 12px 9px;
+  padding: 5px 9px;
   background-color: #f0eded;
   border-bottom: 2px solid transparent;
 
@@ -708,7 +712,7 @@
   color: var(--primary-dark);
   text-align: start;
   color: #9b59b6;
-  padding: 10px 0;
+  padding: 5px 0;
 }
 
 
@@ -1017,4 +1021,12 @@
 .back-btn-image {
   width: 32px;
   height: 32px;
+}
+
+.back-btn-image {
+  transition: transform 0.3s ease;
+}
+
+.rtl-rotate {
+  transform: rotate(180deg); /* flip the arrow direction */
 }

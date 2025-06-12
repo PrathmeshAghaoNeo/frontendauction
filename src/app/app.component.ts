@@ -7,6 +7,7 @@ import {
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { NgIf } from '@angular/common';
+import { Directionality } from '@angular/cdk/bidi';
 import { HeaderComponent } from './component/header/header.component';
 import { FooterComponent } from './component/footer/footer.component';
 import { SidebarComponent } from './component/sidebar/sidebar.component';
@@ -41,6 +42,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   currentRoute: string = '';
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
+  isRtl:boolean = false; 
 
   readonly customHeaderRoutes: string[] = [
     '/reguserlandingpage',
@@ -52,9 +54,27 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/direct-bid',
     '/finalCheckout',
     '/direct-sale-assets',
-    '/asset-details'
+    '/asset-details',
+    '/auction-assets',
 
     // Add more routes as needed
+  ];
+  
+  readonly LangRoute: string[] = [
+    '/reguserlandingpage',
+    '/bid-watchlist',
+    '/bid-add-to-cart',
+    '/orders',
+    '/user-profile',
+    '/bid-history',
+    '/direct-bid',
+    '/finalCheckout',
+    '/direct-sale-assets',
+    '/asset-details',
+    'auction-assets',
+    '/landing-page',
+    '/auction-assets'
+    
   ];
 
   constructor(
@@ -62,6 +82,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private signalR: SignalRService
   ) {
+
+     this.router.events.subscribe(event => {
+    if (event instanceof NavigationEnd) {
+      document.querySelector('.app-main')?.scrollTo(0, 0);
+    }
+    });
+
 
     this.authService.initializeAuth();
     this.router.events
@@ -77,6 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   sidebarExpanded = true;
   ngOnInit(): void {
     this.signalR.startConnection();
+    this.authService.initializeAuth();
     // this.authService.initializeAuth();
     this.signalR.bidUpdates$.subscribe((data) => {
       console.log('Bid update received in AppComponent:', data);
@@ -180,6 +208,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     return (
       this.isLoggedIn &&
       this.customHeaderRoutes.some((prefix) =>
+        this.currentRoute.startsWith(prefix)
+      )
+    );
+  }
+  get showCustomLangButton(): boolean {
+    return (
+      this.LangRoute.some((prefix) =>
         this.currentRoute.startsWith(prefix)
       )
     );

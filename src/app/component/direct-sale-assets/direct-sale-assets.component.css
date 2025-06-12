@@ -1,5 +1,7 @@
 .Grid-container{
   min-height: 100vh;
+  background-color: white;
+  border-radius: 12px;
 }
 
 .top-toolbar {
@@ -8,6 +10,7 @@
   align-items: center;
   padding: 16px 30px 0; 
   background-color: white;
+  border-radius: 12px;
   /* border-bottom: 1px solid #e0e0e0; */
   margin-bottom: 20px;
 }
@@ -460,4 +463,12 @@
 .back-btn-image {
   width: 32px;
   height: 32px;
+}
+
+.back-btn-image {
+  transition: transform 0.3s ease;
+}
+
+.rtl-rotate {
+  transform: rotate(180deg); /* flip the arrow direction */
 }

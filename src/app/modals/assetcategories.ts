@@ -18,4 +18,11 @@
   sortOrder: number | null;
   statusName: string | null;
   paymentMethodIds: number[];
+  translatedName: string |null;
+}
+export interface CategoryTranslation {
+  categoryId: number,
+    translatedCategoryName: string,
+    translatedSubcategory: number | null,
+    translatedDetails: string,
 }

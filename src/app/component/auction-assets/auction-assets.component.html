@@ -5,7 +5,7 @@
       <div class="toolbar-left">
       <button class="back-btn" routerLink="/directbid">
         <button class="back-btn" (click)="goBack()">
-          <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+          <img src="back.png" alt="Back to Bidding" class="back-btn-image"  [class.rtl-rotate]="isRtl" />
         </button>
       </button>
     </div>
@@ -87,13 +87,13 @@
             
             <div class="bid-detail">
               <img src="Bidauction1.png" class="button-image2" alt="Bid Icon" />
-              <span>{{ 0 }}</span>
+              <span>{{ asset.bidCount }}</span>
             </div>
             
             
             <div class="bid-detail">
               <img src="chronometer.png" class="button-image2" alt="Time Icon" />
-              <span>{{asset }}</span>
+              <span>{{getTimeRemaining(asset.auctionEndTime)}}</span>
             </div>
           </div>
         </ng-container>
