@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: flex-start;
     padding: 20px;
-    background-color: #fff;
+    background-color: --primary-color;
     min-height: calc(100vh - 120px); /* Adjust if needed for header/footer */
     box-sizing: border-box;
 }
