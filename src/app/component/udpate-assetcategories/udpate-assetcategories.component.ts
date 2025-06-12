@@ -63,7 +63,11 @@ export class UpdateAssetCategoriesComponent implements OnInit {
       buyersCommission: [null, [Validators.pattern('^[0-9]*$')]],
       registrationDeadline: [null],
       vat: [''],
-      vatPercentage: [null, [Validators.pattern('^[0-9]*$')]]
+      vatPercentage: [null, [Validators.pattern('^[0-9]*$')]],
+      languageId: [''],
+      translatedCategoryName: [''],
+      translatedSubcategory: [''],
+      translatedDetails: ['']
     });
   }
   assetBaseUrl: string = `${environment.baseurl}`;
@@ -91,8 +95,13 @@ export class UpdateAssetCategoriesComponent implements OnInit {
             vat: data.vatid,
             vatPercentage: data.vatpercentage,
             icon: data.icon,
-          });
+            languageId: data.languageId,
+            translatedCategoryName: data.translatedCategoryName,
+            translatedSubcategory: data.translatedSubcategory,
+            translatedDetails: data.translatedDetails
 
+          });
+          console.log("this is data", this.assetCategoryForm.value);
           this.previewUrls['icon'] = data.icon ?
             (data.icon.startsWith('http') ? data.icon : this.assetBaseUrl + data.icon) : null;
 
@@ -182,7 +191,7 @@ export class UpdateAssetCategoriesComponent implements OnInit {
     for (let methodId of selectedPaymentMethods) {
       formData.append('PaymentMethodIds', methodId.toString());
     }
-console.log('Selected payment methods:', selectedPaymentMethods);
+    console.log('Selected payment methods:', selectedPaymentMethods);
 
 
     safeAppend(formData, 'Vatid', formValue.vat);
@@ -194,6 +203,13 @@ console.log('Selected payment methods:', selectedPaymentMethods);
     }
     safeAppend(formData, 'Vatpercentage', formValue.vatPercentage);
     safeAppend(formData, 'StatusId', formValue.statusId);
+   if (formValue.languageId && formValue.languageId !== 0) {
+  formData.append('LanguageId', formValue.languageId.toString());
+  formData.append('TranslatedCategoryName', formValue.translatedCategoryName || '');
+  formData.append('TranslatedSubcategory', formValue.translatedSubcategory || '');
+  formData.append('TranslatedDetails', formValue.translatedDetails || '');
+}
+
 
     const iconFile = this.assetCategoryForm.get('iconFile')?.value;
     if (iconFile instanceof File) {
@@ -204,6 +220,7 @@ console.log('Selected payment methods:', selectedPaymentMethods);
     if (documentFile instanceof File) {
       formData.append('Document', documentFile);
     }
+    
 
     this.http.put(`${ApiEndpoints.ASSETCATEGORIES}/${this.assetCategoryId}`, formData).subscribe({
       next: () => {

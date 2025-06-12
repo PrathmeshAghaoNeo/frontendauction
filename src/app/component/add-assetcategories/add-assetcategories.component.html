@@ -192,7 +192,70 @@
             VAT Percentage is required and must be between 0 to 100.
           </div>
         </div>
-  
+        <!-- Language Fields -->
+         <!-- Language Selector (Always Visible) -->
+<div class="row">
+  <div class="col-md-6 mb-3">
+    <label for="languageId" class="form-label required-label">Language</label>
+    <select formControlName="languageId" id="languageId" class="form-select"
+      [ngClass]="{ 'is-invalid': assetCategoryForm.get('languageId')?.invalid && assetCategoryForm.get('languageId')?.touched }">
+      <option value="0">Select Language</option>
+      <option value="2">Arabic</option>
+      <!-- Add more language options -->
+    </select>
+    <div class="invalid-feedback" *ngIf="assetCategoryForm.get('languageId')?.invalid && assetCategoryForm.get('languageId')?.touched">
+      Language is required.
+    </div>
+  </div>
+</div>
+
+<!-- Translated Fields (Conditional) -->
+<div class="row" *ngIf="assetCategoryForm.get('languageId')?.value != 0">
+  <div class="col-md-6 mb-3">
+    <label for="translatedCategoryName" class="form-label required-label">Translated Title</label>
+    <input
+      type="text"
+      id="translatedCategoryName"
+      class="form-control"
+      formControlName="translatedCategoryName"
+      [ngClass]="{ 'is-invalid': assetCategoryForm.get('translatedCategoryName')?.invalid && assetCategoryForm.get('translatedCategoryName')?.touched }"
+    />
+    <div class="invalid-feedback" *ngIf="assetCategoryForm.get('translatedCategoryName')?.invalid && assetCategoryForm.get('translatedCategoryName')?.touched">
+      Translated title is required.
+    </div>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="translatedSubcategory" class="form-label required-label">Translated Sub Category</label>
+    <input
+      type="text"
+      id="translatedSubcategory"
+      class="form-control"
+      formControlName="translatedSubcategory"
+      [ngClass]="{ 'is-invalid': assetCategoryForm.get('translatedSubcategory')?.invalid && assetCategoryForm.get('translatedSubcategory')?.touched }"
+    />
+    <div class="invalid-feedback" *ngIf="assetCategoryForm.get('translatedSubcategory')?.invalid && assetCategoryForm.get('translatedSubcategory')?.touched">
+      Translated subcategory is required.
+    </div>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="translatedDetails" class="form-label required-label">Translated Details</label>
+    <textarea
+      id="translatedDetails"
+      class="form-control"
+      formControlName="translatedDetails"
+      rows="4"
+      [ngClass]="{ 'is-invalid': assetCategoryForm.get('translatedDetails')?.invalid && assetCategoryForm.get('translatedDetails')?.touched }"
+    ></textarea>
+    <div class="invalid-feedback" *ngIf="assetCategoryForm.get('translatedDetails')?.invalid && assetCategoryForm.get('translatedDetails')?.touched">
+      Translated details are required.
+    </div>
+  </div>
+</div>
+
+<!-- End Language Fields -->
+
       <button class="btn btn-primary w-100 mt-3" type="submit">Create Asset Category</button>
       </div>
     </form>

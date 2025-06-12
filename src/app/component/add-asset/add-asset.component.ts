@@ -90,6 +90,10 @@ export class AddAssetComponent {
     winnerId: 6,
     awardedPrice: 170000,
     salesNotes: '', // Bound to input
+    languageId: 0,
+    translatedTitle: '',
+    translatedDescription: '',
+    translatedSalesNotes: '',
     galleryFiles: [] as File[],
     documentFiles: [] as File[],
     detailsJson: [] as Array<{ attributeName: string; attributeValue: string }>,
@@ -483,6 +487,13 @@ toggleAuctionSelection(id: number) {
     formData.append('WinnerId', this.asset.winnerId.toString());
     formData.append('AwardedPrice', this.asset.awardedPrice.toString());
     formData.append('SalesNotes', this.asset.salesNotes || '');
+   if (this.asset.languageId && this.asset.languageId !== 0) {
+  formData.append('LanguageId', this.asset.languageId.toString());
+  formData.append('TranslatedTitle', this.asset.translatedTitle);
+  formData.append('TranslatedDescription', this.asset.translatedDescription);
+  formData.append('TranslatedSalesNotes', this.asset.translatedSalesNotes);
+}
+
 
     // Append detailsJson
     // this.asset.detailsJson.forEach((detail, index) => {
