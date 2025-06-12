@@ -80,3 +80,11 @@ export interface DirectSaleAssetDto {
 
 }
  
+
+
+
+export interface Seller {
+  sellerId: number;
+  userId: number | null;
+  userName: string | null;
+}

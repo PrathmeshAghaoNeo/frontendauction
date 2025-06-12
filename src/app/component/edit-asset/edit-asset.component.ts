@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
-import { AddAsset } from '../../modals/add-asset';
+import { AddAsset, Seller } from '../../modals/add-asset';
 import { Asset, AssetDocumentFormDto, AssetGalleryDto } from '../../modals/manage-asset';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
@@ -33,7 +33,7 @@ export class EditAssetComponent implements OnInit {
   longitudeError: string | null = null;
   auctionIds: number[] = [];
   selectedAuctions: Auction[] = [];
-  
+  sellers : Seller[] = [];
   
   imagePreviews: string[] = [];
   existingDocuments: string[] = [];
@@ -115,9 +115,9 @@ export class EditAssetComponent implements OnInit {
   selectedOpton: number= 0;
 
   
-  sellers = [
-  { id: 1, name: 'Vaish Patil' },
-];
+//   sellers = [
+//   { id: 1, name: 'Vaish Patil' },
+// ];
 
   statusOptions = [
     { id: 1, name: 'Draft' },
@@ -182,6 +182,7 @@ getRequestLabel(value: Number | undefined) {
 
   ngOnInit(): void {
     this.getAssetIdFromRoute();
+    this.loadSellers();
     
     console.log('Asset on page load:', this.asset);
     this.assetCategoriesService.getAll().subscribe({
@@ -192,6 +193,19 @@ getRequestLabel(value: Number | undefined) {
       console.error('Failed to load categories', err);
     }
   });
+  }
+
+
+    loadSellers(): void {
+    this.assetService.getSellers().subscribe({
+      next: (data) => {
+        this.sellers = data;
+        console.log('Sellers:', this.sellers);
+      },
+      error: (err) => {
+        console.error('Failed to fetch sellers', err);
+      },
+    });
   }
 
   private getAssetIdFromRoute(): void {
@@ -387,6 +401,11 @@ documentError : string = '';
           console.log('Asset updated successfully:', response);
           Swal.fire({
             icon: 'success',
+            toast: true,
+            position: 'top',
+            timer: 3000,
+            showConfirmButton: false,
+            timerProgressBar: true,
             title: 'Asset Updated',
             text: 'Asset updated successfully!',
           }).then(() => {
@@ -437,7 +456,7 @@ documentError : string = '';
     this.imageUploadError = '';
 
     if (file) {
-      if (file.size > 500 * 1024) {
+      if (file.size > 2 * 1024 * 1024) {
         this.imageUploadError = 'Image exceeds 500KB limit.';
         return;
       }
@@ -563,7 +582,7 @@ onImageDrop(event: DragEvent): void {
       }
       
       // Validate file size (example: 5MB limit)
-      if (file.size > 500 * 1024) {
+      if (file.size > 2 * 1024 * 1024) {
         this.imageUploadError = 'Image exceeds 500KB limit.';
         continue;
       }

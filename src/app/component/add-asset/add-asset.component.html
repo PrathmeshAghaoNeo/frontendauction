@@ -172,8 +172,9 @@
               #seller="ngModel"
               required
             >
-              <option *ngFor="let s of sellers" [value]="s.id">
-                {{ s.name }}
+              <!-- <option value="" disabled selected>Select seller</option> -->
+              <option *ngFor="let s of sellers" [value]="s.sellerId">
+                {{ s.userName }}
               </option>
             </select>
 
@@ -773,7 +774,7 @@
                 minlength="2"
                 maxlength="20"
                 #attributeNameRef="ngModel"
-                (input)="limitToTenDigits($event)"
+                (input)="limitToInputWords($event)"
               />
               <div
                 *ngIf="attributeNameRef.invalid && attributeNameRef.touched"
@@ -800,7 +801,7 @@
                 minlength="1"
                 maxlength="20"
                 #attributeValueRef="ngModel"
-                (input)="limitToTenDigits($event)"
+                (input)="limitToInputWords($event)"
               />
               <div
                 *ngIf="attributeValueRef.invalid && attributeValueRef.touched"
