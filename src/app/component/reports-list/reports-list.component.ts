@@ -55,8 +55,6 @@ export class ReportsListComponent implements OnInit {
   searchText = '';
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
-  // currentPage = 1;
-  // itemsPerPage = 10;
 
   defaultAuctions: AuctionReport[] = [];
   expiredAuctions: AuctionReport[] = [];
@@ -109,8 +107,8 @@ export class ReportsListComponent implements OnInit {
   directSalesRevenueRaw: any[] = [];
 
   reports: string[] = [
-    'Revenue Generated via Auctions – Bar chart (Duration filter)',
-    'Revenue Generated via Direct Sales – Bar chart (Duration filter)',
+    'Revenue Generated via Auctions – Bar chart',
+    'Revenue Generated via Direct Sales – Bar chart',
     'Total Auctions – Count and List',
     'Past Auctions – Count and List',
     'Current Ongoing Auctions – Count and List',
@@ -199,10 +197,10 @@ export class ReportsListComponent implements OnInit {
       this.accountStatements = [];
     }
     switch (report) {
-      case 'Revenue Generated via Auctions – Bar chart (Duration filter)':
+      case 'Revenue Generated via Auctions – Bar chart':
         this.fetchAuctionRevenue();
         break;
-      case 'Revenue Generated via Direct Sales – Bar chart (Duration filter)':
+      case 'Revenue Generated via Direct Sales – Bar chart':
         this.fetchDirectSalesRevenue();
         break;
       case 'Active Direct Sale Listings – Count and List':
@@ -254,10 +252,6 @@ export class ReportsListComponent implements OnInit {
     });
 
     // this.modalService.dismissAll();
-  }
-
-  refreshPage(): void {
-    window.location.reload();
   }
   // fetchAuctions(): void {
   //   this.reports.().subscribe({
