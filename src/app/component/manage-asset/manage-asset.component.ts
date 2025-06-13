@@ -6,19 +6,21 @@ import { Asset } from '../../modals/manage-asset';
 import { Router, RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import Swal from 'sweetalert2';
-import { environment } from "../../constants/enviroments";
+import { environment } from '../../constants/enviroments';
 
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AssetCategory } from '../../modals/assetcategories';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
 
 @Component({
   selector: 'app-manage-asset',
   standalone: true,
   imports: [FormsModule, CommonModule, RouterModule, NgxPaginationModule],
   templateUrl: './manage-asset.component.html',
-  styleUrls: ['./manage-asset.component.css']
+  styleUrls: ['./manage-asset.component.css'],
 })
 export class ManageAssetComponent implements OnInit {
   assets: Asset[] = [];
@@ -30,19 +32,30 @@ export class ManageAssetComponent implements OnInit {
   environment = environment;
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' | '' = '';
-  langCode: string |null = "en";
-
+  langCode: string | null = 'en';
+  filterCategory: number = 0;
+  filterStatus: number = 0;
+  categories: AssetCategory[] = [];
   @ViewChild('viewAssetModal') viewAssetModal!: TemplateRef<any>;
 
   constructor(
     private assetService: ManageAssetService,
     private router: Router,
     private location: Location,
-    private modalService: NgbModal 
+    private modalService: NgbModal,
+    private assetCategoriesService: AssetCategoriesService
   ) {}
 
   ngOnInit(): void {
     this.loadAssets();
+     this.assetCategoriesService.getAll().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (err) => {
+        console.error('Failed to load categories', err);
+      },
+    });
   }
 
   statusOptions = [
@@ -55,14 +68,16 @@ export class ManageAssetComponent implements OnInit {
     { id: 7, name: 'Payment' },
     { id: 8, name: 'Registration' },
     { id: 9, name: 'Transferred' },
-    { id: 10, name: 'Closed' }
+    { id: 10, name: 'Closed' },
   ];
+
+  
 
   statuses = [
     { statusId: 1, statusName: 'Pending' },
     { statusId: 2, statusName: 'Active' },
     { statusId: 3, statusName: 'Completed' },
-    { statusId: 4, statusName: 'Cancelled' }
+    { statusId: 4, statusName: 'Cancelled' },
   ];
 
   loadAssets(): void {
@@ -78,12 +93,12 @@ export class ManageAssetComponent implements OnInit {
     this.modalService.open(this.viewAssetModal, {
       centered: true,
       size: 'xl',
-      backdrop: 'static'
+      backdrop: 'static',
     });
   }
 
   viewAsset(assetId: number): void {
-    this.assetService.getAssetById(assetId,this.langCode).subscribe(
+    this.assetService.getAssetById(assetId, this.langCode).subscribe(
       (data) => {
         this.selectedAsset = data;
         console.log('Selected Asset:', this.selectedAsset);
@@ -112,14 +127,45 @@ export class ManageAssetComponent implements OnInit {
       return;
     }
 
-    this.assets = this.originalAssets.filter(asset =>
+    this.assets = this.originalAssets.filter((asset) =>
       asset.title.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
+
+  applyFilters(): void {
+    const search = this.searchText.trim().toLowerCase();
+    const category = Number(this.filterCategory);
+    const status = Number(this.filterStatus);
+    console.log(category);
+
+
+    this.assets = this.originalAssets.filter(asset => {
+      console.log("from the inside filter",category);
+      
+      console.log(asset);
+      const matchesSearch = !search || asset.title.toLowerCase().includes(search);
+      const matchesCategory = category === 0 || asset.categoryId === category;
+      console.log(matchesCategory);
+      const matchesStatus = status === 0 || asset.auctionStatusId === status;
+      return matchesSearch && matchesCategory && matchesStatus;
+    });
+  }
+
+  getStatusName(statusId: number): string {
+    return (
+      this.statuses.find((s) => s.statusId === statusId)?.statusName ||
+      'Unknown'
     );
   }
 
   sortAssets(column: string): void {
     if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? '' : 'asc';
+      this.sortDirection =
+        this.sortDirection === 'asc'
+          ? 'desc'
+          : this.sortDirection === 'desc'
+          ? ''
+          : 'asc';
     } else {
       this.sortColumn = column;
       this.sortDirection = 'asc';
@@ -149,18 +195,21 @@ export class ManageAssetComponent implements OnInit {
   }
 
   getAuctionStatus(auctionStatusId: number): string {
-    return this.statuses.find(s => s.statusId === auctionStatusId)?.statusName || 'Unknown';
+    return (
+      this.statuses.find((s) => s.statusId === auctionStatusId)?.statusName ||
+      'Unknown'
+    );
   }
 
   deleteAsset(asset: Asset): void {
     Swal.fire({
       title: `Delete "${asset.title}"?`,
-      text: "This action cannot be undone!",
+      text: 'This action cannot be undone!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
         this.assetService.deleteAsset(asset.assetId).subscribe({
@@ -171,21 +220,25 @@ export class ManageAssetComponent implements OnInit {
           error: (err) => {
             console.error('Error deleting asset', err);
             Swal.fire('Error!', 'Failed to delete asset.', 'error');
-          }
+          },
         });
       }
     });
   }
 
   exportToExcel(): void {
-    const exportData = this.assets.map(asset => ({
+    const exportData = this.assets.map((asset) => ({
       'Asset ID': asset.assetId,
-      'Title': asset.title,
-      'Category': asset.categoryName || '-',
+      Title: asset.title,
+      Category: asset.categoryName || '-',
       'Starting Price': asset.startingPrice,
-      'Status': asset.statusName || '-',
-      'Created At': asset.createdAt ? new Date(asset.createdAt).toLocaleString() : 'N/A',
-      'Updated At': asset.updatedAt ? new Date(asset.updatedAt).toLocaleString() : 'N/A',
+      Status: asset.statusName || '-',
+      'Created At': asset.createdAt
+        ? new Date(asset.createdAt).toLocaleString()
+        : 'N/A',
+      'Updated At': asset.updatedAt
+        ? new Date(asset.updatedAt).toLocaleString()
+        : 'N/A',
       'Asset Number': asset.assetNumber,
       'Winner Name': asset.winnerName || '-',
       'Awarded Price': asset.awardedPrice || '-',
@@ -193,17 +246,17 @@ export class ManageAssetComponent implements OnInit {
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     const workbook: XLSX.WorkBook = {
-      Sheets: { 'Assets': worksheet },
-      SheetNames: ['Assets']
+      Sheets: { Assets: worksheet },
+      SheetNames: ['Assets'],
     };
 
     const excelBuffer: any = XLSX.write(workbook, {
       bookType: 'xlsx',
-      type: 'array'
+      type: 'array',
     });
 
     const blob: Blob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
     });
 
     FileSaver.saveAs(blob, 'Assets.xlsx');

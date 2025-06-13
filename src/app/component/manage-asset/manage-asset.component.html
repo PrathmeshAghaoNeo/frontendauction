@@ -28,6 +28,31 @@
       (ngModelChange)="onSearchChange()"
     />
   </div>
+  <div class="col-md-3">
+    <select
+      class="form-select"
+      [(ngModel)]="filterCategory"
+      (change)="applyFilters()"
+    >
+      <option [value]="0">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat.categoryId">
+        {{ cat.categoryName }}
+      </option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select
+      class="form-select"
+      [(ngModel)]="filterStatus"
+      (change)="applyFilters()"
+    >
+      <option [value]="0">Auction Statuses</option>
+      <option *ngFor="let status of statuses" [value]="status.statusId">
+        {{ status.statusName }}
+      </option>
+    </select>
+  </div>
 </div>
 
 <!-- Assets Table -->
@@ -190,24 +215,25 @@
         <!-- <td>{{ asset.statusName }}</td> -->
 
         <td>
-            <span
-              class="asset-status"
-              [ngClass]="{
-                'status-draft': asset.statusName === 'Draft',
-                'status-published': asset.statusName === 'Published',
-                'status-auctioned': asset.statusName === 'Auctioned',
-                'status-archived': asset.statusName === 'Archived',
-                'status-pending': asset.statusName === 'Pending',
-                'status-approved': asset.statusName === 'Approved',
-                'status-payment': asset.statusName === 'Payment',
-                'status-registration': asset.statusName === 'Registration',
-                'status-transferred': asset.statusName === 'Transferred',
-                'status-closed': asset.statusName === 'Closed'
-              }"  class="badge badge-fixed-width text-dark"
-            >
-              {{ asset.statusName }}
-            </span>
-          </td>
+          <span
+            class="asset-status"
+            [ngClass]="{
+              'status-draft': asset.statusName === 'Draft',
+              'status-published': asset.statusName === 'Published',
+              'status-auctioned': asset.statusName === 'Auctioned',
+              'status-archived': asset.statusName === 'Archived',
+              'status-pending': asset.statusName === 'Pending',
+              'status-approved': asset.statusName === 'Approved',
+              'status-payment': asset.statusName === 'Payment',
+              'status-registration': asset.statusName === 'Registration',
+              'status-transferred': asset.statusName === 'Transferred',
+              'status-closed': asset.statusName === 'Closed'
+            }"
+            class="badge badge-fixed-width text-dark"
+          >
+            {{ asset.statusName }}
+          </span>
+        </td>
 
         <!-- <td>
           <span class="">
