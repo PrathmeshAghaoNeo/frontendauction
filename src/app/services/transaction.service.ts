@@ -132,9 +132,9 @@ export class TransactionService {
     );
   }
 
-  getUserTransactions(userId: number): Observable<UserTransaction[]> {
+  getUserTransactions(userId: number|null): Observable<UserTransaction[]> {
     return this.http.get<UserTransaction[]>(
-      `${this.apiUrl}/user/1/transactions`
+      `${this.apiUrl}/user/${userId}/transactions`
     );
   }
 }
