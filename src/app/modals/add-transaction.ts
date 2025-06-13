@@ -15,7 +15,7 @@ export interface Transaction {
   statusId: number;
   statusName: string;
   notes?: string;
-  documentUrls?: string[];
+  documentUrl?: string;
 }
 
   
@@ -29,7 +29,7 @@ export interface Transaction {
     transactionDateTime?: Date | string; // Optional if server sets default to current time
     statusId: number;
     notes?: string;
-    documents?: File[]; // For file uploads
+    documents?: File;  // For file uploads
   }
   
   export interface TransactionType {

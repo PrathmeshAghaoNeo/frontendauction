@@ -5,16 +5,18 @@
   }
 
   .back-btn {
-    position: absolute;
-    left: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px 10px;
-    display: flex;
-    justify-content: center;
-    color: #6a1b9a;
-  }
+  position: relative;
+  left: 0;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
+  display: inline-flex;
+  /* /* align-items: center; */
+  justify-content: flex-end; 
+  transition: all 0.2s ease;
+}
   
   
   .back-btn:hover {
@@ -44,4 +46,11 @@
   font-family: 'Poppins', 'Segoe UI', sans-serif;
   margin-top: 15px;
   text-align: center;
+}
+
+.container-transation{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 35%;
 }

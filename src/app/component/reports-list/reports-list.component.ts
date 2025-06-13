@@ -69,6 +69,7 @@ export class ReportsListComponent implements OnInit {
     'title',
     'categoryName',
     'startingPrice',
+    'statusName'
   ];
   assetsdata: Asset[] = [];
 

@@ -74,12 +74,12 @@
         </tr>
       </tbody>
     </table>
+    <pagination-controls
+      (pageChange)="reportscurrentPage = $event"
+    ></pagination-controls>
   </div>
 
   <!-- Pagination -->
-  <pagination-controls
-    (pageChange)="reportscurrentPage = $event"
-  ></pagination-controls>
 
   <!-- View Report Modal -->
   <ng-template #viewReportModal let-modal>
@@ -177,21 +177,23 @@
         <!-- Count + List -->
         <!-- TOTAL AUCTIONS -->
         <div *ngSwitchCase="'Total Auctions – Count and List'">
-          <h4 class="mb-3">
-            Total Auctions
-            <span class="badge bg-primary ms-2">{{
-              defaultAuctions.length
-            }}</span>
-          </h4>
+          <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap">
+            <h4 class="mb-3">
+              Total Auctions
+              <span class="badge bg-primary ms-2">{{
+                defaultAuctions.length
+              }}</span>
+            </h4>
 
-          <!-- Search Input -->
-          <div class="mb-3">
-            <input
-              type="text"
-              [(ngModel)]="searchText"
-              class="form-control"
-              placeholder="Search by title, type, status, or category..."
-            />
+            <!-- Search Input -->
+            <div class="mb-3">
+              <input
+                type="text"
+                [(ngModel)]="searchText"
+                class="form-control"
+                placeholder="Search by title, type, status, or category..."
+              />
+            </div>
           </div>
 
           <!-- Table -->
@@ -248,20 +250,24 @@
 
         <!-- PAST AUCTIONS -->
         <div *ngSwitchCase="'Past Auctions – Count and List'">
-          <h4 class="mb-3">
-            Expired Auctions
-            <span class="badge bg-secondary ms-2">{{
-              processedPastAuctions.length
-            }}</span>
-          </h4>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4 class="mb-3">
+              Expired Auctions
+              <span class="badge bg-secondary ms-2">{{
+                processedPastAuctions.length
+              }}</span>
+            </h4>
 
-          <div class="mb-3">
-            <input
-              type="text"
-              [(ngModel)]="searchText"
-              class="form-control"
-              placeholder="Search by title, type, status, or category..."
-            />
+            <div class="mb-3">
+              <input
+                type="text"
+                [(ngModel)]="searchText"
+                class="form-control"
+                placeholder="Search by title, type, status, or category..."
+              />
+            </div>
           </div>
 
           <div
@@ -315,20 +321,24 @@
 
         <!-- UPCOMING AUCTIONS -->
         <div *ngSwitchCase="'Upcoming Auctions – Count and List'">
-          <h4 class="mb-3">
-            Upcoming Auctions
-            <span class="badge bg-warning text-dark ms-2">{{
-              processedUpcomingAuctions.length
-            }}</span>
-          </h4>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4 class="mb-3">
+              Upcoming Auctions
+              <span class="badge bg-warning text-dark ms-2">{{
+                processedUpcomingAuctions.length
+              }}</span>
+            </h4>
 
-          <div class="mb-3">
-            <input
-              type="text"
-              [(ngModel)]="searchText"
-              class="form-control"
-              placeholder="Search by title, type, status, or category..."
-            />
+            <div class="mb-3">
+              <input
+                type="text"
+                [(ngModel)]="searchText"
+                class="form-control"
+                placeholder="Search by title, type, status, or category..."
+              />
+            </div>
           </div>
 
           <div
@@ -385,21 +395,24 @@
 
         <!-- ONGOING AUCTIONS -->
         <div *ngSwitchCase="'Current Ongoing Auctions – Count and List'">
-          called
-          <h4 class="mb-3">
-            Ongoing Auctions
-            <span class="badge bg-success ms-2">{{
-              processedCurrentAuctions.length
-            }}</span>
-          </h4>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4 class="mb-3">
+              Ongoing Auctions
+              <span class="badge bg-success ms-2">{{
+                processedCurrentAuctions.length
+              }}</span>
+            </h4>
 
-          <div class="mb-3">
-            <input
-              type="text"
-              [(ngModel)]="searchText"
-              class="form-control"
-              placeholder="Search by title, type, status, or category..."
-            />
+            <div class="mb-3">
+              <input
+                type="text"
+                [(ngModel)]="searchText"
+                class="form-control"
+                placeholder="Search by title, type, status, or category..."
+              />
+            </div>
           </div>
           <div
             class="table-responsive"
@@ -452,12 +465,26 @@
 
         <!-- Active Direct Sale Listings -->
         <div *ngSwitchCase="'Active Direct Sale Listings – Count and List'">
-          <h4>
-            Active Direct Sale Listings
-            <span class="badge bg-success ms-2">
-              {{ processedDirectSaleAssets.length }}
-            </span>
-          </h4>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4>
+              Active Direct Sale Listings
+              <span class="badge bg-success ms-2">
+                {{ processedDirectSaleAssets.length }}
+              </span>
+            </h4>
+
+            <!-- Search Input -->
+            <div class="mb-3">
+              <input
+                type="text"
+                [(ngModel)]="searchText"
+                class="form-control"
+                placeholder="Search by title, type, status, or category..."
+              />
+            </div>
+          </div>
 
           <div
             *ngIf="processedDirectSaleAssets.length > 0"
@@ -492,7 +519,7 @@
                     </span>
                   </th>
                   <th>Status</th>
-                  <th>Available for Direct Sale</th>
+                  <!-- <th>Available for Direct Sale</th> -->
                 </tr>
               </thead>
               <tbody>
@@ -513,7 +540,7 @@
                   <td>{{ asset.categoryName || "-" }}</td>
                   <td>{{ asset.startingPrice | currency }}</td>
                   <td>{{ asset.statusName || "-" }}</td>
-                  <td>{{ asset.isAvailableForDirectSale ? "Yes" : "No" }}</td>
+                  <!-- <td>{{ asset.isAvailableForDirectSale ? "Yes" : "No" }}</td> -->
                 </tr>
               </tbody>
             </table>
@@ -533,52 +560,63 @@
 
         <!-- Pending Complete Registration -->
         <div *ngSwitchCase="'Pending Complete Registration – Count and List'">
-          <h4>
-            Pending Complete Registrations
-            <span class="badge bg-success ms-2">{{
-              pendingRegistrations.length
-            }}</span>
-          </h4>
-          <ul *ngIf="pendingRegistrations.length > 0">
-            <li *ngFor="let user of pendingRegistrations">
-              {{ user.name }} – {{ user.email }}
-            </li>
-          </ul>
-          <p *ngIf="pendingRegistrations.length === 0">
-            No pending registrations.
-          </p>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4>
+              Pending Complete Registrations
+              <span class="badge bg-success ms-2">{{
+                pendingRegistrations.length
+              }}</span>
+            </h4>
+            <ul *ngIf="pendingRegistrations.length > 0">
+              <li *ngFor="let user of pendingRegistrations">
+                {{ user.name }} – {{ user.email }}
+              </li>
+            </ul>
+            <p *ngIf="pendingRegistrations.length === 0">
+              No pending registrations.
+            </p>
+          </div>
         </div>
 
         <!-- Pending Sale Approval -->
         <div *ngSwitchCase="'Pending Sale Approval – Count and List'">
-          <h4>
-            Pending Sale Approvals<span class="badge bg-success ms-2">{{
-              pendingSales.length
-            }}</span>
-          </h4>
-          <ul *ngIf="pendingSales.length > 0">
-            <li *ngFor="let sale of pendingSales">
-              {{ sale.title }} – {{ sale.statusName }}
-            </li>
-          </ul>
-          <p *ngIf="pendingSales.length === 0">No pending sale approvals.</p>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4>
+              Pending Sale Approvals<span class="badge bg-success ms-2">{{
+                pendingSales.length
+              }}</span>
+            </h4>
+            <ul *ngIf="pendingSales.length > 0">
+              <li *ngFor="let sale of pendingSales">
+                {{ sale.title }} – {{ sale.statusName }}
+              </li>
+            </ul>
+            <p *ngIf="pendingSales.length === 0">No pending sale approvals.</p>
+          </div>
         </div>
-
         <!-- Latest Deposits -->
         <div *ngSwitchCase="'Latest Deposits – Count and List'">
-          <h4>
-            Latest Deposits
-            <span class="badge bg-success ms-2">{{
-              processedLatestDeposits.length
-            }}</span>
-          </h4>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4>
+              Latest Deposits
+              <span class="badge bg-success ms-2">{{
+                processedLatestDeposits.length
+              }}</span>
+            </h4>
 
-          <input
-            type="text"
-            [(ngModel)]="searchText"
-            placeholder="Search deposits..."
-            class="form-control mb-3"
-          />
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              placeholder="Search deposits..."
+              class="form-control mb-3"
+            />
+          </div>
 
           <div
             *ngIf="processedLatestDeposits.length > 0"
@@ -646,20 +684,23 @@
 
         <!-- Refund Requests -->
         <div *ngSwitchCase="'Refund Requests – Count and List'">
-          <h4>
-            Refund Requests
-            <span class="badge bg-success ms-2">{{
-              processedRefundRequests.length
-            }}</span>
-          </h4>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4>
+              Refund Requests
+              <span class="badge bg-success ms-2">{{
+                processedRefundRequests.length
+              }}</span>
+            </h4>
 
-          <input
-            type="text"
-            [(ngModel)]="searchText"
-            placeholder="Search refund requests..."
-            class="form-control mb-3"
-          />
-
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              placeholder="Search refund requests..."
+              class="form-control mb-3"
+            />
+          </div>
           <div
             *ngIf="processedRefundRequests.length > 0"
             class="table-responsive"
@@ -726,19 +767,23 @@
 
         <!-- High Bidding Limit Customers -->
         <div *ngSwitchCase="'High Bidding Limit Customers – Count and List'">
-          <h4>
-            High Bidding Customers
-            <span class="badge bg-success ms-2">{{
-              processedHighBidders.length
-            }}</span>
-          </h4>
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h4>
+              High Bidding Customers
+              <span class="badge bg-success ms-2">{{
+                processedHighBidders.length
+              }}</span>
+            </h4>
 
-          <input
-            type="text"
-            [(ngModel)]="searchText"
-            placeholder="Search high bidders..."
-            class="form-control mb-3"
-          />
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              placeholder="Search high bidders..."
+              class="form-control mb-3"
+            />
+          </div>
 
           <div *ngIf="processedHighBidders.length > 0" class="table-responsive">
             <table class="table table-bordered table-striped">
@@ -830,17 +875,17 @@
                 {{ processedStatements.length }}
               </span>
             </h4>
+            <div class="mb-3">
+              <input
+                type="text"
+                [(ngModel)]="searchText"
+                class="form-control"
+                placeholder="Search by Transaction No, User, Type, Method, Status..."
+              />
+            </div>
           </div>
 
           <!-- Global Search -->
-          <div class="mb-3">
-            <input
-              type="text"
-              [(ngModel)]="searchText"
-              class="form-control"
-              placeholder="Search by Transaction No, User, Type, Method, Status..."
-            />
-          </div>
 
           <!-- Table -->
           <div *ngIf="processedStatements.length > 0" class="table-responsive">
@@ -900,10 +945,6 @@
                 </tr>
               </tbody>
             </table>
-
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
           </div>
 
           <p

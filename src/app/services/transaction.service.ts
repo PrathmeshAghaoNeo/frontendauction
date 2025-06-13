@@ -1,31 +1,63 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from "../constants/enviroments";
-import { TransactionType, PaymentMethod, CardType, TransactionStatus, AddTransaction, Transaction, UserTransaction } from '../modals/manage-transaction';
+import { environment } from '../constants/enviroments';
+import {
+  TransactionType,
+  PaymentMethod,
+  CardType,
+  TransactionStatus,
+  AddTransaction,
+  Transaction,
+  UserTransaction,
+} from '../modals/manage-transaction';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TransactionService {
   private apiUrl = `${environment.apiUrl}/Transactions`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  // Convert to FormData utility
-  private toFormData(transaction: AddTransaction): FormData {
+  toFormData(transaction: AddTransaction): FormData {
     const formData = new FormData();
-    Object.entries(transaction).forEach(([key, value]) => {
-      if (key === 'documents' && Array.isArray(value)) {
-        value.forEach(file => formData.append('documents', file));
-      } else if (value != null) {
-        if (key === 'transactionDateTime') {
-          formData.append(key, new Date(value).toISOString());
-        } else {
-          formData.append(key, value.toString());
-        }
-      }
-    });
+
+    formData.append('Amount', transaction.amount.toString());
+    formData.append('UserId', transaction.userId.toString());
+    formData.append(
+      'TransactionTypeId',
+      transaction.transactionTypeId.toString()
+    );
+    formData.append('PaymentMethodId', transaction.paymentMethodId.toString());
+    if (transaction.cardTypeId != null) {
+      formData.append('CardTypeId', transaction.cardTypeId.toString());
+    }
+    if (transaction.merchantTransactionId) {
+      formData.append(
+        'MerchantTransactionId',
+        transaction.merchantTransactionId
+      );
+    }
+    if (transaction.transactionDateTime) {
+      formData.append(
+        'TransactionDateTime',
+        new Date(transaction.transactionDateTime).toISOString()
+      );
+    }
+    formData.append('StatusId', transaction.statusId.toString());
+    if (transaction.notes) {
+      formData.append('Notes', transaction.notes);
+    }
+
+    if (transaction.documents) {
+      formData.append('Documents', transaction.documents); // Must match DTO
+    }
+
+    if (transaction.documentUrl) {
+      formData.append('DocumentPath', transaction.documentUrl);
+    }
+
     return formData;
   }
 
@@ -39,8 +71,12 @@ export class TransactionService {
     let httpParams = new HttpParams();
 
     if (params) {
-      Object.keys(params).forEach(key => {
-        if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+      Object.keys(params).forEach((key) => {
+        if (
+          params[key] !== null &&
+          params[key] !== undefined &&
+          params[key] !== ''
+        ) {
           httpParams = httpParams.set(key, params[key]);
         }
       });
@@ -55,21 +91,17 @@ export class TransactionService {
   }
 
   // Add a new transaction
-  addTransaction(transaction: AddTransaction): Observable<Transaction> {
-    if (transaction.documents && transaction.documents.length > 0) {
-      return this.http.post<Transaction>(this.apiUrl, this.toFormData(transaction));
-    } else {
-      return this.http.post<Transaction>(this.apiUrl, transaction);
-    }
+  addTransaction(transaction: FormData): Observable<Transaction> {
+    console.log(transaction);
+    return this.http.post<Transaction>(this.apiUrl, transaction);
   }
 
   // Update an existing transaction
-  updateTransaction(id: number, transaction: AddTransaction): Observable<Transaction> {
-    if (transaction.documents && transaction.documents.length > 0) {
-      return this.http.put<Transaction>(`${this.apiUrl}/${id}`, this.toFormData(transaction));
-    } else {
-      return this.http.put<Transaction>(`${this.apiUrl}/${id}`, transaction);
-    }
+  updateTransaction(
+    id: number,
+    transaction: AddTransaction
+  ): Observable<Transaction> {
+    return this.http.put<Transaction>(`${this.apiUrl}/${id}`, transaction);
   }
 
   // Delete a transaction
@@ -79,11 +111,15 @@ export class TransactionService {
 
   // Get reference data for dropdowns
   getTransactionTypes(): Observable<TransactionType[]> {
-    return this.http.get<TransactionType[]>(`${environment.apiUrl}/transaction-types`);
+    return this.http.get<TransactionType[]>(
+      `${environment.apiUrl}/transaction-types`
+    );
   }
 
   getPaymentMethods(): Observable<PaymentMethod[]> {
-    return this.http.get<PaymentMethod[]>(`${environment.apiUrl}/payment-methods`);
+    return this.http.get<PaymentMethod[]>(
+      `${environment.apiUrl}/payment-methods`
+    );
   }
 
   getCardTypes(): Observable<CardType[]> {
@@ -91,12 +127,14 @@ export class TransactionService {
   }
 
   getTransactionStatuses(): Observable<TransactionStatus[]> {
-    return this.http.get<TransactionStatus[]>(`${environment.apiUrl}/transaction-statuses`);
+    return this.http.get<TransactionStatus[]>(
+      `${environment.apiUrl}/transaction-statuses`
+    );
   }
 
   getUserTransactions(userId: number): Observable<UserTransaction[]> {
-    return this.http.get<UserTransaction[]>(`${this.apiUrl}/user/1/transactions`);
+    return this.http.get<UserTransaction[]>(
+      `${this.apiUrl}/user/1/transactions`
+    );
   }
- 
 }
-
