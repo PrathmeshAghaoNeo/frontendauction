@@ -184,7 +184,8 @@
   padding: 1rem 2rem;
   /* border-bottom: 2px solid #e0e0e0; */
   /* background-color: #f4f6f9; */
-  justify-content: start;
+  justify-content: space-between;
+
 }
 
 .wishlist-tabs button {
