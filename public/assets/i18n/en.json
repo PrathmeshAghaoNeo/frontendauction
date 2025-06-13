@@ -57,5 +57,9 @@
   "TIME_LEFT": "Time Left",
   "PRICE": "Price",
   "NOTIFICATION": "Notification",
-  "TOAST_SAMPLE_MESSAGE": "This is a toast message."
+  "TOAST_SAMPLE_MESSAGE": "This is a toast message.",
+   "WELCOME_USER": "Welcome, {{username}}",
+  "WHAT_DO_YOU_WANT": "What would you like to do today?",
+  "BROWSE_AUCTIONS": "Browse Auctions",
+  "MY_ACCOUNT": "My Account"
 }

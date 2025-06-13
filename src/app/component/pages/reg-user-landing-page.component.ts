@@ -5,11 +5,12 @@ import { CategoryCardComponent } from '../landing-page/category-card/category-ca
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { DirectSaleComponentLP } from '../landing-page/direct-sale/direct-sale.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reg-user-landing-page',
   standalone: true,
-  imports: [RouterModule, PromotionsComponent, DirectSaleComponentLP,CategoryCardComponent ],
+  imports: [RouterModule, PromotionsComponent, DirectSaleComponentLP,CategoryCardComponent,TranslateModule],
   templateUrl: './reg-user-landing-page.component.html',
   styleUrl: './reg-user-landing-page.component.css'
 })

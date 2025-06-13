@@ -59,8 +59,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/direct-bid',
     '/finalCheckout',
     '/direct-sale-assets',
-    '/direct-sale-assetpage',
     '/asset-details',
+    '/auction-assets',
+    '/direct-sale-assetpage',
 
     // Add more routes as needed
   ];
@@ -76,8 +77,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/finalCheckout',
     '/direct-sale-assets',
     '/asset-details',
-    '/landing-page'
-    
+    '/landing-page',
+    '/asset-details',
+    '/direct-sale-assetpage',
+    '/auction-assets',
   ];
 
   constructor(
