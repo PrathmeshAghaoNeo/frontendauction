@@ -148,3 +148,25 @@ header {
   outline: none;
   text-decoration: underline;
 }
+
+.text-container-h {
+}
+
+.brand-text {
+  color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  width: 50%;
+}
+
+.brand-title {
+  font-size: 20px; /* Smaller main title */
+  font-weight: 600;
+}
+
+.brand-subtitle {
+  font-size: 13px; /* Even smaller subtitle */
+  color: #555;
+  font-weight: 400;
+}

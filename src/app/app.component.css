@@ -21,6 +21,7 @@
 }
 .app-main{
   min-height: 100vh;
+  overflow-x: hidden;
   transition: all 0.3s ease;
 }
 /* Sidebar (basic shell) */
@@ -40,6 +41,7 @@
   margin-left: 0;
   padding: 20px;
   transition: margin-left 0.3s ease, padding 0.3s ease;
+   padding-top: 90px; 
 }
 
 /* Auth background (login, etc.) */

@@ -42,11 +42,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   currentRoute: string = '';
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
-
+  
   // isExpanded = false;
   isRtl:boolean = false; 
 
   
+  sidebarExpanded = false;
   
 
   readonly customHeaderRoutes: string[] = [
@@ -107,7 +108,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.use('en');
   }
   // @Input() showCustomButtons: boolean = false;
-  sidebarExpanded = false;
   ngOnInit(): void {
     this.signalR.startConnection();
     this.authService.initializeAuth();

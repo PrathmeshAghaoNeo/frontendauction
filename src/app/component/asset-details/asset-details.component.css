@@ -520,3 +520,6 @@
   background-color: #dc3545;
   color: #fff;
 }
+.rtl-rotate {
+  transform: rotate(180deg); /* flip the arrow direction */
+}

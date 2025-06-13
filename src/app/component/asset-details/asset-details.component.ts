@@ -35,6 +35,7 @@ pendingValue: boolean = false;
   
    autoBidToggle: boolean = false;
   setLimitAmount: number = 0;
+  isRtl: boolean= false;
   
 
     assetId: number = 110;
@@ -108,6 +109,7 @@ pendingValue: boolean = false;
     })
     this.languageService.lang$.subscribe(lang => {
     this.langCode = lang;
+    this.isRtl = lang === 'ar';
     // this.fetchCategories();
     console.log('Asset API URL:', `${ApiEndpoints.ASSETS}/${this.assetId}?Lang=${this.langCode}`);
 
