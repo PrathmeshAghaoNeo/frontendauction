@@ -61,5 +61,9 @@
    "WELCOME_USER": "Welcome, {{username}}",
   "WHAT_DO_YOU_WANT": "What would you like to do today?",
   "BROWSE_AUCTIONS": "Browse Auctions",
-  "MY_ACCOUNT": "My Account"
+  "MY_ACCOUNT": "My Account",
+  "HEADER_TITLE": "Auction Management Platform",
+  "HEADER_SUBTITLE_LINE1": "A secure, transparent platform for conducting",
+  "HEADER_SUBTITLE_LINE2": "Electronic Auctions by Government"
+
 }

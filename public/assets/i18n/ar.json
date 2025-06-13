@@ -61,5 +61,9 @@
    "WELCOME_USER": "مرحبًا، {{username}}",
   "WHAT_DO_YOU_WANT": "ماذا تود أن تفعل اليوم؟",
   "BROWSE_AUCTIONS": "تصفح المزادات",
-  "MY_ACCOUNT": "حسابي"
+  "MY_ACCOUNT": "حسابي",
+  "HEADER_TITLE": "منصة إدارة المزادات",
+  "HEADER_SUBTITLE_LINE1": "منصة آمنة وشفافة لإجراء",
+  "HEADER_SUBTITLE_LINE2": "المزادات الإلكترونية من قبل الحكومة"
+
 }
