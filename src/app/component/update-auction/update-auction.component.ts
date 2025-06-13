@@ -69,13 +69,13 @@ export class UpdateAuctionComponent implements OnInit {
   initForm() {
     this.auctionForm = this.fb.group(
       {
-        auctionNumber: ['', [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
+        auctionNumber: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^AUC\d{5}$/)]],
         title: ['', [Validators.required, Validators.maxLength(20)]],
         type: ['', Validators.required],
         startDateTime: ['', Validators.required,],
         endDateTime: ['', Validators.required],
         statusId: ['', Validators.required],
-        incrementalTime: ['', Validators.required],
+        incrementalTime: [{ value: '', disabled: true }, Validators.required],
         categoryId: ['', Validators.required]
       },
       {
