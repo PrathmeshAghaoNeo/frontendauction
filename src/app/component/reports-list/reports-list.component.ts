@@ -52,7 +52,6 @@ export class ReportsListComponent implements OnInit {
   currentPage: number = 1;
   reportscurrentPage: number = 1;
   selectedReport: string | null = null;
-
   searchText = '';
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -69,7 +68,7 @@ export class ReportsListComponent implements OnInit {
     'title',
     'categoryName',
     'startingPrice',
-    'statusName'
+    'statusName',
   ];
   assetsdata: Asset[] = [];
 
@@ -109,7 +108,7 @@ export class ReportsListComponent implements OnInit {
   auctionRevenueRaw: any[] = [];
   directSalesRevenueRaw: any[] = [];
 
-  reports = [
+  reports: string[] = [
     'Revenue Generated via Auctions – Bar chart (Duration filter)',
     'Revenue Generated via Direct Sales – Bar chart (Duration filter)',
     'Total Auctions – Count and List',
@@ -137,12 +136,11 @@ export class ReportsListComponent implements OnInit {
     this.loadAllData();
   }
 
-  get filteredReports() {
-    return this.reports.filter((report) =>
-      report.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
+  get filteredReports(): string[] {
+    const text = this.searchText?.trim().toLowerCase();
+    if (!text) return this.reports;
+    return this.reports.filter((report) => report.toLowerCase().includes(text));
   }
-
   get paginatedReports() {
     return this.getProcessedData(this.reports, ['name']); // or any searchable fields
   }

@@ -10,17 +10,17 @@
   </nav> -->
 
   <!-- Page Header -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h4 mb-0">Reports</h2>
-    <!-- <div class="input-group w-auto">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-purple">Reports</h2>
+    <div class="input-group w-auto">
       <input
         type="text"
         class="form-control form-control-sm"
         placeholder="Search reports..."
-        [(ngModel)]="searchTerm"
+        [(ngModel)]="searchText"
       />
       <span class="input-group-text"><i class="bi bi-search"></i></span>
-    </div> -->
+    </div>
   </div>
 
   <!-- Reports Table -->
@@ -29,13 +29,13 @@
       <thead class="table-light">
         <tr>
           <th scope="col">Name</th>
-          <th scope="col" class="text-center" style="width: 60px">Action</th>
+          <th scope="col" class="text-center" style="width: 100px">Action</th>
         </tr>
       </thead>
       <tbody>
         <tr
           *ngFor="
-            let report of paginatedReports
+            let report of filteredReports
               | paginate
                 : {
                     itemsPerPage: reportsPerPage,
@@ -177,7 +177,9 @@
         <!-- Count + List -->
         <!-- TOTAL AUCTIONS -->
         <div *ngSwitchCase="'Total Auctions – Count and List'">
-          <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap">
+          <div
+            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+          >
             <h4 class="mb-3">
               Total Auctions
               <span class="badge bg-primary ms-2">{{
@@ -205,11 +207,37 @@
               <thead class="table-light">
                 <tr>
                   <th>#</th>
-                  <th>Title</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Category</th>
-                  <th>End Date</th>
+                  <th (click)="sortBy('title')" class="cursor">
+                    Title
+                    <span *ngIf="sortColumn === 'title'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('type')" class="cursor">
+                    Type
+                    <span *ngIf="sortColumn === 'type'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+
+                  <th (click)="sortBy('statusName')" class="cursor">
+                    Status
+                    <span *ngIf="sortColumn === 'statusName'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('categoryName')" class="cursor">
+                    CategoryName
+                    <span *ngIf="sortColumn === 'categoryName'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('endDateTime')" class="cursor">
+                    End Date
+                    <span *ngIf="sortColumn === 'endDateTime'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -278,11 +306,37 @@
               <thead class="table-light">
                 <tr>
                   <th>#</th>
-                  <th>Title</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>categoryName</th>
-                  <th>End Date</th>
+                  <th (click)="sortBy('title')" class="cursor">
+                    Title
+                    <span *ngIf="sortColumn === 'title'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('type')" class="cursor">
+                    Type
+                    <span *ngIf="sortColumn === 'type'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+
+                  <th (click)="sortBy('statusName')" class="cursor">
+                    Status
+                    <span *ngIf="sortColumn === 'statusName'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('categoryName')" class="cursor">
+                    CategoryName
+                    <span *ngIf="sortColumn === 'categoryName'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('endDateTime')" class="cursor">
+                    End Date
+                    <span *ngIf="sortColumn === 'endDateTime'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -349,12 +403,43 @@
               <thead class="table-light">
                 <tr>
                   <th>#</th>
-                  <th>Title</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>categoryName</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
+                  <th (click)="sortBy('title')" class="cursor">
+                    Title
+                    <span *ngIf="sortColumn === 'title'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('type')" class="cursor">
+                    Type
+                    <span *ngIf="sortColumn === 'type'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+
+                  <th (click)="sortBy('statusName')" class="cursor">
+                    Status
+                    <span *ngIf="sortColumn === 'statusName'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('categoryName')" class="cursor">
+                    CategoryName
+                    <span *ngIf="sortColumn === 'categoryName'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('startDateTime')" class="cursor">
+                    Start Date
+                    <span *ngIf="sortColumn === 'startDateTime'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('endDateTime')" class="cursor">
+                    End Date
+                    <span *ngIf="sortColumn === 'endDateTime'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -422,11 +507,38 @@
               <thead class="table-light">
                 <tr>
                   <th>#</th>
-                  <th>Title</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>categoryName</th>
-                  <th>End Date</th>
+                  <!-- <th>Title</th> -->
+                  <th (click)="sortBy('title')" class="cursor">
+                    Title
+                    <span *ngIf="sortColumn === 'title'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('type')" class="cursor">
+                    Type
+                    <span *ngIf="sortColumn === 'type'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+
+                  <th (click)="sortBy('statusName')" class="cursor">
+                    Status
+                    <span *ngIf="sortColumn === 'statusName'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('categoryName')" class="cursor">
+                    CategoryName
+                    <span *ngIf="sortColumn === 'categoryName'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
+                  <th (click)="sortBy('endDateTime')" class="cursor">
+                    End Date
+                    <span *ngIf="sortColumn === 'endDateTime'">
+                      {{ sortDirection === "asc" ? "▲" : "▼" }}
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -444,8 +556,8 @@
                   <td>{{ i + 1 }}</td>
                   <td>{{ auction.title }}</td>
                   <td>{{ auction.type }}</td>
-                  <td>{{ auction.statusName }}</td>
                   <td>{{ auction.categoryName }}</td>
+                  <td>{{ auction.statusName }}</td>
                   <td>{{ auction.endDateTime | date : "short" }}</td>
                 </tr>
               </tbody>

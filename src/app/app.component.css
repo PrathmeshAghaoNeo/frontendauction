@@ -47,8 +47,8 @@
   background-color: var(--light-bg);
   padding: 0%;
 }
-
-/* .app-sidebar:hover ~ .app-content {
+/* 
+.app-sidebar:hover ~ .app-content {
   margin-left: 180px; 
 } */
 
@@ -61,7 +61,7 @@
   margin-left: 60px;
 }
 
-.app-content.sidebar-expanded {
+.app-content.sidebar-expanded{
   margin-left: 180px;
 }
 

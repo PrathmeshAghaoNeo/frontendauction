@@ -5,11 +5,11 @@
     <div class="app-body">
       <app-sidebar *ngIf="showSidebar" class="app-sidebar" (hoverChange)="sidebarExpanded = $event"></app-sidebar>
       
-      <main class="app-content " [ngClass]="{
+     <main class="app-content" 
+  [ngClass]="{
     'auth-bg': isCurrentRoute(['/login', '/']),
-    'sidebar-expanded': showSidebar && sidebarExpanded
-  }"
-  >
+    'sidebar-expanded': showSidebar && sidebarExpanded === true
+  }">
         <app-chat-bot></app-chat-bot>
         <router-outlet></router-outlet>
       </main>

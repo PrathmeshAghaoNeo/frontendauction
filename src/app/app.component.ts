@@ -107,7 +107,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.use('en');
   }
   // @Input() showCustomButtons: boolean = false;
-  sidebarExpanded = true;
+  sidebarExpanded = false;
   ngOnInit(): void {
     this.signalR.startConnection();
     this.authService.initializeAuth();
