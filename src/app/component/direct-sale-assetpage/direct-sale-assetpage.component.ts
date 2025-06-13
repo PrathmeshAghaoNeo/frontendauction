@@ -39,6 +39,7 @@ export class DirectSaleAssetComponent implements OnInit, AfterViewInit {
   langCode: string | null = 'en';
   wishlistAssetIds: number[] = [];
   cartAssetIds: number[] = [];
+  isRtl: boolean= false;
 
   // Slider and tab functionality variables
   currentSlideIndex: number = 0;
@@ -103,6 +104,7 @@ export class DirectSaleAssetComponent implements OnInit, AfterViewInit {
         this.languageService.lang$.subscribe((lang) => {
           this.langCode = lang;
           // this.fetchCategories();
+          this.isRtl = lang === 'ar';
           this.loadAssetDetails();
         });
         this.loadCartItems();
