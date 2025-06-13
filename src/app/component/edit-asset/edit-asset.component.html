@@ -119,6 +119,7 @@
               </div>
             </div>
           </div>
+
           <div class="mb-2">
             <label class="form-label required-label">Seller</label>
             <select
@@ -128,8 +129,8 @@
               #seller="ngModel"
               required
             >
-              <option *ngFor="let s of sellers" [value]="s.id">
-                {{ s.name }}
+              <option *ngFor="let s of sellers" [value]="s.sellerId">
+                {{ s.userName }}
               </option>
             </select>
 
@@ -990,8 +991,9 @@
             name="salesNotes"
             #salesNotes="ngModel"
             required
+            rows="3"
             minlength="10"
-            maxlength="50"
+            maxlength="100"
           ></textarea>
 
           <div

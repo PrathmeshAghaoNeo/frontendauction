@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Asset, Gallery } from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
-import { DirectSaleAssetDto } from '../modals/add-asset';
+import { DirectSaleAssetDto, Seller } from '../modals/add-asset';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ManageAssetService {
   constructor(private http: HttpClient) {}
-
+  
   addAssetWithGallery(formData: FormData): Observable<any> {
     return this.http.post<any>(
       `${ApiEndpoints.ASSETS}/CreateWithGallery`,
@@ -20,6 +20,9 @@ export class ManageAssetService {
   // Fetch all assets
   getAssets(): Observable<Asset[]> {
     return this.http.get<Asset[]>(`${ApiEndpoints.ASSETS}/GetAll`);
+  }
+  getSellers(): Observable<Seller[]> {
+    return this.http.get<Seller[]>(`${ApiEndpoints.ASSETS}/getSellers`);
   }
 
   // Search assets based on search text
@@ -55,9 +58,7 @@ getAssetById(assetId: number, langCode: string | null): Observable<Asset> {
     const url = `${ApiEndpoints.ASSESTDOCUMENT}/delete/${documentId}`;
     return this.http.delete<void>(url);
   }
-
-
-
+  
 
   updateAssetWithGallery(formData: FormData): Observable<any> {
     return this.http.put(`${ApiEndpoints.ASSETS}/update-asset-all`, formData);

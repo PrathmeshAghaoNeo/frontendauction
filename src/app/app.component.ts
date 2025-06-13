@@ -42,7 +42,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   currentRoute: string = '';
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
+
+  // isExpanded = false;
   isRtl:boolean = false; 
+
+  
+  
 
   readonly customHeaderRoutes: string[] = [
     '/reguserlandingpage',
@@ -56,6 +61,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/direct-sale-assets',
     '/asset-details',
     '/auction-assets',
+    '/direct-sale-assetpage',
 
     // Add more routes as needed
   ];
@@ -71,10 +77,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/finalCheckout',
     '/direct-sale-assets',
     '/asset-details',
-    'auction-assets',
     '/landing-page',
-    '/auction-assets'
-    
+    '/asset-details',
+    '/direct-sale-assetpage',
+    '/auction-assets',
   ];
 
   constructor(

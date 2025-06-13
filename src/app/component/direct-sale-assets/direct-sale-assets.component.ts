@@ -91,6 +91,19 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+   const savedLayoutType = localStorage.getItem('layoutType');
+  this.layoutType = savedLayoutType === 'row' ? 'row' : 'grid';
+
+  // const entry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+  // const isreload = entry?.type === 'reload';
+  // if(isreload){
+  //   const savedLayoutType= localStorage.getItem('layoutType');
+  //   this.layoutType =  savedLayoutType === 'row' ? 'row' : 'grid';
+  // }else{
+  //   localStorage.removeItem('layoutType');
+  //   this.layoutType = 'grid';
+  // }
+
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
     this.languageService.lang$.subscribe(lang => {
@@ -205,6 +218,7 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
 
   toggleLayout() {
     this.layoutType = this.layoutType === 'grid' ? 'row' : 'grid';
+    localStorage.setItem('layoutType', this.layoutType);
   }
 
   getFlagUrl(asset: DirectSaleAssetDto): string {
@@ -262,6 +276,7 @@ redirectToCart(): void {
   }
 
   goBack() {
+    localStorage.removeItem('layoutType');
     window.history.back();
   }
   

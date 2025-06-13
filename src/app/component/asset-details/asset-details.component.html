@@ -10,32 +10,17 @@
   </div>
 </div>
 
-<div class="container-fluid px-3 py-2" *ngIf="!isLoading">
-  <!-- Navigation -->
-  <div class="row mb-3">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <div>
-        <a
-          href="javascript:void(0)"
-          (click)="goBack()"
-          class="text-decoration-none text-dark"
-        >
-        <i class="bi bi-arrow-left"></i>
-          <span class="ms-2"
-            >auction > {{ asset?.categoryName || "Vehicles" }}</span
-          >
-        </a>
-      </div>
-      <div>
-        <button class="btn btn-link text-dark">
-          <i class="bi bi-bookmark"></i>
+<div class="row mb-3">
+  
+      <div class="header-btn">
+         <button class="back-btn" (click)="goBack()">
+          <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
         </button>
-        <!-- <button class="btn btn-link text-dark">
-          <i class="bi bi-three-dots-vertical"></i>
-        </button> -->
       </div>
-    </div>
   </div>
+
+  <div class="container-fluid px-3 py-2" *ngIf="!isLoading">
+  <!-- Navigation -->
 
   <!-- Image Gallery/Slider -->
   <div class="row mb-3">
