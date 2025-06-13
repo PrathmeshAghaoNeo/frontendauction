@@ -27,6 +27,8 @@ export class HeaderComponent implements OnInit {
 
   isLoggedIn = false;
   currentLang: string = 'en';
+
+  previousRoute = '';
   currentRoute = '';
   userId: number = 0;
   wishlistAssetIds: number[] = [];
@@ -50,12 +52,18 @@ export class HeaderComponent implements OnInit {
     });
 
     this.currentRoute = this.router.url;
+ let initialized = false;
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      this.currentRoute = (event as NavigationEnd).urlAfterRedirects;
-    });
+  this.router.events.pipe(
+    filter(event => event instanceof NavigationEnd)
+  ).subscribe((event: NavigationEnd) => {
+    if (initialized) {
+      this.previousRoute = this.currentRoute;
+    }
+    this.currentRoute = (event as NavigationEnd).urlAfterRedirects;
+    initialized = true;
+  });
+
   }
   @Output() toggleSidebar = new EventEmitter<void>();
   ngOnInit(): void {
@@ -78,7 +86,14 @@ export class HeaderComponent implements OnInit {
     return !this.showCustomButtons;
   }
   navigatetoallthebidsbythatuser() {
-    this.router.navigate(['/bid-history'])
+    if (this.currentRoute === '/bid-history') {
+      const fallback = this.homeRoute;
+      const target = this.previousRoute || fallback;
+      console.log('Navigating back to:', target);
+      this.router.navigate([target]);
+    }else{
+      this.router.navigate(['/bid-history'])
+    }
   }
   loadWishlist(): void {
     if (!this.userId) return;
@@ -134,15 +149,41 @@ export class HeaderComponent implements OnInit {
 }
 
 
-  toCart() {
+toCart() {
+
+  if (this.currentRoute === '/bid-add-to-cart') {
+    const fallback = this.homeRoute;
+    const target = this.previousRoute || fallback;
+    console.log('Navigating back to:', target);
+    this.router.navigate([target]);
+  } else {
     this.router.navigate(['/bid-add-to-cart']);
   }
-  navigateToUserProfile() {
-    this.router.navigate(['/user-profile']); // Update route as needed
+}
+
+
+navigateToUserProfile() {
+  if(this.currentRoute === '/user-profile') {
+    const fallback = this.homeRoute;
+    const target = this.previousRoute || fallback;
+    console.log('Navigating back to:', target);
+    this.router.navigate([target]);
+  }else{
+    this.router.navigate(['/user-profile']); 
   }
-  toWatchlist() {
+}
+
+
+toWatchlist() {
+  if(this.currentRoute === '/bid-watchlist') {
+    const fallback = this.homeRoute;
+    const target = this.previousRoute || fallback;
+    console.log('Navigating back to:', target);
+    this.router.navigate([target]);
+  }else{
     this.router.navigate(['/bid-watchlist']);
   }
+}
   loadCartItems(): void {
     if (!this.userId) return;
     this.listService.getCart(this.userId).subscribe({

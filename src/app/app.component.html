@@ -3,9 +3,13 @@
 
   <div class="scrollbar-custom app-main">
     <div class="app-body">
-      <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
+      <app-sidebar *ngIf="showSidebar" class="app-sidebar" (hoverChange)="sidebarExpanded = $event"></app-sidebar>
       
-      <main class="app-content " [ngClass]="{ 'auth-bg': isCurrentRoute(['/login', '/']) }">
+      <main class="app-content " [ngClass]="{
+    'auth-bg': isCurrentRoute(['/login', '/']),
+    'sidebar-expanded': showSidebar && sidebarExpanded
+  }"
+  >
         <app-chat-bot></app-chat-bot>
         <router-outlet></router-outlet>
       </main>

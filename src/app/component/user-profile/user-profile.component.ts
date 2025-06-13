@@ -49,4 +49,8 @@ export class UserProfileComponent implements OnInit {
       },
     });
   }
+
+  routerToMain() {
+  this.router.navigate(['/'])
+  }
 }

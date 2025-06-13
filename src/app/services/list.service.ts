@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 
 export interface CartRequest {
   userId: number|null;
-  assetId: number;
+  assetId: number | null;
   quantity: number;
 }
 
