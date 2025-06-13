@@ -347,6 +347,9 @@
 
 }
 
+.rtl-rotate {
+  transform: rotate(180deg); /* flip the arrow direction */
+}
 
 
 
