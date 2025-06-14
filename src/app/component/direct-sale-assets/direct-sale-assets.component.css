@@ -569,7 +569,7 @@
   margin-right: 30px;
 } */
 
-.search-input {
+/* .search-input {
   flex: 1;
   border: none;
   outline: none;
@@ -578,7 +578,7 @@
   color: #333;
   width: 100%;
   background: transparent;
-}
+} */
 
 .search-input::placeholder {
   color: #999;

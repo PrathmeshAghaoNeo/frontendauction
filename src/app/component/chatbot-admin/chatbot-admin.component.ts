@@ -1,3 +1,4 @@
+
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FaqService } from '../../services/faq.service';
 import { ChatbotAdminFaq } from '../../modals/chatbot-admin';
@@ -5,6 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
 
 @Component({
   standalone: true,
@@ -43,10 +47,12 @@ export class ChatbotAdminComponent implements OnInit {
   @Output() modalState = new EventEmitter<boolean>();
 
   categories: string[] = [];
+  newCategory: string = '';
+  categoryError: string = '';
 
-  constructor(private faqService: FaqService) {}
+  constructor(private faqService: FaqService,private router : Router) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {  
     this.loadFaqs();
     this.loadCategories();
   }
@@ -58,14 +64,28 @@ export class ChatbotAdminComponent implements OnInit {
         this.onSearch();
         this.ensureValidPage();
       },
-      error: (err) => this.error = 'Failed to load FAQs'
+      error: (err) => this.error = 'Failed to add FAQ'
     });
   }
+
+  //  loadCategories() {
+  //    this.faqService.getCategories().subscribe({
+  //      next: (data) => {
+  //        this.categories = data.map((item: any) => item.category);
+  //      },
+  //      error: (err) => {
+  //        this.categories = [];
+  //      }
+  //    });
+  //  }
 
   loadCategories() {
     this.faqService.getCategories().subscribe({
       next: (data) => {
-        this.categories = data.map((item: any) => item.category);
+        // Map to category names, filter out non-strings
+        const allCategories = data.map((item: any) => item.category).filter((cat: any) => typeof cat === 'string');
+        // Remove duplicates, keep first occurrence
+        this.categories = allCategories.filter((cat, index) => allCategories.indexOf(cat) === index);
       },
       error: (err) => {
         this.categories = [];
@@ -160,43 +180,124 @@ export class ChatbotAdminComponent implements OnInit {
     this.modalState.emit(false);
   }
 
-  // Success popup methods
+  // // Success popup methods
+  // showSuccess(message: string) {
+  //   this.successMessage = message;
+  //   this.showSuccessPopup = true;
+  //   this.isModalOpen = false;
+  //   this.showModal('successModal');
+  // }
+
+  // closeSuccessModal() {
+  //   this.showSuccessPopup = false;
+  //   this.successMessage = '';
+  //   this.isModalOpen = false;
+  //   this.hideModal('successModal');
+  // }
+
+  // saveFaq() {
+  //   if (this.isEditing && this.selectedFaq) {
+  //     this.faqService.updateFaq(this.selectedFaq.id, this.formFaq).subscribe({
+  //       next: () => { 
+  //         this.loadFaqs(); 
+  //         this.closeModal(); 
+  //         // this.router.navigate(['/chatbot-admin']);
+  //         this.showSuccess('FAQ updated successfully!');
+  //         this.error = '';
+  //       },
+  //       error: () => this.error = 'Failed to update FAQ'
+  //     });
+  //   } else {
+  //     this.faqService.addFaq(this.formFaq).subscribe({
+  //       next: () => { 
+  //         this.loadFaqs(); 
+  //         this.ensureValidPage(); 
+  //         this.closeModal(); 
+  //         this.showSuccess('FAQ added successfully!');
+  //         this.error = '';
+  //       },
+  //       error: (err) => {
+  //         if (err && err.error && typeof err.error === 'string' && err.error.toLowerCase().includes('already exists')) {
+  //           this.error = err.error;
+  //         } else {
+  //           this.error = 'Failed to add FAQ';
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
+ // Success popup methods
   showSuccess(message: string) {
     this.successMessage = message;
     this.showSuccessPopup = true;
-    this.isModalOpen = true;
     this.showModal('successModal');
   }
 
   closeSuccessModal() {
     this.showSuccessPopup = false;
     this.successMessage = '';
-    this.isModalOpen = false;
     this.hideModal('successModal');
   }
 
-  saveFaq() {
-    if (this.isEditing && this.selectedFaq) {
-      this.faqService.updateFaq(this.selectedFaq.id, this.formFaq).subscribe({
-        next: () => { 
-          this.loadFaqs(); 
-          this.closeModal(); 
-          this.showSuccess('FAQ updated successfully!');
-        },
-        error: () => this.error = 'Failed to update FAQ'
-      });
-    } else {
-      this.faqService.addFaq(this.formFaq).subscribe({
-        next: () => { 
-          this.loadFaqs(); 
-          this.ensureValidPage(); 
-          this.closeModal(); 
-          this.showSuccess('FAQ added successfully!');
-        },
-        error: () => this.error = 'Failed to add FAQ'
-      });
-    }
+  // saveFaq() {
+  //   if (this.isEditing && this.selectedFaq) {
+  //     this.faqService.updateFaq(this.selectedFaq.id, this.formFaq).subscribe({
+  //       next: () => { 
+  //         this.loadFaqs(); 
+  //         this.closeModal(); 
+  //         this.showSuccess('FAQ updated successfully!');
+  //       },
+  //       error: () => this.error = 'Failed to update FAQ'
+  //     });
+  //   } else {
+  //     this.faqService.addFaq(this.formFaq).subscribe({
+  //       next: () => { 
+  //         this.loadFaqs(); 
+  //         this.ensureValidPage(); 
+  //         this.closeModal(); 
+  //         this.showSuccess('FAQ added successfully!');
+  //       },
+  //       error: () => this.error = ' This question allready exist'
+  //     });
+  //   }
+  // }
+
+
+saveFaq() {
+  if (this.isEditing && this.selectedFaq) {
+    this.faqService.updateFaq(this.selectedFaq.id, this.formFaq).subscribe({
+      next: () => { 
+        this.loadFaqs(); 
+        this.closeModal(); 
+        this.showSuccess('FAQ updated successfully!');
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: 'Something went wrong while updating FAQ!'
+        });
+      }
+    });
+  } else {
+    this.faqService.addFaq(this.formFaq).subscribe({
+      next: () => { 
+        this.loadFaqs(); 
+        this.ensureValidPage(); 
+        this.closeModal(); 
+        this.showSuccess('FAQ added successfully!');
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Duplicate Question',
+          text: 'This question already exists. Please enter a unique question.'
+        });
+      }
+    });
   }
+}
+
 
   getAllFaq(){
     this.faqService.getFaqs().subscribe((res)=>{
@@ -206,18 +307,18 @@ export class ChatbotAdminComponent implements OnInit {
 
   }
 
-  deleteFaq(id: number) {
-    if (confirm('Are you sure you want to delete this FAQ?')) {
-      this.faqService.deleteFaq(id).subscribe({
-        next: () => { 
-          this.loadFaqs(); 
-          this.ensureValidPage(); 
-          this.showSuccess('FAQ deleted successfully!');
-        },
-        error: () => this.error = 'Failed to delete FAQ'
-      });
-    }
-  }
+  // deleteFaq(id: number) {
+  //   if (confirm('Are you sure you want to delete this FAQ?')) {
+  //     this.faqService.deleteFaq(id).subscribe({
+  //       next: () => { 
+  //         this.loadFaqs(); 
+  //         this.ensureValidPage(); 
+  //         this.showSuccess('FAQ deleted successfully!');
+  //       },
+  //       error: () => this.error = 'Failed to delete FAQ'
+  //     });
+  //   }
+  // }
 
   // Helper methods for Bootstrap modal - CORRECTED
   private showModal(id: string) {
@@ -226,7 +327,7 @@ export class ChatbotAdminComponent implements OnInit {
       // Enable default backdrop
       // @ts-ignore
       const modal = new window.bootstrap.Modal(modalEl, { 
-        backdrop: true,  // MUST be true for backdrop
+        backdrop: false,  // MUST be true for backdrop
         keyboard: true
       });
       modal.show();
@@ -249,4 +350,60 @@ export class ChatbotAdminComponent implements OnInit {
             // For demo purposes, we'll just show an alert
             window.history.back();
         }
+
+  addCategoryToDropdown() {
+    const trimmed = this.newCategory.trim();
+    if (!trimmed) {
+      this.categoryError = 'Category name cannot be empty.';
+      return;
+    }
+    if (this.categories.some(cat => cat.toLowerCase() === trimmed.toLowerCase())) {
+      this.categoryError = 'This category already exists.';
+      return;
+    }
+    this.categories.push(trimmed);
+    this.formFaq.category = trimmed; // Optionally auto-select the new category
+    this.newCategory = '';
+    this.categoryError = '';
+  }
+
+
+  allowOnlyLetters(event: KeyboardEvent): boolean {
+  const charCode = event.key.charCodeAt(0);
+  // Allow A-Z, a-z and space (char code 32)
+  if ((charCode >= 65 && charCode <= 90) || 
+      (charCode >= 97 && charCode <= 122) || 
+      charCode === 32) {
+    return true;
+  } else {
+    event.preventDefault();
+    return false;
+  }
+}
+
+deleteFaq(id: number) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel',
+    allowOutsideClick:false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.faqService.deleteFaq(id).subscribe({
+        next: () => {
+          this.loadFaqs();
+          this.ensureValidPage();
+          this.showSuccess('FAQ deleted successfully!');
+        },
+        error: () => this.error = 'Failed to delete FAQ'
+      });
+    }
+  });
+}
+
 }

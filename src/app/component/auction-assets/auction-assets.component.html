@@ -80,14 +80,14 @@
             type="text" 
             [(ngModel)]="searchQuery" 
             (input)="onSearchInput()"
-            placeholder="Search..."
+            placeholder="Search Asset..."
             class="search-input"
           >
           <button class="search-button" (click)="filterAssetsBySearch()">
             <i class="bi bi-search"></i>
           </button>
         </div>
-
+        
         <div class="toolbar-right">
           <button class="filter-btn-icon" (click)="toggleFilter()">
             <img src="filter.png" alt="Filter" class="toolbar-icon" />

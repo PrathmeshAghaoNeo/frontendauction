@@ -1,26 +1,28 @@
 <div class="app-container">
   <app-header *ngIf="showHeaderAndFooter" [showCustomButtons]="showCustomHeaderButtons" class="app-header"></app-header>
+  <div class="scrollbar-custom app-main">
 
-  <div class="app-body">
-    <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
-    
-    <main class="app-content"  [ngClass]="{ 'auth-bg': isCurrentRoute(['/login','/']) }">
-      <!-- <app-back-button *ngIf="showBackButton"></app-back-button> -->
-
-
-     <!-- <app-chat-bot></app-chat-bot> -->
-      <ng-container *ngIf="currentRoute === '/chatbot-admin'">
-        <app-chatbot-admin (modalState)="onChatbotAdminModalState($event)"></app-chatbot-admin>
-      </ng-container>
-      <ng-container *ngIf="currentRoute !== '/chatbot-admin'">
-        <router-outlet></router-outlet>
-      </ng-container>
-    </main>
-
-    
+    <div class="app-body">
+      <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
+      
+      <main class="app-content filterclass"  [ngClass]="{ 'auth-bg': isCurrentRoute(['/login','/']) }">
+        <!-- <app-back-button *ngIf="showBackButton"></app-back-button> -->
+        
+        
+        <!-- <app-chat-bot></app-chat-bot> -->
+        <ng-container *ngIf="currentRoute === '/chatbot-admin'">
+          <app-chatbot-admin (modalState)="onChatbotAdminModalState($event)"></app-chatbot-admin>
+        </ng-container>
+        <ng-container *ngIf="currentRoute !== '/chatbot-admin'">
+          <router-outlet></router-outlet>
+        </ng-container>
+      </main>
+      
+      
+    </div>
+    <!-- <app-footer *ngIf="showHeaderAndFooter" class="app-footer"></app-footer> -->
+    <app-footer *ngIf="showHeaderAndFooter && !hideFooter" class="app-footer"></app-footer>
   </div>
-  <!-- <app-footer *ngIf="showHeaderAndFooter" class="app-footer"></app-footer> -->
-  <app-footer *ngIf="showHeaderAndFooter && !hideFooter" class="app-footer"></app-footer>
    <app-chat-bot></app-chat-bot>
   
    <div class="toast-container p-3 position-fixed bottom-0 end-0" style="z-index: 9999;">

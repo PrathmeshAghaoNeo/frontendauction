@@ -10,8 +10,8 @@
 /* Header */
 .app-header {
   flex-shrink: 0;
-  position: relative;
-  z-index: 8000; /* Below filter but above content */
+  /* position: relative; */
+  /* z-index: 8000; Below filter but above content */
 }
 
 /* Body layout with sidebar + main content */
@@ -23,12 +23,14 @@
 }
 .app-main{
   min-height: 100vh;
+  overflow-x: hidden;
   transition: all 0.3s ease;
 }
 /* Sidebar (basic shell) */
 .app-sidebar {
   width: 60px;
   min-width: 60px;
+  position: relative;
   /* overflow-x: hidden; */
   background-color: white;
   z-index: 100;
@@ -36,19 +38,28 @@
 }
 
 /* Main content */
-.app-content {
+.filterclass {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
   overflow-y: auto;
-  padding: 24px;
-  padding-top: 15px;
+  padding: 20px;
+  padding-top: 5px;
   background-color: #ffffff;
   position: relative;
   z-index: 1;
+  margin-top: -80px;
 }
 
+/* Main content */
+.app-content {
+  flex: 1;
+  margin-left: px;
+  padding: 20px;
+  transition: margin-left 0.3s ease, padding 0.3s ease;
+  padding-top: 110px; 
+}
 .auth-bg {
   background-color: var(--light-bg);
   padding: 0%;
@@ -87,8 +98,32 @@ app-chat-bot {
   bottom: 20px !important;
 }
 
+/* 200 - 60 */
+/* .sidebar-collapsed .app-sidebar {
+  width: 60px;
+}
+
+.sidebar-collapsed .app-content {
+  margin-left: 60px;
+}
+
+.app-content.sidebar-expanded{
+  margin-left: 180px;
+}
+
+
+
+.back-btn-image {
+  transition: transform 0.3s ease;
+}
+
+.rtl-rotate {
+  transform: rotate(180deg); 
+} */
+
+
 /* Responsive adjustments */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .app-sidebar {
     width: 200px;
   }
@@ -96,9 +131,9 @@ app-chat-bot {
   .app-content {
     margin-left: 0;
     width: 100%;
-  }
+  } */
 .app-sidebar:hover ~ .app-content {
-  margin-left: 180px; /* 200 - 60 */
+  margin-left: 180px; 
 }
 .sidebar-collapsed .app-sidebar {
   width: 60px;
@@ -109,5 +144,4 @@ app-chat-bot {
 }
 
 
-}
 
