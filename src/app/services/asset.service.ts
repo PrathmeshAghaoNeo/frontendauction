@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-import { Asset, Gallery } from '../modals/manage-asset';
+import { Asset, AssetAllDetails, Gallery } from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { DirectSaleAssetDto, Seller } from '../modals/add-asset';
 
@@ -43,6 +43,10 @@ getAssetById(assetId: number, langCode: string | null): Observable<Asset> {
   const url = `${ApiEndpoints.ASSETS}/${assetId}?Lang=${lang}`;
   console.log(url)
   return this.http.get<Asset>(url);
+}
+getAllAssetDetails(assetId:number):Observable<AssetAllDetails> {
+  const url = `${ApiEndpoints.ASSETS}/AllDetails/${assetId}`;
+  return this.http.get<AssetAllDetails>(url);
 }
 
 

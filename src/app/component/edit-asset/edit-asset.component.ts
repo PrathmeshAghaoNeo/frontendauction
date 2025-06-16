@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
 import { AddAsset, Seller } from '../../modals/add-asset';
-import { Asset, AssetDocumentFormDto, AssetGalleryDto } from '../../modals/manage-asset';
+import { Asset, AssetAllDetails, AssetDocumentFormDto, AssetGalleryDto } from '../../modals/manage-asset';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
@@ -45,8 +45,9 @@ export class EditAssetComponent implements OnInit {
   filteredAuctions: Auction[] = [];
   
   attributeList: { attributeName: string; attributeValue: string }[] = [];
-  asset: Asset = {
+  asset: AssetAllDetails = {
     assetId: this.assetIdparam,
+    languageId: 2,
     title: '',
     categoryId: 0,
     categoryName: '',
@@ -90,6 +91,9 @@ export class EditAssetComponent implements OnInit {
     attributes: [],
     isAvailableForDirectSale:false,
     isDeleted:false,
+     titleTranslated: '',
+  descriptionTranslated:'',
+  salesNotesTranslated:''
   };
 
   isLoading: boolean = false;
@@ -249,9 +253,10 @@ getRequestLabel(value: Number | undefined) {
     this.isLoading = true;
     this.error = null;
 
-    this.assetService.getAssetById(assetId,this.langCode).subscribe({
-      next: (response: Asset) => {
+    this.assetService.getAllAssetDetails(assetId).subscribe({
+      next: (response: AssetAllDetails) => {
         this.asset = response;
+        console.log('changes',this.asset);
         this.isLoading = false;
         this.isModalOpen = true;
         this.attributeList = [...(this.asset.attributes || [])]; 
