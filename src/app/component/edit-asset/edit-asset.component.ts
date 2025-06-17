@@ -47,7 +47,7 @@ export class EditAssetComponent implements OnInit {
   attributeList: { attributeName: string; attributeValue: string }[] = [];
   asset: AssetAllDetails = {
     assetId: this.assetIdparam,
-    languageId: 2,
+    languageId: 0,
     title: '',
     categoryId: 0,
     categoryName: '',
