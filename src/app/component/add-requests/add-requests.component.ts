@@ -38,7 +38,6 @@ export class AddRequestsComponent implements OnInit {
 requestTypes: any[] = [];
 requestStatuses: { statusName: string }[] = [];
 
-  
 
   constructor(
     private requestService: RequestServices,
@@ -71,6 +70,16 @@ requestStatuses: { statusName: string }[] = [];
 //     console.error('Failed to load request types', err);
 //   }
 // });
+
+  this.requestService.getRequestStatuses().subscribe({
+    next: (data) => {
+      this.requestStatuses = data;
+      console.log('Loaded request statuses:', this.requestStatuses);
+    },
+    error: (err) => {
+      console.error('Failed to load request statuses', err);
+    }
+  });
 
         
         

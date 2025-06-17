@@ -201,10 +201,10 @@ getRequestTypes(): Observable<RequestType[]> {
     .pipe(finalize(() => this.decrementOperations()));
 }
 
+
 getRequestStatuses(): Observable<{ statusName: string }[]> {
   this.incrementOperations?.();
-  return this.http.get<{ statusName: string }[]>(
-    'https://localhost:62627/api/Request/statuses'
-  ).pipe(finalize(() => this.decrementOperations?.()));
+  return this.http.get<{ statusName: string }[]>('https://localhost:62627/api/Request/statuses')
+    .pipe(finalize(() => this.decrementOperations?.()));
 }
 }

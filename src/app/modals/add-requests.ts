@@ -15,6 +15,7 @@ export interface AddRequest {
   createdByAdmin: boolean;
   createdOn?: string;
   updatedOn?: string;
+
   // typeName: string;
 }
 
@@ -25,4 +26,9 @@ export interface EditRequest extends Partial<AddRequest> {
 export interface RequestType {
   requestTypeId: number;
 typeName: string;
+}
+
+export interface requestStatusName{
+  requestStatusId: number;
+  statusName:string;
 }

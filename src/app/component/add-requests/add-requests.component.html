@@ -161,18 +161,38 @@
 
     <div class="col-md-6">
       <label class="form-label required-label fw-bold">Status </label>
-      <select 
+      <!-- <select 
         class="form-select form-select-lg" 
         [(ngModel)]="newRequest.requestStatusId" 
         name="requestStatusId" 
         required
         [class.is-invalid]="isFieldInvalid('requestStatusId')">
         <option [ngValue]="null" disabled class="placeholder-option">Select Status</option>
-        <!-- <option [ngValue]="1">Pending</option>
+        <option [ngValue]="1">Pending</option>
         <option [ngValue]="2">Done</option>
         <option [ngValue]="3">Approved</option>
-        <option [ngValue]="4">Rejected</option> -->
-      </select>
+        <option [ngValue]="4">Rejected</option>
+      </select> -->
+      <select 
+  class="form-select form-select-lg" 
+  [(ngModel)]="newRequest.requestStatusId" 
+  name="requestStatusId" 
+  required
+  [class.is-invalid]="isFieldInvalid('requestStatusId')">
+  <option [ngValue]="null" disabled>Select Status</option>
+  <option *ngFor="let status of requestStatuses" [ngValue]="status.statusName">{{ status.statusName }}</option>
+</select>
+
+
+  <!-- [(ngModel)]="newRequest.requestStatusId" 
+  name="requestStatusId" 
+  required
+  [class.is-invalid]="isFieldInvalid('requestStatusId')">
+  <option [ngValue]="null" disabled>Select Status</option>
+  <option *ngFor="let status of requestStatuses" [ngValue]="status.statusId">{{ status.statusName }}</option>
+</select> -->
+
+
       <div *ngIf="isFieldInvalid('requestStatusId')" class="text-danger">
         Please select a status
       </div>
