@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-import { Asset, Gallery } from '../modals/manage-asset';
+import { Asset, Gallery, ReplaceAssetWinnerDto, TopBidderDto } from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { DirectSaleAssetDto, Seller } from '../modals/add-asset';
 
@@ -38,20 +38,33 @@ export class ManageAssetService {
     const deleteUrl = `${ApiEndpoints.ASSETS}/${assetId}`;
     return this.http.delete<void>(deleteUrl);
   }
-getAssetById(assetId: number, langCode: string | null): Observable<Asset> {
-  const lang = langCode ?? 'en'; 
-  const url = `${ApiEndpoints.ASSETS}/${assetId}?Lang=${lang}`;
-  console.log(url)
-  return this.http.get<Asset>(url);
-}
+  getAssetById(assetId: number, langCode: string | null): Observable<Asset> {
+    const lang = langCode ?? 'en'; 
+    const url = `${ApiEndpoints.ASSETS}/${assetId}?Lang=${lang}`;
+    console.log(url)
+    return this.http.get<Asset>(url);
+  }
 
+  getTopBidders(assetId: number, auctionId: number): Observable<TopBidderDto[]> {
+  const url = `${ApiEndpoints.ASSETS}/GetBidders?auctionId=${auctionId}&assetId=${assetId}`;
+  return this.http.get<TopBidderDto[]>(url).pipe(
+    catchError((error) => {
+      console.error('Error fetching top bidders:', error);
+      return throwError(() => error);
+    })
+  );
+  }
+
+  replaceWinner(dto: ReplaceAssetWinnerDto): Observable<{ winnerId: number }> {
+    return this.http.post<{ winnerId: number }>(`${ApiEndpoints.ASSETS}/replace-winner`, dto);
+  }
 
  
 
   deleteAssetGallery(galleryId: string): Observable<void> {
   const url = `${ApiEndpoints.ASSETGALLERY}/delete/${galleryId}`;
   return this.http.delete<void>(url);
-}
+  }
 
 
   deleteAssetDocument(documentId: string): Observable<void> {

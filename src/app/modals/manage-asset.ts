@@ -111,3 +111,23 @@ export interface DirectSaleAssetDto {
  
 }
  
+
+
+export interface TopBidderDto {
+  userId: number;
+  userName: string;
+  bidAmount: number;
+  bidTime: string;    
+  isAutoBid: boolean;
+}
+
+
+
+export interface ReplaceAssetWinnerDto {
+  assetId: number;
+  userId: number;
+  awardedPrice: number;
+  reason: string;
+  note: string;
+  approved: boolean;
+}

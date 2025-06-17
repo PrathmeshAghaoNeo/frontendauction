@@ -349,14 +349,14 @@
             <label class="form-label required-label">Awarding Method</label>
             <select
               class="form-select"
-              [(ngModel)]="asset.awardingMethod"
+              [(ngModel)]="asset.awardingId"
               name="awardingMethod"
             >
               <option
                 *ngFor="let option of winnerAwardingOptions"
-                [value]="option"
+                [value]="option.id"
               >
-                {{ option }}
+                {{ option.name }}
               </option>
             </select>
           </div>
@@ -930,41 +930,167 @@
               <span class="text-muted ms-2">Date: 2025-12-05</span>
             </div>
           </div>
-        </div> -->
+        </div> -->  
+
+        <div class="card p-3 shadow-sm mb-4 w-auto">
+          <h5>Auctions</h5>
+          <div
+            *ngFor="let auction of selectedAuctions"
+            class="mb-2 d-flex align-items-center "
+          >
+            <span class="badge bg-warning me-2">
+              {{ auction.title }} - {{ auction.auctionNumber }} ({{
+                auction.startDateTime | date : "short"
+              }})
+            </span>
+          </div>
+        </div>
 
         <div class="card p-3 shadow-sm mb-4">
-          <h5>Winner Details</h5>
-          <!-- <div class="mb-2">
-            <label class="form-label">Winner ID</label>
-            <input class="form-control" 
-              type="number" 
-              [(ngModel)]="asset.winnerId" 
-              name="winnerId"
-              #winnerId="ngModel"
-            />
-          </div> -->
-          <div class="mb-2">
-            <label class="form-label">Winner Name</label>
-            <input
-              class="form-control"
-              type="text"
-              [(ngModel)]="asset.winnerName"
-              name="winnerName"
-              #winnerName="ngModel"
-              readonly
-            />
-          </div>
-          <div class="mb-2">
-            <label class="form-label required-label">Awarded Price</label>
-            <input
-              class="form-control"
-              type="number"
-              [(ngModel)]="asset.awardedPrice"
-              name="awardedPrice"
-              #awardedPrice="ngModel"
-              readonly
-            />
-            <!-- min="0" -->
+          <div
+            class="d-flex align-items-center justify-content-between flex-wrap gap-2"
+          >
+            <!-- Winner Section -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <h5>Winner:</h5>
+              <span class="badge bg-success text-white px-3 py-1 rounded-pill"> {{ asset.winnerName }}</span>
+
+              <!-- Show only if award type is manual -->
+              <ng-container *ngIf="asset.awardingId === 2">
+                <button
+                  class="btn btn-primary btn-sm"
+                  type="button"
+                  (click)="toggleChangeWinner()"
+                >
+                  Change Winner
+                </button>
+
+                <!-- Dropdowns appear only after button click -->
+                <ng-container *ngIf="showChangeWinner">
+                  <!-- Change Winner Dropdown -->
+                  <select
+                    class="form-select form-select-sm"
+                    style="width: 160px"
+                    [(ngModel)]="asset.winnerId"
+                    name="winnerId"
+                    (change)="updateWinnerName(asset.winnerId)"
+                  >
+                    <option disabled selected>Select New Winner</option>
+                    <option
+                      *ngFor="let bidder of bidders"
+                      [value]="bidder.userId"
+                    >
+                      {{ bidder.userName }} ||
+                      {{ bidder.bidAmount | currency : "BHD" }}
+                    </option>
+                  </select>
+
+                  <!-- Reason Dropdown -->
+                  <select
+                    class="form-select form-select-sm"
+                    style="width: 120px"
+                    [(ngModel)]="selectedReason"
+                    name="reason"
+                    (change)="reasonVisible = true"
+                  >
+                    <option disabled selected>Reason</option>
+                    <option *ngFor="let reason of reasons">{{ reason }}</option>
+                  </select>
+                </ng-container>
+
+                <!-- <button
+                  class="btn btn-success btn-sm"
+                  (click)="submitWinnerChange()"
+                  [disabled]="!asset.winnerId || !selectedReason"
+                  type="button"
+                >
+                  Submit Winner
+                </button> -->
+              </ng-container>
+            </div>
+
+            <!-- Show textarea for reason -->
+            <div *ngIf="reasonVisible" class="mt-2" style="width: 100%">
+              <textarea
+                class="form-control"
+                rows="3"
+                name="reasonText"
+                placeholder="Enter reason for changing winner"
+              ></textarea>
+              <!-- [(ngModel)]="asset.winnerChangeReason" -->
+            </div>
+
+            <!-- Sale Approval Modal -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <strong>Sale:</strong>
+              <span>{{ asset.awardedPrice | currency : "BHD" }}</span>
+
+              <!-- Approve Button triggers modal -->
+              
+              <!-- Inline Note Field -->
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                placeholder="Note"
+                style="width: 120px"
+              />
+              <button
+                class="btn btn-success btn-sm"
+                type="button"
+                (click)="openSaleApprovalModal()"
+              >
+                Approve Sale
+              </button>
+              <!-- [(ngModel)]="asset.saleNote" -->
+            </div>
+
+            <!-- Confirmation Modal -->
+            <div
+              class="modal fade"
+              id="saleApprovalModal"
+              tabindex="-1"
+              aria-labelledby="saleApprovalModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="saleApprovalModalLabel">
+                      Confirm Sale
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      type="button"
+                    ></button>
+                  </div>
+
+                  <div class="modal-body">
+                    Are you sure you want to approve the sale?
+                  </div>
+
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm"
+                      data-bs-dismiss="modal"
+                    >
+                      No
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-success btn-sm"
+                      (click)="confirmApproveSale()"
+                      data-bs-dismiss="modal"
+                    >
+                      Yes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1050,20 +1176,6 @@
           <div class="mb-2"><strong>Type:</strong> Sale Approval</div>
           <div class="mb-2"><strong>Amount:</strong> 25,000 AED</div>
           <div><strong>Date:</strong> 2025-05-08</div>
-        </div>
-
-        <div class="card p-3 shadow-sm mt-4">
-          <h5>Auctions</h5>
-          <div
-            *ngFor="let auction of selectedAuctions"
-            class="mb-2 d-flex align-items-center"
-          >
-            <span class="badge bg-warning me-2">
-              {{ auction.title }} - {{ auction.auctionNumber }} ({{
-                auction.startDateTime | date : "short"
-              }})
-            </span>
-          </div>
         </div>
       </div>
     </div>

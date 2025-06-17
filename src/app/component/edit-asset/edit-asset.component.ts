@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
 import { AddAsset, Seller } from '../../modals/add-asset';
-import { Asset, AssetDocumentFormDto, AssetGalleryDto } from '../../modals/manage-asset';
+import { Asset, AssetDocumentFormDto, AssetGalleryDto, ReplaceAssetWinnerDto, TopBidderDto } from '../../modals/manage-asset';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
@@ -14,6 +14,7 @@ import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { AssetCategory } from '../../modals/assetcategories';
 import { LanguageService } from '../../services/language.service';
 
+declare var bootstrap: any; 
 @Component({
   selector: 'app-edit-asset',
   standalone: true,
@@ -41,6 +42,11 @@ export class EditAssetComponent implements OnInit {
   existingDocuments: string[] = [];
   
   auctions: Auction[] = [];
+
+  // selectedReason: string = '';
+  winnerNote: string = '';
+
+  bidders: TopBidderDto[] = [];
   
   filteredAuctions: Auction[] = [];
   
@@ -112,7 +118,7 @@ export class EditAssetComponent implements OnInit {
   // Dropdown options
   makeOfferOptions = ['Yes', 'No'];
   featuredOptions = ['Yes', 'No'];
-  winnerAwardingOptions = ['Automatic', 'Manual'];
+  // winnerAwardingOptions = ['Automatic', 'Manual'];
   deliveryRequiredOptions = ['Yes', 'No'];
   selectedOpton: number= 0;
 
@@ -141,10 +147,16 @@ export class EditAssetComponent implements OnInit {
   
  categories: AssetCategory[] = [];
 
+
+ winnerAwardingOptions = [
+  { id: 1, name: 'Automatic'},
+  { id: 2, name: 'Manual' }
+]
 requestForViewingOptions = [
   { id: 1, name: 'Yes' },
   { id: 0, name: 'No' }
 ];
+
 
 requestForInquiryOptions = [
   { id: 1, name: 'Yes' },
@@ -183,6 +195,13 @@ getRequestLabel(value: Number | undefined) {
   }
 }
 
+
+ openSaleApprovalModal() {
+    const modalElement = document.getElementById('saleApprovalModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+  }
+
   ngOnInit(): void {
     this.getAssetIdFromRoute();
     this.loadSellers();
@@ -196,20 +215,73 @@ getRequestLabel(value: Number | undefined) {
       console.error('Failed to load categories', err);
     }
   });
+  
   }
 
 
-    loadSellers(): void {
-    this.assetService.getSellers().subscribe({
-      next: (data) => {
-        this.sellers = data;
-        console.log('Sellers:', this.sellers);
-      },
-      error: (err) => {
-        console.error('Failed to fetch sellers', err);
-      },
-    });
+
+confirmApproveSale(): void {
+  if (!this.asset.winnerId || !this.selectedReason) {
+    Swal.fire('Warning', 'Winner or reason not selected.', 'warning');
+    return;
   }
+
+  const dto: ReplaceAssetWinnerDto = {
+    assetId: this.asset.assetId,
+    userId: this.asset.winnerId,
+    awardedPrice: this.asset.awardedPrice ?? 0,
+    reason: this.selectedReason,
+    note: this.winnerNote ?? '',
+    approved: true
+  };
+
+  this.assetService.replaceWinner(dto).subscribe({
+    next: (res) => {
+      console.log('Sale approved & winner saved', res);
+      this.asset.winnerId = res.winnerId;
+      this.updateWinnerName(res.winnerId);
+
+      // Close modal
+      const modalElement = document.getElementById('saleApprovalModal');
+      if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        modal?.hide();
+      }
+
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Winner Updated',
+        text: 'Sale approved successfully!',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        willClose: () => {
+          window.location.reload();
+        }
+
+      });
+      
+    },
+    error: (err) => {
+      console.error('Error approving sale:', err);
+      Swal.fire('Error', 'Failed to approve sale.', 'error');
+    }
+  });
+}
+
+
+      loadSellers(): void {
+      this.assetService.getSellers().subscribe({
+        next: (data) => {
+          this.sellers = data;
+          console.log('Sellers:', this.sellers);
+        },
+        error: (err) => {
+          console.error('Failed to fetch sellers', err);
+        },
+      });
+    }
 
   private getAssetIdFromRoute(): void {
     this.route.paramMap.subscribe({
@@ -282,6 +354,7 @@ getRequestLabel(value: Number | undefined) {
         this.asset.auctionIds.includes(auction.auctionId)
       );
       console.log('Selected auctions:', this.selectedAuctions);
+      this.loadTopBidders(this.asset.assetId, this.selectedAuctions[0].auctionId);
     
     },
     error: (err) => {
@@ -291,7 +364,54 @@ getRequestLabel(value: Number | undefined) {
   });
 }
 
-//////////////////////////////////=================================////////////////////////
+
+ loadTopBidders(assetId: number, auctionId: number): void {
+  console.log('Loading top bidders for asset:', assetId, 'and auction:', auctionId);
+  
+  this.assetService.getTopBidders(assetId , auctionId).subscribe({
+    // console.log('Loading top bidders for asset:', assetId, 'and auction:', auctionId);
+    next: (data) => {
+        this.bidders = data;
+        console.log('Top bidders loaded:', this.bidders);
+      },
+      error: (err) => {
+        console.error('Error loading top bidders:', err);
+      },
+    });
+  } 
+  
+  /////////////////////=================================////////////////////////
+
+
+  submitWinnerChange(): void {
+  if (!this.asset.winnerId || !this.selectedReason) {
+    alert('Please select a winner and reason.');
+    return;
+  }
+
+  const dto: ReplaceAssetWinnerDto = {
+    assetId: this.asset.assetId,
+    userId: this.asset.winnerId,
+    awardedPrice: this.asset.awardedPrice ?? 0,
+    reason: this.selectedReason,
+    note: this.winnerNote,
+    approved: false, // or true, depending on your flow
+  };
+
+  this.assetService.replaceWinner(dto).subscribe({
+    next: (res) => {
+      console.log('Winner updated successfully:', res);
+      this.asset.winnerId = res.winnerId;
+      this.updateWinnerName(res.winnerId); // Update UI
+      // this.isEditingWinner = false;
+    },
+    error: (err) => {
+      console.error('Error updating winner:', err);
+      alert('Failed to update winner.');
+    },
+  });
+}
+
 
 
 galleryError: string = '';
@@ -353,6 +473,8 @@ documentError : string = '';
         'winnerName',
         'categoryName',
         'auctionStatusId',
+        'isAvailableForDirectSale',
+        'isDeleted',
       ];
 
 
@@ -710,7 +832,43 @@ onDocumentFilesSelected(event: any): void {
   isImage(file: File): boolean {
   return file.type.startsWith('image/');
 }
+
+
+reasons = [
+  'Incorrect Winner',
+  'Bidder Disqualified',
+  'Manual Reassignment',
+  'Technical Error'
+];
+
+showChangeWinner = false;
+reasonSelected = false;
+selectedReason: string | null = null;
+
+reasonVisible = false;
+
+toggleChangeWinner() {
+  this.showChangeWinner = !this.showChangeWinner;
+  if (!this.showChangeWinner) {
+    this.reasonVisible = false;
+    this.selectedReason = null;
+    // this.asset.winnerId = null;
+  }
+}
   
+updateWinnerName(id: number | undefined): void {
+  console.log('Updating winner name with ID:', id);
+  const bidder = this.bidders.find(b => b.userId === id);
+  if (bidder) {
+    console.log('Selected winner:', 'with ID:', );
+    this.asset.winnerName = bidder.userName;  
+    this.asset.winnerId = bidder.userId;  
+
+    console.log('Selected winner:', this.asset.winnerName, 'with ID:', this.asset.winnerId);
+  }
+}
+
+
 }
 
 
