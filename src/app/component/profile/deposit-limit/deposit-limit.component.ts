@@ -234,8 +234,8 @@ export class DepositLimitComponent implements OnInit {
   }
 
   getProgressColor(percentage: number): string {
-    if (percentage < 50) return 'yellow';
-    else if (percentage < 80) return 'green';
+    if (percentage < 40) return 'green';
+    else if (percentage < 80) return 'Yellow';
     else return 'red';
   }
 

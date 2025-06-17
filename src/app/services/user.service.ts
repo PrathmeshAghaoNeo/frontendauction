@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Country, Role, Status, User, UserView,Notification, DepositLimits} from '../modals/user';
 import { ApiEndpoints } from '../constants/api-endpoints';
@@ -16,6 +16,9 @@ export class UserService {
     private authService: AuthService 
   ) { }
 
+
+  private notificationsSubject = new BehaviorSubject<any[]>([]);
+  notification$ = this.notificationsSubject.asObservable();
   /**
    * Get current user profile using the ID from JWT token
    */
@@ -91,6 +94,19 @@ export class UserService {
   getNotificationByUserId(userId:number): Observable<Notification[]>{
     return this.http.get<Notification[]>(`${ApiEndpoints.USER}/Notification/${userId}`);
   }
+   getNotificationCount(): number {
+    return this.notificationsSubject.getValue().filter(n => !n.isRead).length;
+  }
+  loadNotificationsForUser(userId: number): void {
+  this.getNotificationByUserId(userId).subscribe({
+    next: (notifications) => {
+      this.notificationsSubject.next(notifications);
+    },
+    error: (err) => {
+      console.error("Failed to fetch notifications:", err);
+    }
+  });
+}
   clearNotificationByUserId(userId:number): Observable<any> {
     return this.http.delete<any>(`${ApiEndpoints.USER}/delete-all-notification/${userId}`);
   }
