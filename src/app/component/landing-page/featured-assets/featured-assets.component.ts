@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 
 @Component({
   selector: 'app-featured-assets',
   standalone: true,
-  imports: [CommonModule, CarouselModule],
+  imports: [CommonModule],
   templateUrl: './featured-assets.component.html',
   styleUrls: ['./featured-assets.component.css']
 })
@@ -29,20 +28,20 @@ export class FeaturedAssetsComponent implements OnInit {
     }
   ];
 
-  customOptions: OwlOptions = {
-    loop: true,
-    margin: 20,
-    nav: true,
-    dots: true,
-    autoplay: true,
-    autoplayTimeout: 3000,
-    navText: ['‹', '›'],
-    responsive: {
-      0: { items: 1 },
-      600: { items: 2 },
-      1000: { items: 3 }
-    }
-  };
+  // customOptions: OwlOptions = {
+  //   loop: true,
+  //   margin: 20,
+  //   nav: true,
+  //   dots: true,
+  //   autoplay: true,
+  //   autoplayTimeout: 3000,
+  //   navText: ['‹', '›'],
+  //   responsive: {
+  //     0: { items: 1 },
+  //     600: { items: 2 },
+  //     1000: { items: 3 }
+  //   }
+  // };
 
   ngOnInit(): void {
     console.log("Featured assets loaded", this.featuredAssets);
