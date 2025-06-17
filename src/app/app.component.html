@@ -1,62 +1,36 @@
 <div class="app-container">
-  <app-header *ngIf="showHeaderAndFooter" [showCustomButtons]="showCustomHeaderButtons" class="app-header"></app-header>
+  <app-header *ngIf="showHeaderAndFooter" [showCustomButtons]="showCustomHeaderButtons"
+    [showLangButton]="showCustomLangButton" class="app-header"></app-header>
+
   <div class="scrollbar-custom app-main">
 
     <div class="app-body">
-      <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
-      
-      <main class="app-content filterclass"  [ngClass]="{ 'auth-bg': isCurrentRoute(['/login','/']) }">
-        <!-- <app-back-button *ngIf="showBackButton"></app-back-button> -->
-        
-        
-        <!-- <app-chat-bot></app-chat-bot> -->
-        <ng-container *ngIf="currentRoute === '/chatbot-admin'">
-          <app-chatbot-admin (modalState)="onChatbotAdminModalState($event)"></app-chatbot-admin>
-        </ng-container>
-        <ng-container *ngIf="currentRoute !== '/chatbot-admin'">
-          <router-outlet></router-outlet>
-        </ng-container>
-      </main>
-      
-      
-    </div>
-    <!-- <app-footer *ngIf="showHeaderAndFooter" class="app-footer"></app-footer> -->
-    <app-footer *ngIf="showHeaderAndFooter && !hideFooter" class="app-footer"></app-footer>
-  </div>
-   <app-chat-bot></app-chat-bot>
-  
-   <div class="toast-container p-3 position-fixed bottom-0 end-0" style="z-index: 9999;">
+      <app-sidebar *ngIf="showSidebar" class="app-sidebar" (hoverChange)="sidebarExpanded = $event"></app-sidebar>
 
-    <div
-      #liveToast
-      class="toast"
-      role="alert"
-      aria-live="assertive"
-      aria-atomic="true"
-      data-bs-delay="4000"
-    >
+      <main class="app-content" [ngClass]="{
+        'auth-bg': isCurrentRoute(['/login', '/']),
+        'sidebar-expanded': showSidebar && sidebarExpanded
+      }">
+        <app-chat-bot></app-chat-bot>
+        <div [@routeFadeAnimation]="prepareRoute(outlet)" class="route-container">
+          <router-outlet #outlet="outlet"></router-outlet>
+        </div>
+      </main>
+    </div>
+    
+    <!-- Footer moved outside the animated container -->
+    <app-footer *ngIf="showHeaderAndFooter" class="app-footer"></app-footer>
+  </div>
+
+  <div class="toast-container p-3 position-fixed bottom-0 end-0" style="z-index: 9999;">
+    <div #liveToast class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
       <div class="toast-header bg-info text-white">
         <strong class="me-auto">Notification</strong>
         <small class="text-muted">Just now</small>
-        <button
-          type="button"
-          class="btn-close btn-close-white ms-2 mb-1"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-        ></button>
-      </div>  
+        <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast"
+          aria-label="Close"></button>
+      </div>
       <div class="toast-body">This is a toast message.</div>
     </div>
   </div>
 </div>
-  <!-- <div class="scrollbar-custom app-main">
-    <div class="app-body">
-      <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
-      
-      <main class="app-content " [ngClass]="{ 'auth-bg': isCurrentRoute(['/login', '/']) }">
-        <app-chat-bot></app-chat-bot>
-        <router-outlet></router-outlet>
-      </main>
-  </div>
-  <app-footer *ngIf="showHeaderAndFooter" class="ap p-footer"></app-footer>
-</div> -->

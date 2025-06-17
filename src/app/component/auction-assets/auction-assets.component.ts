@@ -15,6 +15,7 @@ import { BidService } from '../../services/bid.service';
 import { bidStatsBulk } from '../../modals/bid-stats';
 import { AuctionService } from '../../services/auction.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 
 
@@ -98,6 +99,8 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   lastSortControl: 'dropdown' | 'slider' = 'dropdown';
   priceSortDirection: 'asc' | 'desc' = 'asc';
 
+  langCode: string | null = "en";
+  isRtl: boolean= false;
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
@@ -107,6 +110,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     private router: Router,
     private authService: AuthService,
     private bidService: BidService,
+    private languageService: LanguageService,
     private viewportScroller: ViewportScroller
   ) { }
 
@@ -140,9 +144,14 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
+    this.languageService.lang$.subscribe(lang => {
+        this.langCode = lang;
+         this.isRtl = lang === 'ar';
+        // this.fetchCategories(); 
+      
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     if (!isNaN(categoryId)) {
-      this.listService.getAuctionAssetsByCategory(categoryId).subscribe({
+      this.listService.getAuctionAssetsByCategory(categoryId,this.langCode).subscribe({
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data];
@@ -192,45 +201,11 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     } else {
       console.error('Invalid category ID');
     }
+    });
   }
 
-  updateUniqueAssetNames() {
-    this.uniqueAssetNames = Array.from(new Set(this.assets.map(asset => asset.title)));
-  }
 
-  filterAssetNames(searchText: string) {
-    if (!searchText) {
-      this.filteredAssetNames = [...this.uniqueAssetNames];
-    } else {
-      const search = searchText.toLowerCase();
-      this.filteredAssetNames = this.uniqueAssetNames.filter(name => 
-        name.toLowerCase().includes(search)
-      );
-    }
-  }
 
-  onSearchInput() {
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
-    }
-    this.searchTimeout = setTimeout(() => {
-      this.filterAssetsBySearch();
-    }, 300);
-  }
-
-  filterAssetsBySearch() {
-    if (!this.searchQuery.trim()) {
-      this.applyFilters();
-      return;
-    }
-    const searchTerm = this.searchQuery.toLowerCase().trim();
-    let filteredAssets = [...this.originalAssets];
-    filteredAssets = filteredAssets.filter(asset => 
-      (asset.title || '').toLowerCase().includes(searchTerm) ||
-      (asset.description || '').toLowerCase().includes(searchTerm)
-    );
-    this.assets = filteredAssets;
-  }
 
   getFlagUrl(asset: Asset): string {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';

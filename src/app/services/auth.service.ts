@@ -146,4 +146,19 @@ export class AuthService {
 
     this.router.navigate(['/login']);
   }
+
+  validateTokenWithBackend(): Promise<boolean> {
+  const token = localStorage.getItem('token');
+  if (!token) return Promise.resolve(false);
+
+  return this.http.get(`${ApiEndpoints.Auth}/validate`, {
+    headers: { Authorization: `Bearer ${token}` }
+  }).toPromise()
+    .then(() => true)
+    .catch(() => {
+      localStorage.removeItem('token');
+      return false;
+    });
+}
+
 }

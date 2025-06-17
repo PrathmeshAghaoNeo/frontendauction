@@ -915,4 +915,10 @@
   background-color: white;
   border-radius: var(--card-radius);
   box-shadow: 0 4px 12px rgb(201, 201, 201);
+.back-btn-image {
+  transition: transform 0.3s ease;
+}
+
+.rtl-rotate {
+  transform: rotate(180deg); /* flip the arrow direction */
 }

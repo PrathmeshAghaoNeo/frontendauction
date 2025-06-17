@@ -6,6 +6,8 @@ import { DirectSaleComponentLP } from './direct-sale/direct-sale.component';
 import { FooterComponent } from "../footer/footer.component";
 import { HeaderComponent } from "../header/header.component";
 import { ChatBotComponent } from "../chat-bot/chat-bot.component";
+import { trigger, transition, style, animate } from '@angular/animations';
+
 
 @Component({
   selector: 'app-landing-page',
@@ -13,11 +15,12 @@ import { ChatBotComponent } from "../chat-bot/chat-bot.component";
   imports: [
     PromotionsComponent,
     DirectSaleComponentLP,
-    CategoryCardComponent,
-    FooterComponent,
-    ChatBotComponent
+    CategoryCardComponent
+    // FooterComponent,
+    
+    // HeaderComponent
 ],
   templateUrl: './landing-page.component.html',
-  styleUrls: ['./landing-page.component.css']
+  styleUrls: ['./landing-page.component.css'],
 })
 export class LandingPageComponent {}

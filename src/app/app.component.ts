@@ -7,6 +7,7 @@ import {
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { NgIf } from '@angular/common';
+import { Directionality } from '@angular/cdk/bidi';
 import { HeaderComponent } from './component/header/header.component';
 import { FooterComponent } from './component/footer/footer.component';
 import { SidebarComponent } from './component/sidebar/sidebar.component';
@@ -18,6 +19,7 @@ import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ChatbotAdminComponent } from './component/chatbot-admin/chatbot-admin.component';
+import { routeFadeAnimation } from './utils/animations';
 
 declare var bootstrap: any;
 
@@ -37,6 +39,7 @@ declare var bootstrap: any;
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+   animations: [routeFadeAnimation],
 })
 export class AppComponent implements OnInit, AfterViewInit {
   private translate = inject(TranslateService);
@@ -44,8 +47,29 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
   hideFooter: boolean = false;
+  // isExpanded = false;
+
+  
+  sidebarExpanded = false;
+  
 
   readonly customHeaderRoutes: string[] = [
+    '/bid-watchlist',
+    '/bid-add-to-cart',
+    '/orders',
+    '/user-profile',
+    '/bid-history',
+    '/direct-bid',
+    '/finalCheckout',
+    '/direct-sale-assets',
+    '/asset-details',
+    '/auction-assets',
+    '/direct-sale-assetpage',
+
+    // Add more routes as needed
+  ];
+  
+  readonly LangRoute: string[] = [
     '/reguserlandingpage',
     '/bid-watchlist',
     '/bid-add-to-cart',
@@ -55,9 +79,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/direct-bid',
     '/finalCheckout',
     '/direct-sale-assets',
-    '/asset-details'
-
-    // Add more routes as needed
+    '/asset-details',
+    '/landing-page',
+    '/asset-details',
+    '/direct-sale-assetpage',
+    '/auction-assets',
   ];
 
   constructor(
@@ -84,7 +110,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.use('en');
   }
   // @Input() showCustomButtons: boolean = false;
-  sidebarExpanded = true;
   ngOnInit(): void {
     this.signalR.startConnection();
     this.authService.initializeAuth();
@@ -195,6 +220,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       )
     );
   }
+  get showCustomLangButton(): boolean {
+    return (
+      this.LangRoute.some((prefix) =>
+        this.currentRoute.startsWith(prefix)
+      )
+    );
+  }
 
   get showSidebar(): boolean {
     return !this.isStartPage && !this.needSideBar;
@@ -217,4 +249,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   onChatbotAdminModalState(isOpen: boolean) {
     this.hideFooter = isOpen;
   }
+  prepareRoute(outlet: RouterOutlet) {
+  return outlet?.activatedRouteData?.['animation'] || '';
+}
+
 }

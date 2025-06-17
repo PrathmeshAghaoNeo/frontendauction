@@ -26,6 +26,8 @@ import {
   StatementOfAccountResponse,
 } from '../../modals/reports';
 
+import { applyFilterAndSort, paginateData } from '../../utils/reports.utils';
+
 @Component({
   selector: 'app-reports-list',
   standalone: true,
@@ -46,14 +48,26 @@ export class ReportsListComponent implements OnInit {
   searchTerm: string = '';
   page = 1;
   itemsPerPage = 6;
+  reportsPerPage = 6;
   currentPage: number = 1;
+  reportscurrentPage: number = 1;
   selectedReport: string | null = null;
+  searchText = '';
+  sortColumn = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   defaultAuctions: AuctionReport[] = [];
   expiredAuctions: AuctionReport[] = [];
   upcomingAuctions: AuctionReport[] = [];
   ongoingAuctions: AuctionReport[] = [];
   activeDirectSaleAssets: Asset[] = [];
+  directSaleSearchableFields: string[] = [
+    'assetNumber',
+    'title',
+    'categoryName',
+    'startingPrice',
+    'statusName',
+  ];
   assetsdata: Asset[] = [];
 
   auctionRevenue: any[] = []; // Auction revenue for bar chart
@@ -61,17 +75,40 @@ export class ReportsListComponent implements OnInit {
   pendingRegistrations: User[] = [];
   pendingSales: Asset[] = [];
   latestDeposits: RequestTransaction[] = [];
+  latestDepositSearchableFields: string[] = [
+    'transactionNumber',
+    'userName',
+    'paymentMethodName',
+    'statusName',
+  ];
+
   refundRequests: RequestTransaction[] = [];
+  refundSearchableFields = [
+    'transactionNumber',
+    'userName',
+    'paymentMethodName',
+    'statusName',
+  ];
   highBidders: HighBiddingCustomer[] = [];
+  highBidderSearchableFields: string[] = ['userId', 'name', 'totalBidAmount'];
   supplierAuctions: User[] = [];
   accountStatements: StatementOfAccountResponse[] = [];
+  statementSearchableFields = [
+    'transactionNumber',
+    'userName',
+    'transactionTypeName',
+    'paymentMethodName',
+    'statusName',
+  ];
+
+  auctionSearchableFields = ['title', 'type', 'statusName', 'categoryName'];
 
   auctionRevenueRaw: any[] = [];
   directSalesRevenueRaw: any[] = [];
 
-  reports = [
-    'Revenue Generated via Auctions – Bar chart (Duration filter)',
-    'Revenue Generated via Direct Sales – Bar chart (Duration filter)',
+  reports: string[] = [
+    'Revenue Generated via Auctions – Bar chart',
+    'Revenue Generated via Direct Sales – Bar chart',
     'Total Auctions – Count and List',
     'Past Auctions – Count and List',
     'Current Ongoing Auctions – Count and List',
@@ -97,10 +134,46 @@ export class ReportsListComponent implements OnInit {
     this.loadAllData();
   }
 
-  get filteredReports() {
-    return this.reports.filter((report) =>
-      report.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
+  get filteredReports(): string[] {
+    const text = this.searchText?.trim().toLowerCase();
+    if (!text) return this.reports;
+    return this.reports.filter((report) => report.toLowerCase().includes(text));
+  }
+  get paginatedReports() {
+    return this.getProcessedData(this.reports, ['name']); // or any searchable fields
+  }
+
+  getProcessedData(data: any[], searchableFields: string[]) {
+    const filteredSorted = applyFilterAndSort({
+      data,
+      searchText: this.searchText,
+      searchableFields,
+      sortColumn: this.sortColumn,
+      sortDirection: this.sortDirection,
+    });
+
+    return filteredSorted;
+
+    // console.log('🟨 Filtered & Sorted Data:', filteredSorted);
+
+    // const paginated = paginateData({
+    //   data: filteredSorted,
+    //   currentPage: this.currentPage,
+    //   itemsPerPage: this.itemsPerPage,
+    // });
+
+    // console.log('🟦 Paginated Data:', paginated);
+    // return paginated;
+  }
+
+  sortBy(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.currentPage = 1; // reset to page 1 on sort
   }
 
   loadAllData(): void {
@@ -124,26 +197,51 @@ export class ReportsListComponent implements OnInit {
       this.accountStatements = [];
     }
     switch (report) {
-      case 'Revenue Generated via Auctions – Bar chart (Duration filter)':
+      case 'Revenue Generated via Auctions – Bar chart':
         this.fetchAuctionRevenue();
         break;
-      case 'Revenue Generated via Direct Sales – Bar chart (Duration filter)':
+      case 'Revenue Generated via Direct Sales – Bar chart':
         this.fetchDirectSalesRevenue();
         break;
       case 'Active Direct Sale Listings – Count and List':
+        this.currentPage = 1;
         this.fetchActiveDirectSales();
         break;
+      case 'Total Auctions – Count and List':
+        this.currentPage = 1;
+        this.loadAuctions();
+        break;
+      case 'Current Ongoing Auctions – Count and List':
+        this.currentPage = 1;
+        this.loadAuctions();
+        break;
+      case 'Upcoming Auctions – Count and List':
+        this.currentPage = 1;
+        this.loadAuctions();
+        break;
+      case 'Past Auctions – Count and List':
+        this.currentPage = 1;
+        this.loadAuctions();
+        break;
       case 'Refund Requests – Count and List':
+        this.currentPage = 1;
         this.fetchRefundRequests();
         break;
       case 'Latest Deposits – Count and List':
+        this.currentPage = 1;
         this.fetchLatestDeposits();
         break;
       case 'High Bidding Limit Customers – Count and List':
+        this.currentPage = 1;
         this.fetchHighBidders();
         break;
       case 'Statement of Account – Count and List':
+        this.currentPage = 1;
         this.fetchAccountStatements();
+        break;
+      case 'Assets – Count and List':
+        this.currentPage = 1;
+        this.fetchAssets();
         break;
     }
 
@@ -152,8 +250,9 @@ export class ReportsListComponent implements OnInit {
       size: 'xl',
       backdrop: 'static',
     });
-  }
 
+    // this.modalService.dismissAll();
+  }
   // fetchAuctions(): void {
   //   this.reports.().subscribe({
   //     next: (auctions: AuctionReport[]) => {
@@ -178,47 +277,6 @@ export class ReportsListComponent implements OnInit {
       this.fetchAuctionRevenue(this.viewByMode);
       // console.log("switched confiremd");
     }
-  }
-
-  loadAuctions(): void {
-    const reportMappings = [
-      { type: 'Total', key: 'defaultAuctions' },
-      { type: 'Past', key: 'expiredAuctions' },
-      { type: 'Upcoming', key: 'upcomingAuctions' },
-      { type: 'Current', key: 'ongoingAuctions' },
-    ];
-
-    reportMappings.forEach((mapping) => {
-      this.reportsService.getAuctionsReport(mapping.type).subscribe({
-        next: (response) => {
-          if (Array.isArray(response.auctions)) {
-            (this as any)[mapping.key] = response.auctions;
-          } else {
-            console.warn(
-              `Invalid response for ${mapping.type} auctions`,
-              response
-            );
-            (this as any)[mapping.key] = [];
-          }
-        },
-        error: (error) => {
-          console.error(`Failed to load ${mapping.type} auctions:`, error);
-          (this as any)[mapping.key] = [];
-        },
-      });
-    });
-  }
-
-  fetchAssets(): void {
-    this.assetService.getAssets().subscribe({
-      next: (data) => {
-        this.assetsdata = data;
-        this.categorizeAssets();
-      },
-      error: (err) => {
-        console.error('Failed to Load Assets from Direct Sale', err);
-      },
-    });
   }
 
   fetchAuctionRevenue(viewByMode: 'Monthly' | 'Yearly' = 'Monthly'): void {
@@ -300,6 +358,113 @@ export class ReportsListComponent implements OnInit {
     });
   }
 
+  loadAuctions(): void {
+    const reportMappings = [
+      { type: 'Total', key: 'defaultAuctions' },
+      { type: 'Past', key: 'expiredAuctions' },
+      { type: 'Upcoming', key: 'upcomingAuctions' },
+      { type: 'Current', key: 'ongoingAuctions' },
+    ];
+
+    reportMappings.forEach((mapping) => {
+      this.reportsService.getAuctionsReport(mapping.type).subscribe({
+        next: (response) => {
+          if (Array.isArray(response.auctions)) {
+            (this as any)[mapping.key] = response.auctions;
+          } else {
+            console.warn(
+              `Invalid response for ${mapping.type} auctions`,
+              response
+            );
+            (this as any)[mapping.key] = [];
+          }
+        },
+        error: (error) => {
+          console.error(`Failed to load ${mapping.type} auctions:`, error);
+          (this as any)[mapping.key] = [];
+        },
+      });
+    });
+  }
+
+  getProcessedAuctionData(
+    data: any[],
+    searchText: string,
+    currentPage: number
+  ): any[] {
+    const search = (searchText || '').toLowerCase().trim();
+
+    const filtered = search
+      ? data.filter((auction) =>
+          this.auctionSearchableFields.some((field) =>
+            (auction[field] || '').toString().toLowerCase().includes(search)
+          )
+        )
+      : data;
+
+    const start = (currentPage - 1) * this.itemsPerPage;
+    return filtered.slice(start, start + this.itemsPerPage);
+  }
+
+  getProcessedDataWithPaging(
+    data: any[],
+    searchText: string,
+    currentPage: number
+  ) {
+    const filteredSorted = applyFilterAndSort({
+      data,
+      searchText,
+      searchableFields: this.auctionSearchableFields, // Define this array in your component
+      sortColumn: this.sortColumn,
+      sortDirection: this.sortDirection,
+    });
+
+    return paginateData({
+      data: filteredSorted,
+      currentPage,
+      itemsPerPage: this.itemsPerPage,
+    });
+  }
+  get processedDefaultAuctions() {
+    return this.getProcessedData(
+      this.defaultAuctions,
+      this.auctionSearchableFields
+    );
+  }
+
+  get processedPastAuctions() {
+    return this.getProcessedData(
+      this.expiredAuctions,
+      this.auctionSearchableFields
+    );
+  }
+
+  get processedUpcomingAuctions() {
+    return this.getProcessedData(
+      this.upcomingAuctions,
+      this.auctionSearchableFields
+    );
+  }
+
+  get processedCurrentAuctions() {
+    return this.getProcessedData(
+      this.ongoingAuctions,
+      this.auctionSearchableFields
+    );
+  }
+
+  fetchAssets(): void {
+    this.assetService.getAssets().subscribe({
+      next: (data) => {
+        this.assetsdata = data;
+        this.categorizeAssets();
+      },
+      error: (err) => {
+        console.error('Failed to Load Assets from Direct Sale', err);
+      },
+    });
+  }
+
   fetchActiveDirectSales(): void {
     this.reportsService.getDirectSaleAssets().subscribe({
       next: (data) => {
@@ -309,6 +474,12 @@ export class ReportsListComponent implements OnInit {
         console.error('Failed to fetch active direct sale listings', err);
       },
     });
+  }
+  get processedDirectSaleAssets() {
+    return this.getProcessedData(
+      this.activeDirectSaleAssets,
+      this.directSaleSearchableFields
+    );
   }
 
   fetchRefundRequests(): void {
@@ -321,6 +492,12 @@ export class ReportsListComponent implements OnInit {
         console.error('Failed to fetch refund requests', err);
       },
     });
+  }
+  get processedRefundRequests(): any[] {
+    return this.getProcessedData(
+      this.refundRequests,
+      this.refundSearchableFields
+    );
   }
 
   fetchLatestDeposits(): void {
@@ -336,6 +513,12 @@ export class ReportsListComponent implements OnInit {
       },
     });
   }
+  get processedLatestDeposits() {
+    return this.getProcessedData(
+      this.latestDeposits,
+      this.latestDepositSearchableFields
+    );
+  }
 
   fetchHighBidders(): void {
     this.reportsService.getHighBiddingCustomers().subscribe({
@@ -346,6 +529,12 @@ export class ReportsListComponent implements OnInit {
         console.error('Failed to fetch high bidding customers', err);
       },
     });
+  }
+  get processedHighBidders() {
+    return this.getProcessedData(
+      this.highBidders,
+      this.highBidderSearchableFields
+    );
   }
 
   fetchAccountStatements(): void {
@@ -367,6 +556,12 @@ export class ReportsListComponent implements OnInit {
         this.accountStatements = [];
       },
     });
+  }
+  get processedStatements() {
+    return this.getProcessedData(
+      this.accountStatements,
+      this.statementSearchableFields
+    );
   }
 
   categorizeAssets(): void {

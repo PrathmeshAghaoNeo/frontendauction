@@ -35,6 +35,7 @@ pendingValue: boolean = false;
   
    autoBidToggle: boolean = false;
   setLimitAmount: number = 0;
+  isRtl: boolean= false;
   
 
     assetId: number = 110;
@@ -98,7 +99,7 @@ pendingValue: boolean = false;
     }
     console.log("xyz")
     this.signalR.bidUpdates$.subscribe(data => {
-      console.log(data);
+      console.log("TestingDta",data);
       if (data.assetId === this.assetId) {
         this.loadBid();
       }
@@ -108,19 +109,19 @@ pendingValue: boolean = false;
     })
     this.languageService.lang$.subscribe(lang => {
     this.langCode = lang;
+    this.isRtl = lang === 'ar';
     // this.fetchCategories();
     console.log('Asset API URL:', `${ApiEndpoints.ASSETS}/${this.assetId}?Lang=${this.langCode}`);
 
     this.loadAssetDetails();
-   });
-    this.loadAutoBid();
-    console.log("loadautobidData");
-    
-    console.log('showRightPanel on reload:', this.showRightPanel); 
+  });
+  
+  this.loadAutoBid();
+   console.log('showRightPanel on reload:', this.showRightPanel); 
   }
-
-
-loadAutoBid() {
+  
+  
+  loadAutoBid() {
   this.bidService.getAutoBid(this.User, this.auctionId, this.assetId).subscribe({
     next: (data) => {
       // this.AutoBid = data;
@@ -128,11 +129,11 @@ loadAutoBid() {
       console.log("autodata", data.isActive);
       console.log('AutoBid data:', this.AutoBid.isActive);
       this.setLimitAmount = this.AutoBid.maxBidAmount;
-
+      
       this.showRightPanel = data.isActive;
       
       console.log('AutoBid data:', this.AutoBid);
-
+      
       console.log('data:', data); 
       console.log('TrailshowRightPanel on load:', this.showRightPanel); 
     },
@@ -155,13 +156,15 @@ loadAutoBid() {
     this.assetService.getAssetById(this.assetId,this.langCode).subscribe({
       next: (asset) => {
         this.asset = asset;
-        this.auctionId = this.asset?.auctionIds[0];
+        this.auctionId = this.asset.auctionIds[0];
         this.placeBid.auctionId = this.asset.auctionIds[0];
-        console.log(this.asset);
+        // console.log("this is my asset details ",this.asset.auctionIds[0]);
         this.placeBid.assetId = this.asset.assetId
         this.loadAuctionDetails();
-    this.loadBid();
+        this.loadBid();
+        console.log("loadautobidData" , this.loadAutoBid());
         this.isLoading = false;
+        
       },
       error: (error) => {
         console.error('Error loading asset details:', error);
@@ -277,6 +280,9 @@ loadAutoBid() {
   
         Swal.fire({
           icon: 'success',
+          toast:true,
+          position:'top',
+          timerProgressBar: true,
           title: 'Bid Placed!',
           text: `Your bid was placed successfully!`,
           timer: 2000,
@@ -288,6 +294,9 @@ loadAutoBid() {
   
         Swal.fire({
           icon: 'error',
+          toast:true,
+          position:'top',
+          timerProgressBar: true,
           title: 'Bid Failed',
           text: error?.error?.message ||'Failed to place bid. Please try again or check your input.',
           timer: 2000,
@@ -318,6 +327,7 @@ loadAutoBid() {
         this.auction = response;
         this.startCountdownTimer();
         console.log(response)
+        this.auctionId = response.auctionId;
       },
       error: (err) => {
         console.error('Auction Details load', err);
@@ -328,6 +338,11 @@ loadAutoBid() {
   showAuctionEndedPopup() {
     Swal.fire({
       icon: 'info',
+       toast:true,
+          position:'top',
+          timer: 3000,
+          showConfirmButton: false,
+          timerProgressBar: true,
       title: 'Auction Ended',
       text: 'This auction has ended. You can no longer place bids.',
       confirmButtonText: 'OK'

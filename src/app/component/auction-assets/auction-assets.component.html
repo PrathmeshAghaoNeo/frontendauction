@@ -1,8 +1,18 @@
-<div class="Grid-container" [class.filter-open]="isFilterOpen">
+<!-- <div class="Grid-container" [class.filter-open]="isFilterOpen">
   <div *ngIf="isFilterOpen" class="filter-panel">
     <div class="filter-header">
       <h3>Filters</h3>
       <button class="close-filter" (click)="toggleFilter()">×</button>
+<div class="auction-asset-container"> -->
+
+  <div class="grid-main">
+    <div class="top-toolbar">
+      <div class="toolbar-left">
+      <button class="back-btn" routerLink="/directbid">
+        <button class="back-btn" (click)="goBack()">
+          <img src="back.png" alt="Back to Bidding" class="back-btn-image"  [class.rtl-rotate]="isRtl" />
+        </button>
+      </button>
     </div>
     <div class="filter-content">
       <!-- Sort By Dropdown -->

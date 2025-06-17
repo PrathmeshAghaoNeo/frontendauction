@@ -151,6 +151,7 @@
                   type="file"
                   class="form-control form-control-sm"
                   (click)="$event.stopPropagation()"
+                  (change)="onFileSelected($event)"
                 />
               </div>
  
@@ -160,6 +161,7 @@
                   type="date"
                   class="form-control form-control-sm"
                   (click)="$event.stopPropagation()"
+                  
                 />
               </div>
  
@@ -194,11 +196,17 @@
  
               <div class="mb-2">
                 <label class="form-label mb-1">Upload Cheque</label>
-                <input
+                <!-- <input
                   type="file"
                   class="form-control form-control-sm"
                   (click)="$event.stopPropagation()"
-                />
+                  (change)="onFileSelected($event)"
+                /> -->
+                 <input type="file" (click)="$event.stopPropagation()" (change)="onFileSelected($event)" class="form-control form-control-sm" />
+
+                <!-- <div *ngIf="uploadedFileName" class="mt-1 text-success small">
+                  Uploaded: {{ uploadedFileName }}
+                </div> -->
               </div>
  
               <div class="mb-3">

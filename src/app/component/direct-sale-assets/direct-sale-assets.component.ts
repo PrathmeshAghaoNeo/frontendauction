@@ -7,6 +7,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Directionality } from '@angular/cdk/bidi';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ManageAssetService } from '../../services/asset.service';
@@ -15,6 +16,7 @@ import Swal from 'sweetalert2';
 import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { AuthService } from '../../services/auth.service';
+import { LanguageService } from '../../services/language.service';
 
 declare var bootstrap: any;
 
@@ -56,7 +58,7 @@ throw new Error('Method not implemented.');
   userId: number | null = null;
   environment = environment;
   wishlistAssetIds: number[] = [];
-
+  langCode:string |null = 'en';
   cartAssetIds: number[] = [];
 
   isFilterOpen = false;
@@ -119,14 +121,18 @@ throw new Error('Method not implemented.');
 
   lastSortControl: 'dropdown' | 'slider' = 'dropdown';
 
+  isRtl:boolean = false; 
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
     private listService: ListService,
     private router: Router,
+    private languageService:LanguageService,
     private authService: AuthService,
+    private dir: Directionality,
     private viewportScroller: ViewportScroller
-  ) {}
+  ) {
+  }
 
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
@@ -165,12 +171,30 @@ throw new Error('Method not implemented.');
   }
 
   ngOnInit(): void {
+   const savedLayoutType = localStorage.getItem('layoutType');
+  this.layoutType = savedLayoutType === 'row' ? 'row' : 'grid';
+
+  // const entry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+  // const isreload = entry?.type === 'reload';
+  // if(isreload){
+  //   const savedLayoutType= localStorage.getItem('layoutType');
+  //   this.layoutType =  savedLayoutType === 'row' ? 'row' : 'grid';
+  // }else{
+  //   localStorage.removeItem('layoutType');
+  //   this.layoutType = 'grid';
+  // }
+
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
-
+    this.languageService.lang$.subscribe(lang => {
+        this.langCode = lang;
+         this.isRtl = lang === 'ar';
+        // this.fetchCategories(); 
+      
+      console.log("string",this.langCode)   
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     if (!isNaN(categoryId)) {
-      this.assetService.getDirectAssets(categoryId).subscribe({
+      this.assetService.getDirectAssets(categoryId,this.langCode).subscribe({
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data];
@@ -194,6 +218,7 @@ throw new Error('Method not implemented.');
     } else {
       Swal.fire('Error!', 'Invalid category ID');
     }
+    });
   }
 
 
@@ -336,6 +361,7 @@ getSortOptionsForCategory(categoryName: string) {
 
   toggleLayout() {
     this.layoutType = this.layoutType === 'grid' ? 'row' : 'grid';
+    localStorage.setItem('layoutType', this.layoutType);
   }
 
   getFlagUrl(asset: DirectSaleAssetDto): string {
@@ -393,6 +419,7 @@ redirectToCart(): void {
   }
 
   goBack() {
+    localStorage.removeItem('layoutType');
     window.history.back();
   }
 
@@ -906,4 +933,5 @@ redirectToCart(): void {
   });
   this.availableTags = Array.from(typeSet);
   }
+  
 }

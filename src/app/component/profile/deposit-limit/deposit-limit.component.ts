@@ -13,13 +13,14 @@ import {
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import Swal from 'sweetalert2';
+import { AddTransaction } from '../../../modals/manage-transaction';
 
 @Component({
   selector: 'app-deposit-limit',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, GoogleMapsModule],
   templateUrl: './deposit-limit.component.html',
-  styleUrls: ['./deposit-limit.component.css'], // fixed typo: styleUrl -> styleUrls
+  styleUrls: ['./deposit-limit.component.css'],
 })
 export class DepositLimitComponent implements OnInit {
   center: google.maps.LatLngLiteral = { lat: 26.2285, lng: 50.5861 };
@@ -50,7 +51,8 @@ export class DepositLimitComponent implements OnInit {
   paymentMethods: { label: string; value: string }[] = [];
 
   uploadedDocumentPath = '';
-  currentUserId: number = 0; // TODO: Replace with actual logged-in user ID
+  currentUserId: number = 0;
+  documents: File | undefined;
  
   constructor(
     private assetCategoriesService: AssetCategoriesService,
@@ -95,9 +97,6 @@ export class DepositLimitComponent implements OnInit {
       label: pm.paymentMethodName,
       value: this.mapPaymentMethodNameToValue(pm.paymentMethodName),
     }));
-
-    // ✅ Log the payment methods here
-    console.log('Mapped Payment Methods:', this.paymentMethods);
   }
 
   setCurrentLocation(): void {
@@ -112,9 +111,7 @@ export class DepositLimitComponent implements OnInit {
         },
         (error) => {
           console.error('Error getting location:', error);
-          alert(
-            'Location access denied or unavailable. Showing default location.'
-          );
+          alert('Location access denied or unavailable. Showing default location.');
         }
       );
     } else {
@@ -130,32 +127,17 @@ export class DepositLimitComponent implements OnInit {
   }
  
   selectPaymentMethod(method: string): void {
-    this.selectedPaymentMethod =
-      this.selectedPaymentMethod === method ? '' : method;
+    this.selectedPaymentMethod = this.selectedPaymentMethod === method ? '' : method;
   }
  
   uploadDeposit(): void {
     this.fileInput.nativeElement.click();
   }
- 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
- 
-      if (file.size > 5 * 1024 * 1024) {
-        Swal.fire('File is too large', 'Maximum allowed size is 5MB.', 'error');
-        this.selectedFile = null;
-        input.value = ''; // Reset file input
-        return;
-      }
- 
-      this.selectedFile = file;
-      console.log('Selected file:', file);
- 
-      // TODO: Implement real file upload logic here.
-      // For now, simulate upload success:
-      this.uploadedDocumentPath = `uploads/${file.name}`;
+
+ onFileSelected(event: any): void {
+    const file = event.target.files?.[0];
+    if (file) {
+      this.documents = file;
     }
   }
  
@@ -174,48 +156,32 @@ export class DepositLimitComponent implements OnInit {
       Swal.fire('Please select a payment method.', '', 'warning');
       return;
     }
- 
-    // Determine if admin approval is required
-    const adminApprovalRequiredMethods = ['bank', 'cheque']; // use values matching the keys
-    const isManualMethod = adminApprovalRequiredMethods.includes(
-      this.selectedPaymentMethod
-    );
-    const statusId = isManualMethod ? 1 : 2; // 1 = Pending, 3 = Completed
- 
-    const transactionBody = {
+
+    const adminApprovalRequiredMethods = ['bank', 'cheque'];
+    const isManualMethod = adminApprovalRequiredMethods.includes(this.selectedPaymentMethod);
+    const statusId = isManualMethod ? 1 : 2;
+
+    const transactionBody: AddTransaction = {
       amount: this.totalAmount,
       userId: this.currentUserId,
-      transactionTypeId: 2, // Deposit type, can be made dynamic if needed
+      transactionTypeId: 2,
       paymentMethodId: this.getPaymentMethodId(this.selectedPaymentMethod),
-      cardTypeId: 1, // You may want to add UI to select cardTypeId or make optional
+      cardTypeId: 1,
       merchantTransactionId: this.generateMerchantTransactionId(),
       transactionDateTime: new Date().toISOString(),
       statusId: statusId,
       notes: `Top-up via ${this.selectedPaymentMethod}`,
-      documentPath: this.uploadedDocumentPath || '',
+      documentUrl: this.uploadedDocumentPath || '',
+      documents: this.documents,
     };
- 
-    this.transactionService.addTransaction(transactionBody).subscribe({
-      next: (res) => {
-        console.log('Transaction created:', res);
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Transaction successfully added!',
-          confirmButtonText: 'OK',
-        });
-        // Optionally reset form here or update UI accordingly
-      },
+    const payload = this.transactionService['toFormData'](transactionBody);
+
+    this.transactionService.addTransaction(payload).subscribe({
+      next: () => Swal.fire('Success', 'Transaction successfully added!', 'success'),
       error: (err) => {
         console.error('Transaction failed:', err);
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Transaction Failed',
-          text: 'Failed to add transaction. Please try again later.',
-          confirmButtonText: 'OK',
-        });
+        Swal.fire('Error', 'Failed to add transaction. Please try again.', 'error');
       },
     });
   }
@@ -236,19 +202,13 @@ export class DepositLimitComponent implements OnInit {
  
   getPaymentMethodId(methodValue: string): number {
     const match = this.paymentMethodsMeta.find(
-      (pm) =>
-        this.mapPaymentMethodNameToValue(pm.paymentMethodName) === methodValue
+      (pm) => this.mapPaymentMethodNameToValue(pm.paymentMethodName) === methodValue
     );
     return match?.paymentMethodId ?? 0;
   }
  
   generateMerchantTransactionId(): string {
-    return (
-      'MERC' +
-      Math.floor(Math.random() * 1_000_000_000)
-        .toString()
-        .padStart(9, '0')
-    );
+    return 'MERC' + Math.floor(Math.random() * 1_000_000_000).toString().padStart(9, '0');
   }
  
   onCategoryChange(categoryId: number): void {
@@ -269,15 +229,13 @@ export class DepositLimitComponent implements OnInit {
  
   get consumedPercentage(): number {
     return (
-      Math.trunc(
-        ((this.totalLimit - this.availableLimit) / this.totalLimit) * 100 * 100
-      ) / 100
+      Math.trunc(((this.totalLimit - this.availableLimit) / this.totalLimit) * 100 * 100) / 100
     );
   }
  
   getProgressColor(percentage: number): string {
-    if (percentage < 50) return 'yellow';
-    else if (percentage < 80) return 'green';
+    if (percentage < 40) return 'green';
+    else if (percentage < 80) return 'Yellow';
     else return 'red';
   }
  
@@ -290,7 +248,6 @@ export class DepositLimitComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to fetch deposit limits', err);
-
         Swal.fire({
           icon: 'error',
           title: 'Error',

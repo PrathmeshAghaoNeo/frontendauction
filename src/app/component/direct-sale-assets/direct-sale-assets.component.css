@@ -1153,4 +1153,10 @@ footer {
 /* Remove default checkbox appearance for pill checkboxes */
 .pill-checkbox {
   display: none;
+.back-btn-image {
+  transition: transform 0.3s ease;
+}
+
+.rtl-rotate {
+  transform: rotate(180deg); /* flip the arrow direction */
 }

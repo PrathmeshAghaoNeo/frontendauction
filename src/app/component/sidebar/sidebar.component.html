@@ -1,5 +1,5 @@
 <nav class="modern-sidebar" [class.expanded]="isExpanded">
-  <div class="sidebar-inner" (mouseenter)="isExpanded = true" (mouseleave)="isExpanded = false">
+  <div class="sidebar-inner" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
     <ul>
       <li *ngFor="let item of visibleMenuItems" class="sidebar-item">
         <a [routerLink]="item.route" routerLinkActive="active">
@@ -10,3 +10,4 @@
     </ul>
   </div>
 </nav>
+  

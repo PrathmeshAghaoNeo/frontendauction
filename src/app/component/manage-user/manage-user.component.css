@@ -21,3 +21,8 @@
   background-color: #b99af3;
   color: white;
 }
+.profile-img {
+  width: 230px;
+  height: 230px;
+  object-fit: cover;
+}

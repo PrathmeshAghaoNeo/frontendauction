@@ -31,7 +31,7 @@ export class CategoryCardComponent implements OnInit {
     this.langCode = lang;
     this.fetchCategories();
   });
-    this.fetchCategories();
+    // this.fetchCategories();
   }
 
   // fetchCategories(): void {

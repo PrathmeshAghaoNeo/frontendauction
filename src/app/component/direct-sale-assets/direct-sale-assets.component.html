@@ -129,7 +129,7 @@
   <div class="top-toolbar">
     <div class="toolbar-left">
         <button class="back-btn" (click)="goBack()">
-          <img src="back.png" alt="Back to Bidding" class="back-btn-image" />
+          <img src="back.png" alt="Back to Bidding" class="back-btn-image" [class.rtl-rotate]="isRtl" />
         </button>
     </div>
 
@@ -191,6 +191,7 @@
   <div class="plates-container" [ngClass]="layoutType + '-view'">
     <div class="plate-card" *ngFor="let asset of assets">
       <div class="plate-display" (click)="goToAssetDetail(asset.assetId)">
+       
         <ng-container *ngIf="layoutType === 'row'; else gridView">
           <!-- Row View -->
           <div class="plate-display-row">

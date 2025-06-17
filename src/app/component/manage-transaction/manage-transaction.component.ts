@@ -191,9 +191,22 @@ export class TransactionManagementComponent implements OnInit {
   }
 
   openViewModal(transaction: Transaction): void {
-    this.selectedTransaction = transaction;
-    this.modalService.open(this.viewTransactionModal, { centered: true, size: 'lg' });
+  // Normalize `documentUrl` to always be an array
+  if ( typeof transaction.documentUrl === 'string') {
+    transaction.documentUrl = transaction.documentUrl;
   }
+
+  // if (transaction.documentPath) {
+  //   const baseUrl = 'https://your-storage-url.com/uploads/'; // ⬅️ update this if needed
+  //   transaction.documentUrl = [baseUrl + transaction.documentPath];
+  // }
+
+  this.selectedTransaction = transaction;
+  console.log("selected Transaction :", this.selectedTransaction);
+
+  this.modalService.open(this.viewTransactionModal, { centered: true, size: 'lg' });
+}
+
 
   openDeleteModal(transaction: Transaction): void {
     this.selectedTransaction = transaction;

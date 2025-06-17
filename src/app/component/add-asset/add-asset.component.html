@@ -172,8 +172,9 @@
               #seller="ngModel"
               required
             >
-              <option *ngFor="let s of sellers" [value]="s.id">
-                {{ s.name }}
+              <!-- <option value="" disabled selected>Select seller</option> -->
+              <option *ngFor="let s of sellers" [value]="s.sellerId">
+                {{ s.userName }}
               </option>
             </select>
 
@@ -773,7 +774,7 @@
                 minlength="2"
                 maxlength="20"
                 #attributeNameRef="ngModel"
-                (input)="limitToTenDigits($event)"
+                (input)="limitToInputWords($event)"
               />
               <div
                 *ngIf="attributeNameRef.invalid && attributeNameRef.touched"
@@ -800,7 +801,7 @@
                 minlength="1"
                 maxlength="20"
                 #attributeValueRef="ngModel"
-                (input)="limitToTenDigits($event)"
+                (input)="limitToInputWords($event)"
               />
               <div
                 *ngIf="attributeValueRef.invalid && attributeValueRef.touched"
@@ -897,15 +898,25 @@
 
         <div class="card p-3 shadow-sm mb-4">
           <h5>Map</h5>
-          <input
-            type="text"
-            placeholder="Search..."
-            class="form-control mb-2"
-          />
-          <div class="border text-center text-muted p-3">
-            Map Pin Location Adjusting
+
+          <div class="mb-2 d-flex">
+            <input
+              type="text"
+              placeholder="Search state, city, or area"
+              [(ngModel)]="searchQuery"
+              class="form-control me-2"
+            />
+            <button class="btn btn-primary" (click)="searchLocation()">
+              Search
+            </button>
+          </div>
+
+          <div class="border text-center text-muted p-2">
+            <div id="map" style="height: 300px"></div>
           </div>
         </div>
+
+        
 
         <div class="card p-3 shadow-sm mb-4">
           <h5>Fees</h5>
@@ -1053,7 +1064,7 @@
                   <label class="form-check-label">
                     {{ auction.title }} #{{ auction.auctionNumber }} -
                     {{ auction.startDateTime | date : "dd/MM/yyyy" }}
-                     {{ auction.type }}
+                    {{ auction.type }}
                   </label>
                 </div>
               </li>
@@ -1092,6 +1103,96 @@
               Sales Note is required.
             </div>
             <div *ngIf="salesNotes.errors?.['maxlength']">
+              Maximum 100 characters allowed.
+            </div>
+          </div>
+        </div>
+
+        <label class="form-label mt-3">Language</label>
+        <select
+          class="form-select form-select-sm"
+          [(ngModel)]="asset.languageId"
+          name="languageId"
+          required
+          #languageId="ngModel"
+        >
+          <option [ngValue]="0">Select Language</option>
+          <option [ngValue]="2">Arabic</option>
+        </select>
+
+        <div *ngIf="asset.languageId > 0">
+          <label class="form-label mt-3">Translated Title</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            name="translatedTitle"
+            placeholder="Translated Title"
+            [(ngModel)]="asset.translatedTitle"
+            maxlength="100"
+            [required]="asset.languageId > 0"
+            #translatedTitle="ngModel"
+          />
+          <div
+            *ngIf="
+              translatedTitle.invalid &&
+              (translatedTitle.touched || assetForm.submitted)
+            "
+            class="text-danger mt-1"
+          >
+            <div *ngIf="translatedTitle.errors?.['required']">
+              Translated Title is required.
+            </div>
+            <div *ngIf="translatedTitle.errors?.['maxlength']">
+              Maximum 100 characters allowed.
+            </div>
+          </div>
+
+          <label class="form-label mt-3">Translated Description</label>
+          <textarea
+            class="form-control form-control-sm"
+            name="translatedDescription"
+            placeholder="Translated Description"
+            [(ngModel)]="asset.translatedDescription"
+            maxlength="500"
+            #translatedDescription="ngModel"
+            [required]="asset.languageId > 0"
+          ></textarea>
+          <div
+            *ngIf="
+              translatedDescription.invalid &&
+              (translatedDescription.touched || assetForm.submitted)
+            "
+            class="text-danger mt-1"
+          >
+            <div *ngIf="translatedTitle.errors?.['required']">
+              Translated Title is required.
+            </div>
+            <div *ngIf="translatedDescription.errors?.['maxlength']">
+              Maximum 500 characters allowed.
+            </div>
+          </div>
+
+          <label class="form-label mt-3">Translated Sales Note</label>
+          <textarea
+            class="form-control form-control-sm"
+            name="translatedSalesNotes"
+            placeholder="Translated Note"
+            [(ngModel)]="asset.translatedSalesNotes"
+            maxlength="100"
+            #translatedSalesNotes="ngModel"
+            [required]="asset.languageId > 0"
+          ></textarea>
+          <div
+            *ngIf="
+              translatedSalesNotes.invalid &&
+              (translatedSalesNotes.touched || assetForm.submitted)
+            "
+            class="text-danger mt-1"
+          >
+            <div *ngIf="translatedTitle.errors?.['required']">
+              Translated Title is required.
+            </div>
+            <div *ngIf="translatedSalesNotes.errors?.['maxlength']">
               Maximum 100 characters allowed.
             </div>
           </div>

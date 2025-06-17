@@ -5,12 +5,13 @@ import { CategoryCardComponent } from '../landing-page/category-card/category-ca
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { DirectSaleComponentLP } from '../landing-page/direct-sale/direct-sale.component';
+import { TranslateModule } from '@ngx-translate/core';
 import { ChatBotComponent } from "../chat-bot/chat-bot.component";
 
 @Component({
   selector: 'app-reg-user-landing-page',
   standalone: true,
-  imports: [RouterModule, PromotionsComponent, DirectSaleComponentLP, CategoryCardComponent, ChatBotComponent],
+  imports: [RouterModule, PromotionsComponent, DirectSaleComponentLP, CategoryCardComponent, TranslateModule,ChatBotComponent],
   templateUrl: './reg-user-landing-page.component.html',
   styleUrl: './reg-user-landing-page.component.css'
 })
@@ -25,13 +26,14 @@ export class RegUserLandingPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userId = this.authService.getUserIdJwt();
+    this.userId = this.authService.getUserIdJwt()
 
     if (this.userId !== null) {
+      this.userService.loadNotificationsForUser(this.userId); 
       this.userService.getUserById(this.userId).subscribe({
         next: (user) => {
-          this.username = user?.name || 'User'; // adjust property as needed
-          
+          this.username = user?.name || 'User';
+
         },
         error: (err) => {
           console.error('Failed to fetch user:', err);
@@ -40,5 +42,15 @@ export class RegUserLandingPageComponent implements OnInit {
       });
     }
   }
+  scrollToCategoryCard() {
+    console.log("c")
+    const el = document.getElementById('category-card');
+    if (el) {
+    console.log("x")
+
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
 }
 

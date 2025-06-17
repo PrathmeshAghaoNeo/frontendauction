@@ -64,7 +64,12 @@ export class AddAssetCategoriesComponent implements OnInit {
       buyersCommission: [null, Validators.pattern('^[0-9]+$')],
       registrationDeadline: [''],
       vat: [''],
-      vatPercentage: [null, [Validators.pattern('^[0-9]*$')]]
+      vatPercentage: [null, [Validators.pattern('^[0-9]*$')]],
+
+       languageId: [0, Validators.required],
+  translatedCategoryName: ['', Validators.required],
+  translatedSubcategory: ['', Validators.required],
+  translatedDetails: ['', Validators.required],
  
     });
     const today = new Date();
@@ -185,7 +190,12 @@ export class AddAssetCategoriesComponent implements OnInit {
  
   formData.append('IconFile', iconFile);
   formData.append('Document', documentFile);
-  
+  if (formValue.languageId && formValue.languageId !== 0) {
+  safeAppend(formData, 'LanguageId', formValue.languageId);
+  safeAppend(formData, 'TranslatedCategoryName', formValue.translatedCategoryName);
+  safeAppend(formData, 'TranslatedSubcategory', formValue.translatedSubcategory);
+  safeAppend(formData, 'TranslatedDetails', formValue.translatedDetails);
+}
  
   this.http.post(`${ApiEndpoints.ASSETCATEGORIES}/create`, formData).subscribe({
     next: () => {

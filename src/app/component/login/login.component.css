@@ -180,9 +180,9 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+/* button:hover {
   background-color: var(--primary-dark);
-}
+} */
 
 button:disabled {
   background-color: #d3c6e2;

@@ -1,107 +1,145 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-purple">Manage Roles</h2>
+  <h2 class="text-purple">Manage Roles</h2>
 
-    <div class="col-md-3 text-end">
-
-        <!-- <button class="btn custom-purple-btn" (click)="exportToExcel()" id="export">
+  <div class="col-md-3 text-end">
+    <!-- <button class="btn custom-purple-btn" (click)="exportToExcel()" id="export">
       <i class="bi bi-file-earmark-excel"></i> Export
     </button> -->
-        <button class="btn custom-purple-btn" [routerLink]="'/createRole'" routerLinkActive="active">
-            <i class="bi bi-plus-circle"></i> Add Role
-        </button>
-
-    </div>
+    <button
+      class="btn custom-purple-btn"
+      [routerLink]="'/createRole'"
+      routerLinkActive="active"
+    >
+      <i class="bi bi-plus-circle"></i> Add Role
+    </button>
+  </div>
 </div>
-
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <input
+    type="text"
+    class="form-control w-25 shadow-sm"
+    placeholder="Search by role name..."
+    [(ngModel)]="searchText"
+    (input)="applyFilters()"
+  />
+</div>
 <div class="card shadow-sm rounded border-0">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <input type="text" class="form-control w-25 shadow-sm" placeholder="Search by role name..."
-            [(ngModel)]="searchText" (input)="applyFilters()" />
-    </div>
+  <div class="table-responsive">
+    <table
+      class="table table-hover align-middle border-0 rounded overflow-hidden"
+    >
+      <thead class="table-purple text-white">
+        <tr>
+          <th scope="col"># UID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Is Seller?</th>
+          <th scope="col">Permissions</th>
+          <th scope="col" class="text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let role of filteredRoles; let i = index">
+          <td>#{{ i + 1 }}</td>
+          <td>{{ role.roleName }}</td>
+          <td>{{ role.isSeller ? "Yes" : "No" }}</td>
+          <td class="text-truncate" style="max-width: 320px">
+            {{ getPermissionList(role) }}
+          </td>
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle border-0 rounded overflow-hidden">
-            <thead class="table-purple text-white">
-                <tr>
-                    <th scope="col"># UID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Is Seller?</th>
-                    <th scope="col">Permissions</th>
-                    <th scope="col" class="text-end">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let role of filteredRoles; let i = index">
-                    <td>#{{ i + 1 }}</td>
-                    <td>{{ role.roleName }}</td>
-                    <td>{{ role.isSeller ? 'Yes' : 'No' }}</td>
-                    <td class="text-truncate" style="max-width: 320px;">
-                        {{ getPermissionList(role) }}
-                    </td>
+          <td class="text-end">
+            <button
+              class="btn btn-sm btn-outline-secondary me-1"
+              (click)="openViewModal(role)"
+            >
+              <i class="bi bi-eye"></i>
+            </button>
+            <button
+              class="btn btn-sm btn-outline-danger me-1"
+              (click)="openDeleteModal(role)"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
 
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-outline-secondary me-1" (click)="openViewModal(role)">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger me-1" (click)="openDeleteModal(role)">
-                            <i class="bi bi-trash"></i>
-                        </button>
-
-                        <button class="btn btn-sm btn-outline-primary" [routerLink]="['/updateRole', role.roleId]">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr *ngIf="filteredRoles.length === 0">
-                    <td colspan="5" class="text-center text-muted py-3">
-                        No roles found.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+            <button
+              class="btn btn-sm btn-outline-primary"
+              [routerLink]="['/updateRole', role.roleId]"
+            >
+              <i class="bi bi-pencil"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredRoles.length === 0">
+          <td colspan="5" class="text-center text-muted py-3">
+            No roles found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- View Modal -->
 <ng-template #viewRoleModal let-modal>
-    <div class="modal-header modal-header-purple">
-        <h5 class="modal-title text-white">Role Details</h5>
-        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
-    </div>
-    <div class="modal-body">
-        <div class="row mb-2">
-
-            <div class="col-md-6">
-                <label for="title" class="form-label required-label">Name:</label>
-                <p class="form-control-plaintext">{{ selectedRole?.roleName }}</p>
-            </div>
-            <div class="col-md-6">
-                <label for="type" class="form-label required-label">Is Seller:</label>
-                <p class="form-control-plaintext">{{ selectedRole?.isSeller ? 'Yes' : 'No' }}</p>
-            </div>
-            <div class="col-md-6">
-                <label for="status" class="form-label required-label">Permissions:</label>
-                <p class="form-control-plaintext">
-                <div class="d-flex flex-wrap gap-2">
-                    <span class="badge bg-primary" *ngFor="let perm of getPermissionList(selectedRole!).split(', ')">
-                        {{ perm }}
-                    </span>
-                </div>
-            </div>
+  <div class="modal-header modal-header-purple">
+    <h5 class="modal-title text-white">Role Details</h5>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      aria-label="Close"
+      (click)="modal.dismiss()"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <label for="title" class="form-label required-label">Name:</label>
+        <p class="form-control-plaintext">{{ selectedRole?.roleName }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="type" class="form-label required-label">Is Seller:</label>
+        <p class="form-control-plaintext">
+          {{ selectedRole?.isSeller ? "Yes" : "No" }}
+        </p>
+      </div>
+      <div class="col-md-6">
+        <label for="status" class="form-label required-label"
+          >Permissions:</label
+        >
+        <p class="form-control-plaintext"></p>
+        <div class="d-flex flex-wrap gap-2">
+          <span
+            class="badge bg-primary"
+            *ngFor="let perm of getPermissionList(selectedRole!).split(', ')"
+          >
+            {{ perm }}
+          </span>
         </div>
+      </div>
     </div>
+  </div>
 </ng-template>
 
 <ng-template #deleteRoleModal let-modal>
   <div class="modal-header">
     <h5 class="modal-title text-danger fw-semibold">Confirm Delete</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss()"
+    ></button>
   </div>
   <div class="modal-body">
-    Are you sure you want to delete the role: <strong>{{ selectedRole?.roleName }}</strong>?
+    Are you sure you want to delete the role:
+    <strong>{{ selectedRole?.roleName }}</strong
+    >?
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary" (click)="modal.dismiss()">Cancel</button>
-    <button class="btn btn-danger" (click)="deleteRoleConfirmed(modal)">Delete</button>
+    <button class="btn btn-outline-secondary" (click)="modal.dismiss()">
+      Cancel
+    </button>
+    <button class="btn btn-danger" (click)="deleteRoleConfirmed(modal)">
+      Delete
+    </button>
   </div>
 </ng-template>
