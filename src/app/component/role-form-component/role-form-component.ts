@@ -18,7 +18,7 @@ export class RoleFormComponent implements OnChanges {
 
   constructor(private fb: FormBuilder) {
   this.roleForm = this.fb.group({
-    roleName: ['', [Validators.required, Validators.maxLength(10)]],
+    roleName: ['', [Validators.required, Validators.maxLength(40)]],
     isSeller: [false],
     superAdmin: [false],
     accessAdminPanel: [false],
