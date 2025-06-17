@@ -43,7 +43,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
   
-  // isExpanded = false;
   isRtl:boolean = false; 
 
   

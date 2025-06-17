@@ -5,6 +5,7 @@ import { CategoryCardComponent } from './category-card/category-card.component';
 import { DirectSaleComponentLP } from './direct-sale/direct-sale.component';
 import { FooterComponent } from "../footer/footer.component";
 import { HeaderComponent } from "../header/header.component";
+import { FeaturedAssetsComponent } from './featured-assets/featured-assets.component';
 
 @Component({
   selector: 'app-landing-page',
@@ -13,7 +14,9 @@ import { HeaderComponent } from "../header/header.component";
     PromotionsComponent,
     DirectSaleComponentLP,
     CategoryCardComponent,
-    FooterComponent,
+    // FooterComponent,
+    FeaturedAssetsComponent,
+    // HeaderComponent
 ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css']
