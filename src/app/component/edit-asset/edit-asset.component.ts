@@ -12,7 +12,7 @@ import {
 } from '../../modals/add-asset';
 import {
   Asset,
-  AssetDocumentFormDto,
+  AssetAllDetails, AssetDocumentFormDto,
   AssetGalleryDto,
 } from '../../modals/manage-asset';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -58,8 +58,9 @@ export class EditAssetComponent implements OnInit {
   transaction: AssetTransactionDto[]=[];
 
   attributeList: { attributeName: string; attributeValue: string }[] = [];
-  asset: Asset = {
+  asset: AssetAllDetails = {
     assetId: this.assetIdparam,
+    languageId: 0,
     title: '',
     categoryId: 0,
     categoryName: '',
@@ -103,6 +104,9 @@ export class EditAssetComponent implements OnInit {
     attributes: [],
     isAvailableForDirectSale: false,
     isDeleted: false,
+     titleTranslated: '',
+  descriptionTranslated:'',
+  salesNotesTranslated:''
   };
 
   isLoading: boolean = false;
@@ -258,9 +262,10 @@ export class EditAssetComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.assetService.getAssetById(assetId, this.langCode).subscribe({
-      next: (response: Asset) => {
+    this.assetService.getAllAssetDetails(assetId).subscribe({
+      next: (response: AssetAllDetails) => {
         this.asset = response;
+        console.log('changes',this.asset);
         this.isLoading = false;
         this.isModalOpen = true;
         this.attributeList = [...(this.asset.attributes || [])];

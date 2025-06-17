@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-import { Asset, Gallery } from '../modals/manage-asset';
+import { Asset, AssetAllDetails, Gallery } from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import {
   AssetRequestDto,
@@ -51,6 +51,10 @@ export class ManageAssetService {
     console.log(url);
     return this.http.get<Asset>(url);
   }
+getAllAssetDetails(assetId:number):Observable<AssetAllDetails> {
+  const url = `${ApiEndpoints.ASSETS}/AllDetails/${assetId}`;
+  return this.http.get<AssetAllDetails>(url);
+}
 
   deleteAssetGallery(galleryId: string): Observable<void> {
     const url = `${ApiEndpoints.ASSETGALLERY}/delete/${galleryId}`;

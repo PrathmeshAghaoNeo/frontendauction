@@ -40,7 +40,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: CustominterceptorService, multi: true },
-    provideAnimationsAsync('noop'),
+    provideAnimationsAsync(),
     ...provideTranslation(),
     provideCharts(),
 

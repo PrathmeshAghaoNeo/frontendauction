@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  
 }
 
 /* Header */
@@ -16,20 +15,23 @@
 .app-body {
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
+  flex: 1; /* Take remaining space */
   transition: all 0.3s ease;
 }
-.app-main{
-  min-height: 100vh;
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   overflow-x: hidden;
   transition: all 0.3s ease;
 }
-/* Sidebar (basic shell) */
+
+/* Sidebar */
 .app-sidebar {
   position: relative;
   width: 60px;
   min-width: 60px;
-  /* overflow-x: hidden; */
   background-color: transparent;
   z-index: 100;
   transition: all 0.3s ease;
@@ -40,21 +42,33 @@
   flex: 1;
   margin-left: 0;
   padding: 20px;
+  padding-top: 110px;
   transition: margin-left 0.3s ease, padding 0.3s ease;
-   padding-top: 110px; 
 }
 
-/* Auth background (login, etc.) */
+/* Route container - this gets animated */
+.route-container {
+  position: relative;
+  flex: 1;
+  min-height: 400px; /* Minimum height to prevent footer jumping */
+}
+
+/* Footer */
+.app-footer {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+/* Auth background */
 .auth-bg {
   background-color: var(--light-bg);
   padding: 0%;
 }
-/* 
-.app-sidebar:hover ~ .app-content {
-  margin-left: 180px; 
-} */
 
-/* 200 - 60 */
+.app-content.sidebar-expanded {
+  margin-left: 180px;
+}
+
 .sidebar-collapsed .app-sidebar {
   width: 60px;
 }
@@ -63,17 +77,10 @@
   margin-left: 60px;
 }
 
-.app-content.sidebar-expanded{
-  margin-left: 180px;
-}
-
-
-
 .back-btn-image {
   transition: transform 0.3s ease;
 }
 
 .rtl-rotate {
-  transform: rotate(180deg); /* flip the arrow direction */
+  transform: rotate(180deg);
 }
-

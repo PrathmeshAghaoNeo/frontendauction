@@ -3,7 +3,7 @@
   <p class="lead-text"> {{ 'WHAT_DO_YOU_WANT' | translate }}  </p>
 
   <div class="button-group d-flex flex-wrap justify-content-center gap-4 mt-4">
-    <button class="btn btn-lg browse-btn" routerLink="/auctions">
+    <button class="btn btn-lg browse-btn" (click)="scrollToCategoryCard()">
       <i class="bi bi-search me-2"></i> {{ 'BROWSE_AUCTIONS' | translate }} 
     </button>
 
@@ -15,8 +15,8 @@
   <section class="mt-5 w-100">
     <app-direct-sale></app-direct-sale>
   </section>
-
-  <section class="mt-5 w-100">
+  <h1 id="category-card" ></h1>
+  <section  class="mt-5 w-100">
     <app-category-card></app-category-card>
   </section>
 
