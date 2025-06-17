@@ -914,46 +914,7 @@
             </div>
           </div>
         </div>
-        <div class="card p-3 shadow-sm mb-4">
-          <h5>Translation</h5>
-          <select class="form-select form-select-sm" [(ngModel)]="asset.languageId" name="languageId" required
-            #languageId="ngModel">
-            <option [ngValue]="0">Select Language</option>
-            <option [ngValue]="2">Arabic</option>
-          </select>
- 
-          <div *ngIf="asset.languageId > 0">
-            <label class="form-label mt-3">Translated Title</label>
-            <input type="text" class="form-control form-control-sm" name="translatedTitle"
-              placeholder="Translated Title" [(ngModel)]="asset.titleTranslated" maxlength="100"
-              [required]="asset.languageId > 0" #translatedTitle="ngModel" />
-            <div *ngIf="translatedTitle.invalid && (translatedTitle.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedTitle.errors?.['maxlength']">Maximum 100 characters allowed.</div>
-            </div>
- 
-            <label class="form-label mt-3">Translated Description</label>
-            <textarea class="form-control form-control-sm" name="translatedDescription"
-              placeholder="Translated Description" [(ngModel)]="asset.descriptionTranslated" maxlength="500"
-              #translatedDescription="ngModel" [required]="asset.languageId > 0"></textarea>
-            <div *ngIf="translatedDescription.invalid && (translatedDescription.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedDescription.errors?.['maxlength']">Maximum 500 characters allowed.</div>
-            </div>
- 
-            <label class="form-label mt-3">Translated Sales Note</label>
-            <textarea class="form-control form-control-sm" name="translatedSalesNotes" placeholder="Translated Note"
-              [(ngModel)]="asset.salesNotesTranslated" maxlength="100" #translatedSalesNotes="ngModel"
-              [required]="asset.languageId > 0"></textarea>
-            <div *ngIf="translatedSalesNotes.invalid && (translatedSalesNotes.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedSalesNotes.errors?.['maxlength']">Maximum 100 characters allowed.</div>
-            </div>
-          </div>
-        </div>
+       
       </div>
 
       <!-- Right Column -->
@@ -1196,27 +1157,49 @@
           </div>
         </div>
 
-        <div class="card p-3 shadow-sm mb-4">
-          <h5>Timestamps</h5>
-          <div class="mb-2">
-            <label class="form-label">Created At</label>
-            <input
-              class="form-control"
-              type="text"
-              [value]="asset.createdAt | date : 'medium'"
-              readonly
-            />
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Updated At</label>
-            <input
-              class="form-control"
-              type="text"
-              [value]="asset.updatedAt | date : 'medium'"
-              readonly
-            />
+
+         <div class="card p-3 shadow-sm mb-4">
+          <h5>Translation</h5>
+          <select class="form-select form-select-sm" [(ngModel)]="asset.languageId" name="languageId" required
+            #languageId="ngModel">
+            <option [ngValue]="0">Select Language</option>
+            <option [ngValue]="2">Arabic</option>
+          </select>
+ 
+          <div *ngIf="asset.languageId > 0">
+            <label class="form-label mt-3">Translated Title</label>
+            <input type="text" class="form-control form-control-sm" name="translatedTitle"
+              placeholder="Translated Title" [(ngModel)]="asset.titleTranslated" maxlength="100"
+              [required]="asset.languageId > 0" #translatedTitle="ngModel" />
+            <div *ngIf="translatedTitle.invalid && (translatedTitle.touched || assetForm.submitted)"
+              class="text-danger mt-1">
+              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
+              <div *ngIf="translatedTitle.errors?.['maxlength']">Maximum 100 characters allowed.</div>
+            </div>
+ 
+            <label class="form-label mt-3">Translated Description</label>
+            <textarea class="form-control form-control-sm" name="translatedDescription"
+              placeholder="Translated Description" [(ngModel)]="asset.descriptionTranslated" maxlength="500"
+              #translatedDescription="ngModel" [required]="asset.languageId > 0"></textarea>
+            <div *ngIf="translatedDescription.invalid && (translatedDescription.touched || assetForm.submitted)"
+              class="text-danger mt-1">
+              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
+              <div *ngIf="translatedDescription.errors?.['maxlength']">Maximum 500 characters allowed.</div>
+            </div>
+ 
+            <label class="form-label mt-3">Translated Sales Note</label>
+            <textarea class="form-control form-control-sm" name="translatedSalesNotes" placeholder="Translated Note"
+              [(ngModel)]="asset.salesNotesTranslated" maxlength="100" #translatedSalesNotes="ngModel"
+              [required]="asset.languageId > 0"></textarea>
+            <div *ngIf="translatedSalesNotes.invalid && (translatedSalesNotes.touched || assetForm.submitted)"
+              class="text-danger mt-1">
+              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
+              <div *ngIf="translatedSalesNotes.errors?.['maxlength']">Maximum 100 characters allowed.</div>
+            </div>
           </div>
         </div>
+
+      
 
         <div *ngIf="latestRequest.length > 0; else loading">
           <div
@@ -1271,3 +1254,30 @@
     </div>
   </form>
 </div>
+
+
+
+
+
+<!-- 
+  <div class="card p-3 shadow-sm mb-4">
+          <h5>Timestamps</h5>
+          <div class="mb-2">
+            <label class="form-label">Created At</label>
+            <input
+              class="form-control"
+              type="text"
+              [value]="asset.createdAt | date : 'medium'"
+              readonly
+            />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Updated At</label>
+            <input
+              class="form-control"
+              type="text"
+              [value]="asset.updatedAt | date : 'medium'"
+              readonly
+            />
+          </div>
+        </div> -->
