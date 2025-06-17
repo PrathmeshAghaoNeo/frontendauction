@@ -19,7 +19,6 @@ import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { routeFadeAnimation } from './utils/animations';
-import { UserService } from './services/user.service';
 
 declare var bootstrap: any;
 
@@ -46,6 +45,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
   
+  // isExpanded = false;
   isRtl:boolean = false; 
 
   
@@ -89,8 +89,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private signalR: SignalRService,
-    private userService:UserService,
+    private signalR: SignalRService
   ) {
 
      this.router.events.subscribe(event => {
@@ -119,7 +118,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       console.log('Bid update received in AppComponent:', data);
       // Optional: use a shared event bus to broadcast
     });
-    
+
     this.signalR.winnerUpdates$.subscribe((data) => {
       console.log('Winner update received:', data);
     });
