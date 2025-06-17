@@ -5,6 +5,8 @@ import { CategoryCardComponent } from './category-card/category-card.component';
 import { DirectSaleComponentLP } from './direct-sale/direct-sale.component';
 import { FooterComponent } from "../footer/footer.component";
 import { HeaderComponent } from "../header/header.component";
+import { trigger, transition, style, animate } from '@angular/animations';
+
 
 @Component({
   selector: 'app-landing-page',
@@ -12,10 +14,12 @@ import { HeaderComponent } from "../header/header.component";
   imports: [
     PromotionsComponent,
     DirectSaleComponentLP,
-    CategoryCardComponent,
-    FooterComponent,
+    CategoryCardComponent
+    // FooterComponent,
+    
+    // HeaderComponent
 ],
   templateUrl: './landing-page.component.html',
-  styleUrls: ['./landing-page.component.css']
+  styleUrls: ['./landing-page.component.css'],
 })
 export class LandingPageComponent {}

@@ -1,6 +1,6 @@
-<div>
-  <!-- Breadcrumb -->
-  <!-- <nav aria-label="breadcrumb" class="mb-3">
+<!-- <div class="container my-4"> -->
+<!-- Breadcrumb -->
+<!-- <nav aria-label="breadcrumb" class="mb-3">
     <ol class="breadcrumb bg-light p-2 rounded">
       <li class="breadcrumb-item">
         <a href="#" class="text-decoration-none">Home</a>
@@ -9,719 +9,718 @@
     </ol>
   </nav> -->
 
-  <!-- Page Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-purple">Reports</h2>
-    <div class="input-group w-auto">
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        placeholder="Search reports..."
-        [(ngModel)]="searchText"
-      />
-      <!-- <span class="input-group-text"><i class="bi bi-search"></i></span> -->
-    </div>
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="text-purple">Reports</h2>
+  <div class="col-md-4">
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Search reports..."
+      [(ngModel)]="searchText"
+    />
+    <!-- <span class="input-group-text"><i class="bi bi-search"></i></span> -->
   </div>
+</div>
 
-  <!-- Reports Table -->
-  <div class="table-responsive">
-    <table class="table table-hover shadow-sm border-0 rounded">
-      <thead class="table-purple text-white">
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col" class="text-center" style="width: 100px">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="
-            let report of filteredReports
-              | paginate
-                : {
-                    itemsPerPage: reportsPerPage,
-                    currentPage: reportscurrentPage
-                  }
-          "
-        >
-          <td>
-            <i class="bi bi-file-earmark-text me-2 text-primary"></i
-            >{{ report }}
-          </td>
-          <td class="text-center">
-            <div class="d-flex justify-content-center gap-2">
-              <!-- View Button -->
-              <button
-                class="btn btn-outline-primary btn-sm"
-                (click)="openViewModal(report)"
-                title="View Report"
-              >
-                <i class="bi bi-eye"></i>
-              </button>
+<!-- Reports Table -->
+<div class="table-responsive">
+  <table class="table table-hover shadow-sm border-0 rounded">
+    <thead class="table-purple text-white">
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col" class="text-center" style="width: 100px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let report of filteredReports
+            | paginate
+              : {
+                  id: 'reports',
+                  itemsPerPage: reportsPerPage,
+                  currentPage: reportscurrentPage
+                }
+        "
+      >
+        <td>
+          <i class="bi bi-file-earmark-text me-2 text-primary"></i>{{ report }}
+        </td>
+        <td class="text-center">
+          <div class="d-flex justify-content-center gap-2">
+            <!-- View Button -->
+            <button
+              class="btn btn-outline-primary btn-sm"
+              (click)="openViewModal(report)"
+              title="View Report"
+            >
+              <i class="bi bi-eye"></i>
+            </button>
 
-              <!-- Download Button -->
-              <button
-                class="btn btn-outline-success btn-sm"
-                (click)="downloadReport(report)"
-                title="Download Report"
-              >
-                <i class="bi bi-download"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr *ngIf="reports.length === 0">
-          <td colspan="2" class="text-center text-muted">No reports found.</td>
-        </tr>
-      </tbody>
-    </table>
-    <pagination-controls
-      (pageChange)="reportscurrentPage = $event"
-    ></pagination-controls>
+            <!-- Download Button -->
+            <button
+              class="btn btn-outline-success btn-sm"
+              (click)="downloadReport(report)"
+              title="Download Report"
+            >
+              <i class="bi bi-download"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="reports.length === 0">
+        <td colspan="2" class="text-center text-muted">No reports found.</td>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls
+    id="reports"
+    (pageChange)="reportscurrentPage = $event"
+  ></pagination-controls>
+</div>
+
+<!-- Pagination -->
+
+<!-- View Report Modal -->
+<ng-template #viewReportModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Report Details</h5>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
   </div>
-
-  <!-- Pagination -->
-
-  <!-- View Report Modal -->
-  <ng-template #viewReportModal let-modal>
-    <div class="modal-header">
-      <h5 class="modal-title">Report Details</h5>
-      <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="modal.dismiss('Cross click'); refreshPage()"
-      ></button>
-    </div>
-    <div class="modal-body">
-      <!-- Render based on selected report -->
-      <ng-container [ngSwitch]="selectedReport">
-        <!-- Chart Example -->
-        <div
-          *ngSwitchCase="
-            'Revenue Generated via Auctions – Bar chart (Duration filter)'
-          "
+  <div class="modal-body">
+    <!-- Render based on selected report -->
+    <ng-container [ngSwitch]="selectedReport">
+      <!-- Chart Example -->
+      <div
+        *ngSwitchCase="
+          'Revenue Generated via Auctions – Bar chart'
+        "
+      >
+        <div class="mb-3 d-flex justify-content-center">
+          <select
+            class="form-select w-auto"
+            [(ngModel)]="viewByMode"
+            (change)="switchView(viewByMode)"
+            aria-label="Select view mode"
+          >
+            <option value="Monthly">Monthly</option>
+            <option value="Yearly">Yearly</option>
+          </select>
+        </div>
+        <ngx-charts-bar-vertical
+          [results]="auctionRevenue"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="false"
+          [showDataLabel]="true"
+          [roundEdges]="true"
+          [customColors]="{ domain: ['#5AA454'] }"
+          [xAxisLabel]="'Month/Year'"
+          [yAxisLabel]="'Revenue Amount'"
+          [animations]="true"
+          [view]="[700, 450]"
         >
-          <div class="mb-3 d-flex justify-content-center">
-            <select
-              class="form-select w-auto"
-              [(ngModel)]="viewByMode"
-              (change)="switchView(viewByMode)"
-              aria-label="Select view mode"
-            >
-              <option value="Monthly">Monthly</option>
-              <option value="Yearly">Yearly</option>
-            </select>
+        </ngx-charts-bar-vertical>
+        <div
+          *ngIf="auctionRevenue.length === 0"
+          class="text-center text-muted mt-3"
+        >
+          No auction revenue data available.
+        </div>
+      </div>
+
+      <div
+        *ngSwitchCase="
+          'Revenue Generated via Direct Sales – Bar chart'
+        "
+      >
+        <div class="mb-3 d-flex justify-content-center">
+          <select
+            class="form-select w-auto"
+            [(ngModel)]="viewByMode"
+            (change)="switchView(viewByMode)"
+            aria-label="Select view mode"
+          >
+            <option value="Monthly">Monthly</option>
+            <option value="Yearly">Yearly</option>
+          </select>
+        </div>
+
+        <ngx-charts-bar-vertical
+          [results]="directSalesRevenue"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="false"
+          [showDataLabel]="true"
+          [roundEdges]="true"
+          [customColors]="{ domain: ['#4287f5'] }"
+          [xAxisLabel]="'Month/Year'"
+          [yAxisLabel]="'Revenue Amount'"
+          [animations]="true"
+          [view]="[700, 400]"
+        >
+        </ngx-charts-bar-vertical>
+
+        <div
+          *ngIf="directSalesRevenue.length === 0"
+          class="text-center text-muted mt-3"
+        >
+          No direct sale revenue data available.
+        </div>
+      </div>
+
+      <!-- Count + List -->
+      <!-- TOTAL AUCTIONS -->
+      <div *ngSwitchCase="'Total Auctions – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4 class="mb-3">
+            Total Auctions
+            <span class="badge bg-primary ms-2">{{
+              defaultAuctions.length
+            }}</span>
+          </h4>
+
+          <!-- Search Input -->
+          <div class="col-md-4">
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              class="form-control"
+              placeholder="Search by title, type, status, or category..."
+            />
           </div>
-          <ngx-charts-bar-vertical
-            [results]="auctionRevenue"
-            [xAxis]="true"
-            [yAxis]="true"
-            [legend]="false"
-            [showDataLabel]="true"
-            [roundEdges]="true"
-            [customColors]="{ domain: ['#5AA454'] }"
-            [xAxisLabel]="'Month/Year'"
-            [yAxisLabel]="'Revenue Amount'"
-            [animations]="true"
-            [view]="[700, 400]"
-          >
-          </ngx-charts-bar-vertical>
-          <div
-            *ngIf="auctionRevenue.length === 0"
-            class="text-center text-muted mt-3"
-          >
-            No auction revenue data available.
+        </div>
+
+        <!-- Table -->
+        <div
+          class="table-responsive"
+          *ngIf="processedDefaultAuctions.length > 0"
+        >
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th (click)="sortBy('title')" class="cursor">
+                  Title
+                  <span *ngIf="sortColumn === 'title'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('type')" class="cursor">
+                  Type
+                  <span *ngIf="sortColumn === 'type'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+
+                <th (click)="sortBy('statusName')" class="cursor">
+                  Status
+                  <span *ngIf="sortColumn === 'statusName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('categoryName')" class="cursor">
+                  CategoryName
+                  <span *ngIf="sortColumn === 'categoryName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('endDateTime')" class="cursor">
+                  End Date
+                  <span *ngIf="sortColumn === 'endDateTime'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let auction of processedDefaultAuctions
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
+              >
+                <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+                <td>{{ auction.title }}</td>
+                <td>{{ auction.type }}</td>
+                <td>{{ auction.statusName }}</td>
+                <td>{{ auction.categoryName }}</td>
+                <td>{{ auction.endDateTime | date : "short" }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination Controls -->
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+
+        <div
+          *ngIf="defaultAuctions.length === 0"
+          class="text-muted text-center mt-3"
+        >
+          <i class="bi bi-info-circle-fill me-2"></i>No auctions found.
+        </div>
+      </div>
+
+      <!-- PAST AUCTIONS -->
+      <div *ngSwitchCase="'Past Auctions – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4 class="mb-3">
+            Expired Auctions
+            <span class="badge bg-secondary ms-2">{{
+              processedPastAuctions.length
+            }}</span>
+          </h4>
+
+          <div class="col-md-4">
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              class="form-control"
+              placeholder="Search by title, type, status, or category..."
+            />
+          </div>
+        </div>
+
+        <div class="table-responsive" *ngIf="processedPastAuctions.length > 0">
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th (click)="sortBy('title')" class="cursor">
+                  Title
+                  <span *ngIf="sortColumn === 'title'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('type')" class="cursor">
+                  Type
+                  <span *ngIf="sortColumn === 'type'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+
+                <th (click)="sortBy('statusName')" class="cursor">
+                  Status
+                  <span *ngIf="sortColumn === 'statusName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('categoryName')" class="cursor">
+                  CategoryName
+                  <span *ngIf="sortColumn === 'categoryName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('endDateTime')" class="cursor">
+                  End Date
+                  <span *ngIf="sortColumn === 'endDateTime'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let auction of processedPastAuctions
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
+              >
+                <td>{{ i + 1 }}</td>
+                <td>{{ auction.title }}</td>
+                <td>{{ auction.type }}</td>
+                <td>{{ auction.statusName }}</td>
+                <td>{{ auction.categoryName }}</td>
+                <td>{{ auction.endDateTime | date : "short" }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Pagination Controls -->
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+        <div
+          *ngIf="processedPastAuctions.length === 0"
+          class="text-muted text-center mt-3"
+        >
+          <i class="bi bi-calendar-x-fill me-2"></i>No expired auctions found.
+        </div>
+      </div>
+
+      <!-- UPCOMING AUCTIONS -->
+      <div *ngSwitchCase="'Upcoming Auctions – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4 class="mb-3">
+            Upcoming Auctions
+            <span class="badge bg-warning text-dark ms-2">{{
+              processedUpcomingAuctions.length
+            }}</span>
+          </h4>
+
+          <div class="col-md-4">
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              class="form-control"
+              placeholder="Search by title, type, status, or category..."
+            />
           </div>
         </div>
 
         <div
-          *ngSwitchCase="
-            'Revenue Generated via Direct Sales – Bar chart (Duration filter)'
-          "
+          class="table-responsive"
+          *ngIf="processedUpcomingAuctions.length > 0"
         >
-          <div class="mb-3 d-flex justify-content-center">
-            <select
-              class="form-select w-auto"
-              [(ngModel)]="viewByMode"
-              (change)="switchView(viewByMode)"
-              aria-label="Select view mode"
-            >
-              <option value="Monthly">Monthly</option>
-              <option value="Yearly">Yearly</option>
-            </select>
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th (click)="sortBy('title')" class="cursor">
+                  Title
+                  <span *ngIf="sortColumn === 'title'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('type')" class="cursor">
+                  Type
+                  <span *ngIf="sortColumn === 'type'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+
+                <th (click)="sortBy('statusName')" class="cursor">
+                  Status
+                  <span *ngIf="sortColumn === 'statusName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('categoryName')" class="cursor">
+                  CategoryName
+                  <span *ngIf="sortColumn === 'categoryName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('startDateTime')" class="cursor">
+                  Start Date
+                  <span *ngIf="sortColumn === 'startDateTime'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('endDateTime')" class="cursor">
+                  End Date
+                  <span *ngIf="sortColumn === 'endDateTime'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let auction of processedUpcomingAuctions
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
+              >
+                <td>{{ i + 1 }}</td>
+                <td>{{ auction.title }}</td>
+                <td>{{ auction.type }}</td>
+                <td>{{ auction.statusName }}</td>
+                <td>{{ auction.categoryName }}</td>
+                <td>{{ auction.startDateTime | date : "short" }}</td>
+                <td>{{ auction.endDateTime | date : "short" }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Pagination Controls -->
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+        <div
+          *ngIf="processedUpcomingAuctions.length === 0"
+          class="text-muted text-center mt-3"
+        >
+          <i class="bi bi-calendar-event-fill me-2"></i>No upcoming auctions
+          found.
+        </div>
+      </div>
+
+      <!-- ONGOING AUCTIONS -->
+      <div *ngSwitchCase="'Current Ongoing Auctions – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4 class="mb-3">
+            Ongoing Auctions
+            <span class="badge bg-success ms-2">{{
+              processedCurrentAuctions.length
+            }}</span>
+          </h4>
+
+          <div class="col-md-4">
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              class="form-control"
+              placeholder="Search by title, type, status, or category..."
+            />
           </div>
+        </div>
+        <div
+          class="table-responsive"
+          *ngIf="processedCurrentAuctions.length > 0"
+        >
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <!-- <th>Title</th> -->
+                <th (click)="sortBy('title')" class="cursor">
+                  Title
+                  <span *ngIf="sortColumn === 'title'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('type')" class="cursor">
+                  Type
+                  <span *ngIf="sortColumn === 'type'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
 
-          <ngx-charts-bar-vertical
-            [results]="directSalesRevenue"
-            [xAxis]="true"
-            [yAxis]="true"
-            [legend]="false"
-            [showDataLabel]="true"
-            [roundEdges]="true"
-            [customColors]="{ domain: ['#4287f5'] }"
-            [xAxisLabel]="'Month/Year'"
-            [yAxisLabel]="'Revenue Amount'"
-            [animations]="true"
-            [view]="[700, 400]"
-          >
-          </ngx-charts-bar-vertical>
+                <th (click)="sortBy('statusName')" class="cursor">
+                  Status
+                  <span *ngIf="sortColumn === 'statusName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('categoryName')" class="cursor">
+                  CategoryName
+                  <span *ngIf="sortColumn === 'categoryName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('endDateTime')" class="cursor">
+                  End Date
+                  <span *ngIf="sortColumn === 'endDateTime'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let auction of processedCurrentAuctions
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
+              >
+                <td>{{ i + 1 }}</td>
+                <td>{{ auction.title }}</td>
+                <td>{{ auction.type }}</td>
+                <td>{{ auction.categoryName }}</td>
+                <td>{{ auction.statusName }}</td>
+                <td>{{ auction.endDateTime | date : "short" }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Pagination Controls -->
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+        <div
+          *ngIf="processedCurrentAuctions.length === 0"
+          class="text-muted text-center mt-3"
+        >
+          <i class="bi bi-clock-fill me-2"></i>No ongoing auctions found.
+        </div>
+      </div>
 
-          <div
-            *ngIf="directSalesRevenue.length === 0"
-            class="text-center text-muted mt-3"
-          >
-            No direct sale revenue data available.
+      <!-- Active Direct Sale Listings -->
+      <div *ngSwitchCase="'Active Direct Sale Listings – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4>
+            Active Direct Sale Listings
+            <span class="badge bg-success ms-2">
+              {{ processedDirectSaleAssets.length }}
+            </span>
+          </h4>
+
+          <!-- Search Input -->
+          <div class="col-md-4">
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              class="form-control"
+              placeholder="Search by title, type, status, or category..."
+            />
           </div>
         </div>
 
-        <!-- Count + List -->
-        <!-- TOTAL AUCTIONS -->
-        <div *ngSwitchCase="'Total Auctions – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4 class="mb-3">
-              Total Auctions
-              <span class="badge bg-primary ms-2">{{
-                defaultAuctions.length
-              }}</span>
-            </h4>
+        <div
+          *ngIf="processedDirectSaleAssets.length > 0"
+          class="table-responsive"
+        >
+          <table class="table table-bordered table-striped table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th (click)="sortBy('assetNumber')" class="cursor">
+                  Asset Number
+                  <span *ngIf="sortColumn === 'assetNumber'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('title')" class="cursor">
+                  Title
+                  <span *ngIf="sortColumn === 'title'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('categoryName')" class="cursor">
+                  Category
+                  <span *ngIf="sortColumn === 'categoryName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('startingPrice')" class="cursor">
+                  Starting Price
+                  <span *ngIf="sortColumn === 'startingPrice'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th>Status</th>
+                <!-- <th>Available for Direct Sale</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let asset of processedDirectSaleAssets
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
+              >
+                <td>{{ i + 1 }}</td>
+                <td>{{ asset.assetNumber }}</td>
+                <td>{{ asset.title }}</td>
+                <td>{{ asset.categoryName || "-" }}</td>
+                <td>{{ asset.startingPrice | currency }}</td>
+                <td>{{ asset.statusName || "-" }}</td>
+                <!-- <td>{{ asset.isAvailableForDirectSale ? "Yes" : "No" }}</td> -->
+              </tr>
+            </tbody>
+          </table>
 
-            <!-- Search Input -->
-            <div class="mb-3">
-              <input
-                type="text"
-                [(ngModel)]="searchText"
-                class="form-control"
-                placeholder="Search by title, type, status, or category..."
-              />
-            </div>
-          </div>
-
-          <!-- Table -->
-          <div
-            class="table-responsive"
-            *ngIf="processedDefaultAuctions.length > 0"
-          >
-            <table class="table table-bordered table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>#</th>
-                  <th (click)="sortBy('title')" class="cursor">
-                    Title
-                    <span *ngIf="sortColumn === 'title'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('type')" class="cursor">
-                    Type
-                    <span *ngIf="sortColumn === 'type'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-
-                  <th (click)="sortBy('statusName')" class="cursor">
-                    Status
-                    <span *ngIf="sortColumn === 'statusName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('categoryName')" class="cursor">
-                    CategoryName
-                    <span *ngIf="sortColumn === 'categoryName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('endDateTime')" class="cursor">
-                    End Date
-                    <span *ngIf="sortColumn === 'endDateTime'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let auction of processedDefaultAuctions
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
-                  <td>{{ auction.title }}</td>
-                  <td>{{ auction.type }}</td>
-                  <td>{{ auction.statusName }}</td>
-                  <td>{{ auction.categoryName }}</td>
-                  <td>{{ auction.endDateTime | date : "short" }}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <!-- Pagination Controls -->
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-
-          <div
-            *ngIf="defaultAuctions.length === 0"
-            class="text-muted text-center mt-3"
-          >
-            <i class="bi bi-info-circle-fill me-2"></i>No auctions found.
-          </div>
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
         </div>
 
-        <!-- PAST AUCTIONS -->
-        <div *ngSwitchCase="'Past Auctions – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4 class="mb-3">
-              Expired Auctions
-              <span class="badge bg-secondary ms-2">{{
-                processedPastAuctions.length
-              }}</span>
-            </h4>
+        <p
+          *ngIf="activeDirectSaleAssets.length === 0"
+          class="text-muted text-center"
+        >
+          No active direct sale listings found.
+        </p>
+      </div>
 
-            <div class="mb-3">
-              <input
-                type="text"
-                [(ngModel)]="searchText"
-                class="form-control"
-                placeholder="Search by title, type, status, or category..."
-              />
-            </div>
-          </div>
-
-          <div
-            class="table-responsive"
-            *ngIf="processedPastAuctions.length > 0"
-          >
-            <table class="table table-bordered table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>#</th>
-                  <th (click)="sortBy('title')" class="cursor">
-                    Title
-                    <span *ngIf="sortColumn === 'title'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('type')" class="cursor">
-                    Type
-                    <span *ngIf="sortColumn === 'type'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-
-                  <th (click)="sortBy('statusName')" class="cursor">
-                    Status
-                    <span *ngIf="sortColumn === 'statusName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('categoryName')" class="cursor">
-                    CategoryName
-                    <span *ngIf="sortColumn === 'categoryName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('endDateTime')" class="cursor">
-                    End Date
-                    <span *ngIf="sortColumn === 'endDateTime'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let auction of processedPastAuctions
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ auction.title }}</td>
-                  <td>{{ auction.type }}</td>
-                  <td>{{ auction.statusName }}</td>
-                  <td>{{ auction.categoryName }}</td>
-                  <td>{{ auction.endDateTime | date : "short" }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <!-- Pagination Controls -->
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-          <div
-            *ngIf="processedPastAuctions.length === 0"
-            class="text-muted text-center mt-3"
-          >
-            <i class="bi bi-calendar-x-fill me-2"></i>No expired auctions found.
-          </div>
-        </div>
-
-        <!-- UPCOMING AUCTIONS -->
-        <div *ngSwitchCase="'Upcoming Auctions – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4 class="mb-3">
-              Upcoming Auctions
-              <span class="badge bg-warning text-dark ms-2">{{
-                processedUpcomingAuctions.length
-              }}</span>
-            </h4>
-
-            <div class="mb-3">
-              <input
-                type="text"
-                [(ngModel)]="searchText"
-                class="form-control"
-                placeholder="Search by title, type, status, or category..."
-              />
-            </div>
-          </div>
-
-          <div
-            class="table-responsive"
-            *ngIf="processedUpcomingAuctions.length > 0"
-          >
-            <table class="table table-bordered table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>#</th>
-                  <th (click)="sortBy('title')" class="cursor">
-                    Title
-                    <span *ngIf="sortColumn === 'title'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('type')" class="cursor">
-                    Type
-                    <span *ngIf="sortColumn === 'type'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-
-                  <th (click)="sortBy('statusName')" class="cursor">
-                    Status
-                    <span *ngIf="sortColumn === 'statusName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('categoryName')" class="cursor">
-                    CategoryName
-                    <span *ngIf="sortColumn === 'categoryName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('startDateTime')" class="cursor">
-                    Start Date
-                    <span *ngIf="sortColumn === 'startDateTime'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('endDateTime')" class="cursor">
-                    End Date
-                    <span *ngIf="sortColumn === 'endDateTime'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let auction of processedUpcomingAuctions
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ auction.title }}</td>
-                  <td>{{ auction.type }}</td>
-                  <td>{{ auction.statusName }}</td>
-                  <td>{{ auction.categoryName }}</td>
-                  <td>{{ auction.startDateTime | date : "short" }}</td>
-                  <td>{{ auction.endDateTime | date : "short" }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <!-- Pagination Controls -->
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-          <div
-            *ngIf="processedUpcomingAuctions.length === 0"
-            class="text-muted text-center mt-3"
-          >
-            <i class="bi bi-calendar-event-fill me-2"></i>No upcoming auctions
-            found.
-          </div>
-        </div>
-
-        <!-- ONGOING AUCTIONS -->
-        <div *ngSwitchCase="'Current Ongoing Auctions – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4 class="mb-3">
-              Ongoing Auctions
-              <span class="badge bg-success ms-2">{{
-                processedCurrentAuctions.length
-              }}</span>
-            </h4>
-
-            <div class="mb-3">
-              <input
-                type="text"
-                [(ngModel)]="searchText"
-                class="form-control"
-                placeholder="Search by title, type, status, or category..."
-              />
-            </div>
-          </div>
-          <div
-            class="table-responsive"
-            *ngIf="processedCurrentAuctions.length > 0"
-          >
-            <table class="table table-bordered table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>#</th>
-                  <!-- <th>Title</th> -->
-                  <th (click)="sortBy('title')" class="cursor">
-                    Title
-                    <span *ngIf="sortColumn === 'title'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('type')" class="cursor">
-                    Type
-                    <span *ngIf="sortColumn === 'type'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-
-                  <th (click)="sortBy('statusName')" class="cursor">
-                    Status
-                    <span *ngIf="sortColumn === 'statusName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('categoryName')" class="cursor">
-                    CategoryName
-                    <span *ngIf="sortColumn === 'categoryName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('endDateTime')" class="cursor">
-                    End Date
-                    <span *ngIf="sortColumn === 'endDateTime'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let auction of processedCurrentAuctions
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ auction.title }}</td>
-                  <td>{{ auction.type }}</td>
-                  <td>{{ auction.categoryName }}</td>
-                  <td>{{ auction.statusName }}</td>
-                  <td>{{ auction.endDateTime | date : "short" }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <!-- Pagination Controls -->
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-          <div
-            *ngIf="processedCurrentAuctions.length === 0"
-            class="text-muted text-center mt-3"
-          >
-            <i class="bi bi-clock-fill me-2"></i>No ongoing auctions found.
-          </div>
-        </div>
-
-        <!-- Active Direct Sale Listings -->
-        <div *ngSwitchCase="'Active Direct Sale Listings – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4>
-              Active Direct Sale Listings
-              <span class="badge bg-success ms-2">
-                {{ processedDirectSaleAssets.length }}
-              </span>
-            </h4>
-
-            <!-- Search Input -->
-            <div class="mb-3">
-              <input
-                type="text"
-                [(ngModel)]="searchText"
-                class="form-control"
-                placeholder="Search by title, type, status, or category..."
-              />
-            </div>
-          </div>
-
-          <div
-            *ngIf="processedDirectSaleAssets.length > 0"
-            class="table-responsive"
-          >
-            <table class="table table-bordered table-striped table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>#</th>
-                  <th (click)="sortBy('assetNumber')" class="cursor">
-                    Asset Number
-                    <span *ngIf="sortColumn === 'assetNumber'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('title')" class="cursor">
-                    Title
-                    <span *ngIf="sortColumn === 'title'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('categoryName')" class="cursor">
-                    Category
-                    <span *ngIf="sortColumn === 'categoryName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('startingPrice')" class="cursor">
-                    Starting Price
-                    <span *ngIf="sortColumn === 'startingPrice'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th>Status</th>
-                  <!-- <th>Available for Direct Sale</th> -->
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let asset of processedDirectSaleAssets
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ asset.assetNumber }}</td>
-                  <td>{{ asset.title }}</td>
-                  <td>{{ asset.categoryName || "-" }}</td>
-                  <td>{{ asset.startingPrice | currency }}</td>
-                  <td>{{ asset.statusName || "-" }}</td>
-                  <!-- <td>{{ asset.isAvailableForDirectSale ? "Yes" : "No" }}</td> -->
-                </tr>
-              </tbody>
-            </table>
-
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-
-          <p
-            *ngIf="activeDirectSaleAssets.length === 0"
-            class="text-muted text-center"
-          >
-            No active direct sale listings found.
+      <!-- Pending Complete Registration -->
+      <div *ngSwitchCase="'Pending Complete Registration – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4>
+            Pending Complete Registrations
+            <span class="badge bg-success ms-2">{{
+              pendingRegistrations.length
+            }}</span>
+          </h4>
+          <ul *ngIf="pendingRegistrations.length > 0">
+            <li *ngFor="let user of pendingRegistrations">
+              {{ user.name }} – {{ user.email }}
+            </li>
+          </ul>
+          <p *ngIf="pendingRegistrations.length === 0">
+            No pending registrations.
           </p>
         </div>
+      </div>
 
-        <!-- Pending Complete Registration -->
-        <div *ngSwitchCase="'Pending Complete Registration – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4>
-              Pending Complete Registrations
-              <span class="badge bg-success ms-2">{{
-                pendingRegistrations.length
-              }}</span>
-            </h4>
-            <ul *ngIf="pendingRegistrations.length > 0">
-              <li *ngFor="let user of pendingRegistrations">
-                {{ user.name }} – {{ user.email }}
-              </li>
-            </ul>
-            <p *ngIf="pendingRegistrations.length === 0">
-              No pending registrations.
-            </p>
-          </div>
+      <!-- Pending Sale Approval -->
+      <div *ngSwitchCase="'Pending Sale Approval – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4>
+            Pending Sale Approvals<span class="badge bg-success ms-2">{{
+              pendingSales.length
+            }}</span>
+          </h4>
+          <ul *ngIf="pendingSales.length > 0">
+            <li *ngFor="let sale of pendingSales">
+              {{ sale.title }} – {{ sale.statusName }}
+            </li>
+          </ul>
+          <p *ngIf="pendingSales.length === 0">No pending sale approvals.</p>
         </div>
+      </div>
+      <!-- Latest Deposits -->
+      <div *ngSwitchCase="'Latest Deposits – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4>
+            Latest Deposits
+            <span class="badge bg-success ms-2">{{
+              processedLatestDeposits.length
+            }}</span>
+          </h4>
 
-        <!-- Pending Sale Approval -->
-        <div *ngSwitchCase="'Pending Sale Approval – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4>
-              Pending Sale Approvals<span class="badge bg-success ms-2">{{
-                pendingSales.length
-              }}</span>
-            </h4>
-            <ul *ngIf="pendingSales.length > 0">
-              <li *ngFor="let sale of pendingSales">
-                {{ sale.title }} – {{ sale.statusName }}
-              </li>
-            </ul>
-            <p *ngIf="pendingSales.length === 0">No pending sale approvals.</p>
-          </div>
-        </div>
-        <!-- Latest Deposits -->
-        <div *ngSwitchCase="'Latest Deposits – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4>
-              Latest Deposits
-              <span class="badge bg-success ms-2">{{
-                processedLatestDeposits.length
-              }}</span>
-            </h4>
-
+          <div class="col-md-4">
             <input
               type="text"
               [(ngModel)]="searchText"
@@ -729,83 +728,84 @@
               class="form-control mb-3"
             />
           </div>
-
-          <div
-            *ngIf="processedLatestDeposits.length > 0"
-            class="table-responsive"
-          >
-            <table class="table table-bordered table-striped table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>#</th>
-                  <th (click)="sortBy('transactionNumber')" class="cursor">
-                    Transaction #
-                    <span *ngIf="sortColumn === 'transactionNumber'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('userName')" class="cursor">
-                    User Name
-                    <span *ngIf="sortColumn === 'userName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th>Amount</th>
-                  <th>Payment Method</th>
-                  <th (click)="sortBy('statusName')" class="cursor">
-                    Status
-                    <span *ngIf="sortColumn === 'statusName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th>Date & Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let deposit of processedLatestDeposits
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ ((currentPage || 1) - 1) * itemsPerPage + i + 1 }}</td>
-                  <td>{{ deposit.transactionNumber || "N/A" }}</td>
-                  <td>{{ deposit.userName || "N/A" }}</td>
-                  <td>{{ deposit.amount | currency }}</td>
-                  <td>{{ deposit.paymentMethodName || "N/A" }}</td>
-                  <td>{{ deposit.statusName || deposit.statusId }}</td>
-                  <td>{{ deposit.transactionDateTime | date : "short" }}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-
-          <p *ngIf="latestDeposits.length === 0" class="text-muted">
-            No recent deposits.
-          </p>
         </div>
 
-        <!-- Refund Requests -->
-        <div *ngSwitchCase="'Refund Requests – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4>
-              Refund Requests
-              <span class="badge bg-success ms-2">{{
-                processedRefundRequests.length
-              }}</span>
-            </h4>
+        <div
+          *ngIf="processedLatestDeposits.length > 0"
+          class="table-responsive"
+        >
+          <table class="table table-bordered table-striped table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th (click)="sortBy('transactionNumber')" class="cursor">
+                  Transaction #
+                  <span *ngIf="sortColumn === 'transactionNumber'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('userName')" class="cursor">
+                  User Name
+                  <span *ngIf="sortColumn === 'userName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th>Amount</th>
+                <th>Payment Method</th>
+                <th (click)="sortBy('statusName')" class="cursor">
+                  Status
+                  <span *ngIf="sortColumn === 'statusName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let deposit of processedLatestDeposits
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
+              >
+                <td>{{ ((currentPage || 1) - 1) * itemsPerPage + i + 1 }}</td>
+                <td>{{ deposit.transactionNumber || "N/A" }}</td>
+                <td>{{ deposit.userName || "N/A" }}</td>
+                <td>{{ deposit.amount | currency }}</td>
+                <td>{{ deposit.paymentMethodName || "N/A" }}</td>
+                <td>{{ deposit.statusName || deposit.statusId }}</td>
+                <td>{{ deposit.transactionDateTime | date : "short" }}</td>
+              </tr>
+            </tbody>
+          </table>
 
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+
+        <p *ngIf="latestDeposits.length === 0" class="text-muted">
+          No recent deposits.
+        </p>
+      </div>
+
+      <!-- Refund Requests -->
+      <div *ngSwitchCase="'Refund Requests – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4>
+            Refund Requests
+            <span class="badge bg-success ms-2">{{
+              processedRefundRequests.length
+            }}</span>
+          </h4>
+          <div class="col-md-4">
             <input
               type="text"
               [(ngModel)]="searchText"
@@ -813,82 +813,83 @@
               class="form-control mb-3"
             />
           </div>
-          <div
-            *ngIf="processedRefundRequests.length > 0"
-            class="table-responsive"
-          >
-            <table class="table table-bordered table-striped table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>#</th>
-                  <th (click)="sortBy('transactionNumber')" class="cursor">
-                    Transaction #
-                    <span *ngIf="sortColumn === 'transactionNumber'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('userName')" class="cursor-pointer">
-                    User Name
-                    <span *ngIf="sortColumn === 'userName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th>Amount</th>
-                  <th>Payment Method</th>
-                  <th (click)="sortBy('statusName')" class="cursor-pointer">
-                    Status
-                    <span *ngIf="sortColumn === 'statusName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th>Date & Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let refund of processedRefundRequests
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ ((currentPage || 1) - 1) * itemsPerPage + i + 1 }}</td>
-                  <td>{{ refund.transactionNumber || "N/A" }}</td>
-                  <td>{{ refund.userName || "N/A" }}</td>
-                  <td>{{ refund.amount | currency }}</td>
-                  <td>{{ refund.paymentMethodName || "N/A" }}</td>
-                  <td>{{ refund.statusName || refund.statusId }}</td>
-                  <td>{{ refund.transactionDateTime | date : "short" }}</td>
-                </tr>
-              </tbody>
-            </table>
+        </div>
+        <div
+          *ngIf="processedRefundRequests.length > 0"
+          class="table-responsive"
+        >
+          <table class="table table-bordered table-striped table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th (click)="sortBy('transactionNumber')" class="cursor">
+                  Transaction #
+                  <span *ngIf="sortColumn === 'transactionNumber'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('userName')" class="cursor-pointer">
+                  User Name
+                  <span *ngIf="sortColumn === 'userName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th>Amount</th>
+                <th>Payment Method</th>
+                <th (click)="sortBy('statusName')" class="cursor-pointer">
+                  Status
+                  <span *ngIf="sortColumn === 'statusName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let refund of processedRefundRequests
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
+              >
+                <td>{{ ((currentPage || 1) - 1) * itemsPerPage + i + 1 }}</td>
+                <td>{{ refund.transactionNumber || "N/A" }}</td>
+                <td>{{ refund.userName || "N/A" }}</td>
+                <td>{{ refund.amount | currency }}</td>
+                <td>{{ refund.paymentMethodName || "N/A" }}</td>
+                <td>{{ refund.statusName || refund.statusId }}</td>
+                <td>{{ refund.transactionDateTime | date : "short" }}</td>
+              </tr>
+            </tbody>
+          </table>
 
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-
-          <p *ngIf="refundRequests.length === 0" class="text-muted">
-            No refund requests found.
-          </p>
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
         </div>
 
-        <!-- High Bidding Limit Customers -->
-        <div *ngSwitchCase="'High Bidding Limit Customers – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4>
-              High Bidding Customers
-              <span class="badge bg-success ms-2">{{
-                processedHighBidders.length
-              }}</span>
-            </h4>
+        <p *ngIf="refundRequests.length === 0" class="text-muted">
+          No refund requests found.
+        </p>
+      </div>
 
+      <!-- High Bidding Limit Customers -->
+      <div *ngSwitchCase="'High Bidding Limit Customers – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4>
+            High Bidding Customers
+            <span class="badge bg-success ms-2">{{
+              processedHighBidders.length
+            }}</span>
+          </h4>
+          <div class="col-md-4">
             <input
               type="text"
               [(ngModel)]="searchText"
@@ -896,72 +897,73 @@
               class="form-control mb-3"
             />
           </div>
-
-          <div *ngIf="processedHighBidders.length > 0" class="table-responsive">
-            <table class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th (click)="sortBy('userId')" class="cursor">
-                    User ID
-                    <span *ngIf="sortColumn === 'userId'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('name')" class="cursor">
-                    Name
-                    <span *ngIf="sortColumn === 'name'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th>Total Manual Bids</th>
-                  <th>Total Manual Bid Amount</th>
-                  <th>Total Auto Bids</th>
-                  <th>Total Auto Bid Amount</th>
-                  <th>Total Bids Count</th>
-                  <th (click)="sortBy('totalBidAmount')" class="cursor">
-                    Total Bid Amount
-                    <span *ngIf="sortColumn === 'totalBidAmount'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let user of processedHighBidders
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ user.userId }}</td>
-                  <td>{{ user.name }}</td>
-                  <td>{{ user.totalManualBids }}</td>
-                  <td>{{ user.totalManualBidAmount | currency }}</td>
-                  <td>{{ user.totalAutoBids }}</td>
-                  <td>{{ user.totalAutoBidAmount | currency }}</td>
-                  <td>{{ user.totalBidsCount }}</td>
-                  <td>{{ user.totalBidAmount | currency }}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-
-          <p *ngIf="highBidders.length === 0" class="text-muted">
-            No high limit bidders found.
-          </p>
         </div>
 
-        <!-- Supplier Auctions -->
-        <!-- <div *ngSwitchCase="'Supplier Auctions – Count and List'">
+        <div *ngIf="processedHighBidders.length > 0" class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th (click)="sortBy('userId')" class="cursor">
+                  User ID
+                  <span *ngIf="sortColumn === 'userId'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('name')" class="cursor">
+                  Name
+                  <span *ngIf="sortColumn === 'name'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th>Total Manual Bids</th>
+                <th>Total Manual Bid Amount</th>
+                <th>Total Auto Bids</th>
+                <th>Total Auto Bid Amount</th>
+                <th>Total Bids Count</th>
+                <th (click)="sortBy('totalBidAmount')" class="cursor">
+                  Total Bid Amount
+                  <span *ngIf="sortColumn === 'totalBidAmount'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let user of processedHighBidders
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
+              >
+                <td>{{ user.userId }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.totalManualBids }}</td>
+                <td>{{ user.totalManualBidAmount | currency }}</td>
+                <td>{{ user.totalAutoBids }}</td>
+                <td>{{ user.totalAutoBidAmount | currency }}</td>
+                <td>{{ user.totalBidsCount }}</td>
+                <td>{{ user.totalBidAmount | currency }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+
+        <p *ngIf="highBidders.length === 0" class="text-muted">
+          No high limit bidders found.
+        </p>
+      </div>
+
+      <!-- Supplier Auctions -->
+      <!-- <div *ngSwitchCase="'Supplier Auctions – Count and List'">
           <h4>Supplier Auctions ({{ supplierAuctions.length }})</h4>
           <ul *ngIf="supplierAuctions.length > 0">
             <li *ngFor="let auction of supplierAuctions">
@@ -973,114 +975,114 @@
           </p>
         </div> -->
 
-        <!-- Statement of Account -->
-        <div *ngSwitchCase="'Statement of Account – Count and List'">
-          <div
-            class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
-          >
-            <h4>
-              Statement of Account
-              <span
-                *ngIf="processedStatements.length > 0"
-                class="badge bg-success ms-2"
+      <!-- Statement of Account -->
+      <div *ngSwitchCase="'Statement of Account – Count and List'">
+        <div
+          class="mb-3 d-flex justify-content-between align-items-center flex-wrap"
+        >
+          <h4>
+            Statement of Account
+            <span
+              *ngIf="processedStatements.length > 0"
+              class="badge bg-success ms-2"
+            >
+              {{ processedStatements.length }}
+            </span>
+          </h4>
+          <div class="col-md-4">
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              class="form-control"
+              placeholder="Search by Transaction No, User, Type, Method, Status..."
+            />
+          </div>
+        </div>
+
+        <!-- Global Search -->
+
+        <!-- Table -->
+        <div *ngIf="processedStatements.length > 0" class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th (click)="sortBy('transactionDateTime')" class="cursor">
+                  Date
+                  <span *ngIf="sortColumn === 'transactionDateTime'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('transactionNumber')" class="cursor">
+                  Transaction No
+                  <span *ngIf="sortColumn === 'transactionNumber'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('userName')" class="cursor">
+                  User
+                  <span *ngIf="sortColumn === 'userName'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th (click)="sortBy('amount')" class="cursor">
+                  Amount
+                  <span *ngIf="sortColumn === 'amount'">
+                    {{ sortDirection === "asc" ? "▲" : "▼" }}
+                  </span>
+                </th>
+                <th>Type</th>
+                <th>Payment Method</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let txn of processedStatements
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage
+                        };
+                  let i = index
+                "
               >
-                {{ processedStatements.length }}
-              </span>
-            </h4>
-            <div class="mb-3">
-              <input
-                type="text"
-                [(ngModel)]="searchText"
-                class="form-control"
-                placeholder="Search by Transaction No, User, Type, Method, Status..."
-              />
-            </div>
-          </div>
-
-          <!-- Global Search -->
-
-          <!-- Table -->
-          <div *ngIf="processedStatements.length > 0" class="table-responsive">
-            <table class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th (click)="sortBy('transactionDateTime')" class="cursor">
-                    Date
-                    <span *ngIf="sortColumn === 'transactionDateTime'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('transactionNumber')" class="cursor">
-                    Transaction No
-                    <span *ngIf="sortColumn === 'transactionNumber'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('userName')" class="cursor">
-                    User
-                    <span *ngIf="sortColumn === 'userName'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th (click)="sortBy('amount')" class="cursor">
-                    Amount
-                    <span *ngIf="sortColumn === 'amount'">
-                      {{ sortDirection === "asc" ? "▲" : "▼" }}
-                    </span>
-                  </th>
-                  <th>Type</th>
-                  <th>Payment Method</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let txn of processedStatements
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: currentPage
-                          };
-                    let i = index
-                  "
-                >
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ txn.transactionDateTime | date : "short" }}</td>
-                  <td>{{ txn.transactionNumber }}</td>
-                  <td>{{ txn.userName }}</td>
-                  <td>{{ txn.amount | currency }}</td>
-                  <td>{{ txn.transactionTypeName }}</td>
-                  <td>{{ txn.paymentMethodName }}</td>
-                  <td>{{ txn.statusName }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p
-            *ngIf="processedStatements.length === 0"
-            class="text-muted text-center"
-          >
-            No account transactions found.
-          </p>
+                <td>{{ i + 1 }}</td>
+                <td>{{ txn.transactionDateTime | date : "short" }}</td>
+                <td>{{ txn.transactionNumber }}</td>
+                <td>{{ txn.userName }}</td>
+                <td>{{ txn.amount | currency }}</td>
+                <td>{{ txn.transactionTypeName }}</td>
+                <td>{{ txn.paymentMethodName }}</td>
+                <td>{{ txn.statusName }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Fallback -->
-        <div *ngSwitchDefault>
-          <p class="text-muted">No specific view available for this report.</p>
-        </div>
-      </ng-container>
-    </div>
-    <div class="modal-footer">
-      <button
-        type="button"
-        class="btn btn-secondary"
-        (click)="modal.close('Close click'); refreshPage()"
-      >
-        Close
-      </button>
-    </div>
-  </ng-template>
-</div>
+        <p
+          *ngIf="processedStatements.length === 0"
+          class="text-muted text-center"
+        >
+          No account transactions found.
+        </p>
+      </div>
+
+      <!-- Fallback -->
+      <div *ngSwitchDefault>
+        <p class="text-muted">No specific view available for this report.</p>
+      </div>
+    </ng-container>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="modal.close('Close click')"
+    >
+      Close
+    </button>
+  </div>
+</ng-template>
+<!-- </div> -->

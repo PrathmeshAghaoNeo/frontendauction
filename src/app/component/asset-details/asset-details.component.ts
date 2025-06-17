@@ -280,6 +280,9 @@ pendingValue: boolean = false;
   
         Swal.fire({
           icon: 'success',
+          toast:true,
+          position:'top',
+          timerProgressBar: true,
           title: 'Bid Placed!',
           text: `Your bid was placed successfully!`,
           timer: 2000,
@@ -291,6 +294,9 @@ pendingValue: boolean = false;
   
         Swal.fire({
           icon: 'error',
+          toast:true,
+          position:'top',
+          timerProgressBar: true,
           title: 'Bid Failed',
           text: error?.error?.message ||'Failed to place bid. Please try again or check your input.',
           timer: 2000,
@@ -332,6 +338,11 @@ pendingValue: boolean = false;
   showAuctionEndedPopup() {
     Swal.fire({
       icon: 'info',
+       toast:true,
+          position:'top',
+          timer: 3000,
+          showConfirmButton: false,
+          timerProgressBar: true,
       title: 'Auction Ended',
       text: 'This auction has ended. You can no longer place bids.',
       confirmButtonText: 'OK'

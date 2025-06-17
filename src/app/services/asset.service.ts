@@ -1,16 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-import { Asset, Gallery, ReplaceAssetWinnerDto, TopBidderDto } from '../modals/manage-asset';
+import { Asset, AssetAllDetails, Gallery, ReplaceAssetWinnerDto, TopBidderDto } from '../modals/manage-asset';
 import { ApiEndpoints } from '../constants/api-endpoints';
-import { DirectSaleAssetDto, Seller } from '../modals/add-asset';
+import {
+  AssetRequestDto,
+  AssetResultDto,
+  AssetTransactionDto,
+  DirectSaleAssetDto,
+  Seller,
+} from '../modals/add-asset';
+import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ManageAssetService {
   constructor(private http: HttpClient) {}
-  
+
   addAssetWithGallery(formData: FormData): Observable<any> {
     return this.http.post<any>(
       `${ApiEndpoints.ASSETS}/CreateWithGallery`,
@@ -66,24 +73,33 @@ export class ManageAssetService {
   return this.http.delete<void>(url);
   }
 
+ 
+  getAllAssetDetails(assetId:number):Observable<AssetAllDetails> {
+  const url = `${ApiEndpoints.ASSETS}/AllDetails/${assetId}`;
+  return this.http.get<AssetAllDetails>(url);
+  }
+
+
 
   deleteAssetDocument(documentId: string): Observable<void> {
     const url = `${ApiEndpoints.ASSESTDOCUMENT}/delete/${documentId}`;
     return this.http.delete<void>(url);
   }
-  
 
   updateAssetWithGallery(formData: FormData): Observable<any> {
     return this.http.put(`${ApiEndpoints.ASSETS}/update-asset-all`, formData);
   }
 
-  getDirectAssets(categoryId: number,langCode:string |null): Observable<DirectSaleAssetDto[]> {
-    const lang = langCode ?? 'en'; 
+  getDirectAssets(
+    categoryId: number,
+    langCode: string | null
+  ): Observable<DirectSaleAssetDto[]> {
+    const lang = langCode ?? 'en';
     return this.http.get<DirectSaleAssetDto[]>(
       `${ApiEndpoints.ASSETS}/directsaleasset?categoryId=${categoryId}&lang=${lang}`
     );
   }
-   getAssetGallery(assetId: number): Observable<Gallery[]> {
+  getAssetGallery(assetId: number): Observable<Gallery[]> {
     const url = `${ApiEndpoints.ASSETGALLERY}/${assetId}`;
     return this.http.get<Gallery[]>(url);
   }
@@ -94,4 +110,20 @@ export class ManageAssetService {
     );
   }
 
+  getLatestRequest(assetId: number): Observable<AssetRequestDto[]> {
+    return this.http.get<AssetRequestDto[]>(
+      `${ApiEndpoints.ASSETS}/${assetId}/latest-request`
+    );
+  }
+  getLatestResult(assetId: number): Observable<AssetResultDto> {
+    return this.http.get<AssetResultDto>(
+      `${ApiEndpoints.ASSETS}/results/${assetId}`
+    );
+  }
+
+  getAssetTransaction(assetId:number):Observable<AssetTransactionDto[]>{
+    return this.http.get<AssetTransactionDto[]>(
+      `${ApiEndpoints.ASSETS}/${assetId}/transactions`
+    );
+  }
 }

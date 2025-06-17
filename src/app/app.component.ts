@@ -18,6 +18,7 @@ import { SignalRService } from './services/signal-r.service';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { routeFadeAnimation } from './utils/animations';
 
 declare var bootstrap: any;
 
@@ -36,6 +37,7 @@ declare var bootstrap: any;
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+   animations: [routeFadeAnimation],
 })
 export class AppComponent implements OnInit, AfterViewInit {
   private translate = inject(TranslateService);
@@ -43,7 +45,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
   
-  // isExpanded = false;
   isRtl:boolean = false; 
 
   
@@ -242,4 +243,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       '/',
     ]);
   }
+  prepareRoute(outlet: RouterOutlet) {
+  return outlet?.activatedRouteData?.['animation'] || '';
+}
+
 }
