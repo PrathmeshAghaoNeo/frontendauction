@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component , OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,6 +19,8 @@ import { AssetCategory } from '../../modals/assetcategories';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { Seller } from '../../modals/add-asset';
 // import {NgSelectModule} from '@ng-select/ng-select';
+import * as L from 'leaflet';
+
 
 @Component({
   selector: 'app-add-asset',
@@ -27,8 +29,16 @@ import { Seller } from '../../modals/add-asset';
   templateUrl: './add-asset.component.html',
   styleUrl: './add-asset.component.css',
 })
-export class AddAssetComponent {
-  auctions: Auction[] = [];
+export class AddAssetComponent implements OnInit , AfterViewInit{
+   map!: L.Map;
+  marker!: L.Marker;
+  searchQuery = '';
+
+  ngAfterViewInit(): void {
+    this.initMap();
+  }
+
+  auctions: Auction[] = []; 
   sellers: Seller[] = [];
   assetForm: FormGroup;
   documentUrls: string[] = [];
@@ -1054,6 +1064,51 @@ export class AddAssetComponent {
   // === Drag and Drop Handlers ===
   onWinnerDocDragOver(event: DragEvent): void {
     event.preventDefault();
+  }
+
+
+
+
+
+   initMap(): void {
+    this.map = L.map('map').setView([20.5937, 78.9629], 5); // Center: India
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+  }
+
+  searchLocation(): void {
+    if (!this.searchQuery) return;
+
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (data.length === 0) {
+          alert('Location not found.');
+          return;
+        }
+
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+
+        if (this.marker) {
+          this.map.removeLayer(this.marker);
+        }
+
+        // Custom price-style marker
+        const priceLabel = L.divIcon({
+          className: 'custom-label',
+          html: `<div style="background:#000;color:#fff;padding:3px 8px;border-radius:4px;">📍${this.searchQuery}</div>`,
+          iconSize: [100, 30],
+          iconAnchor: [50, 15]
+        });
+
+        this.marker = L.marker([lat, lon], { icon: priceLabel }).addTo(this.map);
+        this.map.setView([lat, lon], 12);
+      });
   }
 }
 

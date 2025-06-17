@@ -14,8 +14,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
   imports: [
     PromotionsComponent,
     DirectSaleComponentLP,
-    CategoryCardComponent,
-    FooterComponent,
+    CategoryCardComponent
+    // FooterComponent,
+    
+    // HeaderComponent
 ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css'],
