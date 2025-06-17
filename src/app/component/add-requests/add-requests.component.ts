@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import moment from 'moment';
-import { AddRequest } from '../../modals/add-requests';
+// import { AddRequest, RequestType } from '../../modals/add-requests';
 import { UserView } from '../../modals/user';
 import { Asset } from '../../modals/manage-asset';
 import { RequestServices } from '../../services/requests.service';
@@ -11,6 +11,7 @@ import { ManageAssetService } from '../../services/asset.service';
 import { TransactionService } from '../../services/transaction.service';
 import { FormsModule, ReactiveFormsModule, NgForm } from '@angular/forms';
 import { Transaction } from '../../modals/manage-transaction';
+import { AddRequest } from '../../modals/add-requests';
 
 @Component({
   selector: 'app-add-request',
@@ -33,6 +34,11 @@ export class AddRequestsComponent implements OnInit {
   // Form submission tracking
   formSubmitted = false;
   successMessage: string | null = null;
+  //requestTypes: RequestType[] = [];
+requestTypes: any[] = [];
+requestStatuses: { statusName: string }[] = [];
+
+  
 
   constructor(
     private requestService: RequestServices,
@@ -55,6 +61,18 @@ export class AddRequestsComponent implements OnInit {
         this.newRequest.assetId = null as any; // This will show placeholder
         this.newRequest.transactionId = null;
         this.newRequest.createdByAdmin = false;
+
+//           this.requestService.getAllRequests().subscribe({
+//   next: (res) => {
+//     this.requestTypes = res;
+//     console.log('Request Types:', res); // ✅ Debug
+//   },
+//   error: (err) => {
+//     console.error('Failed to load request types', err);
+//   }
+// });
+
+        
         
         // initialize date fields
         const now = moment();
@@ -69,6 +87,8 @@ export class AddRequestsComponent implements OnInit {
     this.loadUsers();
     this.loadAssets();
     this.loadTransactions();
+    this.loadRequestTypes();
+    this.loadRequestStatuses();
   }
 
   loadUsers(): void {
@@ -94,6 +114,39 @@ export class AddRequestsComponent implements OnInit {
       next: (data) => this.transactions = data,
       error: (err) => {
         console.error('Failed to load transactions', err);
+      }
+    });
+  }
+
+  loadRequestTypes(): void {
+    // this.requestService.getRequestTypes().subscribe({
+    //   next: (data) => this.requestTypes = data,
+      
+    //   error: (err) => {
+    //     console.error('Failed to load request types', err);
+    //   }
+    // });
+
+
+    this.requestService.getRequestTypes().subscribe({
+    next: (data) => {
+      this.requestTypes = data;
+      console.log('Loaded request types:', this.requestTypes); // <-- Add this
+    },
+    error: (err) => {
+      console.error('Failed to load request types', err);
+    }
+  });
+  }
+
+  loadRequestStatuses(): void {
+    this.requestService.getRequestStatuses().subscribe({
+      next: (data) => {
+        this.requestStatuses = data;
+        console.log('Loaded request statuses:', this.requestStatuses);
+      },
+      error: (err) => {
+        console.error('Failed to load request statuses', err);
       }
     });
   }
@@ -281,5 +334,10 @@ export class AddRequestsComponent implements OnInit {
     if (!pattern.test(inputChar)) {
       event.preventDefault();
     }
+  }
+
+  getRequestTypeName(requestTypeId: number): string {
+    const type = this.requestTypes.find(t => t.requestTypeId === requestTypeId);
+    return type ? type.typeName : '';
   }
 }

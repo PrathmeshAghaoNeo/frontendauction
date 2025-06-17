@@ -5,16 +5,26 @@
       <button class="close-filter" (click)="toggleFilter()">×</button>
     </div>
     <div class="filter-content">
-      <!-- Asset Names Section -->
+      <!-- Sort By Dropdown -->
       <div class="filter-section">
-        <h4>Asset Names</h4>
-        <div class="checkbox-list">
-          <div class="checkbox-item" *ngFor="let name of filteredAssetNames">
-            <input type="checkbox" [id]="'asset-' + name" 
-                   [checked]="filters.assetNames.selected.has(name)"
-                   (change)="onAssetNameChange(name, $event)">
-            <label [for]="'asset-' + name">{{ name }}</label>
-          </div>
+        <h4>Sort By</h4>
+        <select class="form-select" [(ngModel)]="selectedSort" (change)="onSortByChange()">
+          <option *ngFor="let opt of sortOptions" [value]="opt.value">{{ opt.label }}</option>
+        </select>
+      </div>
+
+      <!-- Tags Multi-select -->
+      <div class="filter-section" *ngIf="availableTags.length">
+        <h4>Tags</h4>
+        <div>
+          <span
+            *ngFor="let tag of availableTags"
+            class="pill"
+            [class.selected]="selectedTags.has(tag)"
+            (click)="selectedTags.has(tag) ? selectedTags.delete(tag) : selectedTags.add(tag); applyFilters()"
+          >
+            {{ tag }}
+          </span>
         </div>
       </div>
 

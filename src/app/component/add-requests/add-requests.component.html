@@ -96,18 +96,29 @@
 
     <div class="col-md-6">
       <label class="form-label required-label fw-bold">Request Type  </label>
-      <select 
+      <!-- <select 
         class="form-select form-select-lg" 
         [(ngModel)]="newRequest.requestTypeId" 
         name="requestTypeId" 
         required
         [class.is-invalid]="isFieldInvalid('requestTypeId')">
         <option [ngValue]="null" disabled class="placeholder-option">Select Request Type</option>
-        <option [ngValue]="1">Transfer of Ownership</option>
-        <option [ngValue]="2">Inquiry</option>
-        <option [ngValue]="3">Request for Viewing</option>
-        <option [ngValue]="4">Offer</option>
-      </select>
+        <option *ngFor="let type of requestTypes" [ngValue]="type.requestTypeId">{{ type.typeName }}</option>
+      </select> -->
+       <select 
+  class="form-select form-select-lg" 
+  [(ngModel)]="newRequest.requestTypeId" 
+  name="requestTypeId" 
+  required
+  [class.is-invalid]="isFieldInvalid('requestTypeId')">
+  
+  <option [ngValue]="null" disabled>Select Request Type</option>
+
+   <!-- <option *ngFor="let type of requestTypes" [ngValue]="type.requestTypeId">{{ type.TypeName }}</option> -->
+   <option *ngFor="let type of requestTypes" [ngValue]="type.requestTypeId">{{ type.typeName }}</option>
+</select>
+
+      
       <div *ngIf="isFieldInvalid('requestTypeId')" class="text-danger">
         Please select a request type
       </div>
@@ -157,10 +168,10 @@
         required
         [class.is-invalid]="isFieldInvalid('requestStatusId')">
         <option [ngValue]="null" disabled class="placeholder-option">Select Status</option>
-        <option [ngValue]="1">Pending</option>
+        <!-- <option [ngValue]="1">Pending</option>
         <option [ngValue]="2">Done</option>
         <option [ngValue]="3">Approved</option>
-        <option [ngValue]="4">Rejected</option>
+        <option [ngValue]="4">Rejected</option> -->
       </select>
       <div *ngIf="isFieldInvalid('requestStatusId')" class="text-danger">
         Please select a status

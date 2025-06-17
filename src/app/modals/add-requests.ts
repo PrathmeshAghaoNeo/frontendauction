@@ -15,8 +15,14 @@ export interface AddRequest {
   createdByAdmin: boolean;
   createdOn?: string;
   updatedOn?: string;
+  // typeName: string;
 }
 
 export interface EditRequest extends Partial<AddRequest> {
   // fields specific to edit, if any
+}
+
+export interface RequestType {
+  requestTypeId: number;
+typeName: string;
 }

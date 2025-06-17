@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { EditRequests } from '../modals/edit.requests';
-import { AddRequest } from '../modals/add-requests';
+import { AddRequest, RequestType } from '../modals/add-requests';
 import { ManageRequest } from '../modals/manage-requests';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { UserView } from '../modals/user';
@@ -176,4 +176,35 @@ export class RequestServices {
       this.operationsSubject.next(false);
     }
   }
+
+  // Fetch all request types
+  // getRequestTypes(): Observable<RequestType[]> {
+  //   this.incrementOperations();
+  //   return this.http.get<RequestType[]>(`${ApiEndpoints.REQUEST}/types`)
+  //     .pipe(finalize(() => this.decrementOperations()));
+  // }
+
+
+//   getRequestTypes(): Observable<RequestType[]> {
+//   return this.http.get<any[]>('your-api-url/api/requesttypes').pipe(
+//     map(res => res.map(rt => ({
+//       requestTypeId: rt.requestTypeId,
+//       typeName: rt.requestTypeName  // mapping API field to UI field
+//     })))
+//   );
+// }
+
+getRequestTypes(): Observable<RequestType[]> {
+  this.incrementOperations();
+  // Use the new backend endpoint
+  return this.http.get<RequestType[]>('https://localhost:62627/api/Request/types')
+    .pipe(finalize(() => this.decrementOperations()));
+}
+
+getRequestStatuses(): Observable<{ statusName: string }[]> {
+  this.incrementOperations?.();
+  return this.http.get<{ statusName: string }[]>(
+    'https://localhost:62627/api/Request/statuses'
+  ).pipe(finalize(() => this.decrementOperations?.()));
+}
 }

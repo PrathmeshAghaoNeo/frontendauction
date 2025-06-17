@@ -82,7 +82,21 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
         { days: 90, label: '90 Days', selected: false }
       ]
     }
+
+    
   };
+
+  sortOptions: { value: string; label: string }[] = [
+    { value: 'bids_desc', label: 'Bids: Highest – Lowest' },
+    { value: 'bids_asc', label: 'Bids: Lowest – Highest' },
+    { value: 'price_desc', label: 'Price: Highest – Lowest' },
+    { value: 'price_asc', label: 'Price: Lowest – Highest' },
+  ];
+  selectedSort: string = '';
+  availableTags: string[] = [];
+  selectedTags: Set<string> = new Set();
+  lastSortControl: 'dropdown' | 'slider' = 'dropdown';
+  priceSortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private route: ActivatedRoute,
@@ -169,6 +183,8 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
             },
             error: err => console.error('Error fetching bid stats:', err)
           });
+
+          this.extractDynamicFilterOptions();
 
         },
         error: err => console.error('Error fetching assets:', err)
@@ -361,14 +377,11 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     this.applyFilters();
   }
 
-  onPriceSortingChange() {
-    const maxPrice = Math.max(...this.originalAssets.map(asset => asset.price || 0));
-    this.selectedPriceRange = {
-      min: 0,
-      max: maxPrice
-    };
-    this.applyFilters();
-  }
+  // onPriceSortingChange() {
+  //   this.lastSortControl = 'slider';
+  //   this.priceSortDirection = this.priceRange <= 50 ? 'asc' : 'desc';
+  //   this.applyFilters();
+  // }
 
   hasActiveFilters(): boolean {
     return (
@@ -448,6 +461,18 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   applyFilters() {
     let filteredAssets = [...this.originalAssets];
 
+    // Tags
+    if (this.selectedTags.size > 0) {
+      filteredAssets = filteredAssets.filter(asset => {
+        if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+          return (asset as any).attributes.some((attr: any) =>
+            attr.attributeName?.toLowerCase() === 'tag' && this.selectedTags.has(attr.attributeValue)
+          );
+        }
+        return false;
+      });
+    }
+
     // Apply search filter first if there's a search query
     if (this.searchQuery.trim()) {
       const searchTerm = this.searchQuery.toLowerCase().trim();
@@ -495,6 +520,19 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
       }
     }
 
+    // Sorting logic
+    if (this.lastSortControl === 'dropdown') {
+      if (this.selectedSort) {
+        filteredAssets = this.sortAssets(filteredAssets, this.selectedSort);
+      }
+    } else if (this.lastSortControl === 'slider') {
+      if (this.priceSortDirection === 'asc') {
+        filteredAssets.sort((a, b) => (a.price || 0) - (b.price || 0));
+      } else {
+        filteredAssets.sort((a, b) => (b.price || 0) - (a.price || 0));
+      }
+    }
+
     this.assets = filteredAssets;
   }
 
@@ -519,6 +557,46 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
       return `${hours}h ${minutes}m`;
     } else {
       return `${minutes}m`;
+    }
+  }
+
+  extractDynamicFilterOptions() {
+    const tagsSet = new Set<string>();
+    this.originalAssets.forEach(asset => {
+      if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+        for (const attr of (asset as any).attributes) {
+          if (attr.attributeName?.toLowerCase() === 'tag' && attr.attributeValue) {
+            tagsSet.add(attr.attributeValue);
+          }
+        }
+      }
+    });
+    this.availableTags = Array.from(tagsSet);
+  }
+
+  onSortByChange() {
+    this.lastSortControl = 'dropdown';
+    this.applyFilters();
+  }
+
+  onPriceSortingChange() {
+    this.lastSortControl = 'slider';
+    this.priceSortDirection = this.priceRange <= 50 ? 'asc' : 'desc';
+    this.applyFilters();
+  }
+
+  sortAssets(assets: any[], sortBy: string) {
+    switch (sortBy) {
+      case 'bids_desc':
+        return assets.sort((a, b) => (b.bidCount || 0) - (a.bidCount || 0));
+      case 'bids_asc':
+        return assets.sort((a, b) => (a.bidCount || 0) - (b.bidCount || 0));
+      case 'price_desc':
+        return assets.sort((a, b) => (b.price || 0) - (a.price || 0));
+      case 'price_asc':
+        return assets.sort((a, b) => (a.price || 0) - (b.price || 0));
+      default:
+        return assets;
     }
   }
 }

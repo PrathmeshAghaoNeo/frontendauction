@@ -5,19 +5,52 @@
       <button class="close-filter" (click)="toggleFilter()">×</button>
     </div>
     <div class="filter-content">
-      <!-- Asset Names Section -->
+      <!-- Sort By Dropdown -->
       <div class="filter-section">
-        <h4>Asset Names</h4>
-        <!-- <div class="search-box">
-          <input type="text" placeholder="Search assets..." #searchInput (input)="filterAssetNames(searchInput.value)">
-        </div> -->
-        <div class="checkbox-list">
-          <div class="checkbox-item" *ngFor="let name of filteredAssetNames">
-            <input type="checkbox" [id]="'asset-' + name" 
-                   [checked]="filters.assetNames.selected.has(name)"
-                   (change)="onAssetNameChange(name, $event)">
-            <label [for]="'asset-' + name">{{ name }}</label>
-          </div>
+        <h4>Sort By</h4>
+        <select class="form-select" [(ngModel)]="selectedSort" (change)="applyFilters()">
+          <option *ngFor="let opt of sortOptions" [value]="opt.value">{{ opt.label }}</option>
+        </select>
+      </div>
+
+      <!-- Type (Category Type) Filter -->
+      <div class="filter-section" *ngIf="availableTags.length">
+        <h4>Type</h4>
+        <div>
+          <span
+            *ngFor="let type of availableTags"
+            class="pill"
+            [class.selected]="selectedTags.has(type)"
+            (click)="toggleTypeSelection(type)"
+          >
+            {{ type }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Location Input (only for Properties) -->
+      <!--
+      <div class="filter-section" *ngIf="categoryName.toLowerCase().includes('propert')">
+        <h4>Location</h4>
+        <input class="form-control" type="text" list="location-list" [(ngModel)]="selectedLocation" (input)="applyFilters()" placeholder="Type or select location...">
+        <datalist id="location-list">
+          <option *ngFor="let loc of availableLocations" [value]="loc"></option>
+        </datalist>
+      </div>
+      -->
+
+      <!-- Category Tags (categoryName as tags) -->
+      <div class="filter-section" *ngIf="availableCategoryTags.length">
+        <h4>Category</h4>
+        <div>
+          <span
+            *ngFor="let cat of availableCategoryTags"
+            class="pill"
+            [class.selected]="selectedCategoryTag === cat"
+            (click)="selectedCategoryTag === cat ? selectedCategoryTag = '' : selectedCategoryTag = cat; applyFilters()"
+          >
+            {{ cat }}
+          </span>
         </div>
       </div>
 
@@ -37,35 +70,45 @@
         </div>
       </div>
 
-      <!-- Duration Section -->
-      <!--
+      <!-- Price Sorting Slider -->
       <div class="filter-section">
-        <h4>Duration</h4>
-        <div class="checkbox-list">
-          <div class="checkbox-item" *ngFor="let option of filters.durations.options">
-            <input type="checkbox" [id]="'duration-' + option.days" 
-                   [(ngModel)]="option.selected"
-                   (ngModelChange)="onDurationChange()">
-            <label [for]="'duration-' + option.days">{{ option.label }}</label>
-          </div>
-        </div>
-      </div>
-      -->
-
-      <!-- Price Sorting Section -->
-      <div class="price-sorting">
         <h4>Price Sorting</h4>
-        <div class="price-range-slider">
-          <div class="slider-labels">
+        <div class="price-range-slider mt-2">
+          <div class="slider-labels d-flex justify-content-between">
             <span>Low to High</span>
             <span>High to Low</span>
           </div>
-          <input type="range" min="0" max="100" [(ngModel)]="priceRange" 
-                 (input)="onPriceSortingChange()" class="slider">
-          <div class="price-labels">
-            <span>{{ selectedPriceRange.min | currency:'BHD ' }}</span>
-            <span>{{ selectedPriceRange.max | currency:'BHD ' }}</span>
-          </div>
+          <input type="range" min="0" max="100" [(ngModel)]="priceRange" (input)="onPriceSortingChange()" class="slider" [style.background]="getPriceSliderBackground()">
+        </div>
+      </div>
+
+      <!-- Tags Multi-select -->
+      <div class="filter-section" *ngIf="availableTags.length">
+        <h4>Tags</h4>
+        <div>
+          <span
+            *ngFor="let tag of availableTags"
+            class="pill"
+            [class.selected]="selectedTags.has(tag)"
+            (click)="selectedTags.has(tag) ? selectedTags.delete(tag) : selectedTags.add(tag); applyFilters()"
+          >
+            {{ tag }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Condition Multi-select (only for Vehicles/General) -->
+      <div class="filter-section" *ngIf="availableConditions.length && (categoryName.toLowerCase().includes('vehicle') || categoryName.toLowerCase().includes('general'))">
+        <h4>Condition</h4>
+        <div>
+          <span
+            *ngFor="let cond of availableConditions"
+            class="pill"
+            [class.selected]="selectedConditions.has(cond)"
+            (click)="selectedConditions.has(cond) ? selectedConditions.delete(cond) : selectedConditions.add(cond); applyFilters()"
+          >
+            {{ cond }}
+          </span>
         </div>
       </div>
 

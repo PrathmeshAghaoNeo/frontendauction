@@ -24,6 +24,9 @@ interface ActiveFilter {
   label: string;
 }
 
+
+
+
 @Component({
   selector: 'app-direct-sale-assets',
   standalone: true,
@@ -32,8 +35,16 @@ interface ActiveFilter {
   styleUrl: './direct-sale-assets.component.css',
 })
 export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
+toggleTypeSelection(_t28: string) {
+throw new Error('Method not implemented.');
+}
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
+
+
+
+
+  
 
   toOrders() {
     this.router.navigate(['/orders']);
@@ -49,7 +60,8 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   cartAssetIds: number[] = [];
 
   isFilterOpen = false;
-  priceRange = 0;
+  priceRange: number = 0; // 0 = Low to High, 100 = High to Low
+  priceSortDirection: 'asc' | 'desc' = 'asc';
   selectedPriceRange = { min: 0, max: 100 };
   uniqueAssetNames: string[] = [];
   filteredAssetNames: string[] = [];
@@ -82,6 +94,30 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
 
   searchQuery: string = '';
   searchTimeout: any;
+
+  categoryName: string = '';
+
+  sortOptions: { value: string; label: string }[] = [];
+  selectedSort: string = '';
+
+  availableTags: string[] = [];
+  selectedTags: Set<string> = new Set();
+
+  availableConditions: string[] = [];
+  selectedConditions: Set<string> = new Set();
+
+  availableLocations: string[] = [];
+  selectedLocation: string = '';
+
+  minPrice: number = 0;
+  maxPrice: number = 0;
+  selectedMinPrice: number = 0;
+  selectedMaxPrice: number = 0;
+
+  availableCategoryTags: string[] = [];
+  selectedCategoryTag: string = '';
+
+  lastSortControl: 'dropdown' | 'slider' = 'dropdown';
 
   constructor(
     private route: ActivatedRoute,
@@ -138,10 +174,17 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data];
+          this.categoryName = data[0]?.categoryName || '';
+
+         //new added           
+          this.extractDynamicFilterOptions();
+          this.applyFilters();
+          this.categoryName = data[0]?.categoryName || '';
           this.loadWishlist();
           this.loadCartItems();
-          this.updateUniqueAssetNames();
-          this.filteredAssetNames = [...this.uniqueAssetNames];
+          this.extractDynamicFilterOptions();
+          this.applyFilters();
+          this.extractCategoryTags();
         },
         error: (err) => {
           console.error('Error fetching assets:', err);
@@ -152,6 +195,60 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
       Swal.fire('Error!', 'Invalid category ID');
     }
   }
+
+
+//added new
+extractDynamicFilterOptions() {
+  const allAssets = this.originalAssets;
+  const tagsSet = new Set<string>();
+  const conditionSet = new Set<string>();
+  const locationSet = new Set<string>();
+  let minPrice = Number.POSITIVE_INFINITY;
+  let maxPrice = 0;
+
+  allAssets.forEach(asset => {
+    if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+      for (const attr of (asset as any).attributes) {
+        if (attr.attributeName?.toLowerCase() === 'tag' && attr.attributeValue) {
+          tagsSet.add(attr.attributeValue);
+        }
+        if (attr.attributeName?.toLowerCase() === 'condition' && attr.attributeValue) {
+          conditionSet.add(attr.attributeValue);
+        }
+        if (attr.attributeName?.toLowerCase() === 'location' && attr.attributeValue) {
+          locationSet.add(attr.attributeValue);
+        }
+      }
+    }
+    if (typeof asset.price === 'number') {
+      if (asset.price < minPrice) minPrice = asset.price;
+      if (asset.price > maxPrice) maxPrice = asset.price;
+    }
+  });
+
+  this.availableTags = Array.from(tagsSet);
+  this.availableConditions = Array.from(conditionSet);
+  this.availableLocations = Array.from(locationSet);
+  this.minPrice = isFinite(minPrice) ? minPrice : 0;
+  this.maxPrice = maxPrice;
+  this.selectedMinPrice = this.minPrice;
+  this.selectedMaxPrice = this.maxPrice;
+
+  this.sortOptions = this.getSortOptionsForCategory(this.categoryName);
+  this.selectedSort = this.sortOptions[0]?.value || '';
+}
+
+
+//added new
+getSortOptionsForCategory(categoryName: string) {
+  return [
+    { value: 'bids_desc', label: 'Bids: Highest – Lowest' },
+    { value: 'bids_asc', label: 'Bids: Lowest – Highest' },
+    { value: 'price_desc', label: 'Price: Highest – Lowest' },
+    { value: 'price_asc', label: 'Price: Lowest – Highest' },
+  ];
+}
+
 
   loadWishlist(): void {
      if (!this.userId) return;
@@ -409,10 +506,70 @@ redirectToCart(): void {
     this.filterAssetsBySearch();
   }
 
+  // applyFilters() {
+  //   let filteredAssets = [...this.originalAssets];
+
+  //   if (this.searchQuery.trim()) {
+  //     const searchTerm = this.searchQuery.toLowerCase().trim();
+  //     filteredAssets = filteredAssets.filter(asset =>
+  //       asset.title?.toLowerCase().includes(searchTerm) ||
+  //       asset.description?.toLowerCase().includes(searchTerm)
+  //     );
+  //   }
+
+  //   if (this.selectedTags.size > 0) {
+  //     filteredAssets = filteredAssets.filter(asset => {
+  //       if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+  //         return (asset as any).attributes.some((attr: any) =>
+  //           attr.attributeName?.toLowerCase() === 'tag' && this.selectedTags.has(attr.attributeValue)
+  //         );
+  //       }
+  //       return false;
+  //     });
+  //   }
+
+  //   if (this.selectedConditions.size > 0) {
+  //     filteredAssets = filteredAssets.filter(asset => {
+  //       if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+  //         return (asset as any).attributes.some((attr: any) =>
+  //           attr.attributeName?.toLowerCase() === 'condition' && this.selectedConditions.has(attr.attributeValue)
+  //         );
+  //       }
+  //       return false;
+  //     });
+  //   }
+
+  //   if (this.categoryName.toLowerCase().includes('propert') && this.selectedLocation) {
+  //     filteredAssets = filteredAssets.filter(asset => {
+  //       if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+  //         return (asset as any).attributes.some((attr: any) =>
+  //           attr.attributeName?.toLowerCase() === 'location' && attr.attributeValue === this.selectedLocation
+  //         );
+  //       }
+  //       return false;
+  //     });
+  //   }
+
+  //   filteredAssets = filteredAssets.filter(asset => {
+  //     return asset.price >= this.selectedMinPrice && asset.price <= this.selectedMaxPrice;
+  //   });
+
+  //   filteredAssets = this.sortAssets(filteredAssets, this.selectedSort);
+
+  //   this.assets = filteredAssets;
+  // }
+
+
+  //added new
   applyFilters() {
     let filteredAssets = [...this.originalAssets];
 
-    // Apply search filter first if there's a search query
+  // Filter by selected category tag
+  if (this.selectedCategoryTag) {
+    filteredAssets = filteredAssets.filter(asset => asset.categoryName === this.selectedCategoryTag);
+  }
+
+  // Search
     if (this.searchQuery.trim()) {
       const searchTerm = this.searchQuery.toLowerCase().trim();
       filteredAssets = filteredAssets.filter(asset => 
@@ -421,55 +578,79 @@ redirectToCart(): void {
       );
     }
 
-    // Filter by selected asset names
-    if (this.filters.assetNames.enabled && this.filters.assetNames.selected.size > 0) {
-      filteredAssets = filteredAssets.filter(asset => 
-        this.filters.assetNames.selected.has(asset.title)
+  // Tags
+  if (this.selectedTags.size > 0) {
+    filteredAssets = filteredAssets.filter(asset => {
+      if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+        return (asset as any).attributes.some((attr: any) =>
+          attr.attributeName?.toLowerCase() === 'tag' && this.selectedTags.has(attr.attributeValue)
+        );
+      }
+      return false;
+    });
+  }
+
+  // Condition
+  if (this.selectedConditions.size > 0) {
+    filteredAssets = filteredAssets.filter(asset => {
+      if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+        return (asset as any).attributes.some((attr: any) =>
+          attr.attributeName?.toLowerCase() === 'condition' && this.selectedConditions.has(attr.attributeValue)
       );
+      }
+      return false;
+    });
     }
 
-    // Filter by selected price ranges
-    if (this.filters.prices.enabled) {
+  // Location (only for Properties)
+  if (this.categoryName.toLowerCase().includes('propert') && this.selectedLocation) {
+    filteredAssets = filteredAssets.filter(asset => {
+      if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+        return (asset as any).attributes.some((attr: any) =>
+          attr.attributeName?.toLowerCase() === 'location' && attr.attributeValue === this.selectedLocation
+        );
+      }
+      return false;
+    });
+  }
+
+  // Price range checkboxes
       const selectedRanges = this.filters.prices.ranges.filter(range => range.selected);
       if (selectedRanges.length > 0) {
         filteredAssets = filteredAssets.filter(asset => {
           return selectedRanges.some(range => {
-            const price = asset.price || 0;
             if (range.max === null) {
-              return price >= range.min;
+          return asset.price >= range.min;
             }
-            return price >= range.min && price <= range.max;
+        return asset.price >= range.min && asset.price <= range.max;
           });
         });
       }
-    }
 
-    // Filter by selected durations
-    if (this.filters.durations.enabled) {
-      const selectedDurations = this.filters.durations.options.filter(opt => opt.selected);
-      if (selectedDurations.length > 0) {
-        const currentDate = new Date();
-        filteredAssets = filteredAssets.filter(asset => {
-          if (!asset.createdAt) return false;
-          const assetDate = new Date(asset.createdAt);
-          if (isNaN(assetDate.getTime())) return false;
-          const diffDays = Math.ceil((currentDate.getTime() - assetDate.getTime()) / (1000 * 60 * 60 * 24));
-          return selectedDurations.some(duration => diffDays <= duration.days);
-        });
-      }
+  // Sorting logic
+  if (this.lastSortControl === 'dropdown') {
+    if (this.selectedSort) {
+      filteredAssets = this.sortAssets(filteredAssets, this.selectedSort);
     }
-
-    // Apply price sorting based on slider position
-    if (this.priceRange <= 50) {
-      // Low to High
+  } else if (this.lastSortControl === 'slider') {
+    if (this.priceSortDirection === 'asc') {
       filteredAssets.sort((a, b) => (a.price || 0) - (b.price || 0));
     } else {
-      // High to Low
       filteredAssets.sort((a, b) => (b.price || 0) - (a.price || 0));
+    }
     }
 
     this.assets = filteredAssets;
   }
+
+
+
+
+
+
+
+
+
 
   resetFilters() {
     this.filters.assetNames.selected.clear();
@@ -514,13 +695,13 @@ redirectToCart(): void {
   }
 
   onPriceSortingChange() {
-    this.updatePriceRange();
-    // Update the slider background
-    const slider = document.querySelector('.slider') as HTMLElement;
-    if (slider) {
-      const percentage = this.priceRange;
-      slider.style.background = `linear-gradient(to right, #9b59b6 0%, #9b59b6 ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
-    }
+    this.lastSortControl = 'slider';
+    this.priceSortDirection = this.priceRange <= 50 ? 'asc' : 'desc';
+    this.applyFilters();
+  }
+
+  onSortByChange() {
+    this.lastSortControl = 'dropdown';
     this.applyFilters();
   }
 
@@ -612,5 +793,117 @@ redirectToCart(): void {
     this.updatePriceRange();
     
     this.applyFilters();
+  }
+
+  // extractDynamicFilterOptions() {
+  //   const allAssets = this.originalAssets;
+  //   const tagsSet = new Set<string>();
+  //   const conditionSet = new Set<string>();
+  //   const locationSet = new Set<string>();
+  //   let minPrice = Number.POSITIVE_INFINITY;
+  //   let maxPrice = 0;
+
+  //   allAssets.forEach(asset => {
+  //     if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
+  //       for (const attr of (asset as any).attributes) {
+  //         if (attr.attributeName?.toLowerCase() === 'tag' && attr.attributeValue) {
+  //           tagsSet.add(attr.attributeValue);
+  //         }
+  //         if (attr.attributeName?.toLowerCase() === 'condition' && attr.attributeValue) {
+  //           conditionSet.add(attr.attributeValue);
+  //         }
+  //         if (attr.attributeName?.toLowerCase() === 'location' && attr.attributeValue) {
+  //           locationSet.add(attr.attributeValue);
+  //         }
+  //       }
+  //     }
+  //     if (typeof asset.price === 'number') {
+  //       if (asset.price < minPrice) minPrice = asset.price;
+  //       if (asset.price > maxPrice) maxPrice = asset.price;
+  //     }
+  //   });
+
+  //   this.availableTags = Array.from(tagsSet);
+  //   this.availableConditions = Array.from(conditionSet);
+  //   this.availableLocations = Array.from(locationSet);
+  //   this.minPrice = isFinite(minPrice) ? minPrice : 0;
+  //   this.maxPrice = maxPrice;
+  //   this.selectedMinPrice = this.minPrice;
+  //   this.selectedMaxPrice = this.maxPrice;
+
+  //   this.sortOptions = this.getSortOptionsForCategory(this.categoryName);
+  //   this.selectedSort = this.sortOptions[0]?.value || '';
+  // }
+
+  // getSortOptionsForCategory(categoryName: string) {
+  //   const base = [
+  //     { value: 'bids_desc', label: 'Bids: Highest – Lowest' },
+  //     { value: 'bids_asc', label: 'Bids: Lowest – Highest' },
+  //     { value: 'price_desc', label: 'Price: Highest – Lowest' },
+  //     { value: 'price_asc', label: 'Price: Lowest – Highest' },
+  //     { value: 'ending_soon', label: 'Ending: Soon – Latest' },
+  //     { value: 'ending_latest', label: 'Ending: Latest – Soon' },
+  //   ];
+  //   if (categoryName.toLowerCase().includes('car plate')) {
+  //     return [
+  //       ...base,
+  //       { value: 'number_desc', label: 'Number: Highest – Lowest' },
+  //       { value: 'number_asc', label: 'Number: Lowest – Highest' },
+  //     ];
+  //   }
+  //   return base;
+  // }
+
+  sortAssets(assets: any[], sortBy: string) {
+    switch (sortBy) {
+      case 'bids_desc':
+        return assets.sort((a, b) => (b.bidCount || 0) - (a.bidCount || 0));
+      case 'bids_asc':
+        return assets.sort((a, b) => (a.bidCount || 0) - (b.bidCount || 0));
+      case 'price_desc':
+        return assets.sort((a, b) => (b.price || 0) - (a.price || 0));
+      case 'price_asc':
+        return assets.sort((a, b) => (a.price || 0) - (b.price || 0));
+      case 'ending_soon':
+        return assets.sort((a, b) => new Date(a.auctionEndTime || 0).getTime() - new Date(b.auctionEndTime || 0).getTime());
+      case 'ending_latest':
+        return assets.sort((a, b) => new Date(b.auctionEndTime || 0).getTime() - new Date(a.auctionEndTime || 0).getTime());
+      case 'number_desc':
+        return assets.sort((a, b) => (parseInt(b.assetNumber) || 0) - (parseInt(a.assetNumber) || 0));
+      case 'number_asc':
+        return assets.sort((a, b) => (parseInt(a.assetNumber) || 0) - (parseInt(b.assetNumber) || 0));
+      default:
+        return assets;
+    }
+  }
+
+  extractCategoryTags() {
+    const categorySet = new Set<string>();
+    this.originalAssets.forEach(asset => {
+      if (asset.categoryName) {
+        categorySet.add(asset.categoryName);
+      }
+    });
+    this.availableCategoryTags = Array.from(categorySet);
+  }
+
+  getPriceSliderBackground(): string {
+    const percentage = this.priceRange;
+    return `linear-gradient(to right, #9b59b6 0%, #9b59b6 ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
+  }
+
+  extractTypesFromAttributes() {
+  const typeSet = new Set<string>();
+  this.originalAssets.forEach(asset => {
+    const attrs = (asset as any).attributes;
+    if (attrs && Array.isArray(attrs)) {
+      attrs.forEach((attr: any) => {
+        if (attr.attributeName?.toLowerCase() === 'type' && attr.attributeValue) {
+          typeSet.add(attr.attributeValue);
+        }
+      });
+    }
+  });
+  this.availableTags = Array.from(typeSet);
   }
 }

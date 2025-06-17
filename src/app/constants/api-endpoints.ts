@@ -18,6 +18,7 @@ export const ApiEndpoints = {
   TRANSACTIONS: `${BASE_URL}/Transactions`,
   USER: `${BASE_URL}/User`,
   REQUEST: `${BASE_URL}/Request`,
+  // REQUESTTYPE: `${BASE_URL}/Request/types`,
   Auth: `${BASE_URL}/Auth`,
   Bid : `${BASE_URL}/Bid`,
   CHATBOT : `${BASE_URL}/Chatbot/message`,

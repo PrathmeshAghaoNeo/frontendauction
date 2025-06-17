@@ -1124,3 +1124,33 @@ footer {
   padding-bottom: 20px;
   min-height: 100%;
 }
+
+/* Pill styles for tags and condition */
+.pill {
+  display: inline-block;
+  padding: 6px 18px;
+  margin: 4px 6px 4px 0;
+  border-radius: 20px;
+  border: 1.5px solid #e74c3c;
+  background: #fff;
+  color: #e74c3c;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  user-select: none;
+}
+.pill.selected, .pill:active {
+  background: #e74c3c;
+  color: #fff;
+  border: 1.5px solid #e74c3c;
+}
+.pill:hover {
+  background: #fbeaea;
+  color: #e74c3c;
+}
+
+/* Remove default checkbox appearance for pill checkboxes */
+.pill-checkbox {
+  display: none;
+}
