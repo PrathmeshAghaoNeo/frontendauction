@@ -464,7 +464,7 @@ export const routes: Routes = [
   { path: 'filter', component: FilterComponent, data: { animation: 'Filter' } },
   //{ path: '**', redirectTo: 'page-not-found'  } ,// ❌ This would block /payment-success if declared earlier
   { path: '**', component: PageNotFoundComponent, data: { animation: 'PageNotFound' }  },
-  { path: '**', redirectTo: 'page-not-found', data: { animation: 'Wildcard' } } 
+  { path: '**', redirectTo: 'page-not-found', data: { animation: 'Wildcard' } },
   { path: 'finalCheckout/:assetId', component: CheckoutComponentComponent, data: { animation: 'FinalCheckout' } },
  
 ];
