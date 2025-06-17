@@ -1,44 +1,46 @@
 <div class="start-page-container d-flex flex-column justify-content-center align-items-center text-center">
-  <h1 class="welcome-text">Welcome, {{username}}</h1>
-  <p class="lead-text">What would you like to do today?</p>
+  <h1 class="welcome-text"> {{ 'WELCOME_USER' | translate:{ username: username } }} </h1>
+  <p class="lead-text"> {{ 'WHAT_DO_YOU_WANT' | translate }}  </p>
 
   <div class="button-group d-flex flex-wrap justify-content-center gap-4 mt-4">
-    <button class="btn btn-lg browse-btn" routerLink="/auctions">
-      <i class="bi bi-search me-2"></i>Browse Auctions
+    <button class="btn btn-lg browse-btn" (click)="scrollToCategoryCard()">
+      <i class="bi bi-search me-2"></i> {{ 'BROWSE_AUCTIONS' | translate }} 
     </button>
 
     <button class="btn btn-lg account-btn" routerLink="/user-profile">
-      <i class="bi bi-person-circle me-2"></i>My Account
+      <i class="bi bi-person-circle me-2"></i>  {{ 'MY_ACCOUNT' | translate }}  
     </button>
   </div>
-  
-  <section  class="mt-5 w-100">
-    <app-direct-sale></app-direct-sale>
-  </section>
 
   <section class="mt-5 w-100">
+    <app-direct-sale></app-direct-sale>
+  </section>
+  <h1 id="category-card" ></h1>
+  <section  class="mt-5 w-100">
     <app-category-card></app-category-card>
   </section>
 
-  <!-- <section class="help-resources-section mt-5">
+  <!--
+  <section class="help-resources-section mt-5">
     <div class="tabs-container d-flex flex-wrap justify-content-center gap-5">
       <div class="tab text-start">
-        <h3>Help</h3>
+        <h3>{{ 'FOOTER_HELP' | translate }}</h3>
         <ul>
-          <li><a href="/contact-support">Contact Support</a></li>
-          <li><a href="/privacy-policy">Privacy Policy</a></li>
-          <li><a href="/terms-of-services">Terms of Services</a></li>
-          <li><a href="/cookie-policy">Cookie Policy</a></li>
+          <li><a href="/contact-support">{{ 'FOOTER_CONTACT_SUPPORT' | translate }}</a></li>
+          <li><a href="/privacy-policy">{{ 'FOOTER_PRIVACY_POLICY' | translate }}</a></li>
+          <li><a href="/terms-of-services">{{ 'FOOTER_TERMS' | translate }}</a></li>
+          <li><a href="/cookie-policy">{{ 'FOOTER_COOKIES' | translate }}</a></li>
         </ul>
       </div>
       <div class="tab text-start">
-        <h3>Resources</h3>
+        <h3>{{ 'FOOTER_RESOURCES' | translate }}</h3>
         <ul>
-          <li><a href="/faq">FAQ</a></li>
-          <li><a href="/guides">Guides</a></li>
-          <li><a href="/status">Status</a></li>
+          <li><a href="/faq">{{ 'FOOTER_FAQ' | translate }}</a></li>
+          <li><a href="/guides">{{ 'FOOTER_GUIDES' | translate }}</a></li>
+          <li><a href="/status">{{ 'FOOTER_STATUS' | translate }}</a></li>
         </ul>
       </div>
     </div>
-  </section> -->
+  </section>
+  -->
 </div>

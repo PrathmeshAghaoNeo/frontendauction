@@ -367,17 +367,12 @@
           {{ selectedTransaction?.notes || "No notes" }}
         </p>
       </div>
-      <div class="col-md-6" *ngIf="selectedTransaction?.documentUrls?.length">
-        <label class="form-label">Documents:</label>
+      <div class="col-md-6" *ngIf="selectedTransaction?.documentUrl">
+        <label class="form-label">Document:</label>
         <div class="mt-2">
-          <div
-            *ngFor="let doc of selectedTransaction?.documentUrls; let i = index"
-            class="mb-1"
-          >
-            <a [href]="doc" target="_blank" class="">
-              <i class="bi bi-file-earmark-text me-1"></i> Document {{ i + 1 }}
-            </a>
-          </div>
+          <a [href]="selectedTransaction?.documentUrl" target="_blank">
+            <i class="bi bi-file-earmark-text me-1"></i> View Document
+          </a>
         </div>
       </div>
     </div>

@@ -1,21 +1,59 @@
-  .back-btn {
-    position: absolute;
-    left: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px 10px;
-    display: flex;
-    justify-content: center;
-    color: #6a1b9a;
-  }
-  
-  
-  .back-btn:hover {
-    color: #6a1b9a;
-    transform: scale(1.1);
-  }
-  
-  .back-btn i {
-    font-size: 2rem;
-  }
+
+.container-transation{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 35%;
+}
+
+
+/* styles.scss */
+
+.asset-form-container {
+  max-width: 1700px;
+  width: 60%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  margin: 10px auto 30px auto;
+}
+
+.asset-form-title {
+  color: #6a1b9a;
+  font-weight: 600;
+  font-size: 29px;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.asset-form-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
+/* Add others like .form-label, .btn-primary, .form-control etc. */
+.back-btn {
+  position: relative;
+  left: 0;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
+  display: inline-flex;
+  /* /* align-items: center; */
+  justify-content: flex-end; 
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #6a1b9a;
+  transform: scale(1.1);
+}
+
+.back-btn i {
+  font-size: 2rem;
+}

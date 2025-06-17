@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { RoleWithPermissionsService } from '../../services/roles.service';
 import { MENU_CONFIG, MenuItem } from './menu.config';
@@ -16,11 +16,15 @@ import { Subscription } from 'rxjs';
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent implements OnInit {
+  
   isExpanded = false;
+  
+  @Output() hoverChange = new EventEmitter<boolean>();
+
   visibleMenuItems: MenuItem[] = [];
   private roleSubscription?: Subscription;
   constructor(private authService: AuthService) { }
-  ngOnInit(): void {
+  ngOnInit(): void {  
     console.log('%c[Sidebar] ngOnInit triggered', 'color: green');
 
     // First try to restore from sync value
@@ -39,6 +43,15 @@ export class SidebarComponent implements OnInit {
       }
     });
 
+  }
+  onMouseEnter() {
+    this.isExpanded = true;
+    this.hoverChange.emit(true);
+  }
+
+  onMouseLeave() {
+    this.isExpanded = false;
+    this.hoverChange.emit(false);
   }
 
 

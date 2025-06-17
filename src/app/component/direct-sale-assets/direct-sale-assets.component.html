@@ -24,6 +24,7 @@
   <div class="plates-container" [ngClass]="layoutType + '-view'">
     <div class="plate-card" *ngFor="let asset of assets">
       <div class="plate-display" (click)="goToAssetDetail(asset.assetId)">
+       
         <ng-container *ngIf="layoutType === 'row'; else gridView">
           <!-- Row View -->
           <div class="plate-display-row">

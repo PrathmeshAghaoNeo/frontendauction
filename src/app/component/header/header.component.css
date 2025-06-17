@@ -16,7 +16,7 @@ header {
 
   .btn {
     padding: 0.375rem 1rem;
-
+    margin:0.4rem;
     &.rounded-circle {
       width: 2.5rem;
       height: 2.5rem;
@@ -147,4 +147,26 @@ header {
 .btn-toggle-lang:focus {
   outline: none;
   text-decoration: underline;
+}
+
+.text-container-h {
+}
+
+.brand-text {
+  color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  width: 50%;
+}
+
+.brand-title {
+  font-size: 20px; /* Smaller main title */
+  font-weight: 600;
+}
+
+.brand-subtitle {
+  font-size: 13px; /* Even smaller subtitle */
+  color: #555;
+  font-weight: 400;
 }

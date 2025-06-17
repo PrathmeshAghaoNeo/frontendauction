@@ -4,7 +4,7 @@
   background-color: #f0caf0 !important;
 }
 .container-fluid {
-  max-width: 1024px;
+  width: 80%;
   margin: 0 auto;
 }
 
@@ -31,7 +31,15 @@
   object-fit: cover;
   width: 100%;
 }
-
+.button-image2{
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* Line indicators instead of dots */
 .carousel-indicators {
   margin-bottom: -15px;
@@ -165,6 +173,27 @@
   max-width: 300px;
   margin: 0 auto;
 }
+
+
+
+.back-btn{
+  border: none;
+  background-color: transparent; 
+}
+.back-btn-image {
+  width: 32px;
+  height: 32px;
+}
+
+.header-btn{
+  display: block;
+  align-items: start;
+  justify-content: start;
+  margin-top: 16px;
+  margin-bottom: 20px;
+  margin-left: 31px;
+}
+
 
 .flag {
   width: 32px;
@@ -318,6 +347,9 @@
 
 }
 
+.rtl-rotate {
+  transform: rotate(180deg); /* flip the arrow direction */
+}
 
 
 

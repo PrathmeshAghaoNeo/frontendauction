@@ -17,6 +17,7 @@ import { Auction } from '../../modals/auctions';
 import { AuctionService } from '../../services/auction.service';
 import { AssetCategory } from '../../modals/assetcategories';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
+import { Seller } from '../../modals/add-asset';
 // import {NgSelectModule} from '@ng-select/ng-select';
 
 @Component({
@@ -28,19 +29,18 @@ import { AssetCategoriesService } from '../../services/assetcategories.service';
 })
 export class AddAssetComponent {
   auctions: Auction[] = [];
+  sellers: Seller[] = [];
   assetForm: FormGroup;
   documentUrls: string[] = [];
   imageUploadError: string = '';
   documentUploadError: string = '';
   formSubmitted = false;
-  category : AssetCategory[] = [];
+  category: AssetCategory[] = [];
 
   imagePreviews: string[] = [];
 
   // this is for form submit the detsials
   detailsAdded: boolean = false;
-
-
 
   categories: AssetCategory[] = [];
 
@@ -57,8 +57,6 @@ export class AddAssetComponent {
   getFieldLabel(key: string): string {
     return this.fieldLabels[key] || key;
   }
-
-  
 
   asset = {
     assetNumber: '',
@@ -87,9 +85,13 @@ export class AddAssetComponent {
     adminFees: 0,
     auctionFees: 0,
     buyerCommission: 0,
-    winnerId: 6,
+    winnerId: 0,
     awardedPrice: 170000,
     salesNotes: '', // Bound to input
+    languageId: 0,
+    translatedTitle: '',
+    translatedDescription: '',
+    translatedSalesNotes: '',
     galleryFiles: [] as File[],
     documentFiles: [] as File[],
     detailsJson: [] as Array<{ attributeName: string; attributeValue: string }>,
@@ -125,19 +127,17 @@ export class AddAssetComponent {
     'Payment',
     'Registration',
     'Transferred',
-    'Closed'
+    'Closed',
   ];
 
   vatOptions = ['Exclusive', 'Inclusive', 'Not Applicable'];
   requestForViewingOptions = ['On', 'Off'];
   requestForInquiryOptions = ['On', 'Off'];
 
-sellers = [
-  { id: 1, name: 'vaish patil' },
-  // ...add more as needed
-];
-
-
+  // sellers = [
+  //   { id: 1, name: 'vaish patil' },
+  //   // ...add more as needed
+  // ];
 
   constructor(
     private fb: FormBuilder,
@@ -148,7 +148,6 @@ sellers = [
     private auctionService: AuctionService
   ) {
     this.assetForm = this.fb.group({
-    
       title: ['', [Validators.required, Validators.maxLength(255)]],
       categoryId: [0, [Validators.required, Validators.maxLength(10)]],
       deposit: [
@@ -211,70 +210,81 @@ sellers = [
   onAuctionSelectionChange(selectedIds: number[]) {
     console.log('Selected auction IDs:', selectedIds);
   }
-  
 
-  
   ngOnInit() {
     // Log asset object on page load
     this.fetchAuctions();
+    this.loadSellers();
     console.log('Asset on page load:', this.asset);
     this.assetCategoriesService.getAll().subscribe({
-  next: (data) => {
-    this.categories = data;
-    console.log('Categories:', this.categories);
-  },
-  error: (err) => {
-    console.error('Error fetching categories', err);
-    Swal.fire('Error!', 'Failed to load categories.', 'error');
-  },
-});
+      next: (data) => {
+        this.categories = data;
+        console.log('Categories:', this.categories);
+      },
+      error: (err) => {
+        console.error('Error fetching categories', err);
+        Swal.fire('Error!', 'Failed to load categories.', 'error');
+      },
+    });
 
-    
     // Listen to value changes of the form
     this.assetForm.valueChanges.subscribe((changes) => {
       console.log('Asset changed:', changes);
     });
   }
-  
-  getSelectedAuctionText(): string {
-  const selected = this.auctions.filter(a => this.asset.auctionIds.includes(a.auctionId));
-  return selected.map(a => `${a.type} #${a.auctionNumber}`).join(', ');
-}
 
-// toggleAuctionSelection(id: number) {
-//   const index = this.asset.auctionIds.indexOf(id);
-//   if (index > -1) {
-//     this.asset.auctionIds.splice(index, 1);
-//   } else {
-//     this.asset.auctionIds.push(id);
-//   }
-//   this.onAuctionSelectionChange(this.asset.auctionIds);
-// }
-toggleAuctionSelection(id: number) {
-  if (this.asset.auctionIds.includes(id)) {
-    // If already selected, unselect it
-    this.asset.auctionIds = [];
-  } else {
-    // Only allow one auction at a time
-    this.asset.auctionIds = [id];
+  getSelectedAuctionText(): string {
+    const selected = this.auctions.filter((a) =>
+      this.asset.auctionIds.includes(a.auctionId)
+    );
+    return selected.map((a) => `${a.type} #${a.auctionNumber}`).join(', ');
   }
 
-  this.onAuctionSelectionChange(this.asset.auctionIds);
-}
+  // toggleAuctionSelection(id: number) {
+  //   const index = this.asset.auctionIds.indexOf(id);
+  //   if (index > -1) {
+  //     this.asset.auctionIds.splice(index, 1);
+  //   } else {
+  //     this.asset.auctionIds.push(id);
+  //   }
+  //   this.onAuctionSelectionChange(this.asset.auctionIds);
+  // }
+  toggleAuctionSelection(id: number) {
+    if (this.asset.auctionIds.includes(id)) {
+      // If already selected, unselect it
+      this.asset.auctionIds = [];
+    } else {
+      // Only allow one auction at a time
+      this.asset.auctionIds = [id];
+    }
 
+    this.onAuctionSelectionChange(this.asset.auctionIds);
+  }
 
   fetchAuctions(): void {
     this.auctionService.getAllAuctions().subscribe({
       next: (data) => {
         this.auctions = data;
-        console.log("auction" , this.auctions);
-        },
-        error: (err) => {
-          console.error('Error fetching auctions', err);
-          Swal.fire('Error!', 'Failed to load auctions.', 'error');
-        }
-      });
-    }
+        console.log('auction', this.auctions);
+      },
+      error: (err) => {
+        console.error('Error fetching auctions', err);
+        Swal.fire('Error!', 'Failed to load auctions.', 'error');
+      },
+    });
+  }
+
+  loadSellers(): void {
+    this.assetService.getSellers().subscribe({
+      next: (data) => {
+        this.sellers = data;
+        console.log('Sellers:', this.sellers);
+      },
+      error: (err) => {
+        console.error('Failed to fetch sellers', err);
+      },
+    });
+  }
 
   limitToThreeDigits(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -314,8 +324,6 @@ toggleAuctionSelection(id: number) {
 
     this.asset.courtCaseNumber = input.value;
   }
-
-
 
   getAuctionId(value: string): number {
     switch (value) {
@@ -483,6 +491,13 @@ toggleAuctionSelection(id: number) {
     formData.append('WinnerId', this.asset.winnerId.toString());
     formData.append('AwardedPrice', this.asset.awardedPrice.toString());
     formData.append('SalesNotes', this.asset.salesNotes || '');
+   if (this.asset.languageId && this.asset.languageId !== 0) {
+  formData.append('LanguageId', this.asset.languageId.toString());
+  formData.append('TranslatedTitle', this.asset.translatedTitle);
+  formData.append('TranslatedDescription', this.asset.translatedDescription);
+  formData.append('TranslatedSalesNotes', this.asset.translatedSalesNotes);
+}
+
 
     // Append detailsJson
     // this.asset.detailsJson.forEach((detail, index) => {
@@ -538,6 +553,21 @@ toggleAuctionSelection(id: number) {
     }
   }
 
+  limitToInputWords(event : Event){
+    const input = event.target as HTMLInputElement;
+
+    if (input.value === null || input.value === '') {
+      input.setCustomValidity('Value must be at least 1'); // Set custom error message
+    } else {
+      input.setCustomValidity(''); // Reset error if input is valid
+    }
+
+    // Limit to 10 digits
+    if (input.value.length > 20) {
+      input.value = input.value.slice(0, 20); // Limit input to 10 digits
+    }
+  }
+
   showInvalidTooltip = false;
 
   onHoverSubmit(show: boolean) {
@@ -573,7 +603,7 @@ toggleAuctionSelection(id: number) {
   sellerError: string = '';
   courtCaseNumberError: string = '';
   registrationDeadlineError: string = '';
-  auctionError : string = '';
+  auctionError: string = '';
   attributeError: string = '';
 
   updateAsset(form: any): void {
@@ -583,11 +613,11 @@ toggleAuctionSelection(id: number) {
     //   return;
     // }
 
-     if (!this.detailsAdded || this.asset.detailsJson.length === 0) {
-    this.attributeError = 'Please add at least one attribute before submitting.';
-    return; 
-  }
-
+    if (!this.detailsAdded || this.asset.detailsJson.length === 0) {
+      this.attributeError =
+        'Please add at least one attribute before submitting.';
+      return;
+    }
 
     if (
       !this.isGalleryValid() ||
@@ -616,15 +646,15 @@ toggleAuctionSelection(id: number) {
       this.asset.courtCaseNumber.trim() === '' ||
       this.asset.registrationDeadline == null ||
       this.asset.registrationDeadline === 0 ||
-      !this.asset.auctionIds || this.asset.auctionIds.length === 0 ||
-      
-      this.asset.detailsJson.some(detail =>
-        !detail.attributeName ||
-        detail.attributeName.trim() === '' ||
-        !detail.attributeValue ||
-        detail.attributeValue.trim() === ''
+      !this.asset.auctionIds ||
+      this.asset.auctionIds.length === 0 ||
+      this.asset.detailsJson.some(
+        (detail) =>
+          !detail.attributeName ||
+          detail.attributeName.trim() === '' ||
+          !detail.attributeValue ||
+          detail.attributeValue.trim() === ''
       )
-      
     ) {
       this.assetForm.markAllAsTouched();
       this.formSubmitted = true;
@@ -751,17 +781,24 @@ toggleAuctionSelection(id: number) {
         this.auctionError = '';
       }
 
-  
-      if (this.asset.detailsJson.length === 0 || this.asset.detailsJson == null) {
+      if (
+        this.asset.detailsJson.length === 0 ||
+        this.asset.detailsJson == null
+      ) {
         this.attributeError = 'At least one detail is required.';
-      } else if (this.asset.detailsJson.some(detail => 
-        !detail.attributeName || detail.attributeName.trim() === '' ||
-        !detail.attributeValue || detail.attributeValue.trim() === '')) {
+      } else if (
+        this.asset.detailsJson.some(
+          (detail) =>
+            !detail.attributeName ||
+            detail.attributeName.trim() === '' ||
+            !detail.attributeValue ||
+            detail.attributeValue.trim() === ''
+        )
+      ) {
         this.attributeError = 'All attribute names and values must be filled.';
       } else {
         this.attributeError = '';
       }
-      
 
       return;
     }
@@ -788,6 +825,11 @@ toggleAuctionSelection(id: number) {
         console.log('Asset created successfully:', response);
         Swal.fire({
           icon: 'success',
+          toast:true,
+          position:'top',
+          timer: 3000,
+          showConfirmButton: false,
+          timerProgressBar: true,
           title: 'Asset Created',
           text: 'Asset created successfully!',
         }).then(() => {
@@ -840,7 +882,7 @@ toggleAuctionSelection(id: number) {
     this.imageUploadError = '';
 
     if (file) {
-      if (file.size > 500 * 1024) {
+      if (file.size > 2 * 1024 * 1024) {
         this.imageUploadError = 'Image exceeds 500KB limit.';
         return;
       }
@@ -861,22 +903,22 @@ toggleAuctionSelection(id: number) {
     }
     event.target.value = '';
   }
-  
+
   removeGalleryItem(index: number): void {
     this.asset.galleryFiles.splice(index, 1);
     this.imagePreviews.splice(index, 1); // Remove the corresponding preview
   }
   fetchCategories(): void {
-  this.assetCategoriesService.getAll().subscribe({
-    next: (data) => {
-      this.categories = data;
-    },
-    error: (err) => {
-      console.error('Error fetching categories', err);
-      Swal.fire('Error!', 'Failed to load categories.', 'error');
-    }
-  });
-}
+    this.assetCategoriesService.getAll().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (err) => {
+        console.error('Error fetching categories', err);
+        Swal.fire('Error!', 'Failed to load categories.', 'error');
+      },
+    });
+  }
 
   onImageDrop(event: DragEvent): void {
     event.preventDefault();
@@ -885,7 +927,7 @@ toggleAuctionSelection(id: number) {
 
     const file = event.dataTransfer?.files?.[0];
     if (file) {
-      if (file.size > 500 * 1024) {
+      if (file.size > 2 * 1024 * 1024) {
         this.imageUploadError = 'Image exceeds 500KB limit.';
         return;
       }
@@ -986,7 +1028,7 @@ toggleAuctionSelection(id: number) {
 
     const file = event.dataTransfer?.files?.[0];
     if (file) {
-      if (file.size > 500 * 1024) {
+      if (file.size > 2 * 1024 * 1024) {
         this.documentUploadError = 'PDF exceeds 500KB limit.';
         return;
       }
@@ -1014,6 +1056,16 @@ toggleAuctionSelection(id: number) {
     event.preventDefault();
   }
 }
+
+
+
+
+
+
+
+
+
+
 // onWinnerDocDrop(event: DragEvent): void {
 //   event.preventDefault();
 //   this.winnerDocError = '';

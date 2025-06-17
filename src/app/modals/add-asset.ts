@@ -80,3 +80,35 @@ export interface DirectSaleAssetDto {
 
 }
  
+
+
+
+export interface Seller {
+  sellerId: number;
+  userId: number | null;
+  userName: string | null;
+}
+
+export interface AssetRequestDto {
+  requestNumber: string;
+  requestType: string;
+  createdAt: string;
+  status: string;
+}
+
+export interface AssetResultDto {
+  totalBids: number;
+  totalBidders: number;
+  startPrice: number;
+  highestPrice: number;
+  commissionPercentage: number;
+  totalPayable: number;
+}
+
+export interface AssetTransactionDto{
+  assetId:number;
+  transactionNumber:string;
+  transactionType:string;
+  transactionDate:Date;
+  transactionAmount:number;
+}

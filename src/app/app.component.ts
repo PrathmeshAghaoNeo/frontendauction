@@ -18,6 +18,7 @@ import { SignalRService } from './services/signal-r.service';
 import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { routeFadeAnimation } from './utils/animations';
 
 declare var bootstrap: any;
 
@@ -36,13 +37,19 @@ declare var bootstrap: any;
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+   animations: [routeFadeAnimation],
 })
 export class AppComponent implements OnInit, AfterViewInit {
   private translate = inject(TranslateService);
   currentRoute: string = '';
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
+  
   isRtl:boolean = false; 
+
+  
+  sidebarExpanded = false;
+  
 
   readonly customHeaderRoutes: string[] = [
     '/reguserlandingpage',
@@ -54,7 +61,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/direct-bid',
     '/finalCheckout',
     '/direct-sale-assets',
-    '/asset-details'
+    '/asset-details',
+    '/auction-assets',
+    '/direct-sale-assetpage',
 
     // Add more routes as needed
   ];
@@ -70,8 +79,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     '/finalCheckout',
     '/direct-sale-assets',
     '/asset-details',
-    '/landing-page'
-    
+    '/landing-page',
+    '/asset-details',
+    '/direct-sale-assetpage',
+    '/auction-assets',
   ];
 
   constructor(
@@ -98,7 +109,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.use('en');
   }
   // @Input() showCustomButtons: boolean = false;
-  sidebarExpanded = true;
   ngOnInit(): void {
     this.signalR.startConnection();
     this.authService.initializeAuth();
@@ -233,4 +243,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       '/',
     ]);
   }
+  prepareRoute(outlet: RouterOutlet) {
+  return outlet?.activatedRouteData?.['animation'] || '';
+}
+
 }
