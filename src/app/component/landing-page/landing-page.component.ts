@@ -6,6 +6,7 @@ import { DirectSaleComponentLP } from './direct-sale/direct-sale.component';
 import { FooterComponent } from "../footer/footer.component";
 import { HeaderComponent } from "../header/header.component";
 import { trigger, transition, style, animate } from '@angular/animations';
+import { FeaturedAssetsComponent } from "./featured-assets/featured-assets.component";
 
 
 @Component({
@@ -16,8 +17,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
     DirectSaleComponentLP,
     CategoryCardComponent
     // FooterComponent,
-    
     // HeaderComponent
+    ,
+    FeaturedAssetsComponent
 ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css'],
