@@ -1,35 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+import { Asset } from '../../../modals/manage-asset';
+
+
 
 @Component({
   selector: 'app-featured-assets',
   standalone: true,
-  imports: [CommonModule, CarouselModule],
+  imports: [CommonModule],
   templateUrl: './featured-assets.component.html',
-  styleUrls: ['./featured-assets.component.css']
+  styleUrls: ['./featured-assets.component.css'],
 })
-export class FeaturedAssetsComponent implements OnInit {
-
+export class FeaturedAssetsComponent {
   featuredAssets = [
     {
       name: 'Antique Sword',
       description: 'A 17th-century ornamental sword.',
-      imageUrl: 'https://via.placeholder.com/600x400?text=Sword'
+      imageUrl: 'https://via.placeholder.com/600x400?text=Sword',
     },
     {
       name: 'Vintage Camera',
       description: 'Classic film camera from 1940s.',
-      imageUrl: 'https://via.placeholder.com/600x400?text=Camera'
+      imageUrl: 'https://via.placeholder.com/600x400?text=Camera',
     },
     {
       name: 'Oil Painting',
       description: 'Signed artwork from a 19th-century artist.',
-      imageUrl: 'https://via.placeholder.com/600x400?text=Painting'
-    }
+      imageUrl: 'https://via.placeholder.com/600x400?text=Painting',
+    },
   ];
 
-  customOptions: OwlOptions = {
+  featured: Asset[] = [];
+  constructor() {
+    // private assetService: AssetService,
+  }
+  customOptions: any = {
     loop: true,
     margin: 20,
     nav: true,
@@ -40,11 +45,11 @@ export class FeaturedAssetsComponent implements OnInit {
     responsive: {
       0: { items: 1 },
       600: { items: 2 },
-      1000: { items: 3 }
-    }
+      1000: { items: 3 },
+    },
   };
 
   ngOnInit(): void {
-    console.log("Featured assets loaded", this.featuredAssets);
+    console.log('Featured assets loaded', this.featuredAssets);
   }
 }

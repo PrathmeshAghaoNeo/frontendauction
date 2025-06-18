@@ -15,6 +15,7 @@ import { bidStatsBulk } from '../../modals/bid-stats';
 import { AuctionService } from '../../services/auction.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../services/language.service';
+import { CategorySelectorComponent } from "../category-selector/category-selector.component";
 
 
 
@@ -23,7 +24,7 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-direct-bid',
   standalone: true,
-  imports: [CommonModule,TranslateModule],
+  imports: [CommonModule, TranslateModule, CategorySelectorComponent],
   templateUrl: './auction-assets.component.html',
   styleUrl: './auction-assets.component.css'
 })
@@ -88,64 +89,143 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     this.toastInstance.show();
   }
 
-  ngOnInit(): void {
-    this.viewportScroller.scrollToPosition([0, 0]);
-    this.userId = this.authService.getUserIdJwt();
-    this.languageService.lang$.subscribe(lang => {
-        this.langCode = lang;
-         this.isRtl = lang === 'ar';
-        // this.fetchCategories(); 
+  // ngOnInit(): void {
+  //   this.viewportScroller.scrollToPosition([0, 0]);
+  //   this.userId = this.authService.getUserIdJwt();
+  //   this.languageService.lang$.subscribe(lang => {
+  //       this.langCode = lang;
+  //        this.isRtl = lang === 'ar';
+  //       // this.fetchCategories(); 
       
-    const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
-    if (!isNaN(categoryId)) {
-      this.listService.getAuctionAssetsByCategory(categoryId,this.langCode).subscribe({
-        next: (data) => {
-          this.assets = data;
-          this.originalAssets = [...data];
-          this.loadWishlist();
-          this.noAssetsFound = this.assets.length === 0;
-          this.assetIds = this.assets.map(a => a.assetId);
-          this.AuctionIds = this.assets.map(a => a.auctionId);
+  //   const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
+  //   if (!isNaN(categoryId)) {
+  //     this.listService.getAuctionAssetsByCategory(categoryId,this.langCode).subscribe({
+  //       next: (data) => {
+  //         this.assets = data;
+  //         this.originalAssets = [...data];
+  //         this.loadWishlist();
+  //         this.noAssetsFound = this.assets.length === 0;
+  //         this.assetIds = this.assets.map(a => a.assetId);
+  //         this.AuctionIds = this.assets.map(a => a.auctionId);
 
-          // Step 1: Get bid stats
-          this.bidService.getBidStatsByAssetIds(this.assetIds).subscribe({
-            next: (bidStatsList: bidStatsBulk[]) => {
+  //         // Step 1: Get bid stats
+  //         this.bidService.getBidStatsByAssetIds(this.assetIds).subscribe({
+  //           next: (bidStatsList: bidStatsBulk[]) => {
+  //             this.assets = this.assets.map(asset => {
+  //               const stats = bidStatsList.find(b => b.assetId === asset.assetId);
+  //               return {
+  //                 ...asset,
+  //                 bidCount: stats?.bidCount ?? 0,
+  //                 highestbid: stats?.highestBid,
+  //               };
+  //             });
+
+  //             // Step 2: Get auctions by IDs
+  //             this.auctionService.getAuctionsByIds(this.AuctionIds).subscribe({
+  //               next: (auctions: Auction[]) => {
+  //                 this.assets = this.assets.map(asset => {
+  //                   const auction = auctions.find(a => a.auctionId === asset.auctionId);
+  //                   return {
+  //                     ...asset,
+  //                     auctionEndTime: auction?.endDateTime ?? null,
+  //                   };
+  //                 });
+  //                 console.log("Final mapped assets with auction info:", this.assets);
+  //               },
+  //               error: err => console.error('Error fetching auctions:', err)
+  //             });
+
+  //           },
+  //           error: err => console.error('Error fetching bid stats:', err)
+  //         });
+
+  //       },
+  //       error: err => console.error('Error fetching assets:', err)
+  //     });
+  //   } else {
+  //     console.error('Invalid category ID');
+  //   }
+  //   });
+  // }
+  ngOnInit(): void {
+  this.viewportScroller.scrollToPosition([0, 0]);
+  this.userId = this.authService.getUserIdJwt();
+
+  this.languageService.lang$.subscribe(lang => {
+    this.langCode = lang;
+    this.isRtl = lang === 'ar';
+
+    // ✅ Subscribe to param changes so category switching works
+    this.route.paramMap.subscribe(params => {
+      const categoryId = Number(params.get('categoryId'));
+      if (!isNaN(categoryId)) {
+        this.fetchAssetsByCategory(categoryId);
+      } else {
+        console.error('❌ Invalid or missing category ID');
+      }
+    });
+  });
+}
+
+
+  fetchAssetsByCategory(categoryId: number): void {
+  // 🔁 Clear previous data before loading
+  this.assets = [];
+  this.originalAssets = [];
+  this.assetIds = [];
+  this.AuctionIds = [];
+  this.noAssetsFound = false;
+
+  this.listService.getAuctionAssetsByCategory(categoryId, this.langCode).subscribe({
+    next: (data) => {
+      if (!data || data.length === 0) {
+        this.noAssetsFound = true;
+        console.warn('⚠️ No assets found for this category');
+        return;
+      }
+
+      this.assets = data;
+      this.originalAssets = [...data];
+      this.assetIds = this.assets.map(a => a.assetId);
+      this.AuctionIds = this.assets.map(a => a.auctionId);
+
+      this.loadWishlist();
+
+      this.bidService.getBidStatsByAssetIds(this.assetIds).subscribe({
+        next: (bidStatsList: bidStatsBulk[]) => {
+          this.assets = this.assets.map(asset => {
+            const stats = bidStatsList.find(b => b.assetId === asset.assetId);
+            return {
+              ...asset,
+              bidCount: stats?.bidCount ?? 0,
+              highestbid: stats?.highestBid,
+            };
+          });
+
+          this.auctionService.getAuctionsByIds(this.AuctionIds).subscribe({
+            next: (auctions: Auction[]) => {
               this.assets = this.assets.map(asset => {
-                const stats = bidStatsList.find(b => b.assetId === asset.assetId);
+                const auction = auctions.find(a => a.auctionId === asset.auctionId);
                 return {
                   ...asset,
-                  bidCount: stats?.bidCount ?? 0,
-                  highestbid: stats?.highestBid,
+                  auctionEndTime: auction?.endDateTime ?? null,
                 };
               });
 
-              // Step 2: Get auctions by IDs
-              this.auctionService.getAuctionsByIds(this.AuctionIds).subscribe({
-                next: (auctions: Auction[]) => {
-                  this.assets = this.assets.map(asset => {
-                    const auction = auctions.find(a => a.auctionId === asset.auctionId);
-                    return {
-                      ...asset,
-                      auctionEndTime: auction?.endDateTime ?? null,
-                    };
-                  });
-                  console.log("Final mapped assets with auction info:", this.assets);
-                },
-                error: err => console.error('Error fetching auctions:', err)
-              });
-
+              console.log("✅ Final mapped assets:", this.assets);
             },
-            error: err => console.error('Error fetching bid stats:', err)
+            error: err => console.error('❌ Error fetching auctions:', err)
           });
-
         },
-        error: err => console.error('Error fetching assets:', err)
+        error: err => console.error('❌ Error fetching bid stats:', err)
       });
-    } else {
-      console.error('Invalid category ID');
+    },
+    error: err => {
+      console.error('❌ Error fetching assets:', err);
+      this.noAssetsFound = true;
     }
-    });
-  }
+  });
+}
 
 
 
@@ -259,6 +339,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
       });
     }
   }
+  
 
   getTimeRemaining(endTime?: string | null): string {
     if (!endTime) return '';
@@ -282,7 +363,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   }
 
   goBack() {
-    window.history.back();
+    this.router.navigate(['/landing-page']);
   }
 }
 

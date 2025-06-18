@@ -472,3 +472,32 @@
 .rtl-rotate {
   transform: rotate(180deg); /* flip the arrow direction */
 }
+
+/*
+.category-icons {
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;   
+}
+
+.category-icons::-webkit-scrollbar {
+  height: 6px;
+}
+
+.category-icons::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.category-icon {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.active-category {
+  border-color: #6f42c1;
+  background-color: #f0e7ff;
+}
+
+*/

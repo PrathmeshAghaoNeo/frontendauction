@@ -336,8 +336,6 @@ export class EditAssetComponent implements OnInit {
     });
   }
 
-  //////////////////////////////////=================================////////////////////////
-
   galleryError: string = '';
   documentError: string = '';
 

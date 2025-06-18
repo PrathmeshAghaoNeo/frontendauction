@@ -3,10 +3,38 @@
     <div class="toolbar-left">
       <button class="back-btn" routerLink="/directbid">
         <button class="back-btn" (click)="goBack()">
-          <img src="back.png" alt="Back to Bidding" class="back-btn-image" [class.rtl-rotate]="isRtl" />
+          <img
+            src="back.png"
+            alt="Back to Bidding"
+            class="back-btn-image"
+            [class.rtl-rotate]="isRtl"
+          />
         </button>
       </button>
     </div>
+    <!-- <div class="category-icons d-flex flex-wrap gap-2">
+      <div
+        *ngFor="let category of categories"
+        [ngClass]="{
+          'active-category': isActive(category.id),
+          'category-icon': true
+        }"
+        class="p-2 rounded shadow-sm text-center"
+      >
+        <img
+          [src]="category.icon"
+          alt="{{ category.name }}"
+          class="mb-1"
+          width="40"
+          height="40"
+        />
+        <div>{{ category.name }}</div>
+      </div>
+    </div> -->
+    <app-category-selector
+      [routePrefix]="'direct-sale-assets'"
+    ></app-category-selector>
+
     <div class="toolbar-right">
       <img
         [src]="layoutType === 'grid' ? 'grid1.png' : 'view-list.png'"
@@ -16,15 +44,18 @@
       />
 
       <!-- <img src="sort.png" alt="Filter" class="toolbar-icon sort" /> -->
-
-
     </div>
   </div>
-
-  <div class="plates-container" [ngClass]="layoutType + '-view'">
+  <div *ngIf="noAssetsFound" class="text-center text-muted py-4">
+    <p>No direct sale assets found in this category.</p>
+  </div>
+  <div
+    *ngIf="!noAssetsFound"
+    class="plates-container"
+    [ngClass]="layoutType + '-view'"
+  >
     <div class="plate-card" *ngFor="let asset of assets">
       <div class="plate-display" (click)="goToAssetDetail(asset.assetId)">
-       
         <ng-container *ngIf="layoutType === 'row'; else gridView">
           <!-- Row View -->
           <div class="plate-display-row">
@@ -52,7 +83,9 @@
                       ? 'Remove from Wishlist'
                       : 'Add to Wishlist'
                   "
-                  (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
+                  (click)="
+                    toggleWishlist(asset.assetId); $event.stopPropagation()
+                  "
                 >
                   <img
                     [src]="

@@ -1,0 +1,12 @@
+<div class="category-icons d-flex flex-nowrap overflow-x-auto gap-3 py-2">
+  <div
+    *ngFor="let category of categories"
+    [ngClass]="{ 'active-category': isActive(category.categoryId), 'category-icon':true }"
+    class="p-2 rounded shadow-sm text-center"
+    style="min-width: 100px;"
+    (click)="navigateToCategory(category.categoryId)"
+  >
+    <img [src]="category.icon" alt="{{ category.categoryName }}" class="mb-1" width="40" height="40" />
+    <div>{{ category.categoryName }}</div>
+  </div>
+</div>
