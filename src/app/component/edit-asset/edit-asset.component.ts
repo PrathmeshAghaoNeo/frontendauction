@@ -13,8 +13,9 @@ import { environment } from '../../constants/enviroments';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { AssetCategory } from '../../modals/assetcategories';
 import { LanguageService } from '../../services/language.service';
-
+import * as L from 'leaflet';
 declare var bootstrap: any; 
+
 @Component({
   selector: 'app-edit-asset',
   standalone: true,
@@ -23,6 +24,45 @@ declare var bootstrap: any;
   styleUrl: './edit-asset.component.css',
 })
 export class EditAssetComponent implements OnInit {
+
+  map!: L.Map;
+  locationMarker!: L.Marker;
+  previewMarker!: L.Marker;
+  locationSearchQuery = '';
+  searchedLat: number | null = null;
+  searchedLng: number | null = null;
+  showUpdateLocationButton = false;
+
+  ngAfterViewInit(): void {
+    // this.initMap();
+  }
+
+  initMap(): void {
+    const lat = this.asset.mapLatitude || 0; // Default to 0 if not set
+    const lng = this.asset.mapLongitude || 0; // Default to 0 if not set
+    console.log(lat, lng , "in map initisalize time ");
+    
+
+    this.map = L.map('updateFormMap').setView([lat, lng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.addMarker(lat, lng);
+
+     this.map.on('click', (e: L.LeafletMouseEvent) => {
+    const clickedLat = e.latlng.lat;
+    const clickedLng = e.latlng.lng;
+
+    this.asset.mapLatitude = clickedLat;
+    this.asset.mapLongitude = clickedLng;
+
+    this.addMarker(clickedLat, clickedLng);
+  }); 
+  } 
+
+
   convertedGalleryFiles: File[] = [];
 
   environment = environment;
@@ -40,7 +80,7 @@ export class EditAssetComponent implements OnInit {
 
   imagePreviews: string[] = [];
   existingDocuments: string[] = [];
-
+  
   auctions: Auction[] = [];
 
   // selectedReason: string = '';
@@ -52,7 +92,7 @@ export class EditAssetComponent implements OnInit {
   latestRequest: AssetRequestDto[] = [];
   results: AssetResultDto | undefined;
   transaction: AssetTransactionDto[]=[];
-
+  
   attributeList: { attributeName: string; attributeValue: string }[] = [];
   asset: AssetAllDetails = {
     assetId: this.assetIdparam,
@@ -124,7 +164,7 @@ export class EditAssetComponent implements OnInit {
   // winnerAwardingOptions = ['Automatic', 'Manual'];
   deliveryRequiredOptions = ['Yes', 'No'];
   selectedOpton: number = 0;
-
+  
   //   sellers = [
   //   { id: 1, name: 'Vaish Patil' },
   // ];
@@ -149,7 +189,7 @@ export class EditAssetComponent implements OnInit {
 
   categories: AssetCategory[] = [];
 
-
+  
  winnerAwardingOptions = [
   { id: 1, name: 'Automatic'},
   { id: 2, name: 'Manual' }
@@ -183,6 +223,7 @@ export class EditAssetComponent implements OnInit {
     private assetCategoriesService: AssetCategoriesService
   ) {}
 
+  
   goBack1(): void {
     this.location.back();
   }
@@ -205,6 +246,7 @@ export class EditAssetComponent implements OnInit {
   ngOnInit(): void {
     console.log('assetId params', this.asset.assetId);
     this.getAssetIdFromRoute();
+    // this.initMap()
     this.loadSellers();
 
     this.assetsRequests();
@@ -220,6 +262,11 @@ export class EditAssetComponent implements OnInit {
         console.error('Failed to load categories', err);
       },
     });
+
+      console.log(this.asset.mapLatitude, this.asset.mapLongitude);
+      
+          
+      
   
   }
 
@@ -296,6 +343,7 @@ confirmApproveSale(): void {
           this.asset.assetId = +assetIdParam;
           this.assetIdparam = +assetIdParam;
           this.loadAsset(this.assetIdparam);
+          
         } else {
           this.error = 'No asset ID provided in route';
           console.error(this.error);
@@ -333,6 +381,8 @@ confirmApproveSale(): void {
         this.attributeList = [...(this.asset.attributes || [])];
         console.log('Asset loaded successfully:', this.asset);
         this.fetchAuctions();
+
+        this.initMap();
 
         // this.convertGalleryUrlsToFiles();
       },
@@ -867,6 +917,103 @@ updateWinnerName(id: number | undefined): void {
     this.asset.winnerId = bidder.userId;  
 
     console.log('Selected winner:', this.asset.winnerName, 'with ID:', this.asset.winnerId);
+  }
+}
+
+
+
+
+ searchLocation(): void {
+    if (!this.locationSearchQuery.trim()) return;
+
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.locationSearchQuery)}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (data.length === 0) {
+          alert('Location not found.');
+          return;
+        }
+
+        const result = data[0];
+        const lat = parseFloat(result.lat);
+        const lng = parseFloat(result.lon);
+
+        this.searchedLat = lat;
+        this.searchedLng = lng;
+
+
+        this.asset.mapLatitude = lat;
+        this.asset.mapLongitude = lng;
+
+        this.showUpdateLocationButton = true;
+
+        this.map.setView([lat, lng], 15);
+
+        if (this.previewMarker) {
+          this.map.removeLayer(this.previewMarker);
+        }
+
+        this.previewMarker = L.marker([lat, lng], {
+          icon: L.divIcon({
+            className: 'custom-label',
+            html: `<div style="background:#ffc;border:1px solid #999;padding:2px 6px;border-radius:4px;">📍 Preview</div>`,
+            iconSize: [100, 30],
+            iconAnchor: [50, 15]
+          })
+        }).addTo(this.map);
+      })
+      .catch(error => {
+        console.error('Error searching location:', error);
+        alert('Search failed. Try again.');
+      });
+  }
+
+  confirmUpdateLocation(): void {
+    if (this.searchedLat != null && this.searchedLng != null) {
+      this.asset.mapLatitude = this.searchedLat;
+      this.asset.mapLongitude = this.searchedLng;
+      console.log('Updating asset location to:', this.asset.mapLatitude, this.asset.mapLongitude);
+      console.log('Adding marker at:', this.searchedLat, this.searchedLng);
+      
+      
+
+      this.addMarker(this.searchedLat, this.searchedLng);
+      this.map.setView([this.searchedLat, this.searchedLng], 15);
+      this.showUpdateLocationButton = false;
+
+      if (this.previewMarker) {
+        this.map.removeLayer(this.previewMarker);
+        this.previewMarker = null as any;
+      }
+    }
+  }
+
+  addMarker(lat: number, lng: number): void {
+    if (this.locationMarker) {
+      this.map.removeLayer(this.locationMarker);
+    }
+
+    this.locationMarker = L.marker([lat, lng], {
+      draggable: true
+    }).addTo(this.map);
+
+    this.locationMarker.on('dragend', () => {
+      const pos = this.locationMarker.getLatLng();
+      this.asset.mapLatitude = pos.lat;
+      this.asset.mapLongitude = pos.lng;
+    });
+  }
+
+
+  onManualCoordinateChange(): void {
+  const lat = this.asset.mapLatitude;
+  const lng = this.asset.mapLongitude;
+
+  if (lat != null && lng != null && !isNaN(lat) && !isNaN(lng)) {
+    this.map.setView([lat, lng], 15);
+    this.addMarker(lat, lng);
   }
 }
 

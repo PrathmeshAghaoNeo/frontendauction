@@ -770,62 +770,65 @@
         </div>
 
         <div class="card p-3 shadow-sm mb-4">
-          <h5>Map Location</h5>
+          <h5>Asset Location</h5>
 
-          <!-- Latitude -->
-          <div class="mb-2">
-            <label class="form-label required-label">Latitude</label>
-            <input
-              class="form-control"
-              type="number"
-              [(ngModel)]="asset.mapLatitude"
-              name="latitude"
-              step="0.000001"
-              #latitude="ngModel"
-              required
-              [class.is-invalid]="
-                latitude.invalid && (latitude.touched || assetForm.submitted)
-              "
-            />
-            <div
-              *ngIf="
-                latitude.invalid && (latitude.touched || assetForm.submitted)
-              "
-              class="invalid-feedback"
-            >
-              <div *ngIf="latitude.errors?.['required']">
-                Latitude is required.
-              </div>
+          <!-- Search Field -->
+          <div class="mb-3">
+            <label class="form-label">Search Location</label>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="E.g.,Mumbai"
+                [(ngModel)]="locationSearchQuery"
+                (keyup.enter)="searchLocation()"
+                name="locationSearch"
+              />
+              <button class="btn btn-primary" type="button" (click)="searchLocation()">
+                Search
+              </button>
+            </div>
+            <small class="text-muted">Search city, area, or landmark</small>
+
+            <div *ngIf="showUpdateLocationButton" class="mt-2">
+              <button class="btn btn-success btn-sm" (click)="confirmUpdateLocation()">
+                 Update Location to {{ searchedLat?.toFixed(6) }}, {{ searchedLng?.toFixed(6) }}
+              </button>
             </div>
           </div>
 
-          <!-- Longitude -->
-          <div class="mb-2">
-            <label class="form-label required-label">Longitude</label>
-            <input
-              class="form-control"
-              type="number"
-              [(ngModel)]="asset.mapLongitude"
-              name="longitude"
-              step="0.000001"
-              required
-              #longitude="ngModel"
-              [class.is-invalid]="
-                longitude.invalid && (longitude.touched || assetForm.submitted)
-              "
-            />
-            <div
-              *ngIf="
-                longitude.invalid && (longitude.touched || assetForm.submitted)
-              "
-              class="invalid-feedback"
-            >
-              <div *ngIf="longitude.errors?.['required']">
-                Longitude is required.
-              </div>
+          <!-- Map Area -->
+          <div class="mb-3 border rounded" style="height: 250px">
+            <div id="updateFormMap" style="height: 100%"></div>
+          </div>
+
+          <!-- Live Latitude/Longitude -->
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Latitude</label>
+              <input
+                type="number"
+                class="form-control"
+                step="0.000001"
+                [(ngModel)]="asset.mapLatitude"
+                name="mapLatitude"
+                (change)="onManualCoordinateChange()"
+                />
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Longitude</label>
+              <input
+                type="number"
+                class="form-control"
+                step="0.000001" 
+                [(ngModel)]="asset.mapLongitude"
+                name="mapLongitude"
+                (change)="onManualCoordinateChange()"
+                />
             </div>
           </div>
         </div>
+
 
         <div class="card p-3 shadow-sm mb-4">
           <h5>Fees</h5>
@@ -914,7 +917,6 @@
             </div>
           </div>
         </div>
-       
       </div>
 
       <!-- Right Column -->
@@ -931,13 +933,13 @@
               <span class="text-muted ms-2">Date: 2025-12-05</span>
             </div>
           </div>
-        </div> -->  
+        </div> -->
 
         <div class="card p-3 shadow-sm mb-4 w-auto">
           <h5>Auctions</h5>
           <div
             *ngFor="let auction of selectedAuctions"
-            class="mb-2 d-flex align-items-center "
+            class="mb-2 d-flex align-items-center"
           >
             <span class="badge bg-warning me-2">
               {{ auction.title }} - {{ auction.auctionNumber }} ({{
@@ -954,7 +956,9 @@
             <!-- Winner Section -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <h5>Winner:</h5>
-              <span class="badge bg-success text-white px-3 py-1 rounded-pill"> {{ asset.winnerName }}</span>
+              <span class="badge bg-success text-white px-3 py-1 rounded-pill">
+                {{ asset.winnerName }}</span
+              >
 
               <!-- Show only if award type is manual -->
               <ng-container *ngIf="asset.awardingId === 2">
@@ -1027,7 +1031,7 @@
               <span>{{ asset.awardedPrice | currency : "BHD" }}</span>
 
               <!-- Approve Button triggers modal -->
-              
+
               <!-- Inline Note Field -->
               <input
                 type="text"
@@ -1157,49 +1161,97 @@
           </div>
         </div>
 
-
-         <div class="card p-3 shadow-sm mb-4">
+        <div class="card p-3 shadow-sm mb-4">
           <h5>Translation</h5>
-          <select class="form-select form-select-sm" [(ngModel)]="asset.languageId" name="languageId" required
-            #languageId="ngModel">
+          <select
+            class="form-select form-select-sm"
+            [(ngModel)]="asset.languageId"
+            name="languageId"
+            required
+            #languageId="ngModel"
+          >
             <option [ngValue]="0">Select Language</option>
             <option [ngValue]="2">Arabic</option>
           </select>
- 
+
           <div *ngIf="asset.languageId > 0">
             <label class="form-label mt-3">Translated Title</label>
-            <input type="text" class="form-control form-control-sm" name="translatedTitle"
-              placeholder="Translated Title" [(ngModel)]="asset.titleTranslated" maxlength="100"
-              [required]="asset.languageId > 0" #translatedTitle="ngModel" />
-            <div *ngIf="translatedTitle.invalid && (translatedTitle.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedTitle.errors?.['maxlength']">Maximum 100 characters allowed.</div>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              name="translatedTitle"
+              placeholder="Translated Title"
+              [(ngModel)]="asset.titleTranslated"
+              maxlength="100"
+              [required]="asset.languageId > 0"
+              #translatedTitle="ngModel"
+            />
+            <div
+              *ngIf="
+                translatedTitle.invalid &&
+                (translatedTitle.touched || assetForm.submitted)
+              "
+              class="text-danger mt-1"
+            >
+              <div *ngIf="translatedTitle.errors?.['required']">
+                Translated Title is required.
+              </div>
+              <div *ngIf="translatedTitle.errors?.['maxlength']">
+                Maximum 100 characters allowed.
+              </div>
             </div>
- 
+
             <label class="form-label mt-3">Translated Description</label>
-            <textarea class="form-control form-control-sm" name="translatedDescription"
-              placeholder="Translated Description" [(ngModel)]="asset.descriptionTranslated" maxlength="500"
-              #translatedDescription="ngModel" [required]="asset.languageId > 0"></textarea>
-            <div *ngIf="translatedDescription.invalid && (translatedDescription.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedDescription.errors?.['maxlength']">Maximum 500 characters allowed.</div>
+            <textarea
+              class="form-control form-control-sm"
+              name="translatedDescription"
+              placeholder="Translated Description"
+              [(ngModel)]="asset.descriptionTranslated"
+              maxlength="500"
+              #translatedDescription="ngModel"
+              [required]="asset.languageId > 0"
+            ></textarea>
+            <div
+              *ngIf="
+                translatedDescription.invalid &&
+                (translatedDescription.touched || assetForm.submitted)
+              "
+              class="text-danger mt-1"
+            >
+              <div *ngIf="translatedTitle.errors?.['required']">
+                Translated Title is required.
+              </div>
+              <div *ngIf="translatedDescription.errors?.['maxlength']">
+                Maximum 500 characters allowed.
+              </div>
             </div>
- 
+
             <label class="form-label mt-3">Translated Sales Note</label>
-            <textarea class="form-control form-control-sm" name="translatedSalesNotes" placeholder="Translated Note"
-              [(ngModel)]="asset.salesNotesTranslated" maxlength="100" #translatedSalesNotes="ngModel"
-              [required]="asset.languageId > 0"></textarea>
-            <div *ngIf="translatedSalesNotes.invalid && (translatedSalesNotes.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedSalesNotes.errors?.['maxlength']">Maximum 100 characters allowed.</div>
+            <textarea
+              class="form-control form-control-sm"
+              name="translatedSalesNotes"
+              placeholder="Translated Note"
+              [(ngModel)]="asset.salesNotesTranslated"
+              maxlength="100"
+              #translatedSalesNotes="ngModel"
+              [required]="asset.languageId > 0"
+            ></textarea>
+            <div
+              *ngIf="
+                translatedSalesNotes.invalid &&
+                (translatedSalesNotes.touched || assetForm.submitted)
+              "
+              class="text-danger mt-1"
+            >
+              <div *ngIf="translatedTitle.errors?.['required']">
+                Translated Title is required.
+              </div>
+              <div *ngIf="translatedSalesNotes.errors?.['maxlength']">
+                Maximum 100 characters allowed.
+              </div>
             </div>
           </div>
         </div>
-
-      
 
         <div *ngIf="latestRequest.length > 0; else loading">
           <div
@@ -1254,10 +1306,6 @@
     </div>
   </form>
 </div>
-
-
-
-
 
 <!-- 
   <div class="card p-3 shadow-sm mb-4">
