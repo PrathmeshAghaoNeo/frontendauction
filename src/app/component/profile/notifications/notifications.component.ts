@@ -29,25 +29,33 @@ export class NotificationsComponent {
   }
 
   loadNotifications(): void {
-    const userId = this.authService.getUserIdJwt();
-    if (!userId) return;
+   this.userService.notification$.subscribe(data => {
+  this.notifications = data.map(n => ({
+    ...n,
+    createdAt: typeof n.createdAt === 'string'
+      ? new Date(n.createdAt.replace(' ', 'T') + 'Z')
+      : n.createdAt
+  }));
+  this.loading = false;
+});
 
-    this.userService.getNotificationByUserId(userId).subscribe({
-      next: (data) => {
-        // Convert createdAt strings to valid Date objects
-        this.notifications = data.map(n => ({
-          ...n,
-          createdAt: typeof n.createdAt === 'string'
-            ? new Date(n.createdAt.replace(' ', 'T') + 'Z')
-            : n.createdAt
-        }));
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load notifications:', err);
-        this.loading = false;
-      },
-    });
+
+    // this.userService.getNotificationByUserId(userId).subscribe({
+    //   next: (data) => {
+    //     // Convert createdAt strings to valid Date objects
+    //     this.notifications = data.map(n => ({
+    //       ...n,
+    //       createdAt: typeof n.createdAt === 'string'
+    //         ? new Date(n.createdAt.replace(' ', 'T') + 'Z')
+    //         : n.createdAt
+    //     }));
+    //     this.loading = false;
+    //   },
+    //   error: (err) => {
+    //     console.error('Failed to load notifications:', err);
+    //     this.loading = false;
+    //   },
+    // });
   }
 
   clearNotifications(): void {

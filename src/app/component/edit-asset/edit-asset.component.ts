@@ -3,18 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ManageAssetService } from '../../services/asset.service';
-import {
-  AddAsset,
-  AssetRequestDto,
-  Seller,
-  AssetResultDto,
-  AssetTransactionDto,
-} from '../../modals/add-asset';
-import {
-  Asset,
-  AssetAllDetails, AssetDocumentFormDto,
-  AssetGalleryDto,
-} from '../../modals/manage-asset';
+import { AddAsset, AssetRequestDto, AssetResultDto, AssetTransactionDto, Seller } from '../../modals/add-asset';
+import { Asset, AssetAllDetails, AssetDocumentFormDto, AssetGalleryDto, ReplaceAssetWinnerDto, TopBidderDto } from '../../modals/manage-asset';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Auction } from '../../modals/auctions';
@@ -23,6 +13,8 @@ import { environment } from '../../constants/enviroments';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { AssetCategory } from '../../modals/assetcategories';
 import { LanguageService } from '../../services/language.service';
+import * as L from 'leaflet';
+declare var bootstrap: any; 
 
 @Component({
   selector: 'app-edit-asset',
@@ -32,6 +24,45 @@ import { LanguageService } from '../../services/language.service';
   styleUrl: './edit-asset.component.css',
 })
 export class EditAssetComponent implements OnInit {
+
+  map!: L.Map;
+  locationMarker!: L.Marker;
+  previewMarker!: L.Marker;
+  locationSearchQuery = '';
+  searchedLat: number | null = null;
+  searchedLng: number | null = null;
+  showUpdateLocationButton = false;
+
+  ngAfterViewInit(): void {
+    // this.initMap();
+  }
+
+  initMap(): void {
+    const lat = this.asset.mapLatitude || 0; // Default to 0 if not set
+    const lng = this.asset.mapLongitude || 0; // Default to 0 if not set
+    console.log(lat, lng , "in map initisalize time ");
+    
+
+    this.map = L.map('updateFormMap').setView([lat, lng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.addMarker(lat, lng);
+
+     this.map.on('click', (e: L.LeafletMouseEvent) => {
+    const clickedLat = e.latlng.lat;
+    const clickedLng = e.latlng.lng;
+
+    this.asset.mapLatitude = clickedLat;
+    this.asset.mapLongitude = clickedLng;
+
+    this.addMarker(clickedLat, clickedLng);
+  }); 
+  } 
+
+
   convertedGalleryFiles: File[] = [];
 
   environment = environment;
@@ -49,14 +80,19 @@ export class EditAssetComponent implements OnInit {
 
   imagePreviews: string[] = [];
   existingDocuments: string[] = [];
-
+  
   auctions: Auction[] = [];
+
+  // selectedReason: string = '';
+  winnerNote: string = '';
+
+  bidders: TopBidderDto[] = [];
 
   filteredAuctions: Auction[] = [];
   latestRequest: AssetRequestDto[] = [];
   results: AssetResultDto | undefined;
   transaction: AssetTransactionDto[]=[];
-
+  
   attributeList: { attributeName: string; attributeValue: string }[] = [];
   asset: AssetAllDetails = {
     assetId: this.assetIdparam,
@@ -125,10 +161,10 @@ export class EditAssetComponent implements OnInit {
   // Dropdown options
   makeOfferOptions = ['Yes', 'No'];
   featuredOptions = ['Yes', 'No'];
-  winnerAwardingOptions = ['Automatic', 'Manual'];
+  // winnerAwardingOptions = ['Automatic', 'Manual'];
   deliveryRequiredOptions = ['Yes', 'No'];
   selectedOpton: number = 0;
-
+  
   //   sellers = [
   //   { id: 1, name: 'Vaish Patil' },
   // ];
@@ -153,10 +189,16 @@ export class EditAssetComponent implements OnInit {
 
   categories: AssetCategory[] = [];
 
+  
+ winnerAwardingOptions = [
+  { id: 1, name: 'Automatic'},
+  { id: 2, name: 'Manual' }
+]
   requestForViewingOptions = [
     { id: 1, name: 'Yes' },
     { id: 0, name: 'No' },
   ];
+
 
   requestForInquiryOptions = [
     { id: 1, name: 'Yes' },
@@ -181,6 +223,7 @@ export class EditAssetComponent implements OnInit {
     private assetCategoriesService: AssetCategoriesService
   ) {}
 
+  
   goBack1(): void {
     this.location.back();
   }
@@ -191,11 +234,19 @@ export class EditAssetComponent implements OnInit {
       event.target.value = value.toString().slice(0, 3);
       this.asset.deposit = parseInt(event.target.value, 10);
     }
-  }
+}
+
+
+ openSaleApprovalModal() {
+    const modalElement = document.getElementById('saleApprovalModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    }
 
   ngOnInit(): void {
     console.log('assetId params', this.asset.assetId);
     this.getAssetIdFromRoute();
+    // this.initMap()
     this.loadSellers();
 
     this.assetsRequests();
@@ -211,19 +262,77 @@ export class EditAssetComponent implements OnInit {
         console.error('Failed to load categories', err);
       },
     });
+
+      console.log(this.asset.mapLatitude, this.asset.mapLongitude);
+      
+          
+      
+  
   }
 
-  loadSellers(): void {
-    this.assetService.getSellers().subscribe({
-      next: (data) => {
-        this.sellers = data;
-        console.log('Sellers:', this.sellers);
-      },
-      error: (err) => {
-        console.error('Failed to fetch sellers', err);
-      },
-    });
+
+
+confirmApproveSale(): void {
+  if (!this.asset.winnerId || !this.selectedReason) {
+    Swal.fire('Warning', 'Winner or reason not selected.', 'warning');
+    return;
   }
+
+  const dto: ReplaceAssetWinnerDto = {
+    assetId: this.asset.assetId,
+    userId: this.asset.winnerId,
+    awardedPrice: this.asset.awardedPrice ?? 0,
+    reason: this.selectedReason,
+    note: this.winnerNote ?? '',
+    approved: true
+  };
+
+  this.assetService.replaceWinner(dto).subscribe({
+    next: (res) => {
+      console.log('Sale approved & winner saved', res);
+      this.asset.winnerId = res.winnerId;
+      this.updateWinnerName(res.winnerId);
+
+      // Close modal
+      const modalElement = document.getElementById('saleApprovalModal');
+      if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        modal?.hide();
+      }
+
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Winner Updated',
+        text: 'Sale approved successfully!',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        willClose: () => {
+          window.location.reload();
+        }
+
+      });
+      
+    },
+    error: (err) => {
+      console.error('Error approving sale:', err);
+      Swal.fire('Error', 'Failed to approve sale.', 'error');
+    }
+  });
+}
+
+    loadSellers(): void {
+      this.assetService.getSellers().subscribe({
+        next: (data) => {
+          this.sellers = data;
+          console.log('Sellers:', this.sellers);
+        },
+        error: (err) => {
+          console.error('Failed to fetch sellers', err);
+        },
+      });
+    }
 
   private getAssetIdFromRoute(): void {
     this.route.paramMap.subscribe({
@@ -234,6 +343,7 @@ export class EditAssetComponent implements OnInit {
           this.asset.assetId = +assetIdParam;
           this.assetIdparam = +assetIdParam;
           this.loadAsset(this.assetIdparam);
+          
         } else {
           this.error = 'No asset ID provided in route';
           console.error(this.error);
@@ -271,6 +381,8 @@ export class EditAssetComponent implements OnInit {
         this.attributeList = [...(this.asset.attributes || [])];
         console.log('Asset loaded successfully:', this.asset);
         this.fetchAuctions();
+
+        this.initMap();
 
         // this.convertGalleryUrlsToFiles();
       },
@@ -328,6 +440,7 @@ export class EditAssetComponent implements OnInit {
           this.asset.auctionIds.includes(auction.auctionId)
         );
         console.log('Selected auctions:', this.selectedAuctions);
+      this.loadTopBidders(this.asset.assetId, this.selectedAuctions[0].auctionId);
       },
       error: (err) => {
         console.error('Error fetching auctions', err);
@@ -335,6 +448,56 @@ export class EditAssetComponent implements OnInit {
       },
     });
   }
+
+
+ loadTopBidders(assetId: number, auctionId: number): void {
+  console.log('Loading top bidders for asset:', assetId, 'and auction:', auctionId);
+  
+  this.assetService.getTopBidders(assetId , auctionId).subscribe({
+    // console.log('Loading top bidders for asset:', assetId, 'and auction:', auctionId);
+    next: (data) => {
+        this.bidders = data;
+        console.log('Top bidders loaded:', this.bidders);
+      },
+      error: (err) => {
+        console.error('Error loading top bidders:', err);
+      },
+    });
+  } 
+  
+  /////////////////////=================================////////////////////////
+
+
+  submitWinnerChange(): void {
+  if (!this.asset.winnerId || !this.selectedReason) {
+    alert('Please select a winner and reason.');
+    return;
+  }
+
+  const dto: ReplaceAssetWinnerDto = {
+    assetId: this.asset.assetId,
+    userId: this.asset.winnerId,
+    awardedPrice: this.asset.awardedPrice ?? 0,
+    reason: this.selectedReason,
+    note: this.winnerNote,
+    approved: false, // or true, depending on your flow
+  };
+
+  this.assetService.replaceWinner(dto).subscribe({
+    next: (res) => {
+      console.log('Winner updated successfully:', res);
+      this.asset.winnerId = res.winnerId;
+      this.updateWinnerName(res.winnerId); // Update UI
+      // this.isEditingWinner = false;
+    },
+    error: (err) => {
+      console.error('Error updating winner:', err);
+      alert('Failed to update winner.');
+    },
+  });
+}
+
+
 
   galleryError: string = '';
   documentError: string = '';
@@ -400,6 +563,8 @@ export class EditAssetComponent implements OnInit {
         'winnerName',
         'categoryName',
         'auctionStatusId',
+        'isAvailableForDirectSale',
+        'isDeleted',
       ];
 
       console.log('--- FormData Preview ---', formData);
@@ -717,6 +882,140 @@ export class EditAssetComponent implements OnInit {
   }
 
   isImage(file: File): boolean {
-    return file.type.startsWith('image/');
+  return file.type.startsWith('image/');
+}
+
+
+reasons = [
+  'Incorrect Winner',
+  'Bidder Disqualified',
+  'Manual Reassignment',
+  'Technical Error'
+];
+
+showChangeWinner = false;
+reasonSelected = false;
+selectedReason: string | null = null;
+
+reasonVisible = false;
+
+toggleChangeWinner() {
+  this.showChangeWinner = !this.showChangeWinner;
+  if (!this.showChangeWinner) {
+    this.reasonVisible = false;
+    this.selectedReason = null;
+    // this.asset.winnerId = null;
   }
+}
+  
+updateWinnerName(id: number | undefined): void {
+  console.log('Updating winner name with ID:', id);
+  const bidder = this.bidders.find(b => b.userId === id);
+  if (bidder) {
+    console.log('Selected winner:', 'with ID:', );
+    this.asset.winnerName = bidder.userName;  
+    this.asset.winnerId = bidder.userId;  
+
+    console.log('Selected winner:', this.asset.winnerName, 'with ID:', this.asset.winnerId);
+  }
+}
+
+
+
+
+ searchLocation(): void {
+    if (!this.locationSearchQuery.trim()) return;
+
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.locationSearchQuery)}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (data.length === 0) {
+          alert('Location not found.');
+          return;
+        }
+
+        const result = data[0];
+        const lat = parseFloat(result.lat);
+        const lng = parseFloat(result.lon);
+
+        this.searchedLat = lat;
+        this.searchedLng = lng;
+
+
+        this.asset.mapLatitude = lat;
+        this.asset.mapLongitude = lng;
+
+        this.showUpdateLocationButton = true;
+
+        this.map.setView([lat, lng], 15);
+
+        if (this.previewMarker) {
+          this.map.removeLayer(this.previewMarker);
+        }
+
+        this.previewMarker = L.marker([lat, lng], {
+          icon: L.divIcon({
+            className: 'custom-label',
+            html: `<div style="background:#ffc;border:1px solid #999;padding:2px 6px;border-radius:4px;">📍 Preview</div>`,
+            iconSize: [100, 30],
+            iconAnchor: [50, 15]
+          })
+        }).addTo(this.map);
+      })
+      .catch(error => {
+        console.error('Error searching location:', error);
+        alert('Search failed. Try again.');
+      });
+  }
+
+  confirmUpdateLocation(): void {
+    if (this.searchedLat != null && this.searchedLng != null) {
+      this.asset.mapLatitude = this.searchedLat;
+      this.asset.mapLongitude = this.searchedLng;
+      console.log('Updating asset location to:', this.asset.mapLatitude, this.asset.mapLongitude);
+      console.log('Adding marker at:', this.searchedLat, this.searchedLng);
+      
+      
+
+      this.addMarker(this.searchedLat, this.searchedLng);
+      this.map.setView([this.searchedLat, this.searchedLng], 15);
+      this.showUpdateLocationButton = false;
+
+      if (this.previewMarker) {
+        this.map.removeLayer(this.previewMarker);
+        this.previewMarker = null as any;
+      }
+    }
+  }
+
+  addMarker(lat: number, lng: number): void {
+    if (this.locationMarker) {
+      this.map.removeLayer(this.locationMarker);
+    }
+
+    this.locationMarker = L.marker([lat, lng], {
+      draggable: true
+    }).addTo(this.map);
+
+    this.locationMarker.on('dragend', () => {
+      const pos = this.locationMarker.getLatLng();
+      this.asset.mapLatitude = pos.lat;
+      this.asset.mapLongitude = pos.lng;
+    });
+  }
+
+
+  onManualCoordinateChange(): void {
+  const lat = this.asset.mapLatitude;
+  const lng = this.asset.mapLongitude;
+
+  if (lat != null && lng != null && !isNaN(lat) && !isNaN(lng)) {
+    this.map.setView([lat, lng], 15);
+    this.addMarker(lat, lng);
+  }
+}
+
+
 }

@@ -5,7 +5,6 @@ import { CategoryCardComponent } from './category-card/category-card.component';
 import { DirectSaleComponentLP } from './direct-sale/direct-sale.component';
 import { FooterComponent } from "../footer/footer.component";
 import { HeaderComponent } from "../header/header.component";
-import { FeaturedAssetsComponent } from './featured-assets/featured-assets.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 
@@ -15,9 +14,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
   imports: [
     PromotionsComponent,
     DirectSaleComponentLP,
-    CategoryCardComponent,
+    CategoryCardComponent
     // FooterComponent,
-    FeaturedAssetsComponent,
+    
     // HeaderComponent
 ],
   templateUrl: './landing-page.component.html',
