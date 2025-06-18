@@ -897,16 +897,17 @@
         </div>
 
         <div class="card p-3 shadow-sm mb-4">
-          <h5>Map</h5>
+          <h5>Asset Location</h5>
 
           <div class="mb-2 d-flex">
             <input
+              
+              #searchInput  
               type="text"
               placeholder="Search state, city, or area"
-              [(ngModel)]="searchQuery"
               class="form-control me-2"
             />
-            <button class="btn btn-primary" (click)="searchLocation()">
+            <button class="btn btn-primary" type="button" (click)="searchLocation(searchInput.value)">
               Search
             </button>
           </div>
