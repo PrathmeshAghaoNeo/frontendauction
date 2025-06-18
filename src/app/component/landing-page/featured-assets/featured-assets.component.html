@@ -1,14 +1,24 @@
-<div class="container my-4">
- 
-    <ng-container *ngFor="let asset of featuredAssets">
-        <!-- <p>featured-assets works!</p> -->
-        <div class="card">
-          <5img [src]="asset.imageUrl" alt="{{ asset.name }}" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">{{ asset.name }}</h5>
-            <p class="card-text">{{ asset.description }}</p>
-          </div>
-        </div>
-    </ng-container>
+<div class="scroll-wrapper">
+  <div class="scroll-track">
+    <div class="scroll-card" *ngFor="let asset of featuredAssets" (click)="openAssetModal(asset)">
+      <img [src]="getImageUrl(asset.galleryFilePaths)" alt="{{ asset.title }}">
+      <div class="scroll-title">{{ asset.title }}</div>
+    </div>
+  </div>
 </div>
 
+<!-- Modal -->
+<ng-template #assetModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ selectedAsset?.title }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <img [src]="getImageUrl(selectedAsset?.galleryFilePaths)" class="img-fluid mb-2" *ngIf="selectedAsset?.galleryFilePaths">
+    <p><strong>Description:</strong> {{ selectedAsset?.description }}</p>
+    <p><strong>Category:</strong> {{ selectedAsset?.categoryName }}</p>
+    <p><strong>Starting Price:</strong> ₹{{ selectedAsset?.startingPrice }}</p>
+    <p><strong>Status:</strong> {{ selectedAsset?.statusName }}</p>
+    <!-- Add more fields as needed -->
+  </div>
+</ng-template>

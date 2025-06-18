@@ -26,6 +26,7 @@ export const ApiEndpoints = {
   Win: `${BASE_URL}/AssetWinner`,
   ROLE: `${BASE_URL}/Role`,
   REPORTS : `${BASE_URL}/Reports`,
+  FEATUREDASSETS : `${BASE_URL}/FeaturesAssets/featured`,
 
   
 };
