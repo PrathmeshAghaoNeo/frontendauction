@@ -1,49 +1,49 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgbCarouselModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClient } from '@microsoft/signalr';
+import { ApiEndpoints } from '../../../constants/api-endpoints';
+import { Asset } from '../../../modals/manage-asset';
+import { FeaturedAssetsService } from '../../../services/featured-assets.service';
+import { environment } from '../../../constants/enviroments';
 
 @Component({
   selector: 'app-featured-assets',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgbCarouselModule],
   templateUrl: './featured-assets.component.html',
-  styleUrls: ['./featured-assets.component.css']
+  styleUrls: ['./featured-assets.component.css'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class FeaturedAssetsComponent implements OnInit {
+  featuredAssets: Asset[] = [];
+  selectedAsset: Asset | null = null;
 
-  featuredAssets = [
-    {
-      name: 'Antique Sword',
-      description: 'A 17th-century ornamental sword.',
-      imageUrl: 'https://via.placeholder.com/600x400?text=Sword'
-    },
-    {
-      name: 'Vintage Camera',
-      description: 'Classic film camera from 1940s.',
-      imageUrl: 'https://via.placeholder.com/600x400?text=Camera'
-    },
-    {
-      name: 'Oil Painting',
-      description: 'Signed artwork from a 19th-century artist.',
-      imageUrl: 'https://via.placeholder.com/600x400?text=Painting'
-    }
-  ];
+  @ViewChild('assetModal', { static: true }) assetModalTemplate: any;
 
-  // customOptions: OwlOptions = {
-  //   loop: true,
-  //   margin: 20,
-  //   nav: true,
-  //   dots: true,
-  //   autoplay: true,
-  //   autoplayTimeout: 3000,
-  //   navText: ['‹', '›'],
-  //   responsive: {
-  //     0: { items: 1 },
-  //     600: { items: 2 },
-  //     1000: { items: 3 }
-  //   }
-  // };
+  constructor(
+    private featuredAssetsService: FeaturedAssetsService,
+    private modalService: NgbModal
+  ) {}
 
   ngOnInit(): void {
-    console.log("Featured assets loaded", this.featuredAssets);
+    this.featuredAssetsService.getFeaturedAssets().subscribe({
+      next: (data) => this.featuredAssets = data,
+      error: (err) => console.error('Error loading assets:', err)
+    });
+  }
+
+  
+ getImageUrl(path: string | undefined | null): string {
+  if (!path) return 'assets/default-image.jpg'; // fallback
+  const filePaths = path.split(','); // supports multiple files
+  return `${environment.imgUrl}${filePaths[0].trim()}`;
+}
+
+
+
+  openAssetModal(asset: Asset) {
+    this.selectedAsset = asset;
+    this.modalService.open(this.assetModalTemplate, { size: 'lg' });
   }
 }
