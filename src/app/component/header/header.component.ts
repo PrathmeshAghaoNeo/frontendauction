@@ -252,23 +252,14 @@ toWatchlist() {
 
 
   //Notfication Code 
-  loadNotifications(userId: number): void {
+ loadNotifications(userId: number): void {
+  if (!userId) return;
 
-    if (!userId) return;
-
-    this.userService.getNotificationByUserId(userId).subscribe({
-      next: (data) => {
-        this.notifications = data;
-        console.log(this.notifications)
-        this.unreadCount = this.notifications.filter(n => !n.isRead).length;
-        console.log('Unread Count:', this.unreadCount);
-      },
-      error: (err) => {
-        console.error('Failed to load notifications:', err);
-
-      },
-    });
-  }
+  this.userService.notification$.subscribe(notifications => {
+    this.unreadCount = notifications.filter(n => !n.isRead).length;
+    console.log("Unread notifications:", this.unreadCount);
+  });
+}
 
   switchLang(lang: string) {
     this.translate.use(lang);

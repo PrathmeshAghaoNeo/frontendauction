@@ -25,12 +25,13 @@ export class RegUserLandingPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userId = this.authService.getUserIdJwt();
+    this.userId = this.authService.getUserIdJwt()
 
     if (this.userId !== null) {
+      this.userService.loadNotificationsForUser(this.userId); 
       this.userService.getUserById(this.userId).subscribe({
         next: (user) => {
-          this.username = user?.name || 'User'; // adjust property as needed
+          this.username = user?.name || 'User';
 
         },
         error: (err) => {

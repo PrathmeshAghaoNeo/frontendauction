@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component , OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,6 +19,8 @@ import { AssetCategory } from '../../modals/assetcategories';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { Seller } from '../../modals/add-asset';
 // import {NgSelectModule} from '@ng-select/ng-select';
+import * as L from 'leaflet';
+
 
 @Component({
   selector: 'app-add-asset',
@@ -27,8 +29,16 @@ import { Seller } from '../../modals/add-asset';
   templateUrl: './add-asset.component.html',
   styleUrl: './add-asset.component.css',
 })
-export class AddAssetComponent {
-  auctions: Auction[] = [];
+export class AddAssetComponent implements OnInit , AfterViewInit{
+   map!: L.Map;
+  marker!: L.Marker;
+  searchQuery = '';
+
+  ngAfterViewInit(): void {
+    this.initMap();
+  }
+
+  auctions: Auction[] = []; 
   sellers: Seller[] = [];
   assetForm: FormGroup;
   documentUrls: string[] = [];
@@ -1055,6 +1065,105 @@ export class AddAssetComponent {
   onWinnerDocDragOver(event: DragEvent): void {
     event.preventDefault();
   }
+
+
+
+
+
+  initMap(): void {
+  this.map = L.map('map').setView([20.5937, 78.9629], 5); // Center: India
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(this.map);
+
+
+  this.map.on('click', (e: L.LeafletMouseEvent) => {
+    const lat = e.latlng.lat;
+    const lng = e.latlng.lng;
+
+    this.asset.MapLatitude = lat;
+    this.asset.MapLongitude = lng;
+
+    console.log('Clicked coordinates:', lat, lng); // Log the clicked coordinates
+    console.log('Asset after click:', this.asset.MapLatitude,this.asset.MapLongitude); // Log the asset object after click
+    
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+    }
+
+    const clickLabel = L.divIcon({
+      className: 'custom-label',
+      html: `<div style="color:#fff;padding:3px 8px;border-radius:4px;">📍</div>`,
+      iconSize: [100, 30],
+      iconAnchor: [50, 15]
+    });
+
+    this.marker = L.marker([lat, lng], { icon: clickLabel }).addTo(this.map);
+  });
+  
+}
+
+searchLocation(query: string): void {
+
+  console.log(query, "<--search query");
+  this.searchQuery = query; 
+  if (!this.searchQuery) return;
+
+
+
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}`;
+
+  console.log('Searching for:', this.searchQuery); // Debug log
+
+  fetch(url, {
+    headers: {
+      'User-Agent': 'YourAppName/1.0 (your@email.com)' // Nominatim requires user agent
+    }
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      console.log('Search results:', data); // Debug log
+      
+      if (data.length === 0) {
+        alert('Location not found.');
+        return;
+      }
+
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
+      console.log('Found location at:', lat, lon); // Log coordinates
+
+      this.asset.MapLatitude = lat;
+      this.asset.MapLongitude = lon;
+
+      if (this.marker) {
+        this.map.removeLayer(this.marker);
+      }
+
+      const priceLabel = L.divIcon({
+        className: 'custom-label',
+        html: `<div style="background:#000;color:#fff;padding:3px 8px;border-radius:4px;">📍${this.searchQuery}</div>`,
+        iconSize: [100, 30],
+        iconAnchor: [50, 15]
+      });
+
+      this.marker = L.marker([lat, lon], { icon: priceLabel }).addTo(this.map);
+      this.map.setView([lat, lon], 12);
+    })
+    .catch(error => {
+      console.error('Error searching location:', error);
+      alert('Error searching location. Check console for details.');
+    });
+  }
+
+
+  
 }
 
 

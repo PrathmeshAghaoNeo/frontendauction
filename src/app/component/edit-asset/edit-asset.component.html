@@ -349,14 +349,14 @@
             <label class="form-label required-label">Awarding Method</label>
             <select
               class="form-select"
-              [(ngModel)]="asset.awardingMethod"
+              [(ngModel)]="asset.awardingId"
               name="awardingMethod"
             >
               <option
                 *ngFor="let option of winnerAwardingOptions"
-                [value]="option"
+                [value]="option.id"
               >
-                {{ option }}
+                {{ option.name }}
               </option>
             </select>
           </div>
@@ -770,62 +770,65 @@
         </div>
 
         <div class="card p-3 shadow-sm mb-4">
-          <h5>Map Location</h5>
+          <h5>Asset Location</h5>
 
-          <!-- Latitude -->
-          <div class="mb-2">
-            <label class="form-label required-label">Latitude</label>
-            <input
-              class="form-control"
-              type="number"
-              [(ngModel)]="asset.mapLatitude"
-              name="latitude"
-              step="0.000001"
-              #latitude="ngModel"
-              required
-              [class.is-invalid]="
-                latitude.invalid && (latitude.touched || assetForm.submitted)
-              "
-            />
-            <div
-              *ngIf="
-                latitude.invalid && (latitude.touched || assetForm.submitted)
-              "
-              class="invalid-feedback"
-            >
-              <div *ngIf="latitude.errors?.['required']">
-                Latitude is required.
-              </div>
+          <!-- Search Field -->
+          <div class="mb-3">
+            <label class="form-label">Search Location</label>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="E.g.,Mumbai"
+                [(ngModel)]="locationSearchQuery"
+                (keyup.enter)="searchLocation()"
+                name="locationSearch"
+              />
+              <button class="btn btn-primary" type="button" (click)="searchLocation()">
+                Search
+              </button>
+            </div>
+            <small class="text-muted">Search city, area, or landmark</small>
+
+            <div *ngIf="showUpdateLocationButton" class="mt-2">
+              <button class="btn btn-success btn-sm" (click)="confirmUpdateLocation()">
+                 Update Location to {{ searchedLat?.toFixed(6) }}, {{ searchedLng?.toFixed(6) }}
+              </button>
             </div>
           </div>
 
-          <!-- Longitude -->
-          <div class="mb-2">
-            <label class="form-label required-label">Longitude</label>
-            <input
-              class="form-control"
-              type="number"
-              [(ngModel)]="asset.mapLongitude"
-              name="longitude"
-              step="0.000001"
-              required
-              #longitude="ngModel"
-              [class.is-invalid]="
-                longitude.invalid && (longitude.touched || assetForm.submitted)
-              "
-            />
-            <div
-              *ngIf="
-                longitude.invalid && (longitude.touched || assetForm.submitted)
-              "
-              class="invalid-feedback"
-            >
-              <div *ngIf="longitude.errors?.['required']">
-                Longitude is required.
-              </div>
+          <!-- Map Area -->
+          <div class="mb-3 border rounded" style="height: 250px">
+            <div id="updateFormMap" style="height: 100%"></div>
+          </div>
+
+          <!-- Live Latitude/Longitude -->
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Latitude</label>
+              <input
+                type="number"
+                class="form-control"
+                step="0.000001"
+                [(ngModel)]="asset.mapLatitude"
+                name="mapLatitude"
+                (change)="onManualCoordinateChange()"
+                />
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Longitude</label>
+              <input
+                type="number"
+                class="form-control"
+                step="0.000001" 
+                [(ngModel)]="asset.mapLongitude"
+                name="mapLongitude"
+                (change)="onManualCoordinateChange()"
+                />
             </div>
           </div>
         </div>
+
 
         <div class="card p-3 shadow-sm mb-4">
           <h5>Fees</h5>
@@ -914,46 +917,6 @@
             </div>
           </div>
         </div>
-        <div class="card p-3 shadow-sm mb-4">
-          <h5>Translation</h5>
-          <select class="form-select form-select-sm" [(ngModel)]="asset.languageId" name="languageId" required
-            #languageId="ngModel">
-            <option [ngValue]="0">Select Language</option>
-            <option [ngValue]="2">Arabic</option>
-          </select>
- 
-          <div *ngIf="asset.languageId > 0">
-            <label class="form-label mt-3">Translated Title</label>
-            <input type="text" class="form-control form-control-sm" name="translatedTitle"
-              placeholder="Translated Title" [(ngModel)]="asset.titleTranslated" maxlength="100"
-              [required]="asset.languageId > 0" #translatedTitle="ngModel" />
-            <div *ngIf="translatedTitle.invalid && (translatedTitle.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedTitle.errors?.['maxlength']">Maximum 100 characters allowed.</div>
-            </div>
- 
-            <label class="form-label mt-3">Translated Description</label>
-            <textarea class="form-control form-control-sm" name="translatedDescription"
-              placeholder="Translated Description" [(ngModel)]="asset.descriptionTranslated" maxlength="500"
-              #translatedDescription="ngModel" [required]="asset.languageId > 0"></textarea>
-            <div *ngIf="translatedDescription.invalid && (translatedDescription.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedDescription.errors?.['maxlength']">Maximum 500 characters allowed.</div>
-            </div>
- 
-            <label class="form-label mt-3">Translated Sales Note</label>
-            <textarea class="form-control form-control-sm" name="translatedSalesNotes" placeholder="Translated Note"
-              [(ngModel)]="asset.salesNotesTranslated" maxlength="100" #translatedSalesNotes="ngModel"
-              [required]="asset.languageId > 0"></textarea>
-            <div *ngIf="translatedSalesNotes.invalid && (translatedSalesNotes.touched || assetForm.submitted)"
-              class="text-danger mt-1">
-              <div *ngIf="translatedTitle.errors?.['required']">Translated Title is required.</div>
-              <div *ngIf="translatedSalesNotes.errors?.['maxlength']">Maximum 100 characters allowed.</div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Right Column -->
@@ -972,39 +935,167 @@
           </div>
         </div> -->
 
-        <div class="card p-3 shadow-sm mb-4">
-          <h5>Winner Details</h5>
-          <!-- <div class="mb-2">
-            <label class="form-label">Winner ID</label>
-            <input class="form-control" 
-              type="number" 
-              [(ngModel)]="asset.winnerId" 
-              name="winnerId"
-              #winnerId="ngModel"
-            />
-          </div> -->
-          <div class="mb-2">
-            <label class="form-label">Winner Name</label>
-            <input
-              class="form-control"
-              type="text"
-              [(ngModel)]="asset.winnerName"
-              name="winnerName"
-              #winnerName="ngModel"
-              readonly
-            />
+        <div class="card p-3 shadow-sm mb-4 w-auto">
+          <h5>Auctions</h5>
+          <div
+            *ngFor="let auction of selectedAuctions"
+            class="mb-2 d-flex align-items-center"
+          >
+            <span class="badge bg-warning me-2">
+              {{ auction.title }} - {{ auction.auctionNumber }} ({{
+                auction.startDateTime | date : "short"
+              }})
+            </span>
           </div>
-          <div class="mb-2">
-            <label class="form-label required-label">Awarded Price</label>
-            <input
-              class="form-control"
-              type="number"
-              [(ngModel)]="asset.awardedPrice"
-              name="awardedPrice"
-              #awardedPrice="ngModel"
-              readonly
-            />
-            <!-- min="0" -->
+        </div>
+
+        <div class="card p-3 shadow-sm mb-4">
+          <div
+            class="d-flex align-items-center justify-content-between flex-wrap gap-2"
+          >
+            <!-- Winner Section -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <h5>Winner:</h5>
+              <span class="badge bg-success text-white px-3 py-1 rounded-pill">
+                {{ asset.winnerName }}</span
+              >
+
+              <!-- Show only if award type is manual -->
+              <ng-container *ngIf="asset.awardingId === 2">
+                <button
+                  class="btn btn-primary btn-sm"
+                  type="button"
+                  (click)="toggleChangeWinner()"
+                >
+                  Change Winner
+                </button>
+
+                <!-- Dropdowns appear only after button click -->
+                <ng-container *ngIf="showChangeWinner">
+                  <!-- Change Winner Dropdown -->
+                  <select
+                    class="form-select form-select-sm"
+                    style="width: 160px"
+                    [(ngModel)]="asset.winnerId"
+                    name="winnerId"
+                    (change)="updateWinnerName(asset.winnerId)"
+                  >
+                    <option disabled selected>Select New Winner</option>
+                    <option
+                      *ngFor="let bidder of bidders"
+                      [value]="bidder.userId"
+                    >
+                      {{ bidder.userName }} ||
+                      {{ bidder.bidAmount | currency : "BHD" }}
+                    </option>
+                  </select>
+
+                  <!-- Reason Dropdown -->
+                  <select
+                    class="form-select form-select-sm"
+                    style="width: 120px"
+                    [(ngModel)]="selectedReason"
+                    name="reason"
+                    (change)="reasonVisible = true"
+                  >
+                    <option disabled selected>Reason</option>
+                    <option *ngFor="let reason of reasons">{{ reason }}</option>
+                  </select>
+                </ng-container>
+
+                <!-- <button
+                  class="btn btn-success btn-sm"
+                  (click)="submitWinnerChange()"
+                  [disabled]="!asset.winnerId || !selectedReason"
+                  type="button"
+                >
+                  Submit Winner
+                </button> -->
+              </ng-container>
+            </div>
+
+            <!-- Show textarea for reason -->
+            <div *ngIf="reasonVisible" class="mt-2" style="width: 100%">
+              <textarea
+                class="form-control"
+                rows="3"
+                name="reasonText"
+                placeholder="Enter reason for changing winner"
+              ></textarea>
+              <!-- [(ngModel)]="asset.winnerChangeReason" -->
+            </div>
+
+            <!-- Sale Approval Modal -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <strong>Sale:</strong>
+              <span>{{ asset.awardedPrice | currency : "BHD" }}</span>
+
+              <!-- Approve Button triggers modal -->
+
+              <!-- Inline Note Field -->
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                placeholder="Note"
+                style="width: 120px"
+              />
+              <button
+                class="btn btn-success btn-sm"
+                type="button"
+                (click)="openSaleApprovalModal()"
+              >
+                Approve Sale
+              </button>
+              <!-- [(ngModel)]="asset.saleNote" -->
+            </div>
+
+            <!-- Confirmation Modal -->
+            <div
+              class="modal fade"
+              id="saleApprovalModal"
+              tabindex="-1"
+              aria-labelledby="saleApprovalModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="saleApprovalModalLabel">
+                      Confirm Sale
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      type="button"
+                    ></button>
+                  </div>
+
+                  <div class="modal-body">
+                    Are you sure you want to approve the sale?
+                  </div>
+
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm"
+                      data-bs-dismiss="modal"
+                    >
+                      No
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-success btn-sm"
+                      (click)="confirmApproveSale()"
+                      data-bs-dismiss="modal"
+                    >
+                      Yes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1071,24 +1162,94 @@
         </div>
 
         <div class="card p-3 shadow-sm mb-4">
-          <h5>Timestamps</h5>
-          <div class="mb-2">
-            <label class="form-label">Created At</label>
+          <h5>Translation</h5>
+          <select
+            class="form-select form-select-sm"
+            [(ngModel)]="asset.languageId"
+            name="languageId"
+            required
+            #languageId="ngModel"
+          >
+            <option [ngValue]="0">Select Language</option>
+            <option [ngValue]="2">Arabic</option>
+          </select>
+
+          <div *ngIf="asset.languageId > 0">
+            <label class="form-label mt-3">Translated Title</label>
             <input
-              class="form-control"
               type="text"
-              [value]="asset.createdAt | date : 'medium'"
-              readonly
+              class="form-control form-control-sm"
+              name="translatedTitle"
+              placeholder="Translated Title"
+              [(ngModel)]="asset.titleTranslated"
+              maxlength="100"
+              [required]="asset.languageId > 0"
+              #translatedTitle="ngModel"
             />
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Updated At</label>
-            <input
-              class="form-control"
-              type="text"
-              [value]="asset.updatedAt | date : 'medium'"
-              readonly
-            />
+            <div
+              *ngIf="
+                translatedTitle.invalid &&
+                (translatedTitle.touched || assetForm.submitted)
+              "
+              class="text-danger mt-1"
+            >
+              <div *ngIf="translatedTitle.errors?.['required']">
+                Translated Title is required.
+              </div>
+              <div *ngIf="translatedTitle.errors?.['maxlength']">
+                Maximum 100 characters allowed.
+              </div>
+            </div>
+
+            <label class="form-label mt-3">Translated Description</label>
+            <textarea
+              class="form-control form-control-sm"
+              name="translatedDescription"
+              placeholder="Translated Description"
+              [(ngModel)]="asset.descriptionTranslated"
+              maxlength="500"
+              #translatedDescription="ngModel"
+              [required]="asset.languageId > 0"
+            ></textarea>
+            <div
+              *ngIf="
+                translatedDescription.invalid &&
+                (translatedDescription.touched || assetForm.submitted)
+              "
+              class="text-danger mt-1"
+            >
+              <div *ngIf="translatedTitle.errors?.['required']">
+                Translated Title is required.
+              </div>
+              <div *ngIf="translatedDescription.errors?.['maxlength']">
+                Maximum 500 characters allowed.
+              </div>
+            </div>
+
+            <label class="form-label mt-3">Translated Sales Note</label>
+            <textarea
+              class="form-control form-control-sm"
+              name="translatedSalesNotes"
+              placeholder="Translated Note"
+              [(ngModel)]="asset.salesNotesTranslated"
+              maxlength="100"
+              #translatedSalesNotes="ngModel"
+              [required]="asset.languageId > 0"
+            ></textarea>
+            <div
+              *ngIf="
+                translatedSalesNotes.invalid &&
+                (translatedSalesNotes.touched || assetForm.submitted)
+              "
+              class="text-danger mt-1"
+            >
+              <div *ngIf="translatedTitle.errors?.['required']">
+                Translated Title is required.
+              </div>
+              <div *ngIf="translatedSalesNotes.errors?.['maxlength']">
+                Maximum 100 characters allowed.
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1128,20 +1289,6 @@
             {{ txn.transactionDate | date : "yyyy-MM-dd" }}
           </div>
         </div>
-
-        <div class="card p-3 shadow-sm mt-4">
-          <h5>Auctions</h5>
-          <div
-            *ngFor="let auction of selectedAuctions"
-            class="mb-2 d-flex align-items-center"
-          >
-            <span class="badge bg-warning me-2">
-              {{ auction.title }} - {{ auction.auctionNumber }} ({{
-                auction.startDateTime | date : "short"
-              }})
-            </span>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -1159,3 +1306,26 @@
     </div>
   </form>
 </div>
+
+<!-- 
+  <div class="card p-3 shadow-sm mb-4">
+          <h5>Timestamps</h5>
+          <div class="mb-2">
+            <label class="form-label">Created At</label>
+            <input
+              class="form-control"
+              type="text"
+              [value]="asset.createdAt | date : 'medium'"
+              readonly
+            />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Updated At</label>
+            <input
+              class="form-control"
+              type="text"
+              [value]="asset.updatedAt | date : 'medium'"
+              readonly
+            />
+          </div>
+        </div> -->
