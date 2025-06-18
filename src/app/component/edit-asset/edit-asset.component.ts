@@ -598,6 +598,17 @@ confirmApproveSale(): void {
         'requestForInquiry',
         this.asset.requestForInquiry ? 'true' : 'false'
       );
+      if (this.asset.languageId === 2) {
+      formData.append('LanguageId', '2');
+      formData.append('TranslatedTitle', this.asset.titleTranslated || '');
+      formData.append('TranslatedDescription', this.asset.descriptionTranslated || '');
+      formData.append('TranslatedSalesNotes', this.asset.salesNotesTranslated || '');
+      } else if (this.asset.languageId === 0) {
+      formData.append('LanguageId', '0');
+      formData.append('RemoveTranslation', 'true');
+      }
+
+
 
       console.log('--- FormData Preview ---');
       formData.forEach((value, key) => {
