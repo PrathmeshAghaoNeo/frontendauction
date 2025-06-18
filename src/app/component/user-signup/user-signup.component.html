@@ -41,7 +41,7 @@
           <input type="text"
             minlength="3"
             maxlength="25"
-            pattern="^[A-Za-z ]+$"
+            pattern="^[A-Za-z\u0600-\u06FF ]+$"
             class="form-control"
             [(ngModel)]="user.name"
             name="name"
