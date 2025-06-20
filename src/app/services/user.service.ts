@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Country, Role, Status, User, UserView,Notification, DepositLimits} from '../modals/user';
+import { Country, Role, Status, User, UserView, Notification, DepositLimits } from '../modals/user';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { AuthService } from './auth.service';
 
@@ -11,9 +11,14 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class UserService {
+
+  private currentUserId: number | null = null;
+  private currentLangCode: string = 'en';
+
+
   constructor(
     private http: HttpClient,
-    private authService: AuthService 
+    private authService: AuthService,
   ) { }
 
 
@@ -52,7 +57,7 @@ export class UserService {
   getRoles(): Observable<Role[]> {
     return this.http.get<Role[]>(`${ApiEndpoints.USER}/roles`);
   }
- 
+
   getStatuses(): Observable<Status[]> {
     return this.http.get<Status[]>(`${ApiEndpoints.USER}/statuses`);
   }
@@ -79,38 +84,45 @@ export class UserService {
   deleteUser(userId: number): Observable<any> {
     return this.http.delete<any>(`${ApiEndpoints.USER}/delete/${userId}`);
   }
-  getAllUserWins(userId:number): Observable<any> {
+  getAllUserWins(userId: number): Observable<any> {
     return this.http.get<any>(`${ApiEndpoints.Win}/WinsLIst/${userId}`);
   }
-  getUnseenUserWins(userId:number): Observable<any> {
+  getUnseenUserWins(userId: number): Observable<any> {
     return this.http.get<any>(`${ApiEndpoints.Win}/NotifiationList/${userId}`);
   }
   MarkAsSeen(userId: number): Observable<{ message: string; affectedRows: number }> {
     return this.http.put<{ message: string; affectedRows: number }>(
-      `${ApiEndpoints.Win}/mark-as-seen/${userId}`, 
+      `${ApiEndpoints.Win}/mark-as-seen/${userId}`,
       null
     );
   }
-  getNotificationByUserId(userId:number): Observable<Notification[]>{
-    return this.http.get<Notification[]>(`${ApiEndpoints.USER}/Notification/${userId}`);
+  getNotificationByUserId(userId: number, langCode?: string): Observable<Notification[]> {
+    const url = `${ApiEndpoints.USER}/Notification/${userId}${langCode ? `?langCode=${langCode}` : ''}`;
+    return this.http.get<Notification[]>(url);
   }
-   getNotificationCount(): number {
+  getNotificationCount(): number {
     return this.notificationsSubject.getValue().filter(n => !n.isRead).length;
   }
-  loadNotificationsForUser(userId: number): void {
-  this.getNotificationByUserId(userId).subscribe({
-    next: (notifications) => {
-      this.notificationsSubject.next(notifications);
-    },
-    error: (err) => {
-      console.error("Failed to fetch notifications:", err);
+  loadNotificationsForUser(userId: number, langCode?: string): void {
+    this.currentUserId = userId;
+    this.currentLangCode = langCode || 'en';
+
+    this.getNotificationByUserId(userId, this.currentLangCode).subscribe({
+      next: (notifications) => this.notificationsSubject.next(notifications),
+      error: (err) => console.error("Failed to fetch notifications:", err)
+    });
+  }
+  reloadNotificationsOnLangChange(newLangCode: string): void {
+    if (this.currentUserId != null) {
+      this.loadNotificationsForUser(this.currentUserId, newLangCode);
     }
-  });
-}
-  clearNotificationByUserId(userId:number): Observable<any> {
+  }
+
+
+  clearNotificationByUserId(userId: number): Observable<any> {
     return this.http.delete<any>(`${ApiEndpoints.USER}/delete-all-notification/${userId}`);
   }
-  markNottificationAsSeen(notificationId:string):Observable<any>{
+  markNottificationAsSeen(notificationId: string): Observable<any> {
     return this.http.put<any>(`${ApiEndpoints.USER}/mark-as-read/${notificationId}`, notificationId);
   }
 
