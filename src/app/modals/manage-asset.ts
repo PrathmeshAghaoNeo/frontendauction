@@ -1,5 +1,6 @@
 
 export interface Asset {
+  galleryFilePaths: string;
   assetId: number;
   title: string;
   categoryId?: number;
