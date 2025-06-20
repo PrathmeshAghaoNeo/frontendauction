@@ -38,12 +38,21 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #00cc44;
+  background-color: rgba(0, 0, 0, 0.70); /* Dark background strip */
   padding: 4px 10px;
-  font-weight: bold;
   border-radius: 4px;
 }
+
+.gradient-text {
+  font-weight: bold;
+ background-image: linear-gradient(90deg, #3a8dde, #8f60ff);
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
 
 @keyframes scroll-left {
   0% {

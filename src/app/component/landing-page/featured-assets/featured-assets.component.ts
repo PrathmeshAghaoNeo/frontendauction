@@ -6,6 +6,7 @@ import { ApiEndpoints } from '../../../constants/api-endpoints';
 import { Asset } from '../../../modals/manage-asset';
 import { FeaturedAssetsService } from '../../../services/featured-assets.service';
 import { environment } from '../../../constants/enviroments';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-featured-assets',
@@ -23,7 +24,8 @@ export class FeaturedAssetsComponent implements OnInit {
 
   constructor(
     private featuredAssetsService: FeaturedAssetsService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +41,19 @@ export class FeaturedAssetsComponent implements OnInit {
   const filePaths = path.split(','); // supports multiple files
   return `${environment.imgUrl}${filePaths[0].trim()}`;
 }
-
+//   (assetId: number | undefined | null, modal: any): void {
+//   if (assetId) {
+//     modal.close();
+//     this.router.navigate(['/asset-details', assetId]);
+//   }
+// }
+navigateToDetail(assetId: number | undefined , modal: any): void {
+    if (assetId) {
+      modal.close();
+      const encodedUserId = btoa(assetId.toString());
+      this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
+    }
+  }
 
 
   openAssetModal(asset: Asset) {
