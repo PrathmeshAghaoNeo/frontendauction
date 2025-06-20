@@ -16,15 +16,15 @@ import { AddRequest } from '../../modals/add-requests';
 @Component({
   selector: 'app-add-request',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
   templateUrl: './add-requests.component.html',
   styleUrls: ['./add-requests.component.css'],
   // imports: [CommonModule, RouterModule, FormsModule]
-  
+
 })
 export class AddRequestsComponent implements OnInit {
   @ViewChild('formRef') formRef!: NgForm;
-  
+
   newRequest: AddRequest = {} as AddRequest;
   currentDateTime: string = '';
   users: UserView[] = [];
@@ -35,9 +35,10 @@ export class AddRequestsComponent implements OnInit {
   formSubmitted = false;
   successMessage: string | null = null;
   //requestTypes: RequestType[] = [];
-requestTypes: any[] = [];
-requestStatuses: { statusName: string }[] = [];
+  requestTypes: any[] = [];
+  // requestStatuses: { statusName: string }[] = [];
 
+  requestStatuses: any[] = [];
 
   constructor(
     private requestService: RequestServices,
@@ -46,7 +47,7 @@ requestStatuses: { statusName: string }[] = [];
     private userservice: UserService,
     private assetservice: ManageAssetService,
     private transactionService: TransactionService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Load server-generated template including requestNumber
@@ -61,28 +62,28 @@ requestStatuses: { statusName: string }[] = [];
         this.newRequest.transactionId = null;
         this.newRequest.createdByAdmin = false;
 
-//           this.requestService.getAllRequests().subscribe({
-//   next: (res) => {
-//     this.requestTypes = res;
-//     console.log('Request Types:', res); // ✅ Debug
-//   },
-//   error: (err) => {
-//     console.error('Failed to load request types', err);
-//   }
-// });
+        //           this.requestService.getAllRequests().subscribe({
+        //   next: (res) => {
+        //     this.requestTypes = res;
+        //     console.log('Request Types:', res); // ✅ Debug
+        //   },
+        //   error: (err) => {
+        //     console.error('Failed to load request types', err);
+        //   }
+        // });
 
-  this.requestService.getRequestStatuses().subscribe({
-    next: (data) => {
-      this.requestStatuses = data;
-      console.log('Loaded request statuses:', this.requestStatuses);
-    },
-    error: (err) => {
-      console.error('Failed to load request statuses', err);
-    }
-  });
+        this.requestService.getRequestStatuses().subscribe({
+          next: (data) => {
+            this.requestStatuses = data;
+            console.log('Loaded request statuses:', this.requestStatuses);
+          },
+          error: (err) => {
+            console.error('Failed to load request statuses', err);
+          }
+        });
 
-        
-        
+
+
         // initialize date fields
         const now = moment();
         this.currentDateTime = now.format('YYYY-MM-DDTHH:mm');
@@ -130,7 +131,7 @@ requestStatuses: { statusName: string }[] = [];
   loadRequestTypes(): void {
     // this.requestService.getRequestTypes().subscribe({
     //   next: (data) => this.requestTypes = data,
-      
+
     //   error: (err) => {
     //     console.error('Failed to load request types', err);
     //   }
@@ -138,14 +139,14 @@ requestStatuses: { statusName: string }[] = [];
 
 
     this.requestService.getRequestTypes().subscribe({
-    next: (data) => {
-      this.requestTypes = data;
-      console.log('Loaded request types:', this.requestTypes); // <-- Add this
-    },
-    error: (err) => {
-      console.error('Failed to load request types', err);
-    }
-  });
+      next: (data) => {
+        this.requestTypes = data;
+        console.log('Loaded request types:', this.requestTypes); // <-- Add this
+      },
+      error: (err) => {
+        console.error('Failed to load request types', err);
+      }
+    });
   }
 
   loadRequestStatuses(): void {
@@ -166,7 +167,7 @@ requestStatuses: { statusName: string }[] = [];
     if (selectedUser) {
       this.selectedUsername = selectedUser.name;
       this.newRequest.username = selectedUser.name; // Add username to request
-      
+
       // Optionally filter transactions by selected user
       // You can implement this if needed
     }
@@ -174,19 +175,19 @@ requestStatuses: { statusName: string }[] = [];
 
   validateForm(): boolean {
     this.formSubmitted = true; // Mark form as submitted to show validation messages
-    
+
     // Check each required field individually
-    
+
     // User validation
     if (!this.newRequest.userId) {
       return false;
     }
-    
+
     // Mobile Number validation
     if (!this.newRequest.mobileNumber) {
       return false;
     }
-    
+
     const isMobileValid =
       typeof this.newRequest.mobileNumber === 'string' &&
       this.newRequest.mobileNumber.trim().length === 10 &&
@@ -195,54 +196,79 @@ requestStatuses: { statusName: string }[] = [];
     if (!isMobileValid) {
       return false;
     }
-    
+
     // Email validation
     if (!this.newRequest.email) {
       return false;
     }
-    
+
     // More robust email regex
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(this.newRequest.email.trim())) {
       return false;
     }
-    
+
     // Request Type validation
     if (!this.newRequest.requestTypeId) {
       return false;
     }
-    
+
     // Asset validation
     if (!this.newRequest.assetId) {
       return false;
     }
-    
+
     // Transaction ID validation
-    if (this.newRequest.transactionId === null || this.newRequest.transactionId === undefined) {
+    // if (this.newRequest.transactionId === null || this.newRequest.transactionId === undefined) {
+    //   return false;
+    // }
+    if (
+      this.newRequest.requestTypeId == 1 &&
+      (this.newRequest.transactionId === null || this.newRequest.transactionId === null)
+    ) {
+      alert('Please select a transaction');
       return false;
     }
-    
+
+
+
     // Date validation
     if (!this.newRequest.requestDateTime) {
       return false;
     }
-    
+
     const selectedDateTime = moment(this.newRequest.requestDateTime);
     const now = moment();
     if (!selectedDateTime.isSame(now, 'day')) {
       return false;
     }
-    
+
     // Status validation
     if (!this.newRequest.requestStatusId) {
       return false;
     }
 
+    //new added for transactionId required validation
+    //    if (
+    //   this.newRequest.requestTypeId == 1 &&
+    //   (this.newRequest.transactionId === null || this.newRequest.transactionId === undefined)
+    // ) {
+    //   return false;
+    // }
+
     return true;
+
+
   }
+
+
+
+
+
 
   createNew(): void {
     if (!this.validateForm()) {
+      alert('Please fill all required fields correctly.');
       return;
     }
 
@@ -253,7 +279,13 @@ requestStatuses: { statusName: string }[] = [];
       userId: Number(this.newRequest.userId),
       requestTypeId: Number(this.newRequest.requestTypeId),
       assetId: Number(this.newRequest.assetId),
-      transactionId: this.newRequest.transactionId ? Number(this.newRequest.transactionId) : null,
+
+      // transactionId: this.newRequest.transactionId ? Number(this.newRequest.transactionId) : null,
+      transactionId: this.newRequest.requestTypeId == 1
+        ? Number(this.newRequest.transactionId)
+        : null,
+        
+
       requestStatusId: Number(this.newRequest.requestStatusId),
       // Ensure other fields are properly set
       createdOn: moment().format('YYYY-MM-DDTHH:mm:ss.SSS'),
@@ -279,7 +311,7 @@ requestStatuses: { statusName: string }[] = [];
   // Check if field is invalid and touched (for template validation display)
   isFieldInvalid(fieldName: string): boolean {
     if (!this.formRef) return false;
-    
+
     const control = this.formRef.form.get(fieldName);
     return control ? (control.invalid && (control.touched || this.formSubmitted)) : false;
   }
@@ -287,10 +319,10 @@ requestStatuses: { statusName: string }[] = [];
   // Get validation message for a field
   getErrorMessage(fieldName: string): string {
     if (!this.formRef) return '';
-    
+
     const control = this.formRef.form.get(fieldName);
     if (!control || !control.errors) return '';
-    
+
     // Return appropriate error message based on error type
     if (control.errors['required']) return 'This field is required';
     if (control.errors['email']) return 'Please enter a valid email address';
@@ -301,7 +333,7 @@ requestStatuses: { statusName: string }[] = [];
     }
     if (control.errors['minlength']) return `Minimum length is ${control.errors['minlength'].requiredLength} characters`;
     if (control.errors['maxlength']) return `Maximum length is ${control.errors['maxlength'].requiredLength} characters`;
-    
+
     return 'Invalid value';
   }
 
@@ -348,5 +380,17 @@ requestStatuses: { statusName: string }[] = [];
   getRequestTypeName(requestTypeId: number): string {
     const type = this.requestTypes.find(t => t.requestTypeId === requestTypeId);
     return type ? type.typeName : '';
+  }
+
+
+  get uniqueStatuses() {
+    const seen = new Set();
+    return this.requestStatuses.filter(status => {
+      if (seen.has(status.statusName)) {
+        return false;
+      }
+      seen.add(status.statusName);
+      return true;
+    });
   }
 }

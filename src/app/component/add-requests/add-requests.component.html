@@ -124,7 +124,9 @@
       </div>
     </div>
 
-    <div class="col-md-6">
+
+    <!--******************* main code*************** -->
+    <!-- <div class="col-md-6">
       <label class="form-label required-label fw-bold">Transaction ID </label>
       <select 
         class="form-select form-select-lg" 
@@ -140,7 +142,49 @@
       <div *ngIf="isFieldInvalid('transactionId')" class="text-danger">
         Please select a transaction
       </div>
-    </div>
+    </div> -->
+    <div class="col-md-6" *ngIf="newRequest.requestTypeId == 1">
+  <label class="form-label required-label fw-bold">Transaction ID </label>
+  <select 
+    class="form-select form-select-lg" 
+    [(ngModel)]="newRequest.transactionId" 
+    name="transactionId"
+    [required]="newRequest.requestTypeId == 1"
+    [class.is-invalid]="isFieldInvalid('transactionId')">
+    <option [ngValue]="null" disabled class="placeholder-option">Select Transaction</option>
+    <option *ngFor="let transaction of transactions" [ngValue]="transaction.transactionId">
+      {{ transaction.transactionNumber }} - {{ transaction.amount | currency }} - {{ transaction.userFullName }}
+    </option>
+  </select>
+  <div *ngIf="isFieldInvalid('transactionId')" class="text-danger">
+    Please select a transaction
+  </div>
+</div>
+
+
+    <!-- <div class="col-md-6" *ngIf="newRequest.requestTypeId == 1">
+  <label class="form-label required-label fw-bold">Transaction ID </label>
+  <select 
+    class="form-select form-select-lg" 
+    [(ngModel)]="newRequest.transactionId" 
+    name="transactionId"
+    [required]="newRequest.requestTypeId == 1"
+    [class.is-invalid]="isFieldInvalid('transactionId')">
+    <option [ngValue]="null" disabled class="placeholder-option">Select Transaction</option>
+    <option *ngFor="let transaction of transactions" [ngValue]="transaction.transactionId">
+      {{ transaction.transactionNumber }} - {{ transaction.amount | currency }} - {{ transaction.userFullName }}
+    </option>
+  </select>
+  <div *ngIf="isFieldInvalid('transactionId')" class="text-danger">
+    Please select a transaction
+  </div>
+</div> -->
+
+
+
+
+
+
 
     <div class="col-md-6">
       <label for="startDateTime" class="form-label required-label fw-bold">Start Date & Time </label>
@@ -180,8 +224,12 @@
   required
   [class.is-invalid]="isFieldInvalid('requestStatusId')">
   <option [ngValue]="null" disabled>Select Status</option>
-  <option *ngFor="let status of requestStatuses" [ngValue]="status.statusName">{{ status.statusName }}</option>
+  <!-- <option *ngFor="let status of requestStatuses" [ngValue]="status.requestStatusId">{{ status.statusName }}</option> -->
+   <option *ngFor="let status of uniqueStatuses" [ngValue]="status.requestStatusId">
+    {{ status.statusName }} </option>
 </select>
+
+
 
 
   <!-- [(ngModel)]="newRequest.requestStatusId" 

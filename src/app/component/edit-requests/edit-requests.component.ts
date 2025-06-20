@@ -29,6 +29,11 @@ export class EditRequestsComponent implements OnInit {
   users: UserView[] = [];
   assets: Asset[] = [];
   transactions: Transaction[] = [];
+
+//new added
+  requestTypes: any[] = [];
+  requestStatuses: any[] = [];
+
   
   // Debug flags
   assetsLoaded: boolean = false;
@@ -72,7 +77,8 @@ export class EditRequestsComponent implements OnInit {
         requestType: null,
         tblRequestStatusHistories: [],
         transaction: null,
-        user: null
+        user: null,
+        
       } as EditRequests;
     } else {
       this.loadRequestData();
@@ -80,6 +86,10 @@ export class EditRequestsComponent implements OnInit {
 
     // Load dependencies concurrently
     this.loadDependencies();
+
+    //new added
+    this.loadRequestTypes();
+    this.loadRequestStatuses();
   }
 
   loadRequestData(): void {
@@ -237,6 +247,14 @@ export class EditRequestsComponent implements OnInit {
     if (!this.requestData.requestStatusId) { 
       this.showErrorAlert('Please select a status'); 
       return false; 
+    
+    }
+    if (
+      this.requestData.requestTypeId == 1 &&
+      (this.requestData.transactionId === null || this.requestData.transactionId === undefined)
+    ) {
+      this.showErrorAlert('Please select a transaction');
+      return false;
     }
     
     return true;
@@ -284,4 +302,79 @@ export class EditRequestsComponent implements OnInit {
     const formField = this.requestForm?.controls?.[field];
     return !!formField && formField.invalid && formField.touched;
   }
+
+
+
+  
+  loadRequestTypes(): void {
+    this.requestService.getRequestTypes().subscribe({
+      next: (data) => {
+        this.requestTypes = data;
+      },
+      error: (err) => {
+        console.error('Failed to load request types', err);
+      }
+    });
+  }
+
+  loadRequestStatuses(): void {
+    this.requestService.getRequestStatuses().subscribe({
+      next: (data) => {
+        this.requestStatuses = data;
+      },
+      error: (err) => {
+        console.error('Failed to load request statuses', err);
+      }
+    });
+  }
+
+
+  //   get filteredStatuses() {
+  //   // Find the selected request type object
+  //   const selectedType = this.requestTypes.find(
+  //     t => t.requestTypeId === this.requestData.requestTypeId
+  //   );
+  //   if (!selectedType) return [];
+
+  //   // If Offer (assuming Offer's typeName is 'Offer' or use its ID if you prefer)
+  //   if (selectedType.typeName === 'Offer') {
+  //     return this.requestStatuses.filter(
+  //       s => s.statusName === 'Approved' || s.statusName === 'Rejected'
+  //     );
+  //   } else {
+  //     return this.requestStatuses.filter(
+  //       s => s.statusName === 'Done' || s.statusName === 'Pending'
+  //     );
+  //   }
+  // }
+
+  get filteredStatuses() {
+  // Find the selected request type object
+  const selectedType = this.requestTypes.find(
+    t => t.requestTypeId === this.requestData.requestTypeId
+  );
+  if (!selectedType) return [];
+
+  let filtered: any[] = [];
+
+  if (selectedType.typeName === 'Offer') {
+    filtered = this.requestStatuses.filter(
+      s => s.statusName === 'Approved' || s.statusName === 'Rejected'
+    );
+  } else {
+    filtered = this.requestStatuses.filter(
+      s => s.statusName === 'Done' || s.statusName === 'Pending'
+    );
+  }
+
+  // Remove duplicates by statusName (or by requestStatusId if you prefer)
+  const seen = new Set();
+  return filtered.filter(status => {
+    if (seen.has(status.statusName)) {
+      return false;
+    }
+    seen.add(status.statusName);
+    return true;
+  });
+}
 }

@@ -42,4 +42,5 @@ export interface EditRequests {
   tblRequestStatusHistories: any[];
   transaction: any | null;
   user: any | null;
+  
 }

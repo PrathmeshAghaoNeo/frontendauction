@@ -15,5 +15,11 @@ export interface ManageRequest {
     createdByAdmin: boolean;
     createdOn: string;
     updatedOn: string;
+    statusName:string;
+  }
+  export interface requestType{
+    requestTypeId:number;
+    typeName:string;
+
   }
   

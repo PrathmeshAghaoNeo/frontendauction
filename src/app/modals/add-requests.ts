@@ -15,7 +15,7 @@ export interface AddRequest {
   createdByAdmin: boolean;
   createdOn?: string;
   updatedOn?: string;
-
+  // statusName:string;
   // typeName: string;
 }
 

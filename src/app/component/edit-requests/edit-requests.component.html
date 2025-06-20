@@ -103,7 +103,7 @@
 
     <div class="col-md-6">
       <label class="form-label fw-bold">Request Type<span class="text-danger">*</span></label>
-      <select
+      <!-- <select
         class="form-select form-select-lg"
         [(ngModel)]="requestData.requestTypeId"
         name="requestTypeId"
@@ -114,13 +114,25 @@
         <option [ngValue]="2">Inquiry</option>
         <option [ngValue]="3">Request for Viewing</option>
         <option [ngValue]="4">Offer</option>
-      </select>
+      </select> -->
+
+      <select
+  class="form-select form-select-lg"
+  [(ngModel)]="requestData.requestTypeId"
+  name="requestTypeId"
+  #typeField="ngModel"
+  required>
+  <option [ngValue]="null">Select request type</option>
+  <option *ngFor="let type of requestTypes" [ngValue]="type.requestTypeId">
+    {{ type.typeName }}
+  </option>
+</select>
       <div class="text-danger" *ngIf="typeField.invalid && typeField.touched">
         This field is required.
       </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-6" *ngIf="requestData.requestTypeId == 1">
       <label class="form-label fw-bold">Transaction ID<span class="text-danger">*</span></label>
       <select
         class="form-select form-select-lg"
@@ -147,7 +159,7 @@
 
     <div class="col-md-6">
       <label class="form-label fw-bold">Status<span class="text-danger">*</span></label>
-      <select
+      <!-- <select
         class="form-select form-select-lg"
         [(ngModel)]="requestData.requestStatusId"
         name="requestStatusId"
@@ -158,7 +170,21 @@
         <option [ngValue]="2">Done</option>
         <option [ngValue]="3">Approved</option>
         <option [ngValue]="4">Rejected</option>
-      </select>
+      </select> -->
+      <select
+  class="form-select form-select-lg"
+  [(ngModel)]="requestData.requestStatusId"
+  name="requestStatusId"
+  #statusField="ngModel"
+  required>
+  <option [ngValue]="null">Select status</option>
+  <!-- <option *ngFor="let status of filteredStatuses" [ngValue]="status.requestStatusId">
+    {{ status.statusName }}
+  </option> -->
+  <option *ngFor="let status of filteredStatuses" [ngValue]="status.requestStatusId">
+  {{ status.statusName }}
+</option>
+</select>
       <div class="text-danger" *ngIf="statusField.invalid && statusField.touched">
         This field is required.
       </div>

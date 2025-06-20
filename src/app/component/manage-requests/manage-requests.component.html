@@ -89,23 +89,32 @@
     <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFiltersToList()" class="form-control" placeholder="Search…" aria-label="Search requests">
   </div>
   <div class="col-md-4">
-    <select class="form-select" [(ngModel)]="filterType" (ngModelChange)="applyFiltersToList()" aria-label="Filter by type">
-      <option [ngValue]="0">All Types</option>
-      <option [ngValue]="1">Transfer of Ownership</option>
-      <option [ngValue]="2">Inquiry</option>
-      <option [ngValue]="3">Request for Viewing</option>
-      <option [ngValue]="4">Offer</option>
-    </select>
+    /
+
+    <!-- <select class="form-select" [(ngModel)]="filterType" (ngModelChange)="applyFiltersToList()" aria-label="Filter by type">
+  <option [ngValue]="0">All Types</option>
+  <option *ngFor="let type of requestTypes" [ngValue]="type.id">{{ type.typeName }}</option>
+</select> -->
+<select class="form-select" [(ngModel)]="filterType" (ngModelChange)="applyFiltersToList()" aria-label="Filter by type">
+  <option [ngValue]="0">All Types</option>
+  <option *ngFor="let type of requestTypes" [ngValue]="type.requestTypeId">{{ type.typeName }}</option>
+</select>
+
+
   </div>
   <div class="col-md-4">
-    <select class="form-select" [(ngModel)]="filterStatus" (ngModelChange)="applyFiltersToList()" aria-label="Filter by status">
+    <!-- <select class="form-select" [(ngModel)]="filterStatus" (ngModelChange)="applyFiltersToList()" aria-label="Filter by status">
       <option [ngValue]="0">All Statuses</option>
       <option [ngValue]="1">Pending</option>
       <option [ngValue]="2">Done</option>
       <option [ngValue]="3">Approved</option>
       <option [ngValue]="4">Rejected</option>
-    </select>
-  </div>
+    </select> -->
+    <select class="form-select" [(ngModel)]="filterStatus" (ngModelChange)="applyFiltersToList()" aria-label="Filter by status">
+  <option [ngValue]="0">All Statuses</option>
+  <option *ngFor="let status of requestStatuses" [ngValue]="status.id">{{ status.statusName }}</option>
+</select>
+  <!-- </div> -->
 </div>
 
 <!-- Loading indicator - only shows when loading -->
@@ -188,16 +197,16 @@
         <td>{{ getTypeName(r.requestTypeId) }}</td>
         <td>{{ r.requestDateTime | date: 'dd/MM/yyyy hh:mm a' }}</td>
 
-        <td>
-          <span [ngClass]="{
-                  'bg-warning': r.requestStatusId === 1,
-                  'bg-success': r.requestStatusId === 2,
-                  'bg-orange': r.requestStatusId === 3,
-                  'bg-danger': r.requestStatusId === 4
-                }" class="badge badge-fixed-width text-dark">
-            {{ getStatusName(r.requestStatusId) }}
-          </span>
-        </td>
+       <td>
+  <span [ngClass]="{
+          'bg-warning': r.statusName === 'Pending',
+          'bg-success': r.statusName === 'Done',
+          'bg-orange': r.statusName === 'Approved',
+          'bg-danger': r.statusName === 'Rejected'
+        }" class="badge badge-fixed-width text-dark">
+    {{ r.statusName || getStatusName(r.requestStatusId) }}
+  </span>
+</td>
         <td class="text-end action-buttons">
           <!-- <button type="button" class="btn btn-sm btn-outline-primary me-1"
                   [routerLink]="['/view-request', r.requestId]"

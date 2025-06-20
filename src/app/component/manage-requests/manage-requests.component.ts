@@ -4,7 +4,7 @@ import { RequestServices } from '../../services/requests.service';
 import { UserService } from '../../services/user.service';
 import { ManageAssetService } from '../../services/asset.service';
 import { Router, RouterModule } from '@angular/router';
-import { ManageRequest } from '../../modals/manage-requests';
+import { ManageRequest, requestType } from '../../modals/manage-requests';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -29,6 +29,12 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
   filteredRequests: ManageRequest[] = [];
   userList: UserView[] = [];
   assetList: Asset[] = [];
+//new addedd
+ requestTypes: requestType[] = [];
+
+  // requestStatuses: { statusName: string }[] = [];
+  requestStatuses: any[] = [];
+
   searchTerm = '';
   filterType = 0;
   filterStatus = 0;
@@ -78,6 +84,8 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
     // Load users and assets first
     this.loadUsers();
     this.loadAssets(); 
+    this.loadRequestTypes();
+    this.loadRequestStatuses();
     
     // Subscribe to the refresh signal - only refresh when changes are detected
     this.refreshSubscription = this.requestService.requestsRefresh$.subscribe(
@@ -90,7 +98,27 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
   }
 
 
-  
+//   loadRequestTypes() {
+//   this.requestService.getRequestTypes().subscribe(types => {
+//     this.requestTypes = types;
+//   });
+// }
+
+loadRequestTypes() {
+  this.requestService.getRequestTypes().subscribe(types => {
+    console.log('Loaded requestTypes:', types); // <--- ADD THIS LINE
+    this.requestTypes = types;
+    // console.log("types"+this.requestTypes.values);
+    
+  });
+}
+
+loadRequestStatuses() {
+  this.requestService.getRequestStatuses().subscribe(statuses => {
+    this.requestStatuses = statuses;
+  });
+}
+
   openViewModal(request: ManageRequest): void {
     this.selectedRequest = request;
     this.modalService.open(this.viewRequestModal, {
@@ -372,11 +400,9 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
   
   // Apply filters to the list - called automatically when Type or Status filters change
   applyFiltersToList(): void {
-    // Update the advanced filters to match the quick filters
     this.filters.requestTypeId = this.filterType;
     this.filters.requestStatusId = this.filterStatus;
-    
-    // First apply all filters
+
     let filtered = this.requestList.filter(r => {
       // Basic search term (applies across multiple fields)
       if (this.searchTerm) {
@@ -386,37 +412,30 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
           (r.username && r.username.toLowerCase().includes(term)) ||
           this.getTypeName(r.requestTypeId).toLowerCase().includes(term) ||
           this.getStatusName(r.requestStatusId).toLowerCase().includes(term) ||
-          this.getAssetTitle(r.assetId).toLowerCase().includes(term); // Add search by asset title
-          
+          this.getAssetTitle(r.assetId).toLowerCase().includes(term);
         if (!matchesSearch) return false;
       }
-      
-      // Quick filters - Type
-      if (this.filterType > 0 && r.requestTypeId !== this.filterType) {
+      // Quick filters - Type (force number comparison)
+      if (Number(this.filterType) > 0 && Number(r.requestTypeId) !== Number(this.filterType)) {
         return false;
       }
-      
-      // Quick filters - Status
-      if (this.filterStatus > 0 && r.requestStatusId !== this.filterStatus) {
+      // Quick filters - Status (force number comparison)
+      if (Number(this.filterStatus) > 0 && Number(r.requestStatusId) !== Number(this.filterStatus)) {
         return false;
       }
-      
       // Advanced filters
       if (this.filters.requestNumber && r.requestNumber && 
           !r.requestNumber.toLowerCase().includes(this.filters.requestNumber.toLowerCase())) {
         return false;
       }
-      
       if (this.filters.userId && r.userId && 
           !this.getUserUid(r.userId).toLowerCase().includes(this.filters.userId.toLowerCase())) {
         return false;
       }
-      
       if (this.filters.username && r.username && 
           !r.username.toLowerCase().includes(this.filters.username.toLowerCase())) {
         return false;
       }
-      
       if (this.filters.assetId && r.assetId) {
         const assetTitle = this.getAssetTitle(r.assetId).toLowerCase();
         const searchTerm = this.filters.assetId.toLowerCase();
@@ -424,49 +443,38 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
           return false;
         }
       }
-      
-      // Date range filters
       if (this.filters.fromDate) {
         const fromDate = new Date(this.filters.fromDate);
-        fromDate.setHours(0, 0, 0, 0); // Start of day
+        fromDate.setHours(0, 0, 0, 0);
         const requestDate = new Date(r.requestDateTime);
         if (requestDate < fromDate) return false;
       }
-      
       if (this.filters.toDate) {
         const toDate = new Date(this.filters.toDate);
-        toDate.setHours(23, 59, 59, 999); // End of day
+        toDate.setHours(23, 59, 59, 999);
         const requestDate = new Date(r.requestDateTime);
         if (requestDate > toDate) return false;
       }
-      
       return true;
     });
-    
-    // Then apply sorting AFTER filtering
     this.filteredRequests = this.sortRequests(filtered);
-    
     this.cdr.detectChanges();
   }
 
-  getTypeName(typeId: number): string {
-    switch (typeId) {
-      case 1: return 'Transfer of Ownership';
-      case 2: return 'Inquiry';
-      case 3: return 'Request for Viewing';
-      case 4: return 'Offer';
-      default: return 'Unknown';
-    }
+  // Get type name dynamically from loaded requestTypes (support both 'name' and 'typeName')
+  getTypeName(requestTypeId: number): string {
+    // console.log(requestTypeId);
+    
+    const type = this.requestTypes.find(t => Number(t.requestTypeId) === Number(requestTypeId));
+    // console.log(type.typeName);
+    
+    return type ? (type.typeName || type.typeName) : 'Unknown';
   }
 
-  getStatusName(statusId: number): string {
-    switch (statusId) {
-      case 1: return 'Pending';
-      case 2: return 'Done';
-      case 3: return 'Approved';
-      case 4: return 'Rejected';
-      default: return 'Unknown';
-    }
+  // Get status name dynamically from loaded requestStatuses (support both 'name' and 'statusName')
+  getStatusName(requestStatusId: number): string {
+    const status = this.requestStatuses.find(s => Number(s.id) === Number(requestStatusId));
+    return status ? (status.statusName || status.name) : 'Unknown';
   }
 
   // Updated delete method with SweetAlert2
@@ -590,9 +598,12 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
           'Username': r.username,
           'Asset ID': r.assetId,
           'Asset Title': this.getAssetTitle(r.assetId), // Add asset title to export
+            'Date & Time': new Date(r.requestDateTime).toLocaleString(),
           'Type': this.getTypeName(r.requestTypeId),
-          'Date & Time': new Date(r.requestDateTime).toLocaleString(),
           'Status': this.getStatusName(r.requestStatusId)
+
+          // 'Type': this.getTypeName(r.requestTypeId),
+          // 'Status': this.getStatusName(r.requestStatusId)
         };
       });
       
@@ -625,4 +636,7 @@ export class ManageRequestsComponent implements OnInit, OnDestroy, DoCheck {
       this.cdr.detectChanges();
     }
   }
+
+
+  
 }
