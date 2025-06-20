@@ -19,7 +19,7 @@
         <input type="text"
         minlength="3"
         maxlength="25"
-        pattern="^[A-Za-z ]+$"
+        pattern=  "^[A-Za-z\u0600-\u06FF ]+$"
         class="form-control form-control-lg"
         [(ngModel)]="user.name"
         name="name"
@@ -31,7 +31,7 @@
           
           <div *ngIf="(name.errors?.['minlength'] || name.errors?.['pattern'])">
             <span *ngIf="name.errors?.['minlength']">Name must be at least 3 characters. </span>
-            <span *ngIf="name.errors?.['pattern']">Only alphabetic characters and spaces are allowed.</span>
+            <span *ngIf="name.errors?.['pattern']">Only alphabetic characters and spaces are allowed (English or Arabic).</span>
           </div>
           
           <div *ngIf="name.errors?.['maxlength']">Maximum 25 characters allowed.</div>

@@ -202,10 +202,10 @@ export class LoginComponent implements OnInit {
         const role = this.auth.getRoleJwt();
        
         setTimeout(() => {
-          if (role === 'Admin') {
-            this.router.navigate(['/dashboard']);
-          } else if (role === 'User') {
+          if (role === 'User') {
             this.router.navigate(['/reguserlandingpage']);
+          } else{
+            this.router.navigate(['/dashboard']);
           }
         }, 500);
       },
