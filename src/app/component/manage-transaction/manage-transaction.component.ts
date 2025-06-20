@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { TransactionMetadataService,CardType, PaymentMethod, TransactionType, TransactionStatus } from '../../services/transaction-meta.service';
+import { ReportsService } from '../../services/reports.service';
 
 
 @Component({
@@ -31,7 +32,7 @@ export class TransactionManagementComponent implements OnInit {
   filteredTransactions: Transaction[] = [];
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' | '' = ''; // Include '' as a valid option
-  loading = false;
+  loading = true;
   page = 1;
   itemsPerPage = 5;
   searchText = '';
@@ -48,10 +49,12 @@ export class TransactionManagementComponent implements OnInit {
     private transactionService: TransactionService,
     private modalService: NgbModal,
     private metadataService: TransactionMetadataService,
-    private router: Router
+    private router: Router,
+    private reportsService:ReportsService
   ) {}
 
   ngOnInit(): void {
+    
     const cached = this.metadataService.getCachedMetadata();
     if (cached) {
       this.populateDropdowns(cached);
@@ -71,20 +74,26 @@ export class TransactionManagementComponent implements OnInit {
   }
 
   loadTransactions(): void {
-    this.loading = true;
-    this.transactionService.getTransactions().subscribe({
-      next: (data) => {
-        this.transactions = data.sort((a, b) => b.transactionId - a.transactionId);
-        console.log(this.transactions)
-        // this.applyFilters();
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading transactions:', error);
-        this.loading = false;
-      }
-    });
-  }
+  this.loading = true;
+
+  this.transactionService.getTransactions().subscribe({
+    next: (data) => {
+      // If data is an array of transactions
+      this.transactions = data.sort((a, b) => b.transactionId - a.transactionId);
+      
+      // If data is a single transaction (based on your return type), wrap it:
+      // this.transactions = [data]; // Uncomment if needed
+
+      console.log(this.transactions);
+      this.loading = false;
+    },
+    error: (error) => {
+      console.error('Error loading account statement:', error);
+      this.loading = false;
+    }
+  });
+}
+
 
   get FilteredTransactions(): Transaction[] {
     const search = this.searchText.trim().toLowerCase();

@@ -18,11 +18,14 @@ import {
   TransactionType,
   TransactionStatus,
 } from '../../services/transaction-meta.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { UserService } from '../../services/user.service';
+import { TransactionService } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-add-transaction',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule,NgSelectModule],
   templateUrl: './add-transaction.component.html',
   styleUrls: ['./add-transaction.component.css'],
 })
@@ -34,20 +37,35 @@ export class AddTransactionComponent implements OnInit {
   paymentMethods: PaymentMethod[] = [];
   transactionTypes: TransactionType[] = [];
   statuses: TransactionStatus[] = [];
-
+  userList: { id: number, name: string }[] = [];
+  isLoadingUsers = false;
+  // transactionService: any;
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
     private location: Location,
-    private metadataService: TransactionMetadataService
+    private metadataService: TransactionMetadataService,
+    private userService:UserService,
+    private transactionService:TransactionService
   ) {}
 
   ngOnInit(): void {
+    this.isLoadingUsers = true;
     this.setMinDateTime();
     this.initializeForm();
     this.setupCardValidation();
     this.loadMetadata(); // ← Add this
+     this.userService.getAllUser().subscribe({
+    next: (users) => {
+      this.userList = users.map(u => ({ id: u.userId, name: u.name }));
+      // console.log(this.userList)
+      this.isLoadingUsers = false;
+    },
+    error: () => {
+      this.isLoadingUsers = false;
+    }
+  });
   }
 
   private setMinDateTime(): void {
@@ -126,47 +144,113 @@ export class AddTransactionComponent implements OnInit {
     this.location.back();
   }
 
+  // onSubmit(): void {
+  //   this.transactionForm.markAllAsTouched();
+  //   if (this.transactionForm.invalid) return;
+
+  //   this.submitting = true;
+  //   const formData = this.transactionForm.value;
+
+  //   // Auto-generate merchantTransactionId if needed
+  //   if (
+  //     !formData.merchantTransactionId &&
+  //     (formData.paymentMethodId === 3 || formData.paymentMethodId === 4)
+  //   ) {
+  //     formData.merchantTransactionId =
+  //       'MERC' +
+  //       Math.floor(Math.random() * 1_000_000_000)
+  //         .toString()
+  //         .padStart(8, '0');
+  //   }
+
+  //   // Clean notes
+  //   formData.notes = formData.notes?.trim();
+
+  //   this.http.post(ApiEndpoints.TRANSACTIONS, formData).subscribe({
+  //     next: (response: any) => {
+  //       Swal.fire({
+  //         icon: 'success',
+  //         title: 'Transaction Added Successfully',
+  //         confirmButtonText: 'OK',
+  //       }).then(() => this.router.navigate(['/transactions']));
+  //     },
+  //     error: (err) => {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error',
+  //         text: err.message || 'An error occurred. Please try again.',
+  //         confirmButtonText: 'OK',
+  //       });
+  //     },
+  //     complete: () => {
+  //       this.submitting = false;
+  //     },
+  //   });
+  // }
+
   onSubmit(): void {
-    this.transactionForm.markAllAsTouched();
-    if (this.transactionForm.invalid) return;
+  this.transactionForm.markAllAsTouched();
 
-    this.submitting = true;
-    const formData = this.transactionForm.value;
-
-    // Auto-generate merchantTransactionId if needed
-    if (
-      !formData.merchantTransactionId &&
-      (formData.paymentMethodId === 3 || formData.paymentMethodId === 4)
-    ) {
-      formData.merchantTransactionId =
-        'MERC' +
-        Math.floor(Math.random() * 1_000_000_000)
-          .toString()
-          .padStart(8, '0');
-    }
-
-    // Clean notes
-    formData.notes = formData.notes?.trim();
-
-    this.http.post(ApiEndpoints.TRANSACTIONS, formData).subscribe({
-      next: (response: any) => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Transaction Added Successfully',
-          confirmButtonText: 'OK',
-        }).then(() => this.router.navigate(['/transactions']));
-      },
-      error: (err) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: err.message || 'An error occurred. Please try again.',
-          confirmButtonText: 'OK',
-        });
-      },
-      complete: () => {
-        this.submitting = false;
-      },
-    });
+  if (this.transactionForm.invalid) {
+    return;
   }
+
+  const formData = this.transactionForm.value;
+
+  // Validate payment method
+  if (!formData.paymentMethodId) {
+    Swal.fire('Please select a payment method.', '', 'warning');
+    return;
+  }
+
+  const adminApprovalRequiredMethods = [3, 4]; // Assuming 3: bank, 4: cheque
+  const isManualMethod = adminApprovalRequiredMethods.includes(formData.paymentMethodId);
+  const statusId = isManualMethod ? 1 : 2;
+
+  // Auto-generate merchantTransactionId if not provided
+  if (!formData.merchantTransactionId && isManualMethod) {
+    formData.merchantTransactionId =
+      'MERC' +
+      Math.floor(Math.random() * 1_000_000_000)
+        .toString()
+        .padStart(8, '0');
+  }
+
+  // Clean up form data
+  formData.transactionDateTime = new Date().toISOString();
+  formData.statusId = statusId;
+  formData.notes = formData.notes?.trim() || '';
+  // formData.documents = this.documents || [];
+  // formData.documentUrl = this. || '';
+
+  // Convert to FormData if needed
+  const payload = this.transactionService['toFormData']
+    ? this.transactionService['toFormData'](formData)
+    : formData;
+
+  this.submitting = true;
+
+  this.http.post(ApiEndpoints.TRANSACTIONS, payload).subscribe({
+    next: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Transaction Added Successfully',
+        confirmButtonText: 'OK',
+      }).then(() => this.router.navigate(['/transactions']));
+    },
+    error: (err) => {
+      console.error('Transaction error:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err.message || 'An error occurred. Please try again.',
+        confirmButtonText: 'OK',
+      });
+    },
+    complete: () => {
+      this.submitting = false;
+    },
+  });
+}
+
 }

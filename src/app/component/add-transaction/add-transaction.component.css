@@ -54,3 +54,22 @@
   flex-direction: column;
   margin-left: 35%;
 }
+
+
+/* Style the dropdown panel background */
+::ng-deep .ng-dropdown-panel {
+  background-color: #f8f9fa; /* Light gray */
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add hover effect to each option */
+::ng-deep .ng-dropdown-panel .ng-option {
+  padding: 0.75rem 1rem;
+  transition: background-color 0.2s;
+  background-color: transparent;
+}
+
+::ng-deep .ng-dropdown-panel .ng-option:hover {
+  background-color: #e9ecef; /* Slightly darker on hover */
+}

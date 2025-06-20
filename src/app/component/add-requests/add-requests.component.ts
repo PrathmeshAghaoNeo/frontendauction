@@ -11,11 +11,11 @@ import { ManageAssetService } from '../../services/asset.service';
 import { TransactionService } from '../../services/transaction.service';
 import { FormsModule, ReactiveFormsModule, NgForm } from '@angular/forms';
 import { Transaction } from '../../modals/manage-transaction';
-
+import { NgSelectModule } from '@ng-select/ng-select';
 @Component({
   selector: 'app-add-request',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,NgSelectModule],
   templateUrl: './add-requests.component.html',
   styleUrls: ['./add-requests.component.css'],
   // imports: [CommonModule, RouterModule, FormsModule]
@@ -33,6 +33,7 @@ export class AddRequestsComponent implements OnInit {
   // Form submission tracking
   formSubmitted = false;
   successMessage: string | null = null;
+  
 
   constructor(
     private requestService: RequestServices,

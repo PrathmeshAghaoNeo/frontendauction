@@ -466,3 +466,28 @@ body .swal2-backdrop-show {
   color: red;
   /* font-weight: bold; */
 }
+::ng-deep .ng-dropdown-panel {
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dee2e6;
+}
+
+::ng-deep .ng-dropdown-panel .ng-option {
+  padding: 10px 15px;
+  background-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+  color: #212529;
+}
+
+/* Hovered option */
+::ng-deep .ng-dropdown-panel .ng-option:hover {
+  background-color: #e2e6ea;
+}
+
+/* Selected option */
+::ng-deep .ng-dropdown-panel .ng-option-selected {
+  background-color: #d1ecf1;  /* Light blue for selection */
+  font-weight: bold;
+  color: #0c5460;
+}

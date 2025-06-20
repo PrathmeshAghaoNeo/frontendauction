@@ -1,9 +1,16 @@
-
-
 <!-- Success Message Alert -->
-<div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+<div
+  *ngIf="successMessage"
+  class="alert alert-success alert-dismissible fade show"
+  role="alert"
+>
   {{ successMessage }}
-  <button type="button" class="btn-close" (click)="successMessage = null" aria-label="Close"></button>
+  <button
+    type="button"
+    class="btn-close"
+    (click)="successMessage = null"
+    aria-label="Close"
+  ></button>
 </div>
 
 <form #formRef="ngForm" class="container p-4 bg-white rounded shadow mt-4">
@@ -13,15 +20,20 @@
     </button>
     <div>
       <h3 class="auction-form-title">Create New Request</h3>
-      <p class="auction-form-subtitle"> indicates a required field</p>
+      <p class="auction-form-subtitle">indicates a required field</p>
     </div>
   </div>
-
 
   <div class="row g-3">
     <div class="col-md-6">
       <label class="form-label required-label fw-bold">Request Number</label>
-      <input type="text" class="form-control form-control-lg" [value]="newRequest.requestNumber" placeholder="Auto-generated" readonly>
+      <input
+        type="text"
+        class="form-control form-control-lg"
+        [value]="newRequest.requestNumber"
+        placeholder="Auto-generated"
+        readonly
+      />
     </div>
 
     <div class="col-md-6">
@@ -38,71 +50,107 @@
         (keypress)="allowOnlyNumbers($event)"
         required
         #mobileNumberRef="ngModel"
-        [class.is-invalid]="isFieldInvalid('mobileNumber')">
+        [class.is-invalid]="isFieldInvalid('mobileNumber')"
+      />
       <div *ngIf="isFieldInvalid('mobileNumber')" class="text-danger">
-        {{ getErrorMessage('mobileNumber') }}
+        {{ getErrorMessage("mobileNumber") }}
       </div>
     </div>
 
     <div class="col-md-6">
-      <label class="form-label required-label fw-bold">User </label>
-      <select 
-        class="form-select form-select-lg" 
-        [(ngModel)]="newRequest.userId" 
-        name="userId" 
-        required 
+      <label class="form-label required-label fw-bold">User</label>
+      <ng-select
+        class="form-select form-select-lg"
+        [items]="users"
+        bindLabel="name"
+        bindValue="userId"
+        [(ngModel)]="newRequest.userId"
+        name="userId"
+        placeholder="Select User"
+        [searchable]="true"
+        [clearable]="true"
+        required
         (change)="onUserChange()"
-        [class.is-invalid]="isFieldInvalid('userId')">
-        <option [ngValue]="null">Select User</option>
-        <option *ngFor="let user of users" [ngValue]="user.userId">{{ user.name }}</option>
-      </select>
-      <div *ngIf="isFieldInvalid('userId')" class="text-danger">
+        [class.is-invalid]="isFieldInvalid('userId')"
+      >
+      </ng-select>
+
+      <div *ngIf="isFieldInvalid('userId')" class="text-danger mt-1">
         Please select a user
       </div>
     </div>
 
     <div class="col-md-6">
       <label class="form-label required-label fw-bold">Email </label>
-      <input 
-        type="email" 
-        class="form-control form-control-lg" 
-        [(ngModel)]="newRequest.email" 
+      <input
+        type="email"
+        class="form-control form-control-lg"
+        [(ngModel)]="newRequest.email"
         name="email"
         placeholder="Enter valid email address"
-        required 
-        email 
+        required
+        email
         pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         #emailField="ngModel"
-        [class.is-invalid]="isFieldInvalid('email')">
+        [class.is-invalid]="isFieldInvalid('email')"
+      />
       <div *ngIf="isFieldInvalid('email')" class="text-danger">
-        {{ getErrorMessage('email') }}
+        {{ getErrorMessage("email") }}
       </div>
     </div>
 
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <label class="form-label required-label fw-bold">Asset </label>
-      <select 
-        class="form-select form-select-lg" 
-        [(ngModel)]="newRequest.assetId" 
-        name="assetId" 
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="newRequest.assetId"
+        name="assetId"
         required
-        [class.is-invalid]="isFieldInvalid('assetId')">
+        [class.is-invalid]="isFieldInvalid('assetId')"
+      >
         <option [ngValue]="null">Select Asset</option>
-        <option *ngFor="let asset of assets" [ngValue]="asset.assetId">{{ asset.title }}</option>
+        <option *ngFor="let asset of assets" [ngValue]="asset.assetId">
+          {{ asset.title }}
+        </option>
       </select>
       <div *ngIf="isFieldInvalid('assetId')" class="text-danger">
+        Please select an asset
+      </div>
+    </div> -->
+
+    <div class="col-md-6">
+      <label class="form-label required-label fw-bold">Asset</label>
+      <ng-select
+        class="form-select form-select-lg"
+        [items]="assets"
+        bindLabel="title"
+        bindValue="assetId"
+        [(ngModel)]="newRequest.assetId"
+        name="assetId"
+        [searchable]="true"
+        [clearable]="true"
+        placeholder="Select Asset"
+        [class.is-invalid]="isFieldInvalid('assetId')"
+      >
+        <ng-template ng-option-tmp let-item="item">
+          <div class="fw-light">{{ item.title }}</div>
+        </ng-template>
+      </ng-select>
+
+      <div *ngIf="isFieldInvalid('assetId')" class="text-danger mt-1">
         Please select an asset
       </div>
     </div>
 
     <div class="col-md-6">
-      <label class="form-label required-label fw-bold">Request Type  </label>
-      <select 
-        class="form-select form-select-lg" 
-        [(ngModel)]="newRequest.requestTypeId" 
-        name="requestTypeId" 
+      <label class="form-label required-label fw-bold">Request Type </label>
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="newRequest.requestTypeId"
+        name="requestTypeId"
         required
-        [class.is-invalid]="isFieldInvalid('requestTypeId')">
+        [class.is-invalid]="isFieldInvalid('requestTypeId')"
+      >
         <option [ngValue]="null">Select Request Type</option>
         <option [ngValue]="1">Transfer of Ownership</option>
         <option [ngValue]="2">Inquiry</option>
@@ -114,36 +162,78 @@
       </div>
     </div>
 
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <label class="form-label required-label fw-bold">Transaction ID </label>
-      <select 
-        class="form-select form-select-lg" 
-        [(ngModel)]="newRequest.transactionId" 
-        name="transactionId" 
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="newRequest.transactionId"
+        name="transactionId"
         required
-        [class.is-invalid]="isFieldInvalid('transactionId')">
+        [class.is-invalid]="isFieldInvalid('transactionId')"
+      >
         <option [ngValue]="null">Select Transaction</option>
-        <option *ngFor="let transaction of transactions" [ngValue]="transaction.transactionId">
-          {{ transaction.transactionNumber }} - {{ transaction.amount | currency }} - {{ transaction.userFullName }}
+        <option
+          *ngFor="let transaction of transactions"
+          [ngValue]="transaction.transactionId"
+        >
+          {{ transaction.transactionNumber }} -
+          {{ transaction.amount | currency }} - {{ transaction.userFullName }}
         </option>
       </select>
       <div *ngIf="isFieldInvalid('transactionId')" class="text-danger">
         Please select a transaction
       </div>
+    </div> -->
+
+    <div class="col-md-6">
+      <label class="form-label required-label fw-bold">Transaction ID</label>
+      <ng-select
+        class="form-select form-select-lg"
+        [items]="transactions"
+        bindLabel="transactionNumber"
+        bindValue="transactionId"
+        [(ngModel)]="newRequest.transactionId"
+        name="transactionId"
+        [searchable]="true"
+        [clearable]="true"
+        placeholder="Select Transaction"
+        [class.is-invalid]="isFieldInvalid('transactionId')"
+      >
+        <ng-template ng-label-tmp let-item="item">
+          {{ item.transactionNumber }} - {{ item.amount | currency }} -
+          {{ item.userFullName }}
+        </ng-template>
+
+        <ng-template ng-option-tmp let-item="item">
+          <div class="d-flex flex-column">
+            <div class="fw-light">{{ item.transactionNumber }}</div>
+            <div class="small text-muted">
+              {{ item.amount | currency }} – {{ item.userFullName }}
+            </div>
+          </div>
+        </ng-template>
+      </ng-select>
+
+      <div *ngIf="isFieldInvalid('transactionId')" class="text-danger mt-1">
+        Please select a transaction
+      </div>
     </div>
 
     <div class="col-md-6">
-      <label for="startDateTime" class="form-label required-label fw-bold">Start Date & Time </label>
-      <input 
-        type="datetime-local" 
-        class="form-control form-control-lg" 
-        id="startDateTime" 
+      <label for="startDateTime" class="form-label required-label fw-bold"
+        >Start Date & Time
+      </label>
+      <input
+        type="datetime-local"
+        class="form-control form-control-lg"
+        id="startDateTime"
         name="startDateTime"
         [(ngModel)]="newRequest.requestDateTime"
-        [min]="currentDateTime" 
+        [min]="currentDateTime"
         placeholder="Select start date and time"
         required
-        [class.is-invalid]="isFieldInvalid('startDateTime')">
+        [class.is-invalid]="isFieldInvalid('startDateTime')"
+      />
       <div *ngIf="isFieldInvalid('startDateTime')" class="text-danger">
         Start date and time is required
       </div>
@@ -151,12 +241,13 @@
 
     <div class="col-md-6">
       <label class="form-label required-label fw-bold">Status </label>
-      <select 
-        class="form-select form-select-lg" 
-        [(ngModel)]="newRequest.requestStatusId" 
-        name="requestStatusId" 
+      <select
+        class="form-select form-select-lg"
+        [(ngModel)]="newRequest.requestStatusId"
+        name="requestStatusId"
         required
-        [class.is-invalid]="isFieldInvalid('requestStatusId')">
+        [class.is-invalid]="isFieldInvalid('requestStatusId')"
+      >
         <option [ngValue]="null">Select Status</option>
         <option [ngValue]="1">Pending</option>
         <option [ngValue]="2">Done</option>
@@ -170,27 +261,35 @@
 
     <div class="col-12">
       <label class="form-label fw-bold">Customer Notes</label>
-      <textarea 
-        class="form-control form-control-lg" 
-        rows="2" 
-        [(ngModel)]="newRequest.customerNote" 
-        name="customerNote" 
-        placeholder="Enter customer notes (optional)"></textarea>
+      <textarea
+        class="form-control form-control-lg"
+        rows="2"
+        [(ngModel)]="newRequest.customerNote"
+        name="customerNote"
+        placeholder="Enter customer notes (optional)"
+      ></textarea>
     </div>
 
     <div class="col-12">
       <label class="form-label fw-bold">Admin Notes</label>
-      <textarea 
-        class="form-control form-control-lg" 
-        rows="2" 
-        [(ngModel)]="newRequest.adminNote" 
-        name="adminNote" 
-        placeholder="Enter admin notes (optional)"></textarea>
+      <textarea
+        class="form-control form-control-lg"
+        rows="2"
+        [(ngModel)]="newRequest.adminNote"
+        name="adminNote"
+        placeholder="Enter admin notes (optional)"
+      ></textarea>
     </div>
 
     <div class="col-12">
       <div class="form-check mb-3">
-        <input class="form-check-input" type="checkbox" [(ngModel)]="newRequest.createdByAdmin" name="createdByAdmin" id="createdByAdmin">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [(ngModel)]="newRequest.createdByAdmin"
+          name="createdByAdmin"
+          id="createdByAdmin"
+        />
         <label class="form-check-label" for="createdByAdmin">
           Created by Admin
         </label>
@@ -200,6 +299,8 @@
 
   <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
     <button class="btn btn-secondary me-2" (click)="goBack()">Back</button>
-    <button class="btn btn-success btn-lg px-4" (click)="createNew()">Save</button>
+    <button class="btn btn-success btn-lg px-4" (click)="createNew()">
+      Save
+    </button>
   </div>
 </form>

@@ -10,7 +10,7 @@
           <i class="bi bi-arrow-left-circle me-1"></i>
         </button>
       </div>
-      <div class="container-transation ">
+      <div class="container-transation">
         <h3 class="mb-1">Update Transaction</h3>
         <p class="text-danger mb-0">
           <span class="fw-bold">*</span> indicates a required field
@@ -51,8 +51,8 @@
       </div>
 
       <!-- User ID -->
-      <div class="col-md-6 mb-2">
-        <label for="userId" class="form-label required-label">User</label>
+      <!-- <div class="col-md-6 mb-2">
+        <label for="userId" class="form-label required-label">User Name</label>
         <input
           type="number"
           formControlName="userId"
@@ -77,6 +77,23 @@
             User ID must be less than or equal to 99999.
           </div>
         </div>
+      </div> -->
+
+      <!-- Hidden userId for form binding -->
+      <input type="hidden" formControlName="userId" />
+
+      <!-- Read-only username field -->
+      <div class="col-md-6 mb-2">
+        <label for="username" class="form-label required-label"
+          >User Name</label
+        >
+        <input
+          type="text"
+          id="username"
+          class="form-control"
+          [value]="username"
+          disabled
+        />
       </div>
 
       <!-- Transaction Type -->

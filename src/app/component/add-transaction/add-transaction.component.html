@@ -44,16 +44,21 @@
         </div>
       </div>
 
-      <!-- User ID Field -->
+      <!-- User Name Field -->
       <div class="col-md-6 mb-2">
         <label for="userId" class="form-label required-label">User</label>
-        <input
-          type="number"
+        <ng-select class="form-select form-select-lg" 
+          [items]="userList"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Select user"
           formControlName="userId"
-          id="userId"
-          class="form-control"
-          placeholder="User ID"
-        />
+          [searchable]="true"
+          [clearable]="false"
+          [loading]="isLoadingUsers"
+        >
+        </ng-select>
+
         <div
           *ngIf="
             transactionForm.get('userId')?.invalid &&
@@ -62,13 +67,7 @@
           class="text-danger"
         >
           <div *ngIf="transactionForm.get('userId')?.errors?.['required']">
-            User ID is required.
-          </div>
-          <div *ngIf="transactionForm.get('userId')?.errors?.['min']">
-            User ID must be greater than 0.
-          </div>
-          <div *ngIf="transactionForm.get('userId')?.errors?.['max']">
-            User ID must be less than or equal to 99999.
+            User is required.
           </div>
         </div>
       </div>
