@@ -67,7 +67,7 @@ export class ManageAssetService {
   }
 
  
-
+  
   deleteAssetGallery(galleryId: string): Observable<void> {
   const url = `${ApiEndpoints.ASSETGALLERY}/delete/${galleryId}`;
   return this.http.delete<void>(url);
