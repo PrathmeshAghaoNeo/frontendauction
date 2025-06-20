@@ -1,14 +1,28 @@
-<div class="container my-4">
- 
-    <ng-container *ngFor="let asset of featuredAssets">
-        <!-- <p>featured-assets works!</p> -->
-        <div class="card">
-          <5img [src]="asset.imageUrl" alt="{{ asset.name }}" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">{{ asset.name }}</h5>
-            <p class="card-text">{{ asset.description }}</p>
-          </div>
-        </div>
-    </ng-container>
+<div class="scroll-wrapper">
+  <div class="scroll-track">
+    <div class="scroll-card" *ngFor="let asset of featuredAssets" (click)="openAssetModal(asset)">
+      <img [src]="getImageUrl(asset.galleryFilePaths)" alt="{{ asset.title }}">
+      <div class="scroll-title">
+        <span class="gradient-text">{{ asset.title }}</span>
+      </div>
+
+    </div>
+  </div>
 </div>
 
+<ng-template #assetModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ selectedAsset?.title }}</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <img [src]="getImageUrl(selectedAsset?.galleryFilePaths)" class="img-fluid mb-3" *ngIf="selectedAsset?.galleryFilePaths">
+    <p>{{ selectedAsset?.description }}</p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-outline-primary" (click)="navigateToDetail(selectedAsset?.assetId, modal)">View More</button>
+    <button class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+  </div>
+</ng-template>

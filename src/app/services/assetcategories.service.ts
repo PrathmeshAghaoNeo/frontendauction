@@ -9,7 +9,7 @@ import { AssetCategory, CategoryTranslation } from '../modals/assetcategories';
 })
 export class AssetCategoriesService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll(): Observable<AssetCategory[]> {
     return this.http.get<AssetCategory[]>(`${ApiEndpoints.ASSETCATEGORIES}`);
@@ -31,9 +31,15 @@ export class AssetCategoriesService {
     return this.http.delete<void>(`${ApiEndpoints.ASSETCATEGORIES}/${id}`);
   }
   fetchCategoryTranslations(langCode: string | null): Observable<CategoryTranslation[]> {
-  return this.http.get<CategoryTranslation[]>(
-    `${ApiEndpoints.ASSETCATEGORIES}/langCat/${langCode}`
-  );
-}
+    return this.http.get<CategoryTranslation[]>(
+      `${ApiEndpoints.ASSETCATEGORIES}/langCat/${langCode}`
+    );
+  }
+  getDirectAssets(categoryId: number, lang: string | null): Observable<AssetCategory[]> {
+    return this.http.get<AssetCategory[]>(
+      `${ApiEndpoints.ASSETCATEGORIES}/${categoryId}?langCode=${lang}`
+    );
+  }
+
 
 }

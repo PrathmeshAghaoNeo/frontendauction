@@ -4,6 +4,7 @@ import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Notification } from '../../../modals/user';
 import { Router } from '@angular/router';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-notifications',
@@ -16,16 +17,21 @@ export class NotificationsComponent {
   notifications: Notification[] = [];
   loading: boolean = true;
   userId: number | null = null;
-
+  langCode: string | null = null;
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private languageService:LanguageService
   ) { }
   ngOnInit(): void {
     this.loadNotifications();
     this.userId = this.authService.getUserIdJwt();
+    this.languageService.lang$.subscribe(langCode => {
+    this.userService.reloadNotificationsOnLangChange(langCode);
+});
+
   }
 
   loadNotifications(): void {
@@ -58,20 +64,22 @@ export class NotificationsComponent {
     // });
   }
 
-  clearNotifications(): void {
-    if (!this.userId) return;
+ clearNotifications(): void {
+  if (!this.userId) return;
 
-    this.userService.clearNotificationByUserId(this.userId).subscribe({
-      next: () => {
-        // Retain only push notifications
-        this.notifications = this.notifications.filter(n => n.userId === null);
-        console.log('Normal notifications cleared successfully.');
-      },
-      error: (err) => {
-        console.error('Failed to clear notifications:', err);
-      }
-    });
-  }
+  this.userService.clearNotificationByUserId(this.userId).subscribe({
+    next: () => {
+      const lang = this.langCode || 'en';
+      this.userService.reloadNotificationsOnLangChange(lang);
+
+      console.log('Normal notifications cleared successfully.');
+    },
+    error: (err) => {
+      console.error('Failed to clear notifications:', err);
+    }
+  });
+}
+
 
   bidNow(assetId: any): void {
     const encodedUserId = btoa(assetId.toString());
@@ -82,19 +90,23 @@ export class NotificationsComponent {
     this.markAsRead(notification.id);
     this.bidNow(notification.assetId);
   }
-  markAsRead(notificationId: string): void {
-    this.userService.markNottificationAsSeen(notificationId).subscribe({
-      next: () => {
-        const notification = this.notifications.find(n => n.id === notificationId);
-        if (notification) {
-          notification.isRead = true;
-        }
-      },
-      error: (err) => {
-        console.error('Failed to mark notification as seen:', err);
-      },
-    });
-  }
+ markAsRead(notificationId: string): void {
+  this.userService.markNottificationAsSeen(notificationId).subscribe({
+    next: () => {
+      const notification = this.notifications.find(n => n.id === notificationId);
+      if (notification) {
+        notification.isRead = true;
+      }
+
+      const lang = this.langCode || 'en';
+      this.userService.reloadNotificationsOnLangChange(lang);
+    },
+    error: (err) => {
+      console.error('Failed to mark notification as seen:', err);
+    },
+  });
+}
+
   hasPushNotifications(): boolean {
     return this.notifications.some(n => n.userId === null);
   }

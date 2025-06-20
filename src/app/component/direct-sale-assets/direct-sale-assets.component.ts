@@ -16,7 +16,7 @@ import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService } from '../../services/language.service';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
-import { CategorySelectorComponent } from "../category-selector/category-selector.component";
+import { CategorySelectorComponent } from '../category-selector/category-selector.component';
 
 declare var bootstrap: any;
 
@@ -103,7 +103,7 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   //   //   this.loadCategories();
   //   //    console.log("current id",this.activeCategoryId);
   //   // });
-    
+
   //   const savedLayoutType = localStorage.getItem('layoutType');
   //   this.layoutType = savedLayoutType === 'row' ? 'row' : 'grid';
 
@@ -135,57 +135,59 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   //   });
   // }
   ngOnInit(): void {
-  // Restore layout from localStorage
-  const savedLayoutType = localStorage.getItem('layoutType');
-  this.layoutType = savedLayoutType === 'row' ? 'row' : 'grid';
+    // Load layout preference
+    const savedLayoutType = localStorage.getItem('layoutType');
+    this.layoutType = savedLayoutType === 'row' ? 'row' : 'grid';
 
-  this.viewportScroller.scrollToPosition([0, 0]);
-  this.userId = this.authService.getUserIdJwt();
+    // Scroll to top
+    this.viewportScroller.scrollToPosition([0, 0]);
 
-  // Subscribe to language change
-  this.languageService.lang$.subscribe((lang) => {
-    this.langCode = lang;
-    this.isRtl = lang === 'ar';
+    // Get user ID
+    this.userId = this.authService.getUserIdJwt();
 
-    // Watch for route param changes (category ID)
-    this.route.paramMap.subscribe((params) => {
-      const categoryId = Number(params.get('categoryId'));
+    // Reactively listen to language and route param changes
+    this.languageService.lang$.subscribe((lang) => {
+      this.langCode = lang;
+      this.isRtl = lang === 'ar';
 
-      if (!isNaN(categoryId)) {
-        this.fetchDirectAssets(categoryId);
-      } else {
-        Swal.fire('Error!', 'Invalid category ID');
-      }
+      // ✅ Subscribe to route param changes
+      this.route.paramMap.subscribe((params) => {
+        const categoryId = Number(params.get('categoryId'));
+        if (!isNaN(categoryId)) {
+          this.activeCategoryId = categoryId;
+          this.fetchDirectAssetsByCategory(categoryId);
+        } else {
+          Swal.fire('Error!', 'Invalid category ID');
+        }
+      });
     });
-  });
-}
+  }
 
-fetchDirectAssets(categoryId: number): void {
-  // Clear previous state
-  this.assets = [];
-  this.originalAssets = [];
-  this.noAssetsFound = false;
+  fetchDirectAssetsByCategory(categoryId: number): void {
+    this.assets = [];
+    this.originalAssets = [];
+    this.cartAssetIds = [];
+    this.wishlistAssetIds = [];
+    this.noAssetsFound = false;
 
-  this.assetService.getDirectAssets(categoryId, this.langCode).subscribe({
-    next: (data) => {
-      if (!data || data.length === 0) {
-        this.noAssetsFound = true;
-        console.warn('⚠️ No direct sale assets found for this category.');
-        return;
-      }
-
-      this.assets = data;
-      this.originalAssets = [...data];
-      this.loadWishlist();
-      this.loadCartItems();
-    },
-    error: (err) => {
-      console.error('❌ Error fetching direct assets:', err);
-      Swal.fire('Error!', err.error?.message || 'Failed to fetch assets.');
-    },
-  });
-}
-
+    this.assetService.getDirectAssets(categoryId, this.langCode).subscribe({
+      next: (data) => {
+        if (!data || data.length === 0) {
+          this.noAssetsFound = true;
+          console.warn('⚠️ No direct assets found for this category');
+          return;
+        }
+        this.assets = data;
+        this.originalAssets = [...data];
+        this.loadWishlist();
+        this.loadCartItems();
+      },
+      error: (err) => {
+        console.error('❌ Error fetching direct assets:', err);
+        Swal.fire('Error!', err.error.message || 'Failed to fetch assets.');
+      },
+    });
+  }
 
   loadWishlist(): void {
     if (!this.userId) return;
@@ -220,7 +222,7 @@ fetchDirectAssets(categoryId: number): void {
     });
   }
 
-   isActive(categoryId: number): boolean {
+  isActive(categoryId: number): boolean {
     return this.activeCategoryId === categoryId;
   }
 

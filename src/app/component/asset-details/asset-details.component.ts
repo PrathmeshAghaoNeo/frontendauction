@@ -96,7 +96,7 @@ pendingValue: boolean = false;
     console.log(paramsId)
     if(paramsId != null) {
       this.assetId = paramsId
-    }
+    } 
     console.log("xyz")
     this.signalR.bidUpdates$.subscribe(data => {
       console.log("TestingDta",data);

@@ -19,6 +19,7 @@ import { ChatBotComponent } from './component/chat-bot/chat-bot.component';
 import { ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { routeFadeAnimation } from './utils/animations';
+import { UserService } from './services/user.service';
 
 declare var bootstrap: any;
 
@@ -89,7 +90,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private signalR: SignalRService
+    private signalR: SignalRService,
+    private userService:UserService
   ) {
 
      this.router.events.subscribe(event => {
@@ -123,6 +125,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       console.log('Winner update received:', data);
     });
     this.signalR.notificationUpdates$.subscribe((notification) => {
+      const currentLang = this.translate.currentLang || 'en';
+  this.userService.reloadNotificationsOnLangChange(currentLang);
       console.log('Notification received:', notification);
       this.showToast(notification.message, ' New Update !!', 'info');
     });
