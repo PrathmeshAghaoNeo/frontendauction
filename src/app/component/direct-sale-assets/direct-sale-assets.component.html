@@ -1,135 +1,39 @@
 <div class="Grid-container" [class.filter-open]="isFilterOpen">
-  <div *ngIf="isFilterOpen" class="filter-panel">
-    <div class="filter-header">
-      <h3>Filters</h3>
-      <button class="close-filter" (click)="toggleFilter()">×</button>
-    </div>
-    <div class="filter-content">
-      <!-- Sort By Dropdown -->
-      <div class="filter-section">
-        <h4>Sort By</h4>
-        <select class="form-select" [(ngModel)]="selectedSort" (change)="applyFilters()">
-          <option *ngFor="let opt of sortOptions" [value]="opt.value">{{ opt.label }}</option>
+  <div *ngIf="isFilterOpen" class="filter-modal-overlay">
+    <div class="filter-modal">
+      <button class="modal-close-btn" (click)="toggleFilter()">×</button>
+      <h3 class="modal-title">Filter</h3>
+      <div class="modal-section">
+        <label for="sortBy" class="modal-label">Sort By</label>
+        <select id="sortBy" class="modal-select" [(ngModel)]="selectedSort" (change)="onSortByChange()">
+            <option value="" disabled selected>Select Sort Option</option>
+            <option value="price_desc">Price: Highest - Lowest</option>
+            <option value="price_asc">Price: Lowest - Highest</option>
         </select>
-      </div>
 
-      <!-- Type (Category Type) Filter -->
-      <div class="filter-section" *ngIf="availableTags.length">
-        <h4>Type</h4>
-        <div>
-          <span
-            *ngFor="let type of availableTags"
-            class="pill"
-            [class.selected]="selectedTags.has(type)"
-            (click)="toggleTypeSelection(type)"
-          >
-            {{ type }}
-          </span>
+      </div>
+      <div class="modal-section">
+        <label class="modal-label">Price</label>
+        <div class="modal-slider-row">
+          <span class="modal-price">{{ minPrice }}</span>
+          <input type="range" min="{{ minPrice }}" max="{{ maxPrice }}" [(ngModel)]="selectedMinPrice" (input)="onPriceSliderChange()" class="modal-slider" [style.background]="getPriceSliderBackground()">
+          <span class="modal-price">{{ maxPrice }}</span>
         </div>
       </div>
-
-      <!-- Location Input (only for Properties) -->
-      <!--
-      <div class="filter-section" *ngIf="categoryName.toLowerCase().includes('propert')">
-        <h4>Location</h4>
-        <input class="form-control" type="text" list="location-list" [(ngModel)]="selectedLocation" (input)="applyFilters()" placeholder="Type or select location...">
-        <datalist id="location-list">
-          <option *ngFor="let loc of availableLocations" [value]="loc"></option>
-        </datalist>
-      </div>
-      -->
-
-      <!-- Category Tags (categoryName as tags) -->
-      <div class="filter-section" *ngIf="availableCategoryTags.length">
-        <h4>Category</h4>
-        <div>
-          <span
-            *ngFor="let cat of availableCategoryTags"
-            class="pill"
-            [class.selected]="selectedCategoryTag === cat"
-            (click)="selectedCategoryTag === cat ? selectedCategoryTag = '' : selectedCategoryTag = cat; applyFilters()"
-          >
-            {{ cat }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Price Ranges Section -->
-      <div class="filter-section">
-        <h4>Price Ranges</h4>
-        <div class="checkbox-list">
-          <div class="checkbox-item" *ngFor="let range of filters.prices.ranges; let i = index">
-            <input type="checkbox" [id]="'price-' + i" 
-                   [(ngModel)]="range.selected"
-                   (ngModelChange)="onPriceRangeChange()">
-            <label [for]="'price-' + i">
-              {{ range.min | currency:'BHD ' }}
-              {{ range.max ? ' - ' + (range.max | currency:'BHD ') : ' & Above' }}
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Price Sorting Slider -->
-      <div class="filter-section">
-        <h4>Price Sorting</h4>
-        <div class="price-range-slider mt-2">
-          <div class="slider-labels d-flex justify-content-between">
-            <span>Low to High</span>
-            <span>High to Low</span>
-          </div>
-          <input type="range" min="0" max="100" [(ngModel)]="priceRange" (input)="onPriceSortingChange()" class="slider" [style.background]="getPriceSliderBackground()">
-        </div>
-      </div>
-
-      <!-- Tags Multi-select -->
-      <div class="filter-section" *ngIf="availableTags.length">
-        <h4>Tags</h4>
-        <div>
-          <span
-            *ngFor="let tag of availableTags"
-            class="pill"
-            [class.selected]="selectedTags.has(tag)"
-            (click)="selectedTags.has(tag) ? selectedTags.delete(tag) : selectedTags.add(tag); applyFilters()"
-          >
-            {{ tag }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Condition Multi-select (only for Vehicles/General) -->
-      <div class="filter-section" *ngIf="availableConditions.length && (categoryName.toLowerCase().includes('vehicle') || categoryName.toLowerCase().includes('general'))">
-        <h4>Condition</h4>
-        <div>
-          <span
-            *ngFor="let cond of availableConditions"
-            class="pill"
-            [class.selected]="selectedConditions.has(cond)"
-            (click)="selectedConditions.has(cond) ? selectedConditions.delete(cond) : selectedConditions.add(cond); applyFilters()"
-          >
-            {{ cond }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Active Filters Section -->
-      <div class="active-filters" *ngIf="hasActiveFilters()">
-        <h4>Active Filters</h4>
-        <div class="active-filter-tags">
-          <span class="filter-tag" *ngFor="let filter of getActiveFilters()">
-            {{ filter.label }}
-            <button class="remove-filter" (click)="removeFilter(filter.type, filter.value)">×</button>
-          </span>
-          <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
-        </div>
-      </div>
+      <button class="modal-apply-btn" (click)="applyModalFilter()">Apply Filter</button>
+      <button class="modal-clear-btn" (click)="clearModalFilter()">Clear Filter</button>
     </div>
   </div>
 
   <div class="top-toolbar">
     <div class="toolbar-left">
         <button class="back-btn" (click)="goBack()">
-          <img src="back.png" alt="Back to Bidding" class="back-btn-image" [class.rtl-rotate]="isRtl" />
+          <img
+            src="back.png"
+            alt="Back to Bidding"
+            class="back-btn-image"
+            [class.rtl-rotate]="isRtl"
+          />
         </button>
     </div>
 
@@ -145,6 +49,37 @@
         <i class="bi bi-search"></i>
       </button>
     </div>
+    <button class="btn filter-btn-icon ms-2" (click)="toggleFilter()" title="Filter">
+      <svg width="43" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="7" width="16" height="2" rx="1" fill="currentColor"/>
+        <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/>
+        <rect x="8" y="15" width="8" height="2" rx="1" fill="currentColor"/>
+      </svg>
+      <span class="filter-tooltip">Apply Filter</span>
+    </button>
+    <!-- <div class="category-icons d-flex flex-wrap gap-2">
+      <div
+        *ngFor="let category of categories"
+        [ngClass]="{
+          'active-category': isActive(category.id),
+          'category-icon': true
+        }"
+        class="p-2 rounded shadow-sm text-center"
+      >
+        <img
+          [src]="category.icon"
+          alt="{{ category.name }}"
+          class="mb-1"
+          width="40"
+          height="40"
+        />
+        <div>{{ category.name }}</div>
+      </div>
+    </div> -->
+    <app-category-selector
+      [routePrefix]="'direct-sale-assets'"
+    ></app-category-selector>
+
 
     <div class="toolbar-right">
       <img
@@ -153,15 +88,6 @@
         class="toolbar-icon grid"
         (click)="toggleLayout()"
       />
-
-      <button class="btn filter-btn-icon me-4" (click)="toggleFilter()" title="Filter">
-        <svg width="43" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4" y="7" width="16" height="2" rx="1" fill="currentColor"/>
-          <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/>
-          <rect x="8" y="15" width="8" height="2" rx="1" fill="currentColor"/>
-        </svg>
-        <span class="filter-tooltip">Apply Filter</span>
-      </button>
 
       <button
         class="btn btn-outline-success me-2"
@@ -187,11 +113,16 @@
       </button>
     </div>
   </div>
-
-  <div class="plates-container" [ngClass]="layoutType + '-view'">
+  <div *ngIf="noAssetsFound" class="text-center text-muted py-4">
+    <p>No direct sale assets found in this category.</p>
+  </div>
+  <div
+    *ngIf="!noAssetsFound"
+    class="plates-container"
+    [ngClass]="layoutType + '-view'"
+  >
     <div class="plate-card" *ngFor="let asset of assets">
       <div class="plate-display" (click)="goToAssetDetail(asset.assetId)">
-       
         <ng-container *ngIf="layoutType === 'row'; else gridView">
           <!-- Row View -->
           <div class="plate-display-row">
@@ -210,6 +141,56 @@
               <!-- <span class="plate-name-text">{{ asset.description }}</span> -->
             </div>
 
+            <div class="plate-footer">
+              <div class="icons icons-top">
+                <button
+                  class="icon-btn-1 icon-btn"
+                  [title]="
+                    isInWishlist(asset.assetId)
+                      ? 'Remove from Wishlist'
+                      : 'Add to Wishlist'
+                  "
+                  (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
+                >
+                  <img
+                    [src]="
+                      isInWishlist(asset.assetId)
+                        ? 'bookmark.png'
+                        : 'wishlist.png'
+                    "
+                    alt="Wishlist Toggle"
+                    class="button-image1"
+                    [ngClass]="{
+                      'active-wishlist': isInWishlist(asset.assetId)
+                    }"
+                  />
+                </button>
+
+                <ng-container *ngIf="isInCart(asset.assetId); else notInCart">
+                  <button
+                    class="icon-btn-1 icon-btn"
+                    title="Already in Cart"
+                    (click)="redirectToCart()"
+                  >
+                    <img src="c.png" alt="Cart Toggle" class="button-image2" />
+                  </button>
+                </ng-container>
+
+                <ng-template #notInCart>
+                  <button
+                    class="icon-btn-1 icon-btn"
+                    title="Add to Cart"
+                    (click)="addToCart(asset.assetId); $event.stopPropagation()"
+                  >
+                    <img
+                      src="sell.png"
+                      alt="Cart Toggle"
+                      class="button-image2"
+                    />
+                  </button>
+                </ng-template>
+              </div>
+            </div>
           </div>
           <div class="price">BHD {{ asset.price }}</div>
         </ng-container>

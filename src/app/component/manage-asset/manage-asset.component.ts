@@ -87,6 +87,7 @@ export class ManageAssetComponent implements OnInit {
       console.log('Assets:', this.assets);
     });
   }
+  
 
   openViewAssetModal(asset: Asset): void {
     this.selectedAsset = asset;

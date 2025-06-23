@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Asset, } from '../../modals/manage-asset';
 import { HttpClient } from '@angular/common/http';
 import { ManageAssetService } from '../../services/asset.service';
@@ -10,32 +10,28 @@ import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { Auction } from '../../modals/auctions';
 import { AuthService } from '../../services/auth.service';
-import { FormsModule } from '@angular/forms';
 import { BidService } from '../../services/bid.service';
 import { bidStatsBulk } from '../../modals/bid-stats';
 import { AuctionService } from '../../services/auction.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
+import { FormsModule } from '@angular/forms';
 
 
+  
 
 declare var bootstrap: any;
-
-// Update the DirectSaleAssetDto interface
-interface ExtendedDirectSaleAssetDto extends DirectSaleAssetDto {
-  highestbid?: number;
-  bidCount?: number;
-  auctionEndTime?: string;
-}
 
 @Component({
   selector: 'app-direct-bid',
   standalone: true,
-  imports: [CommonModule, FormsModule,TranslateModule],
+  imports: [CommonModule,TranslateModule,FormsModule],
   templateUrl: './auction-assets.component.html',
   styleUrl: './auction-assets.component.css'
 })
 export class AuctionAssetsComponent implements OnInit, AfterViewInit {
-   @ViewChild('liveToast') liveToast!: ElementRef;
+
+  @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
 
   assets: DirectSaleAssetDto[] = [];
@@ -49,54 +45,21 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   wishlistAssetIds: number[] = [];
   assetIds: number[] = [];
   AuctionIds: number[] = [];
-  searchQuery: string = '';
-  searchTimeout: any;
-
-  isFilterOpen = false;
-  priceRange = 0;
-  selectedPriceRange = { min: 0, max: 100 };
-  uniqueAssetNames: string[] = [];
-  filteredAssetNames: string[] = [];
-
-  filters = {
-    assetNames: {
-      enabled: true,
-      selected: new Set<string>()
-    },
-    prices: {
-      enabled: true,
-      ranges: [
-        { min: 0, max: 100, selected: false },
-        { min: 101, max: 500, selected: false },
-        { min: 501, max: 1000, selected: false },
-        { min: 1001, max: 5000, selected: false },
-        { min: 5001, max: null, selected: false }
-      ]
-    },
-    durations: {
-      enabled: true,
-      options: [
-        { days: 1, label: '1 Day', selected: false },
-        { days: 7, label: '7 Days', selected: false },
-        { days: 30, label: '30 Days', selected: false },
-        { days: 90, label: '90 Days', selected: false }
-      ]
-    }
-
-    
-  };
-
+  langCode: string | null = "en";
+  isRtl: boolean= false;
+  isFilterOpen: boolean = false;
+  selectedSort: string = 'price_desc';
+  minPrice: number = 0;
+  maxPrice: number = 0;
+  selectedMinPrice: number = 0;
   sortOptions: { value: string; label: string }[] = [
-    { value: 'bids_desc', label: 'Bids: Highest – Lowest' },
-    { value: 'bids_asc', label: 'Bids: Lowest – Highest' },
-    { value: 'price_desc', label: 'Price: Highest – Lowest' },
-    { value: 'price_asc', label: 'Price: Lowest – Highest' },
+    { value: 'price_desc', label: 'Price: Highest - Lowest' },
+    { value: 'price_asc', label: 'Price: Lowest - Highest' },
+    { value: 'bid_desc', label: 'Bid: Highest - Lowest' },
+    { value: 'bid_asc', label: 'Bid: Lowest - Highest' },
+    { value: 'ending_soon', label: 'Ending: Soon - Latest' },
+    { value: 'ending_latest', label: 'Ending: Latest - Soon' }
   ];
-  selectedSort: string = '';
-  availableTags: string[] = [];
-  selectedTags: Set<string> = new Set();
-  lastSortControl: 'dropdown' | 'slider' = 'dropdown';
-  priceSortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private route: ActivatedRoute,
@@ -107,8 +70,10 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     private router: Router,
     private authService: AuthService,
     private bidService: BidService,
+    private languageService: LanguageService,
     private viewportScroller: ViewportScroller
   ) { }
+
 
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
@@ -121,8 +86,10 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
 
     toastEl.querySelector('.toast-header ').textContent = header;
 
+    // Change toast body message
     toastEl.querySelector('.toast-body').textContent = message;
 
+    // Change header bg color depending on type
     const headerEl = toastEl.querySelector('.toast-header');
 
     headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-white');
@@ -140,9 +107,14 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
     this.userId = this.authService.getUserIdJwt();
+    this.languageService.lang$.subscribe(lang => {
+        this.langCode = lang;
+         this.isRtl = lang === 'ar';
+        // this.fetchCategories(); 
+      
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     if (!isNaN(categoryId)) {
-      this.listService.getAuctionAssetsByCategory(categoryId, 'en').subscribe({
+      this.listService.getAuctionAssetsByCategory(categoryId,this.langCode).subscribe({
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data];
@@ -150,8 +122,9 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
           this.noAssetsFound = this.assets.length === 0;
           this.assetIds = this.assets.map(a => a.assetId);
           this.AuctionIds = this.assets.map(a => a.auctionId);
-          this.updateUniqueAssetNames();
-          this.filteredAssetNames = [...this.uniqueAssetNames];
+          this.minPrice = Math.min(...data.map((a: DirectSaleAssetDto) => a.price || 0));
+          this.maxPrice = Math.max(...data.map((a: DirectSaleAssetDto) => a.price || 0));
+          this.selectedMinPrice = this.minPrice;
 
           // Step 1: Get bid stats
           this.bidService.getBidStatsByAssetIds(this.assetIds).subscribe({
@@ -184,53 +157,17 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
             error: err => console.error('Error fetching bid stats:', err)
           });
 
-          this.extractDynamicFilterOptions();
-
         },
         error: err => console.error('Error fetching assets:', err)
       });
     } else {
       console.error('Invalid category ID');
     }
+    });
   }
 
-  updateUniqueAssetNames() {
-    this.uniqueAssetNames = Array.from(new Set(this.assets.map(asset => asset.title)));
-  }
 
-  filterAssetNames(searchText: string) {
-    if (!searchText) {
-      this.filteredAssetNames = [...this.uniqueAssetNames];
-    } else {
-      const search = searchText.toLowerCase();
-      this.filteredAssetNames = this.uniqueAssetNames.filter(name => 
-        name.toLowerCase().includes(search)
-      );
-    }
-  }
 
-  onSearchInput() {
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
-    }
-    this.searchTimeout = setTimeout(() => {
-      this.filterAssetsBySearch();
-    }, 300);
-  }
-
-  filterAssetsBySearch() {
-    if (!this.searchQuery.trim()) {
-      this.applyFilters();
-      return;
-    }
-    const searchTerm = this.searchQuery.toLowerCase().trim();
-    let filteredAssets = [...this.originalAssets];
-    filteredAssets = filteredAssets.filter(asset => 
-      (asset.title || '').toLowerCase().includes(searchTerm) ||
-      (asset.description || '').toLowerCase().includes(searchTerm)
-    );
-    this.assets = filteredAssets;
-  }
 
   getFlagUrl(asset: Asset): string {
     return asset.galleries?.[0]?.fileUrl || 'assets/flags/bahrain.png';
@@ -270,6 +207,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     });
   }
 
+
   loadWishlist(): void {
     this.listService.getWishlist(this.userId).subscribe({
       next: (data) => {
@@ -302,6 +240,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
   isInWishlist(assetId: number): boolean {
     return this.wishlistAssetIds.includes(assetId);
   }
+
 
   toggleWishlist(assetId: number): void {
     if (!this.userId) return;
@@ -340,6 +279,17 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  getTimeRemaining(endTime?: string | null): string {
+    if (!endTime) return '';
+    const utcTime = endTime.endsWith('Z') ? endTime : endTime + 'Z';
+    const end = Date.parse(utcTime);
+    const now = Date.now();
+    const diff = end - now;
+    if (diff <= 0) return 'Ended';
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return `${days}d ${hours}h`;
+  }
 
 
 
@@ -536,68 +486,9 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     this.assets = filteredAssets;
   }
 
-  getTimeRemaining(endTime: string | undefined): string {
-    if (!endTime) return 'N/A';
-    
-    const end = new Date(endTime).getTime();
-    const now = new Date().getTime();
-    const distance = end - now;
-    
-    if (distance < 0) {
-      return 'Ended';
-    }
-    
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    
-    if (days > 0) {
-      return `${days}d ${hours}h`;
-    } else if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    } else {
-      return `${minutes}m`;
-    }
-  }
-
-  extractDynamicFilterOptions() {
-    const tagsSet = new Set<string>();
-    this.originalAssets.forEach(asset => {
-      if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
-        for (const attr of (asset as any).attributes) {
-          if (attr.attributeName?.toLowerCase() === 'tag' && attr.attributeValue) {
-            tagsSet.add(attr.attributeValue);
-          }
-        }
-      }
-    });
-    this.availableTags = Array.from(tagsSet);
-  }
-
-  onSortByChange() {
-    this.lastSortControl = 'dropdown';
-    this.applyFilters();
-  }
-
-  onPriceSortingChange() {
-    this.lastSortControl = 'slider';
-    this.priceSortDirection = this.priceRange <= 50 ? 'asc' : 'desc';
-    this.applyFilters();
-  }
-
-  sortAssets(assets: any[], sortBy: string) {
-    switch (sortBy) {
-      case 'bids_desc':
-        return assets.sort((a, b) => (b.bidCount || 0) - (a.bidCount || 0));
-      case 'bids_asc':
-        return assets.sort((a, b) => (a.bidCount || 0) - (b.bidCount || 0));
-      case 'price_desc':
-        return assets.sort((a, b) => (b.price || 0) - (a.price || 0));
-      case 'price_asc':
-        return assets.sort((a, b) => (a.price || 0) - (b.price || 0));
-      default:
-        return assets;
-    }
+  getPriceSliderBackground(): string {
+    const percent = ((this.selectedMinPrice - this.minPrice) / (this.maxPrice - this.minPrice)) * 100;
+    return `linear-gradient(to right, #ff0000 0%, #ff0000 ${percent}%, #ddd ${percent}%, #ddd 100%)`;
   }
 }
 

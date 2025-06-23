@@ -17,6 +17,8 @@ import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService } from '../../services/language.service';
+import { AssetCategoriesService } from '../../services/assetcategories.service';
+import { CategorySelectorComponent } from "../category-selector/category-selector.component";
 
 declare var bootstrap: any;
 
@@ -32,7 +34,7 @@ interface ActiveFilter {
 @Component({
   selector: 'app-direct-sale-assets',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, CategorySelectorComponent, FormsModule],
   templateUrl: './direct-sale-assets.component.html',
   styleUrl: './direct-sale-assets.component.css',
 })
@@ -68,6 +70,9 @@ throw new Error('Method not implemented.');
   uniqueAssetNames: string[] = [];
   filteredAssetNames: string[] = [];
 
+  // selectedSort: string = ''; 
+
+
   filters = {
     assetNames: {
       enabled: true,
@@ -100,6 +105,7 @@ throw new Error('Method not implemented.');
   categoryName: string = '';
 
   sortOptions: { value: string; label: string }[] = [];
+  // selectedSort: string = 'price_desc';
   selectedSort: string = '';
 
   availableTags: string[] = [];
@@ -121,7 +127,11 @@ throw new Error('Method not implemented.');
 
   lastSortControl: 'dropdown' | 'slider' = 'dropdown';
 
-  isRtl:boolean = false; 
+  isRtl: boolean = false;
+  noAssetsFound: boolean = false;
+  categories: any[] = [];
+  selectedCategoryIds: number[] = [];
+  activeCategoryId: number | null = null;
   // isRtl: boolean = false;
   constructor(
     private route: ActivatedRoute,
@@ -131,9 +141,9 @@ throw new Error('Method not implemented.');
     private languageService: LanguageService,
     private authService: AuthService,
     private dir: Directionality,
-    private viewportScroller: ViewportScroller
-  ) {
-  }
+    private viewportScroller: ViewportScroller,
+    private categoryService: AssetCategoriesService
+  ) {}
 
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
@@ -171,6 +181,44 @@ throw new Error('Method not implemented.');
     this.toastInstance.show();
   }
 
+  // ngOnInit(): void {
+  //   // this.route.paramMap.subscribe(params=>{
+  //   //   const id = params.get('assetId');
+  //   //   this.activeCategoryId = id?+id:null;
+  //   //   this.loadCategories();
+  //   //    console.log("current id",this.activeCategoryId);
+  //   // });
+    
+  //   const savedLayoutType = localStorage.getItem('layoutType');
+  //   this.layoutType = savedLayoutType === 'row' ? 'row' : 'grid';
+
+  //   this.viewportScroller.scrollToPosition([0, 0]);
+  //   this.userId = this.authService.getUserIdJwt();
+  //   this.languageService.lang$.subscribe((lang) => {
+  //     this.langCode = lang;
+  //     this.isRtl = lang === 'ar';
+  //     // this.fetchCategories();
+
+  //     console.log('string', this.langCode);
+  //     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
+  //     if (!isNaN(categoryId)) {
+  //       this.assetService.getDirectAssets(categoryId, this.langCode).subscribe({
+  //         next: (data) => {
+  //           this.assets = data;
+  //           this.originalAssets = [...data];
+  //           this.loadWishlist();
+  //           this.loadCartItems();
+  //         },
+  //         error: (err) => {
+  //           console.error('Error fetching assets:', err);
+  //           Swal.fire('Error!', err.error.message || 'Failed to fetch assets.');
+  //         },
+  //       });
+  //     } else {
+  //       Swal.fire('Error!', 'Invalid category ID');
+  //     }
+  //   });
+  // }
   ngOnInit(): void {
   // Load layout preference from localStorage (default: 'grid')
   const savedLayoutType = localStorage.getItem('layoutType');
@@ -193,6 +241,10 @@ throw new Error('Method not implemented.');
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data];
+          this.minPrice = Math.min(...data.map(a => a.price || 0));
+          this.maxPrice = Math.max(...data.map(a => a.price || 0));
+          this.selectedMinPrice = this.minPrice;
+          this.selectedMaxPrice = this.maxPrice;
           this.categoryName = data[0]?.categoryName || '';
 
          //new added           
@@ -297,6 +349,27 @@ getSortOptionsForCategory(categoryName: string) {
     });
   }
 
+  loadCategories() {
+    this.categoryService.getAll().subscribe((data: any[]) => {
+      this.categories = data;
+      console.log('Categories:', this.categories);
+    });
+  }
+
+   isActive(categoryId: number): boolean {
+    return this.activeCategoryId === categoryId;
+  }
+
+  toggleCategory(categoryId: number) {
+    if (this.isActive(categoryId)) {
+      this.selectedCategoryIds = this.selectedCategoryIds.filter(
+        (id) => id !== categoryId
+      );
+    } else {
+      this.selectedCategoryIds.push(categoryId);
+    }
+  }
+
   isInWishlist(assetId: number): boolean {
     return this.wishlistAssetIds.includes(assetId);
   }
@@ -380,7 +453,6 @@ getSortOptionsForCategory(categoryName: string) {
     this.router.navigate(['/bid-add-to-cart']);
   }
 
-
   addToCart(assetId: number): void {
     if (!this.userId) {
       this.showToast('User not logged in.', 'Error', 'error');
@@ -415,19 +487,11 @@ getSortOptionsForCategory(categoryName: string) {
   }
 
   goBack() {
-    localStorage.removeItem('layoutType');
-    window.history.back();
+    this.router.navigate(['/landing-page']);
   }
 
   toggleFilter() {
     this.isFilterOpen = !this.isFilterOpen;
-    // Only toggle the filter panel by toggling the .filter-open class on the main container
-    const container = document.querySelector('.Grid-container');
-    if (this.isFilterOpen) {
-      container?.classList.add('filter-open');
-    } else {
-      container?.classList.remove('filter-open');
-    }
   }
 
   // Close filter when clicking outside (optional)
@@ -724,8 +788,7 @@ getSortOptionsForCategory(categoryName: string) {
   }
 
   onSortByChange() {
-    this.lastSortControl = 'dropdown';
-    this.applyFilters();
+    this.applyModalFilter();
   }
 
   hasActiveFilters(): boolean {
@@ -911,8 +974,8 @@ getSortOptionsForCategory(categoryName: string) {
   }
 
   getPriceSliderBackground(): string {
-    const percentage = this.priceRange;
-    return `linear-gradient(to right, #9b59b6 0%, #9b59b6 ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
+    const percent = ((this.selectedMinPrice - this.minPrice) / (this.maxPrice - this.minPrice)) * 100;
+    return `linear-gradient(to right, #ff0000 0%, #ff0000 ${percent}%, #ddd ${percent}%, #ddd 100%)`;
   }
 
   extractTypesFromAttributes() {
@@ -929,5 +992,28 @@ getSortOptionsForCategory(categoryName: string) {
   });
   this.availableTags = Array.from(typeSet);
   }
-  
+
+  applyModalFilter() {
+    let filtered = this.originalAssets.filter(a => a.price >= this.selectedMinPrice && a.price <= this.maxPrice);
+    if (this.selectedSort === 'price_desc') {
+      filtered = filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else {
+      filtered = filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+    }
+    this.assets = filtered;
+    this.isFilterOpen = false;
+  }
+
+  clearModalFilter() {
+    this.selectedSort = 'price_desc';
+    this.selectedMinPrice = this.minPrice;
+    this.assets = [...this.originalAssets];
+    this.isFilterOpen = false;
+  }
+
+  // Add this method to fix the linter error for the price slider
+  onPriceSliderChange() {
+    // No live filtering needed; filtering is applied on Apply Filter
+    // This method is required for the template binding
+  }
 }

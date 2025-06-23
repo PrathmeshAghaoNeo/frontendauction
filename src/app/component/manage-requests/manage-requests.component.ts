@@ -113,9 +113,30 @@ loadRequestTypes() {
   });
 }
 
+// loadRequestStatuses() {
+//   this.requestService.getRequestStatuses().subscribe((statuses: any[]) => {
+//     // Filter out duplicates by requestStatusId
+//     const uniqueStatuses = statuses.filter(
+//       (status, index, self) =>
+//         status.requestStatusId !== undefined &&
+//         self.findIndex(
+//           s => s.requestStatusId === status.requestStatusId
+//         ) === index
+//     );
+//     this.requestStatuses = uniqueStatuses;
+//   });
+// }
 loadRequestStatuses() {
-  this.requestService.getRequestStatuses().subscribe(statuses => {
-    this.requestStatuses = statuses;
+  this.requestService.getRequestStatuses().subscribe((statuses: any[]) => {
+    // Deduplicate by statusName
+    const uniqueStatuses = statuses.filter(
+      (status, index, self) =>
+        status.statusName !== undefined &&
+        self.findIndex(
+          s => s.statusName === status.statusName
+        ) === index
+    );
+    this.requestStatuses = uniqueStatuses;
   });
 }
 
@@ -458,6 +479,12 @@ loadRequestStatuses() {
       return true;
     });
     this.filteredRequests = this.sortRequests(filtered);
+
+    // Calculate total pages after filtering
+    const totalPages = Math.ceil(this.filteredRequests.length / this.itemsPerPage) || 1;
+    if (this.page > totalPages) {
+      this.page = totalPages;
+    }
     this.cdr.detectChanges();
   }
 
@@ -635,8 +662,11 @@ loadRequestStatuses() {
       this.isExporting = false;
       this.cdr.detectChanges();
     }
+  } 
+
+  // Add this method to handle search changes
+  onSearchChange(): void {
+    this.page = 1; // Always go to first page when searching
+    this.applyFiltersToList();
   }
-
-
-  
 }
