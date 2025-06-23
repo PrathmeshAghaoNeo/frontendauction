@@ -20,6 +20,7 @@ import {
   TransactionType,
   TransactionStatus,
 } from '../../services/transaction-meta.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-update-transaction',
@@ -36,15 +37,16 @@ export class UpdateTransactionComponent implements OnInit {
   paymentMethods: PaymentMethod[] = [];
   transactionTypes: TransactionType[] = [];
   statuses: TransactionStatus[] = [];
+  username: string = '';
 
-  
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private metadataService: TransactionMetadataService
+    private metadataService: TransactionMetadataService,
+    private userService: UserService
   ) {}
 
   populateDropdowns(data: any): void {
@@ -135,6 +137,7 @@ export class UpdateTransactionComponent implements OnInit {
             transactionId: data.transactionId, // Ensure correct name
             amount: data.amount,
             userId: data.userId,
+            username: data.userFullName,
             transactionTypeId: transactionTypeId,
             paymentMethodId: paymentMethodId,
             cardTypeId: cardTypeId,
@@ -146,13 +149,30 @@ export class UpdateTransactionComponent implements OnInit {
           });
 
           console.log('Form after patching:', this.transactionForm.value);
+          this.getUsername(data.userId);
         },
         error: (err) => {
           console.error(err);
           Swal.fire('Error', 'Failed to load transaction details.', 'error');
         },
+        
       });
+      
   }
+
+  getUsername(userId: number): void {
+  this.userService.getUserById(userId).subscribe({
+    next: (user) => {
+      this.username = user.name;
+    },
+    error: (err) => {
+      console.error('Failed to fetch user', err);
+      this.username = 'Unknown';
+    }
+  });
+}
+
+
 
   allowedSevenDigits(event: Event): void {
     const input = event.target as HTMLInputElement;

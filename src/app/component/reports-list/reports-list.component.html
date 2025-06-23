@@ -1059,6 +1059,10 @@
               </tr>
             </tbody>
           </table>
+           <pagination-controls
+   
+    (pageChange)="currentPage = $event"
+  ></pagination-controls>
           <!-- Pagination Controls -->
           <pagination-controls
             (pageChange)="currentPage = $event"

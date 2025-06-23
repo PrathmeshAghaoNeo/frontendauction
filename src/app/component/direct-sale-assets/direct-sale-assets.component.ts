@@ -18,7 +18,7 @@ import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService } from '../../services/language.service';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
-import { CategorySelectorComponent } from "../category-selector/category-selector.component";
+import { CategorySelectorComponent } from '../category-selector/category-selector.component';
 
 declare var bootstrap: any;
 
@@ -188,7 +188,7 @@ throw new Error('Method not implemented.');
   //   //   this.loadCategories();
   //   //    console.log("current id",this.activeCategoryId);
   //   // });
-    
+
   //   const savedLayoutType = localStorage.getItem('layoutType');
   //   this.layoutType = savedLayoutType === 'row' ? 'row' : 'grid';
 
@@ -268,6 +268,31 @@ throw new Error('Method not implemented.');
   });
 }
 
+  fetchDirectAssetsByCategory(categoryId: number): void {
+    this.assets = [];
+    this.originalAssets = [];
+    this.cartAssetIds = [];
+    this.wishlistAssetIds = [];
+    this.noAssetsFound = false;
+
+    this.assetService.getDirectAssets(categoryId, this.langCode).subscribe({
+      next: (data) => {
+        if (!data || data.length === 0) {
+          this.noAssetsFound = true;
+          console.warn('⚠️ No direct assets found for this category');
+          return;
+        }
+        this.assets = data;
+        this.originalAssets = [...data];
+        this.loadWishlist();
+        this.loadCartItems();
+      },
+      error: (err) => {
+        console.error('❌ Error fetching direct assets:', err);
+        Swal.fire('Error!', err.error.message || 'Failed to fetch assets.');
+      },
+    });
+  }
 
 
 //added new
@@ -356,7 +381,7 @@ getSortOptionsForCategory(categoryName: string) {
     });
   }
 
-   isActive(categoryId: number): boolean {
+  isActive(categoryId: number): boolean {
     return this.activeCategoryId === categoryId;
   }
 

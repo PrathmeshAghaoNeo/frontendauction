@@ -2,7 +2,7 @@
 
 <!-- Page Header -->
 <div *ngIf="loading" class="text-center my-4">
-  <!-- <div class="spinner-border text-primary" role="status"></div> -->
+  <div class="spinner-border text-primary" role="status"></div>
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -315,7 +315,7 @@
       </div>
       <div class="col-md-6">
         <label class="form-label required-label">User:</label>
-        <p class="form-control-plaintext">{{ selectedTransaction?.userId }}</p>
+        <p class="form-control-plaintext">{{ selectedTransaction?.userFullName }}</p>
       </div>
       <div class="col-md-6">
         <label class="form-label required-label">Amount:</label>

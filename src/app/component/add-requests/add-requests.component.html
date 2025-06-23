@@ -1,7 +1,16 @@
 <!-- Success Message Alert -->
-<div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+<div
+  *ngIf="successMessage"
+  class="alert alert-success alert-dismissible fade show"
+  role="alert"
+>
   {{ successMessage }}
-  <button type="button" class="btn-close" (click)="successMessage = null" aria-label="Close"></button>
+  <button
+    type="button"
+    class="btn-close"
+    (click)="successMessage = null"
+    aria-label="Close"
+  ></button>
 </div>
 
 <form #formRef="ngForm" class="container p-4 bg-white rounded shadow mt-4">
@@ -11,15 +20,20 @@
     </button>
     <div>
       <h3 class="auction-form-title">Create New Request</h3>
-      <p class="auction-form-subtitle"> indicates a required field</p>
+      <p class="auction-form-subtitle">indicates a required field</p>
     </div>
   </div>
-
 
   <div class="row g-3">
     <div class="col-md-6">
       <label class="form-label required-label fw-bold">Request Number</label>
-      <input type="text" class="form-control form-control-lg" [value]="newRequest.requestNumber" placeholder="Auto-generated" readonly>
+      <input
+        type="text"
+        class="form-control form-control-lg"
+        [value]="newRequest.requestNumber"
+        placeholder="Auto-generated"
+        readonly
+      />
     </div>
 
     <div class="col-md-6">
@@ -36,9 +50,10 @@
         (keypress)="allowOnlyNumbers($event)"
         required
         #mobileNumberRef="ngModel"
-        [class.is-invalid]="isFieldInvalid('mobileNumber')">
+        [class.is-invalid]="isFieldInvalid('mobileNumber')"
+      />
       <div *ngIf="isFieldInvalid('mobileNumber')" class="text-danger">
-        {{ getErrorMessage('mobileNumber') }}
+        {{ getErrorMessage("mobileNumber") }}
       </div>
     </div>
 
@@ -62,19 +77,20 @@
 
     <div class="col-md-6">
       <label class="form-label required-label fw-bold">Email </label>
-      <input 
-        type="email" 
-        class="form-control form-control-lg" 
-        [(ngModel)]="newRequest.email" 
+      <input
+        type="email"
+        class="form-control form-control-lg"
+        [(ngModel)]="newRequest.email"
         name="email"
         placeholder="Enter valid email address"
-        required 
-        email 
+        required
+        email
         pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         #emailField="ngModel"
-        [class.is-invalid]="isFieldInvalid('email')">
+        [class.is-invalid]="isFieldInvalid('email')"
+      />
       <div *ngIf="isFieldInvalid('email')" class="text-danger">
-        {{ getErrorMessage('email') }}
+        {{ getErrorMessage("email") }}
       </div>
     </div>
 

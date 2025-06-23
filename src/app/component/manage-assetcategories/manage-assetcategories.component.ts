@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  ViewEncapsulation,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -24,7 +23,7 @@ import * as FileSaver from 'file-saver';
   imports: [CommonModule, RouterModule, NgxPaginationModule, FormsModule],
   templateUrl: './manage-assetcategories.component.html',
   styleUrls: ['./manage-assetcategories.component.css'],
-  encapsulation: ViewEncapsulation.None
+  // encapsulation: ViewEncapsulation.None
 })
 export class ManageAssetCategoriesComponent implements OnInit {
   assetCategories: AssetCategory[] = [];
@@ -38,6 +37,8 @@ export class ManageAssetCategoriesComponent implements OnInit {
   sortDirection: 'asc' | 'desc' | '' = '';
 
   selectedAssetCategory: AssetCategory | null = null;
+  totalAssets: number|undefined;
+  totalAuctions : number|undefined;
 
   statuses = [
     { statusId: 1, statusName: 'Draft' },

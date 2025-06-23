@@ -1,5 +1,11 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Asset, } from '../../modals/manage-asset';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { Asset } from '../../modals/manage-asset';
 import { HttpClient } from '@angular/common/http';
 import { ManageAssetService } from '../../services/asset.service';
 import { CommonModule, ViewportScroller } from '@angular/common';
@@ -27,10 +33,9 @@ declare var bootstrap: any;
   standalone: true,
   imports: [CommonModule,TranslateModule,FormsModule],
   templateUrl: './auction-assets.component.html',
-  styleUrl: './auction-assets.component.css'
+  styleUrl: './auction-assets.component.css',
 })
 export class AuctionAssetsComponent implements OnInit, AfterViewInit {
-
   @ViewChild('liveToast') liveToast!: ElementRef;
   toastInstance: any;
 
@@ -82,17 +87,18 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     private bidService: BidService,
     private languageService: LanguageService,
     private viewportScroller: ViewportScroller
-  ) { }
-
+  ) {}
 
   ngAfterViewInit() {
     this.toastInstance = new bootstrap.Toast(this.liveToast.nativeElement);
   }
 
-  showToast(message: string, header = 'Notification', type: 'success' | 'error' | 'info' = 'info') {
-
+  showToast(
+    message: string,
+    header = 'Notification',
+    type: 'success' | 'error' | 'info' = 'info'
+  ) {
     const toastEl = this.liveToast.nativeElement;
-
 
     toastEl.querySelector('.toast-header ').textContent = header;
 
@@ -102,7 +108,12 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     // Change header bg color depending on type
     const headerEl = toastEl.querySelector('.toast-header');
 
-    headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-white');
+    headerEl.classList.remove(
+      'bg-success',
+      'bg-danger',
+      'bg-info',
+      'text-white'
+    );
     if (type === 'success') {
       headerEl.classList.add('bg-success', 'text-white');
     } else if (type === 'error') {
@@ -191,7 +202,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     const payload = {
       userId: this.userId,
       assetId: assetId,
-      quantity: 1
+      quantity: 1,
     };
 
     console.log(assetId);
@@ -202,7 +213,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
           icon: 'success',
           title: 'Added to Wishlist',
           text: 'This asset has been added to your wishlist.',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
         });
       },
       error: (err) => {
@@ -211,12 +222,11 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
           icon: 'error',
           title: 'Error!',
           text: err.message || 'Something went wrong while adding to wishlist.',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
         });
-      }
+      },
     });
   }
-
 
   loadWishlist(): void {
     this.listService.getWishlist(this.userId).subscribe({
@@ -234,7 +244,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     const payload = {
       userId: this.userId,
       assetId: assetId,
-      quantity: 1
+      quantity: 1,
     };
 
     this.http.post('', payload).subscribe({
@@ -243,14 +253,13 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
         // Optional: redirect to checkout
         // this.router.navigate(['/checkout']);
       },
-      error: (err) => alert('Error adding to cart: ' + err.message)
+      error: (err) => alert('Error adding to cart: ' + err.message),
     });
   }
 
   isInWishlist(assetId: number): boolean {
     return this.wishlistAssetIds.includes(assetId);
   }
-
 
   toggleWishlist(assetId: number): void {
     if (!this.userId) return;
@@ -301,37 +310,35 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     return `${days}d ${hours}h`;
   }
 
-
-
   navigateToAsset(assetId: number | undefined): void {
     if (assetId) {
       const encodedUserId = btoa(assetId.toString());
-      this.router.navigate(['/asset-details'], { queryParams: { id: encodedUserId } });
+      this.router.navigate(['/asset-details'], {
+        queryParams: { id: encodedUserId },
+      });
     }
   }
 
   goBack() {
-    window.history.back();
+    this.router.navigate(['/landing-page']);
   }
 
+  // Modal filter open/close
   toggleFilter() {
     this.isFilterOpen = !this.isFilterOpen;
-    const container = document.querySelector('.Grid-container');
-    if (this.isFilterOpen) {
-      container?.classList.add('filter-open');
-    } else {
-      container?.classList.remove('filter-open');
-    }
   }
 
+  // Called when sort option changes
   onSortByChange() {
     this.applyModalFilter();
   }
 
+  // Called when price slider changes (can be empty if you only filter on Apply)
   onPriceSliderChange() {
     // No live filtering needed; filtering is applied on Apply Filter
   }
 
+  // Apply the modal filter (sort and price)
   applyModalFilter() {
     let filtered = this.originalAssets.filter(a => a.price >= this.selectedMinPrice && a.price <= this.maxPrice);
     switch (this.selectedSort) {
@@ -360,6 +367,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     this.isFilterOpen = false;
   }
 
+  // Clear the modal filter
   clearModalFilter() {
     this.selectedSort = 'price_desc';
     this.selectedMinPrice = this.minPrice;
@@ -367,6 +375,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     this.isFilterOpen = false;
   }
 
+  // Search input debounce
   onSearchInput() {
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
@@ -376,6 +385,7 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     }, 300);
   }
 
+  // Filter assets by search query
   filterAssetsBySearch() {
     if (!this.searchQuery.trim()) {
       this.assets = [...this.originalAssets];
@@ -388,4 +398,5 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     );
   }
 }
+
 
