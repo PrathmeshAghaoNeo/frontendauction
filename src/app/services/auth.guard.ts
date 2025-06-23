@@ -8,7 +8,7 @@ export class RoleGuard implements CanActivate {
 
   canActivate = async (route: ActivatedRouteSnapshot): Promise<boolean> => {
   console.log('RoleGuard Triggered');
-  const expectedRole = route.data['role'];
+  const expectedRoles = route.data['role'];
 
   const isValid = await this.auth.validateTokenWithBackend();
   if (!isValid) {
@@ -16,10 +16,23 @@ export class RoleGuard implements CanActivate {
     return false;
   }
 
-  const role = this.auth.getRoleJwt(); // Decode from token (now that it's validated)
-  if (expectedRole && role !== expectedRole) {
-    this.router.navigate(['/landing-page']);
-    return false;
+  const userRole = this.auth.getRoleJwt(); // Decode from token (now that it's validated)
+  // if (expectedRole && role !== expectedRole) {
+  //   this.router.navigate(['/landing-page']);
+  //   return false;
+  // }
+  if (expectedRoles) {
+    if (Array.isArray(expectedRoles)) {
+      if (!expectedRoles.includes(userRole)) {
+        this.router.navigate(['/landing-page']);
+        return false;
+      }
+    } else {
+      if (userRole !== expectedRoles) {
+        this.router.navigate(['/landing-page']);
+        return false;
+      }
+    }
   }
 
   return true;
