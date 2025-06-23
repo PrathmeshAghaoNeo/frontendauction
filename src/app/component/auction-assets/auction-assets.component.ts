@@ -61,6 +61,16 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     { value: 'ending_latest', label: 'Ending: Latest - Soon' }
   ];
 
+  // Add for modal slider background
+  getPriceSliderBackground(): string {
+    const percent = ((this.selectedMinPrice - this.minPrice) / (this.maxPrice - this.minPrice)) * 100;
+    return `linear-gradient(to right, #ff0000 0%, #ff0000 ${percent}%, #ddd ${percent}%, #ddd 100%)`;
+  }
+
+  // Add for search box
+  searchQuery: string = '';
+  searchTimeout: any;
+
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
@@ -314,181 +324,68 @@ export class AuctionAssetsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onAssetNameChange(name: string, event: any) {
-    if (event.target.checked) {
-      this.filters.assetNames.selected.add(name);
-    } else {
-      this.filters.assetNames.selected.delete(name);
+  onSortByChange() {
+    this.applyModalFilter();
+  }
+
+  onPriceSliderChange() {
+    // No live filtering needed; filtering is applied on Apply Filter
+  }
+
+  applyModalFilter() {
+    let filtered = this.originalAssets.filter(a => a.price >= this.selectedMinPrice && a.price <= this.maxPrice);
+    switch (this.selectedSort) {
+      case 'price_desc':
+        filtered = filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+        break;
+      case 'price_asc':
+        filtered = filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+        break;
+      case 'bid_desc':
+        filtered = filtered.sort((a, b) => (b.bidCount || 0) - (a.bidCount || 0));
+        break;
+      case 'bid_asc':
+        filtered = filtered.sort((a, b) => (a.bidCount || 0) - (b.bidCount || 0));
+        break;
+      case 'ending_soon':
+        filtered = filtered.sort((a, b) => new Date(a.auctionEndTime || 0).getTime() - new Date(b.auctionEndTime || 0).getTime());
+        break;
+      case 'ending_latest':
+        filtered = filtered.sort((a, b) => new Date(b.auctionEndTime || 0).getTime() - new Date(a.auctionEndTime || 0).getTime());
+        break;
+      default:
+        break;
     }
-    this.applyFilters();
+    this.assets = filtered;
+    this.isFilterOpen = false;
   }
 
-  onPriceRangeChange() {
-    this.applyFilters();
+  clearModalFilter() {
+    this.selectedSort = 'price_desc';
+    this.selectedMinPrice = this.minPrice;
+    this.assets = [...this.originalAssets];
+    this.isFilterOpen = false;
   }
 
-  // onPriceSortingChange() {
-  //   this.lastSortControl = 'slider';
-  //   this.priceSortDirection = this.priceRange <= 50 ? 'asc' : 'desc';
-  //   this.applyFilters();
-  // }
+  onSearchInput() {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    this.searchTimeout = setTimeout(() => {
+      this.filterAssetsBySearch();
+    }, 300);
+  }
 
-  hasActiveFilters(): boolean {
-    return (
-      this.filters.assetNames.selected.size > 0 ||
-      this.filters.prices.ranges.some(range => range.selected) ||
-      this.filters.durations.options.some(option => option.selected)
+  filterAssetsBySearch() {
+    if (!this.searchQuery.trim()) {
+      this.assets = [...this.originalAssets];
+      return;
+    }
+    const searchTerm = this.searchQuery.toLowerCase().trim();
+    this.assets = this.originalAssets.filter(asset =>
+      (asset.title?.toLowerCase().includes(searchTerm) ||
+       asset.description?.toLowerCase().includes(searchTerm))
     );
-  }
-
-  getActiveFilters(): { type: string; value: any; label: string }[] {
-    const activeFilters: { type: string; value: any; label: string }[] = [];
-
-    this.filters.assetNames.selected.forEach(name => {
-      activeFilters.push({
-        type: 'asset',
-        value: name,
-        label: name
-      });
-    });
-
-    this.filters.prices.ranges.forEach(range => {
-      if (range.selected) {
-        const label = range.max 
-          ? `${range.min} - ${range.max} BHD`
-          : `${range.min}+ BHD`;
-        activeFilters.push({
-          type: 'price',
-          value: range,
-          label: label
-        });
-      }
-    });
-
-    this.filters.durations.options.forEach(option => {
-      if (option.selected) {
-        activeFilters.push({
-          type: 'duration',
-          value: option.days,
-          label: option.label
-        });
-      }
-    });
-
-    return activeFilters;
-  }
-
-  removeFilter(type: string, value: any) {
-    switch (type) {
-      case 'asset':
-        this.filters.assetNames.selected.delete(value);
-        break;
-      case 'price':
-        const priceRange = this.filters.prices.ranges.find(r => r.min === value.min && r.max === value.max);
-        if (priceRange) {
-          priceRange.selected = false;
-        }
-        break;
-      case 'duration':
-        const duration = this.filters.durations.options.find(d => d.days === value);
-        if (duration) {
-          duration.selected = false;
-        }
-        break;
-    }
-    this.applyFilters();
-  }
-
-  clearAllFilters() {
-    this.filters.assetNames.selected.clear();
-    this.filters.prices.ranges.forEach(range => range.selected = false);
-    this.filters.durations.options.forEach(option => option.selected = false);
-    this.priceRange = 0;
-    this.selectedPriceRange = { min: 0, max: 100 };
-    this.applyFilters();
-  }
-
-  applyFilters() {
-    let filteredAssets = [...this.originalAssets];
-
-    // Tags
-    if (this.selectedTags.size > 0) {
-      filteredAssets = filteredAssets.filter(asset => {
-        if ((asset as any).attributes && Array.isArray((asset as any).attributes)) {
-          return (asset as any).attributes.some((attr: any) =>
-            attr.attributeName?.toLowerCase() === 'tag' && this.selectedTags.has(attr.attributeValue)
-          );
-        }
-        return false;
-      });
-    }
-
-    // Apply search filter first if there's a search query
-    if (this.searchQuery.trim()) {
-      const searchTerm = this.searchQuery.toLowerCase().trim();
-      filteredAssets = filteredAssets.filter(asset => 
-        (asset.title || '').toLowerCase().includes(searchTerm) ||
-        (asset.description || '').toLowerCase().includes(searchTerm)
-      );
-    }
-
-    // Filter by selected asset names
-    if (this.filters.assetNames.enabled && this.filters.assetNames.selected.size > 0) {
-      filteredAssets = filteredAssets.filter(asset => 
-        this.filters.assetNames.selected.has(asset.title)
-      );
-    }
-
-    // Filter by selected price ranges
-    if (this.filters.prices.enabled) {
-      const selectedRanges = this.filters.prices.ranges.filter(range => range.selected);
-      if (selectedRanges.length > 0) {
-        filteredAssets = filteredAssets.filter(asset => {
-          return selectedRanges.some(range => {
-            const price = asset.price || 0;
-            if (range.max === null) {
-              return price >= range.min;
-            }
-            return price >= range.min && price <= range.max;
-          });
-        });
-      }
-    }
-
-    // Filter by selected durations
-    if (this.filters.durations.enabled) {
-      const selectedDurations = this.filters.durations.options.filter(opt => opt.selected);
-      if (selectedDurations.length > 0) {
-        const currentDate = new Date();
-        filteredAssets = filteredAssets.filter(asset => {
-          if (!asset.createdAt) return false;
-          const assetDate = new Date(asset.createdAt);
-          if (isNaN(assetDate.getTime())) return false;
-          const diffDays = Math.ceil((currentDate.getTime() - assetDate.getTime()) / (1000 * 60 * 60 * 24));
-          return selectedDurations.some(duration => diffDays <= duration.days);
-        });
-      }
-    }
-
-    // Sorting logic
-    if (this.lastSortControl === 'dropdown') {
-      if (this.selectedSort) {
-        filteredAssets = this.sortAssets(filteredAssets, this.selectedSort);
-      }
-    } else if (this.lastSortControl === 'slider') {
-      if (this.priceSortDirection === 'asc') {
-        filteredAssets.sort((a, b) => (a.price || 0) - (b.price || 0));
-      } else {
-        filteredAssets.sort((a, b) => (b.price || 0) - (a.price || 0));
-      }
-    }
-
-    this.assets = filteredAssets;
-  }
-
-  getPriceSliderBackground(): string {
-    const percent = ((this.selectedMinPrice - this.minPrice) / (this.maxPrice - this.minPrice)) * 100;
-    return `linear-gradient(to right, #ff0000 0%, #ff0000 ${percent}%, #ddd ${percent}%, #ddd 100%)`;
   }
 }
 
