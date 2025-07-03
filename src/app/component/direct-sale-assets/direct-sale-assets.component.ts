@@ -45,15 +45,15 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   userId: number | null = null;
   environment = environment;
   wishlistAssetIds: number[] = [];
-  langCode:string |null = 'en';
+  langCode: string | null = 'en';
   cartAssetIds: number[] = [];
-  isRtl:boolean = false; 
+  isRtl: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private assetService: ManageAssetService,
     private listService: ListService,
     private router: Router,
-    private languageService:LanguageService,
+    private languageService: LanguageService,
     private authService: AuthService,
     private dir: Directionality,
     private viewportScroller: ViewportScroller
@@ -97,30 +97,24 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-   const savedLayoutType = localStorage.getItem('layoutType');
+  // Load layout preference from localStorage (default: 'grid')
+  const savedLayoutType = localStorage.getItem('layoutType');
   this.layoutType = savedLayoutType === 'row' ? 'row' : 'grid';
 
-  // const entry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-  // const isreload = entry?.type === 'reload';
-  // if(isreload){
-  //   const savedLayoutType= localStorage.getItem('layoutType');
-  //   this.layoutType =  savedLayoutType === 'row' ? 'row' : 'grid';
-  // }else{
-  //   localStorage.removeItem('layoutType');
-  //   this.layoutType = 'grid';
-  // }
+  // Scroll to top on component load
+  this.viewportScroller.scrollToPosition([0, 0]);
 
-    this.viewportScroller.scrollToPosition([0, 0]);
-    this.userId = this.authService.getUserIdJwt();
-    this.languageService.lang$.subscribe(lang => {
-        this.langCode = lang;
-         this.isRtl = lang === 'ar';
-        // this.fetchCategories(); 
-      
-      console.log("string",this.langCode)   
+  // Get user ID from JWT
+  this.userId = this.authService.getUserIdJwt();
+
+  // Subscribe to language changes
+  this.languageService.lang$.subscribe(lang => {
+    this.langCode = lang;
+    this.isRtl = lang === 'ar';
+
     const categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     if (!isNaN(categoryId)) {
-      this.assetService.getDirectAssets(categoryId,this.langCode).subscribe({
+      this.assetService.getDirectAssets(categoryId, this.langCode).subscribe({
         next: (data) => {
           this.assets = data;
           this.originalAssets = [...data];
@@ -135,11 +129,12 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
     } else {
       Swal.fire('Error!', 'Invalid category ID');
     }
-    });
-  }
+  });
+}
+
 
   loadWishlist(): void {
-     if (!this.userId) return;
+    if (!this.userId) return;
     this.listService.getWishlist(this.userId).subscribe({
       next: (data) => {
         this.wishlistAssetIds = data.map((item: any) => item.assetId);
@@ -152,7 +147,7 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   }
 
   loadCartItems(): void {
-     if (!this.userId) return;
+    if (!this.userId) return;
     this.listService.getCart(this.userId).subscribe({
       next: (data) => {
         this.cartAssetIds = data.map((item: any) => item.assetId);
@@ -173,45 +168,45 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
   }
 
   toggleWishlist(assetId: number): void {
-     if (!this.userId) {
-           this.showToast('User not logged in.', 'Error', 'error');
-           this.router.navigate(['/login']);
-           return;
-         }else{
-    if (this.isInWishlist(assetId)) {
-      const payload = { userId: this.userId, assetId: assetId };
-      this.listService.removeFromWishlist(payload).subscribe({
-        next: () => {
-          this.wishlistAssetIds = this.wishlistAssetIds.filter(
-            (id) => id !== assetId
-          );
-          this.showToast(`Removed from wishlist.`, 'Removed!', 'info');
-        },
-        error: (err) => {
-          this.showToast(
-            err.error.message || 'Error removing from wishlist.',
-            'Error!',
-            'error'
-          );
-        },
-      });
+    if (!this.userId) {
+      this.showToast('User not logged in.', 'Error', 'error');
+      this.router.navigate(['/login']);
+      return;
     } else {
-      const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
-      this.listService.addToWishlist(payload).subscribe({
-        next: () => {
-          this.wishlistAssetIds.push(assetId);
-          this.showToast('Added to wishlist.', 'Added!', 'success');
-        },
-        error: (err) => {
-          this.showToast(
-            err.error.message || 'Error adding to wishlist.',
-            'Error!',
-            'error'
-          );
-        },
-      });
+      if (this.isInWishlist(assetId)) {
+        const payload = { userId: this.userId, assetId: assetId };
+        this.listService.removeFromWishlist(payload).subscribe({
+          next: () => {
+            this.wishlistAssetIds = this.wishlistAssetIds.filter(
+              (id) => id !== assetId
+            );
+            this.showToast(`Removed from wishlist.`, 'Removed!', 'info');
+          },
+          error: (err) => {
+            this.showToast(
+              err.error.message || 'Error removing from wishlist.',
+              'Error!',
+              'error'
+            );
+          },
+        });
+      } else {
+        const payload = { userId: this.userId, assetId: assetId, quantity: 1 };
+        this.listService.addToWishlist(payload).subscribe({
+          next: () => {
+            this.wishlistAssetIds.push(assetId);
+            this.showToast('Added to wishlist.', 'Added!', 'success');
+          },
+          error: (err) => {
+            this.showToast(
+              err.error.message || 'Error adding to wishlist.',
+              'Error!',
+              'error'
+            );
+          },
+        });
+      }
     }
-  }
   }
 
   toCart() {
@@ -243,42 +238,42 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/direct-sale-assetpage/', assetId]);
   }
 
-redirectToCart(): void {
-  this.router.navigate(['/bid-add-to-cart']);
-}
+  redirectToCart(): void {
+    this.router.navigate(['/bid-add-to-cart']);
+  }
 
 
   addToCart(assetId: number): void {
-     if (!this.userId) {
-           this.showToast('User not logged in.', 'Error', 'error');
-           this.router.navigate(['/login']);
-           return;
-         }else{
-    const payload = {
-      userId: this.userId,
-      assetId: assetId,
-      quantity: 1,
-    };
+    if (!this.userId) {
+      this.showToast('User not logged in.', 'Error', 'error');
+      this.router.navigate(['/login']);
+      return;
+    } else {
+      const payload = {
+        userId: this.userId,
+        assetId: assetId,
+        quantity: 1,
+      };
 
-    this.listService.addToCart(payload).subscribe({
-      next: () => {
-        this.showToast(
-          'This asset has been added to your cart.',
-          'Success!',
-          'success'
-        );
-        // this.listService.refreshComponent();
-        this.cartAssetIds.push(assetId);
-      },
-      error: (err) => {
-        this.showToast(
-          err.error.message || 'Something went wrong while adding to cart.',
-          'Error!',
-          'error'
-        );
-      },
-    });
-  }
+      this.listService.addToCart(payload).subscribe({
+        next: () => {
+          this.showToast(
+            'This asset has been added to your cart.',
+            'Success!',
+            'success'
+          );
+          // this.listService.refreshComponent();
+          this.cartAssetIds.push(assetId);
+        },
+        error: (err) => {
+          this.showToast(
+            err.error.message || 'Something went wrong while adding to cart.',
+            'Error!',
+            'error'
+          );
+        },
+      });
+    }
   }
 
   goBack() {

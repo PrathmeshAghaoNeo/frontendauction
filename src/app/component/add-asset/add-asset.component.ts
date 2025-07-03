@@ -18,8 +18,8 @@ import { AuctionService } from '../../services/auction.service';
 import { AssetCategory } from '../../modals/assetcategories';
 import { AssetCategoriesService } from '../../services/assetcategories.service';
 import { Seller } from '../../modals/add-asset';
+import L from 'leaflet';
 // import {NgSelectModule} from '@ng-select/ng-select';
-import * as L from 'leaflet';
 
 @Component({
   selector: 'app-add-asset',

@@ -57,18 +57,13 @@ export class SidebarComponent implements OnInit {
 
 
   private updateMenu(role: RoleWithPermissions): void {
-    console.log('[Sidebar] Updating menu for role:', role);
 
     const permissions = this.authService.getPermissions();
-    console.log('[Sidebar] Extracted permissions:', permissions);
-    console.log('[Sidebar] Menu Permissions Needed:', MENU_CONFIG.map(m => m.permission));
-    console.log('[Sidebar] MENU_CONFIG before filtering:', MENU_CONFIG);
 
     this.visibleMenuItems = MENU_CONFIG.filter(menu =>
       permissions.includes(menu.permission)
     );
 
-    console.log('[Sidebar] Filtered visibleMenuItems:', this.visibleMenuItems);
   }
 
 
