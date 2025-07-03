@@ -41,7 +41,7 @@ export class FilterComponent implements OnInit {
 
   fetchAssetData() {
     // TODO: Replace with actual API call
-    // Example: fetch('http://localhost:62627/api/Assets/directsaleasset?categoryId=44')
+    // Example: fetch('https://localhost:62627/api/Assets/directsaleasset?categoryId=44')
     //   .then(res => res.json())
     //   .then(data => { this.assetData = data; this.extractFilterOptions(); });
     // For now, use placeholder data:

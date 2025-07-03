@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FilterService {
-  private apiUrl = 'http://localhost:62627/api/Assets/directsaleasset?categoryId=44';
+  private apiUrl = 'https://localhost:62627/api/Assets/directsaleasset?categoryId=44';
 
   constructor(private http: HttpClient) {}
 
