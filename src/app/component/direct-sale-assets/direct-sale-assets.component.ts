@@ -15,6 +15,7 @@ import { environment } from '../../constants/enviroments';
 import { DirectSaleAssetDto } from '../../modals/add-asset';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService } from '../../services/language.service';
+import * as L from 'leaflet';
 
 declare var bootstrap: any;
 
@@ -33,6 +34,11 @@ export class DirectSaleAssetsComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/orders']);
   }
 
+
+  showMap = false;
+  private map!: L.Map;
+
+  
   assets: DirectSaleAssetDto[] = [];
   originalAssets: DirectSaleAssetDto[] = [];
   layoutType: 'grid' | 'row' = 'grid';
@@ -279,5 +285,141 @@ redirectToCart(): void {
     localStorage.removeItem('layoutType');
     window.history.back();
   }
-  
+
+
+ toggleMap() {
+  this.showMap = !this.showMap;
+
+  if (this.showMap) {
+    setTimeout(() => this.initMap(), 100); // ensure DOM is ready
+  } else {
+    if (this.map) {
+      this.map.remove();
+      // this.map = undefined;
+    }
+  }
+}
+
+  backToList() {
+    this.showMap = false;
+  }
+
+
+
+  private async initMap(): Promise<void> {
+  this.map = L.map('map').setView([51.505, -0.09, 50.58], 2);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(this.map);
+
+  for (const asset of this.assets) {
+    if (!asset.mapLatitude || !asset.mapLongitude) continue;
+
+    (asset as any).location = await this.getLocationFromCoords(asset.mapLatitude, asset.mapLongitude);
+    const latLng: [number, number] = [asset.mapLatitude, asset.mapLongitude];
+    L.circle(latLng, {
+    radius: 200, // in meters
+    color: '#222',       // border color
+    fillColor: '#000',   // inner color
+    fillOpacity: 0.25,   // glow effect
+    weight: 1,
+  }).addTo(this.map);
+
+    const icon = L.divIcon({
+      className: 'price-marker',
+      html: `<div class="price-label">BHD ${asset.price?.toLocaleString()}</div>`,
+      iconSize: [100, 30],
+      iconAnchor: [50, 15]
+    });
+
+    const marker = L.marker([asset.mapLatitude, asset.mapLongitude], { icon }).addTo(this.map);
+
+    marker.on('mouseout', () => {
+      marker.bindPopup(this.generatePopup(asset)).closePopup();
+    });
+
+    marker.on('mouseover', () => {
+      marker.bindPopup(this.generatePopup(asset)).openPopup();
+    });
+    
+  }
+}
+
+  private generatePopup(asset: any): string {
+  const imageUrls = asset.galleries?.length
+    ? asset.galleries.map((g: any) => environment.baseurl + g.filePath)
+    : ['default.jpg'];
+
+  const sliderId = `slider-${asset.assetId}`;
+
+  return `
+    <div style="font-family: 'Segoe UI', sans-serif; max-width: 220px;">
+      <img 
+        id="${sliderId}" 
+        src="${imageUrls[0]}" 
+        alt="${asset.title}" 
+        style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 6px;"
+      />
+
+      <div style="font-size: 14px; font-weight: 600; color: #222; margin-bottom: 2px;">
+        ${asset.title}
+      </div>
+
+      <div style="font-size: 13px; color: #444; margin-bottom: 2px;">
+        💰 BHD ${asset.price?.toLocaleString()}
+      </div>
+
+      <div style="font-size: 13px; color: #666;">
+        📍 ${asset.location ?? 'Unknown'}
+      </div>
+
+      <script>
+        (function() {
+          const images = ${JSON.stringify(imageUrls)};
+          let index = 0;
+          const img = document.getElementById("${sliderId}");
+          if (images.length > 1 && img) {
+            setInterval(() => {
+              index = (index + 1) % images.length;
+              img.src = images[index];
+            }, 2500);
+          }
+        })();
+      </script>
+    </div>
+  `;
+}
+
+
+// <button onclick="window.location.href='/asset/${asset.assetId}'"
+//         style="
+//           display: inline-block;
+//           width: 100%;
+//           padding: 8px 0;
+//           background: #007bff;
+//           color: #fff;
+//           font-size: 14px;
+//           border: none;
+//           border-radius: 6px;
+//           cursor: pointer;
+//           transition: background 0.2s ease;
+//         "
+//         onmouseover="this.style.background='#0056b3'"
+//         onmouseout="this.style.background='#007bff'"
+//       >
+//         🔍 View Details
+//       </button>
+
+  private async getLocationFromCoords(lat: number, lon: number): Promise<string> {
+  try {
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+    const data = await response.json();
+    return data.display_name || 'Unknown';
+  } catch (error) {
+    console.error('Error fetching location:', error);
+    return 'Unknown';
+  }
+}
+
 }

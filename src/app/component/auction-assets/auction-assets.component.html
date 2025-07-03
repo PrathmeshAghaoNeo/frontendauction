@@ -15,11 +15,20 @@
         alt="Toggle View"
         class="toolbar-icon grid"
         (click)="toggleLayout()"
+        *ngIf="!showMap"
       />
+
+       <img
+          [src]="showMap ? 'pin.png' : 'pin.png'"
+          [alt]="showMap ? 'pin Map' : 'Open Map'"
+          class="toolbar-icon sort"
+          (click)="toggleMap()"
+        />
+      
     </div>
   </div>
 
-  <div class="plates-container" [ngClass]="layoutType + '-view'" >
+  <div class="plates-container" *ngIf="!showMap" [ngClass]="layoutType + '-view'" >
     <div class="plate-card" *ngFor="let asset of assets">
       <div class="plate-display" (click)="navigateToAsset(asset.assetId)"
       >
@@ -165,6 +174,11 @@
       </div>
     </div>
   </div>
+
+
+     <div *ngIf="showMap">
+      <div id="map" style="height: 92vh; width: 100%"></div>
+    </div>
 </div>
 
 <!-- Toast container -->

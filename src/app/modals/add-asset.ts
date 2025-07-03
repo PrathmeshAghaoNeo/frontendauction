@@ -72,6 +72,8 @@ export interface DirectSaleAssetDto {
   price: number;
   thumbnailUrl: string | null;
   categoryName: string;
+  mapLatitude?: number;
+  mapLongitude?: number;
   isAvailableForDirectSale: boolean;
   galleries: AssetGalleryDto[]; 
    bidCount?: number;

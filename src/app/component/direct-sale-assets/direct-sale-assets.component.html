@@ -3,7 +3,12 @@
     <div class="toolbar-left">
       <button class="back-btn" routerLink="/directbid">
         <button class="back-btn" (click)="goBack()">
-          <img src="back.png" alt="Back to Bidding" class="back-btn-image" [class.rtl-rotate]="isRtl" />
+          <img
+            src="back.png"
+            alt="Back to Bidding"
+            class="back-btn-image"
+            [class.rtl-rotate]="isRtl"
+          />
         </button>
       </button>
     </div>
@@ -13,18 +18,28 @@
         alt="Toggle View"
         class="toolbar-icon grid"
         (click)="toggleLayout()"
+         *ngIf="!showMap"
       />
 
       <!-- <img src="sort.png" alt="Filter" class="toolbar-icon sort" /> -->
 
-
+      <img
+          [src]="showMap ? 'pin.png' : 'pin.png'"
+          [alt]="showMap ? 'pin Map' : 'Open Map'"
+          class="toolbar-icon sort"
+          (click)="toggleMap()"
+        />
+      
     </div>
   </div>
 
-  <div class="plates-container" [ngClass]="layoutType + '-view'">
+  <div
+    class="plates-container"
+    *ngIf="!showMap"
+    [ngClass]="layoutType + '-view'"
+  >
     <div class="plate-card" *ngFor="let asset of assets">
       <div class="plate-display" (click)="goToAssetDetail(asset.assetId)">
-       
         <ng-container *ngIf="layoutType === 'row'; else gridView">
           <!-- Row View -->
           <div class="plate-display-row">
@@ -52,7 +67,9 @@
                       ? 'Remove from Wishlist'
                       : 'Add to Wishlist'
                   "
-                  (click)="toggleWishlist(asset.assetId); $event.stopPropagation()"
+                  (click)="
+                    toggleWishlist(asset.assetId); $event.stopPropagation()
+                  "
                 >
                   <img
                     [src]="
@@ -95,7 +112,7 @@
             </div>
           </div>
           <div class="price">BHD {{ asset.price }}</div>
-        </ng-container>
+        </ng-container> 
 
         <ng-template #gridView>
           <!-- Grid View -->
@@ -159,6 +176,13 @@
       </div>
     </div>
   </div>
+  
+  
+  
+  
+      <div *ngIf="showMap">
+      <div id="map" style="height: 92vh; width: 100%"></div>
+    </div>
 
   <!-- Toast container -->
   <div class="toast-container p-3" style="z-index: 9999">
@@ -183,4 +207,5 @@
       <div class="toast-body">This is a toast message.</div>
     </div>
   </div>
+  
 </div>

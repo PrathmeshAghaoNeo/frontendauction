@@ -264,12 +264,53 @@ export class EditAssetComponent implements OnInit {
     });
 
       console.log(this.asset.mapLatitude, this.asset.mapLongitude);
-      
-          
-      
   
   }
 
+
+
+  submitWinnerChange(): void {
+  if (!this.asset.winnerId || !this.selectedReason) {
+    Swal.fire('Warning', 'Please select a winner and reason.', 'warning');
+    return;
+  }
+
+  const dto: ReplaceAssetWinnerDto = {
+    assetId: this.asset.assetId,
+    userId: this.asset.winnerId,
+    awardedPrice: this.asset.awardedPrice ?? 0,
+    reason: this.selectedReason,
+    note: this.winnerNote,
+    approved: false, 
+  };
+
+  this.assetService.replaceWinner(dto).subscribe({
+    next: (res) => {
+      console.log('Winner updated successfully:', res);
+      this.asset.winnerId = res.winnerId;
+      this.updateWinnerName(res.winnerId); // Update UI
+
+      Swal.fire({
+        icon: 'success',
+        toast: true,
+        position: 'top',
+        title:' Winner Updated',
+        text: 'Winner updated successfully!',
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: true,
+        willClose: () => {
+          window.location.reload();
+        }
+      })
+      // this.isEditingWinner = false;
+    },
+    error: (err) => {
+      console.error('Error updating winner:', err);
+      alert('Failed to update winner.');
+    },
+  });
+}
 
 
 confirmApproveSale(): void {
@@ -468,34 +509,6 @@ confirmApproveSale(): void {
   /////////////////////=================================////////////////////////
 
 
-  submitWinnerChange(): void {
-  if (!this.asset.winnerId || !this.selectedReason) {
-    alert('Please select a winner and reason.');
-    return;
-  }
-
-  const dto: ReplaceAssetWinnerDto = {
-    assetId: this.asset.assetId,
-    userId: this.asset.winnerId,
-    awardedPrice: this.asset.awardedPrice ?? 0,
-    reason: this.selectedReason,
-    note: this.winnerNote,
-    approved: false, // or true, depending on your flow
-  };
-
-  this.assetService.replaceWinner(dto).subscribe({
-    next: (res) => {
-      console.log('Winner updated successfully:', res);
-      this.asset.winnerId = res.winnerId;
-      this.updateWinnerName(res.winnerId); // Update UI
-      // this.isEditingWinner = false;
-    },
-    error: (err) => {
-      console.error('Error updating winner:', err);
-      alert('Failed to update winner.');
-    },
-  });
-}
 
 
 
@@ -622,6 +635,8 @@ confirmApproveSale(): void {
         // this.isLoading = false;
         next: (response) => {
           console.log('Asset updated successfully:', response);
+          this.router.navigate(['/assets']);
+
           Swal.fire({
             icon: 'success',
             toast: true,

@@ -31,6 +31,7 @@ export interface Asset {
   requestForInquiry: boolean;
   buyerCommission?: number;
   winnerId?: number;
+  remainingDaysTracked? : number;
   winnerName?: string;
   awardedPrice?: number;
   salesNotes?: string;

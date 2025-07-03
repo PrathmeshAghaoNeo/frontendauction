@@ -67,6 +67,7 @@ import { PaymentSuccessComponent } from './component/bid-add-to-cart/payment-suc
 import { RoleUpdateComponent } from './component/role-update-component/role-update-component';
 import { RoleCreateComponent } from './component/role-create-component/role-create-component';
 import { LoginGuard } from './services/login-guard.service';
+import { AssetMapComponent } from './asset-map/asset-map.component';
 // export const routes: Routes = [
 //   { path: '', component: StartPageComponent, pathMatch: 'full' },
 //   { path: 'login', component: LoginComponent, canActivate: [LoginGuard]  },
@@ -453,7 +454,9 @@ export const routes: Routes = [
     canActivate: [RoleGuard],
     data: { role: 'Admin', animation: 'ChatbotAdmin' },
   },
+  { path: 'asset-map', component: AssetMapComponent },
   { path: 'finalCheckout/:assetId', component: CheckoutComponentComponent, data: { animation: 'FinalCheckout' } },
   { path: 'filter', component: FilterComponent, data: { animation: 'Filter' } },
   { path: '**', redirectTo: 'page-not-found', data: { animation: 'Wildcard' } },
+
 ];

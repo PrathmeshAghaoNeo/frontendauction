@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component , OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -21,7 +21,6 @@ import { Seller } from '../../modals/add-asset';
 // import {NgSelectModule} from '@ng-select/ng-select';
 import * as L from 'leaflet';
 
-
 @Component({
   selector: 'app-add-asset',
   standalone: true,
@@ -29,8 +28,8 @@ import * as L from 'leaflet';
   templateUrl: './add-asset.component.html',
   styleUrl: './add-asset.component.css',
 })
-export class AddAssetComponent implements OnInit , AfterViewInit{
-   map!: L.Map;
+export class AddAssetComponent implements OnInit, AfterViewInit {
+  map!: L.Map;
   marker!: L.Marker;
   searchQuery = '';
 
@@ -38,7 +37,7 @@ export class AddAssetComponent implements OnInit , AfterViewInit{
     this.initMap();
   }
 
-  auctions: Auction[] = []; 
+  auctions: Auction[] = [];
   sellers: Seller[] = [];
   assetForm: FormGroup;
   documentUrls: string[] = [];
@@ -143,11 +142,6 @@ export class AddAssetComponent implements OnInit , AfterViewInit{
   vatOptions = ['Exclusive', 'Inclusive', 'Not Applicable'];
   requestForViewingOptions = ['On', 'Off'];
   requestForInquiryOptions = ['On', 'Off'];
-
-  // sellers = [
-  //   { id: 1, name: 'vaish patil' },
-  //   // ...add more as needed
-  // ];
 
   constructor(
     private fb: FormBuilder,
@@ -501,13 +495,15 @@ export class AddAssetComponent implements OnInit , AfterViewInit{
     formData.append('WinnerId', this.asset.winnerId.toString());
     formData.append('AwardedPrice', this.asset.awardedPrice.toString());
     formData.append('SalesNotes', this.asset.salesNotes || '');
-   if (this.asset.languageId && this.asset.languageId !== 0) {
-  formData.append('LanguageId', this.asset.languageId.toString());
-  formData.append('TranslatedTitle', this.asset.translatedTitle);
-  formData.append('TranslatedDescription', this.asset.translatedDescription);
-  formData.append('TranslatedSalesNotes', this.asset.translatedSalesNotes);
-}
-
+    if (this.asset.languageId && this.asset.languageId !== 0) {
+      formData.append('LanguageId', this.asset.languageId.toString());
+      formData.append('TranslatedTitle', this.asset.translatedTitle);
+      formData.append(
+        'TranslatedDescription',
+        this.asset.translatedDescription
+      );
+      formData.append('TranslatedSalesNotes', this.asset.translatedSalesNotes);
+    }
 
     // Append detailsJson
     // this.asset.detailsJson.forEach((detail, index) => {
@@ -563,7 +559,7 @@ export class AddAssetComponent implements OnInit , AfterViewInit{
     }
   }
 
-  limitToInputWords(event : Event){
+  limitToInputWords(event: Event) {
     const input = event.target as HTMLInputElement;
 
     if (input.value === null || input.value === '') {
@@ -833,26 +829,27 @@ export class AddAssetComponent implements OnInit , AfterViewInit{
     this.assetService.addAssetWithGallery(payload).subscribe({
       next: (response) => {
         console.log('Asset created successfully:', response);
-        Swal.fire({
-          icon: 'success',
-          toast:true,
-          position:'top',
-          timer: 3000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-          title: 'Asset Created',
-          text: 'Asset created successfully!',
-        }).then(() => {
-          this.router.navigate(['assets']);
+        this.router.navigate(['assets']).then(() => {
+          Swal.fire({
+            icon: 'success',
+            toast: true,
+            position: 'top',
+            timer: 3000,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            title: 'Asset Created',
+            text: 'Asset created successfully!',
+          });
         });
       },
       error: (error) => {
         console.error('Error creating asset:', error);
-        // Swal.fire({
-        //   icon: 'error',
-        //   title: 'Creation Failed',
-        //   text: 'Error creating asset. Please try again.'
-        // });
+        // Optional: handle error with a toast
+        Swal.fire({
+          icon: 'error',
+          title: 'Creation Failed',
+          text: 'Error creating asset. Please try again.',
+        });
       },
     });
   }
@@ -1066,114 +1063,101 @@ export class AddAssetComponent implements OnInit , AfterViewInit{
     event.preventDefault();
   }
 
-
-
-
-
   initMap(): void {
-  this.map = L.map('map').setView([20.5937, 78.9629], 5); // Center: India
+    this.map = L.map('map').setView([20.5937, 78.9629], 5); // Center: India
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(this.map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(this.map);
 
-
-  this.map.on('click', (e: L.LeafletMouseEvent) => {
-    const lat = e.latlng.lat;
-    const lng = e.latlng.lng;
-
-    this.asset.MapLatitude = lat;
-    this.asset.MapLongitude = lng;
-
-    console.log('Clicked coordinates:', lat, lng); // Log the clicked coordinates
-    console.log('Asset after click:', this.asset.MapLatitude,this.asset.MapLongitude); // Log the asset object after click
-    
-    if (this.marker) {
-      this.map.removeLayer(this.marker);
-    }
-
-    const clickLabel = L.divIcon({
-      className: 'custom-label',
-      html: `<div style="color:#fff;padding:3px 8px;border-radius:4px;">📍</div>`,
-      iconSize: [100, 30],
-      iconAnchor: [50, 15]
-    });
-
-    this.marker = L.marker([lat, lng], { icon: clickLabel }).addTo(this.map);
-  });
-  
-}
-
-searchLocation(query: string): void {
-
-  console.log(query, "<--search query");
-  this.searchQuery = query; 
-  if (!this.searchQuery) return;
-
-
-
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}`;
-
-  console.log('Searching for:', this.searchQuery); // Debug log
-
-  fetch(url, {
-    headers: {
-      'User-Agent': 'YourAppName/1.0 (your@email.com)' // Nominatim requires user agent
-    }
-  })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then(data => {
-      console.log('Search results:', data); // Debug log
-      
-      if (data.length === 0) {
-        alert('Location not found.');
-        return;
-      }
-
-      const lat = parseFloat(data[0].lat);
-      const lon = parseFloat(data[0].lon);
-      console.log('Found location at:', lat, lon); // Log coordinates
+    this.map.on('click', (e: L.LeafletMouseEvent) => {
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
 
       this.asset.MapLatitude = lat;
-      this.asset.MapLongitude = lon;
+      this.asset.MapLongitude = lng;
+
+      console.log('Clicked coordinates:', lat, lng); // Log the clicked coordinates
+      console.log(
+        'Asset after click:',
+        this.asset.MapLatitude,
+        this.asset.MapLongitude
+      ); // Log the asset object after click
 
       if (this.marker) {
         this.map.removeLayer(this.marker);
       }
 
-      const priceLabel = L.divIcon({
+      const clickLabel = L.divIcon({
         className: 'custom-label',
-        html: `<div style="background:#000;color:#fff;padding:3px 8px;border-radius:4px;">📍${this.searchQuery}</div>`,
+        html: `<div style="color:#fff;padding:3px 8px;border-radius:4px;">📍</div>`,
         iconSize: [100, 30],
-        iconAnchor: [50, 15]
+        iconAnchor: [50, 15],
       });
 
-      this.marker = L.marker([lat, lon], { icon: priceLabel }).addTo(this.map);
-      this.map.setView([lat, lon], 12);
-    })
-    .catch(error => {
-      console.error('Error searching location:', error);
-      alert('Error searching location. Check console for details.');
+      this.marker = L.marker([lat, lng], { icon: clickLabel }).addTo(this.map);
     });
   }
 
+  searchLocation(query: string): void {
+    console.log(query, '<--search query');
+    this.searchQuery = query;
+    if (!this.searchQuery) return;
 
-  
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+      this.searchQuery
+    )}`;
+
+    console.log('Searching for:', this.searchQuery); // Debug log
+
+    fetch(url, {
+      headers: {
+        'User-Agent': 'YourAppName/1.0 (your@email.com)', // Nominatim requires user agent
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Search results:', data); // Debug log
+
+        if (data.length === 0) {
+          alert('Location not found.');
+          return;
+        }
+
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        console.log('Found location at:', lat, lon); // Log coordinates
+
+        this.asset.MapLatitude = lat;
+        this.asset.MapLongitude = lon;
+
+        if (this.marker) {
+          this.map.removeLayer(this.marker);
+        }
+
+        const priceLabel = L.divIcon({
+          className: 'custom-label',
+          html: `<div style="background:#000;color:#fff;padding:3px 8px;border-radius:4px;">📍${this.searchQuery}</div>`,
+          iconSize: [100, 30],
+          iconAnchor: [50, 15],
+        });
+
+        this.marker = L.marker([lat, lon], { icon: priceLabel }).addTo(
+          this.map
+        );
+        this.map.setView([lat, lon], 12);
+      })
+      .catch((error) => {
+        console.error('Error searching location:', error);
+        alert('Error searching location. Check console for details.');
+      });
+  }
 }
-
-
-
-
-
-
-
-
-
 
 // onWinnerDocDrop(event: DragEvent): void {
 //   event.preventDefault();

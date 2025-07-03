@@ -2,10 +2,11 @@ header {
   padding: 0.8rem 1rem;
   position: fixed;
   top: 0;
-  left: 0;
+  width:99%;
+  left: 1px;
   right: 0;
   z-index: 1030;
-
+  background: linear-gradient(45deg, #ffbdff, #ffecff);
 
   /* padding: 0.5rem 1rem; */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -170,3 +171,5 @@ header {
   color: #555;
   font-weight: 400;
 }
+
+

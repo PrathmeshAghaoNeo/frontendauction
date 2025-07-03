@@ -214,3 +214,27 @@
     height:100px;
     object-fit: cover;
   }
+
+
+
+.btn-gradient-green {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-gradient-green:hover {
+  background: linear-gradient(135deg, #218838, #1e7e34);
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5);
+}
+
+.btn-gradient-green:disabled {
+  background-color: #ccc;
+  color: #eee;
+  cursor: not-allowed;
+  box-shadow: none;
+}

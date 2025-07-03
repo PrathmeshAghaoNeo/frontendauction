@@ -241,7 +241,7 @@
           </span>
         </td> -->
 
-        <td>{{ asset.registrationDeadline }} days</td>
+        <td>{{ asset.remainingDaysTracked}} days</td>
         <td class="text-end">
           <button
             class="btn btn-sm btn-outline-primary me-1"
@@ -336,7 +336,7 @@
           </div>
           <div>
             <strong>Registration Deadline:</strong>
-            {{ selectedAsset.registrationDeadline }} days
+            {{ selectedAsset.remainingDaysTracked }} days
           </div>
           <div>
             <strong>Description:</strong> {{ selectedAsset.description }}

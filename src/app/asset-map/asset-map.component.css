@@ -1,0 +1,16 @@
+.map-header {
+  margin: 10px;
+  padding: 10px;
+  font-size: 1.2rem;
+}
+
+.price-label {
+  background-color: black;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
