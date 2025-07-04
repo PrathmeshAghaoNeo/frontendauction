@@ -371,7 +371,7 @@
                   <button
                     class="bid-button"
                     (click)="onPlaceBid()"
-                    [disabled]="timeLeft.total <= 0"
+                    [disabled]="timeLeft.total <= 0 || bidloading"
                   >
                     <i class="fa fa-gavel"></i> bid now
                   </button>

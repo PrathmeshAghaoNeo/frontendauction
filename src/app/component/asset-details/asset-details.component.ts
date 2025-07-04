@@ -27,7 +27,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   // assetId: number = 0;
   showRightPanel: boolean = false;
   TrailshowRightPanel: boolean = false;
-
+  bidloading: boolean = false;
    pendingAutoBidState: boolean = false;
 
 pendingValue: boolean = false;
@@ -274,10 +274,11 @@ pendingValue: boolean = false;
   }
   onPlaceBid() {
     console.log(this.placeBid)
+    this.bidloading = true;
     this.bidService.placeBid(this.placeBid).subscribe({
       next: (response) => {
         console.log('Bid placed with ID:', response.bidId);
-  
+        this.bidloading = false;
         Swal.fire({
           icon: 'success',
           toast:true,
@@ -291,7 +292,7 @@ pendingValue: boolean = false;
       },
       error: (error) => {
         console.error('Failed to place bid:', error);
-  
+        this.bidloading = false;
         Swal.fire({
           icon: 'error',
           toast:true,
